@@ -8,6 +8,7 @@
 import Container from "./layout/Container.astro";
 import HeroPillCycle from "./HeroPillCycle.astro";
 import HeroVideoLightbox from "./HeroVideoLightbox.astro";
+import OptimizedImage from "./OptimizedImage.astro";
 import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
 ---
 
@@ -37,12 +38,14 @@ import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
 
       <div class="hero__shotwrap" data-reveal="scale" style="--reveal-delay: 200ms;">
         <div class="hero__shot-frame">
-          <img
+          <OptimizedImage
             class="hero__shot"
             src="/app-full.png"
             alt="The Harvous app: My Home on the left and an open note on the right — scripture shown as tap-able pills, a highlighted phrase, and today's passage."
+            width={2624}
+            height={1360}
             loading="eager"
-            decoding="async"
+            fetchpriority="high"
           />
           <HeroVideoLightbox src="/touring-new-harvous-share.mp4" />
         </div>

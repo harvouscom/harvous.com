@@ -3,6 +3,7 @@ import Section from "./layout/Section.astro";
 import Container from "./layout/Container.astro";
 import Row from "./layout/Row.astro";
 import CTAButton from "./CTAButton.astro";
+import OptimizedImage from "./OptimizedImage.astro";
 import { fathomSignup } from "../lib/fathom-events.ts";
 
 // Lattice-style hero: copy on the left, one framed product screenshot on the
@@ -33,12 +34,14 @@ import { fathomSignup } from "../lib/fathom-events.ts";
 
       <div class="hero__visual" data-reveal="scale" style="--reveal-delay: 120ms;">
         <div class="hero__frame">
-          <img
+          <OptimizedImage
             class="hero__shot"
             src="/app-full.png"
             alt="The Harvous app with a note open beside the sidebar — scripture references shown as tap-able pills, a highlighted phrase, and today's passage."
+            width={2624}
+            height={1360}
             loading="eager"
-            decoding="async"
+            fetchpriority="high"
           />
         </div>
       </div>

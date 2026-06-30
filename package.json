@@ -2,13 +2,15 @@
   "name": "harvous.com",
   "type": "module",
   "version": "0.1.0",
+  "license": "CC-BY-4.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "images:compress": "bash scripts/compress-images.sh"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

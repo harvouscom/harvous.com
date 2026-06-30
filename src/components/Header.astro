@@ -1,5 +1,6 @@
 ---
 import { fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
+import OptimizedImage from "./OptimizedImage.astro";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -16,12 +17,13 @@ const SCROLL_THRESHOLD = 16;
 <header class="site-header sticky" id="site-header" data-scroll-threshold={SCROLL_THRESHOLD}>
   <div class="site-header__inner">
     <a href="/" class="site-header__logo" aria-label="Harvous — Home">
-      <img
+      <OptimizedImage
         src="/images/harvous-icon-sm.png"
         alt=""
-        width="32"
-        height="32"
+        width={32}
+        height={32}
         class="site-header__logo-img"
+        loading="eager"
       />
     </a>
 

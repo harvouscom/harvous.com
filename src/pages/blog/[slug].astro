@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import OptimizedImage from "../../components/OptimizedImage.astro";
 import { getCollection, render } from "astro:content";
 import BlogCard from "../../components/BlogCard.astro";
 
@@ -78,10 +79,12 @@ const related = allPosts
 
     <!-- Author close -->
     <div class="mt-16 flex items-center gap-4 border-t border-[var(--color-rule)] pt-10">
-      <img
+      <OptimizedImage
         src="/derek-avatar.jpeg"
         alt="Derek Castelli"
         class="h-12 w-12 rounded-full object-cover"
+        width={1680}
+        height={1680}
       />
       <div>
         <div class="font-semibold text-[var(--color-ink)]">Derek Castelli</div>

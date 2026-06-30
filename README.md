@@ -28,6 +28,18 @@ Release notes and compare pages read from CSV at build time:
 
 Update these files and redeploy to publish changes. No monorepo dependencies.
 
+## Images
+
+Raster assets ship as WebP (primary) with PNG/JPEG fallbacks via `OptimizedImage.astro`. Recompress after changing screenshots:
+
+```bash
+npm run images:compress   # requires Dinky CLI — see scripts/compress-images.sh
+```
+
 ## App links
 
 Sign-up, sign-in, support, and status links point to absolute URLs on the app and status subdomains (`app.harvous.com`, `status.harvous.com`), not routes in this repo.
+
+## License
+
+Site source, copy, and assets are licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). See [LICENSE](LICENSE).

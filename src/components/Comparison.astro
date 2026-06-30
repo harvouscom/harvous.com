@@ -1,6 +1,7 @@
 ---
 // Playful 3-way positioning: a Bible reader app vs a generic notes app vs Harvous.
 import SectionCard from "./SectionCard.astro";
+import OptimizedImage from "./OptimizedImage.astro";
 import { Icon } from "astro-icon/components";
 
 const others = [
@@ -60,7 +61,7 @@ const harvous = [
     <div class="cmp-col cmp-col--harvous">
       <div class="cmp-col__head">
         <span class="cmp-col__icon cmp-col__icon--brand">
-          <img src="/icons/app-icon.png" alt="" />
+          <OptimizedImage src="/icons/app-icon.png" alt="" width={180} height={180} />
         </span>
         In Harvous
       </div>

@@ -11,6 +11,7 @@
  * gradient/shadow recipe from HeroCentered's `.hero__cta` so every primary
  * CTA on the page matches.
  */
+import OptimizedImage from "./OptimizedImage.astro";
 import { fathomSignup } from "../lib/fathom-events.ts";
 ---
 
@@ -32,18 +33,25 @@ import { fathomSignup } from "../lib/fathom-events.ts";
         </p>
       </div>
       <div class="cta-sign">
-        <img src="/derek-signiture.png" alt="Derek's signature" class="signature-img cta-sign-img" />
+        <OptimizedImage
+          src="/derek-signiture.png"
+          alt="Derek's signature"
+          class="signature-img cta-sign-img"
+          width={3262}
+          height={809}
+        />
         <span class="cta-sign-name">Derek, founder of Harvous</span>
       </div>
     </div>
 
     <div class="cta-panel cta-panel--shot">
-      <img
+      <OptimizedImage
         class="cta-shot"
         src="/app-full.png"
         alt="The Harvous app open on a note, with scripture pills and a highlight visible."
+        width={2624}
+        height={1360}
         loading="lazy"
-        decoding="async"
       />
       <div class="cta-btn-row">
         <a

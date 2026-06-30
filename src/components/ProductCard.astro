@@ -6,6 +6,7 @@
  * homepage. Screenshots live at /app-*.png (see index.astro cards data).
  */
 import ContentPill from "./ContentPill.astro";
+import OptimizedImage from "./OptimizedImage.astro";
 
 type PillType = "note" | "scripture" | "highlight" | "folder" | "thread";
 
@@ -31,7 +32,7 @@ const { pills, title, body, image, imageAlt } = Astro.props;
     <p class="pcard__text">{body}</p>
   </div>
   <div class="pcard__shot">
-    <img src={image} alt={imageAlt} loading="lazy" decoding="async" />
+    <OptimizedImage src={image} alt={imageAlt} width={1054} height={480} loading="lazy" />
   </div>
 </article>
 
@@ -81,13 +82,17 @@ const { pills, title, body, image, imageAlt } = Astro.props;
     overflow: hidden;
     background: var(--color-warm);
   }
-  .pcard__shot img {
+  .pcard__shot picture {
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 108%;
     max-width: none;
+    display: block;
+  }
+  .pcard__shot img {
+    width: 100%;
     height: auto;
     display: block;
   }

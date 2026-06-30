@@ -1,4 +1,6 @@
 ---
+import OptimizedImage from "./OptimizedImage.astro";
+
 interface Props {
   competitorImage: string;
 }
@@ -12,7 +14,7 @@ const harvousIcon = "/images/harvous-icon-sm.png";
   <div class="compare-hero__duel">
     <div class="compare-hero__app">
       <span class="compare-hero__icon-wrap">
-        <img src={harvousIcon} alt="" width="80" height="80" class="compare-hero__icon" />
+        <OptimizedImage src={harvousIcon} alt="" width={80} height={80} class="compare-hero__icon" loading="eager" />
       </span>
     </div>
     <span class="compare-hero__vs" aria-hidden="true">vs</span>

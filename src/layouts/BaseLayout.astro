@@ -8,6 +8,8 @@ interface Props {
   description?: string;
   ogImage?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Preload LCP image (WebP path under public/). */
+  preloadImage?: string;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   description = "Harvous is a Bible study notes app — not a Bible reader, not sermon transcription. Save scripture-linked notes and remember what you saved.",
   ogImage = "/og.png",
   jsonLd,
+  preloadImage,
 } = Astro.props;
 
 const siteOrigin = Astro.site ?? "https://harvous.com";
@@ -50,6 +53,9 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} type="image/webp" fetchpriority="high" />
+    )}
     <link rel="icon" type="image/png" href="/images/harvous-2-icon.png" />
     <link rel="apple-touch-icon" href="/images/harvous-2-icon.png" />
 
