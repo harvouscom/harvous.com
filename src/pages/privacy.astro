@@ -1,0 +1,100 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const updated = "June 30, 2025";
+---
+
+<BaseLayout
+  title="Privacy Policy — Harvous"
+  description="How Harvous collects, uses, and protects your data."
+>
+  <section class="border-b border-[var(--color-rule)]">
+    <div class="mx-auto max-w-3xl px-5 py-16 text-center md:py-24">
+      <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">Legal</div>
+      <h1 class="mt-3 font-display text-5xl leading-[1.0] md:text-6xl">Privacy Policy</h1>
+      <p class="mt-4 text-sm text-[var(--color-ink-faint)]">Last updated {updated}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-5 py-16 md:py-20">
+    <div class="prose-letter space-y-8">
+      <div>
+        <h2 class="text-xl font-semibold text-[var(--color-ink)]">Overview</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          Harvous is a Bible study notes app operated by Testament Made LLC ("we," "us"). This policy
+          explains what information we collect, how we use it, and the choices you have. By using
+          Harvous, you agree to this policy.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold text-[var(--color-ink)]">Information we collect</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          <strong class="text-[var(--color-ink)]">Account information.</strong> When you sign up, we use
+          Clerk for authentication. Clerk may collect your email address, name, and sign-in details
+          needed to verify your identity.
+        </p>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          <strong class="text-[var(--color-ink)]">Your content.</strong> We store the notes, threads,
+          spaces, highlights, and related study data you create in Harvous. This content is tied to
+          your account and is private by default.
+        </p>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          <strong class="text-[var(--color-ink)]">Usage and device data.</strong> We may collect basic
+          technical information — such as browser type, app version, and general usage patterns — to
+          keep the service reliable and secure.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold text-[var(--color-ink)]">How we use your information</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          We use your information to provide and improve Harvous: syncing your notes across devices,
+          authenticating your account, responding to support requests, and protecting the service from
+          abuse. We do not sell your personal information.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold text-[var(--color-ink)]">Sharing</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          Your notes are private unless you choose to share them. When you create a share link, only
+          the content you explicitly share becomes accessible to people with that link. We use trusted
+          service providers (such as Clerk for auth and Supabase for data storage) who process data on
+          our behalf under appropriate agreements.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold text-[var(--color-ink)]">Cookies</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          Harvous uses cookies and similar technologies to keep you signed in and to remember basic
+          preferences. You can control cookies through your browser settings, though some features may
+          not work without them.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold text-[var(--color-ink)]">Data retention and deletion</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          We retain your account and content for as long as your account is active. You may request
+          deletion of your account and associated data by contacting us. Some information may be kept
+          briefly where required for legal or security purposes.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold text-[var(--color-ink)]">Contact</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          Questions about this policy or your data? Email
+          <a
+            class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+            href="mailto:derek@harvous.com"
+          >
+            derek@harvous.com
+          </a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

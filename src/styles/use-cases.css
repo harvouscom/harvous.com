@@ -1,0 +1,62 @@
+/* Shared use-case hero art (carousel + detail pages). */
+.use-case-hero__art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 2.2 / 1;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background-color: var(--color-warm);
+  background-image: var(--usecase-art-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.use-case-hero__art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-paper) 10%, transparent) 0%,
+    color-mix(in oklab, var(--color-ink) 6%, transparent) 100%
+  );
+  pointer-events: none;
+}
+
+.use-case-hero__badge {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 1rem;
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+}
+
+.use-case-hero__badge svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.use-case-moment__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--use-case-ink) 14%, var(--color-paper));
+}
+
+.use-case-moment__icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--use-case-ink);
+}

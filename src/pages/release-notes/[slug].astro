@@ -1,0 +1,278 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/layout/Container.astro";
+import { getReleaseNotes, getReleaseNoteBySlug } from "../../lib/release-notes-data.ts";
+
+export function getStaticPaths() {
+  return getReleaseNotes().map((note) => ({
+    params: { slug: note.slug },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const site = "https://harvous.com";
+const pageUrl = `${site}/release-notes/${note.slug}/`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      name: `Harvous v${note.version} Release Notes`,
+      description: note.excerpt,
+      url: pageUrl,
+      datePublished: note.date || undefined,
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: site },
+        { "@type": "ListItem", position: 2, name: "Release Notes", item: `${site}/release-notes/` },
+        { "@type": "ListItem", position: 3, name: `v${note.version}`, item: pageUrl },
+      ],
+    },
+  ],
+};
+
+const categoryTone = (category: string) => {
+  if (category === "Fix") return "release-entry__category--fix";
+  if (category === "Improvement") return "release-entry__category--improvement";
+  return "release-entry__category--feature";
+};
+---
+
+<BaseLayout
+  title={`v${note.version} Release Notes — Harvous`}
+  description={note.excerpt}
+  jsonLd={jsonLd}
+>
+  <article class="release-notes-detail release-notes-frame frame-divider">
+    <div class="release-notes-frame__grid" aria-hidden="true"></div>
+    <Container size="lg">
+      <div class="paper-stack release-notes-detail__stack">
+        <div
+          aria-hidden="true"
+          class="paper-leaf release-notes-detail__leaf release-notes-detail__leaf--back"
+          style="--rot: 1.8deg;"
+        ></div>
+        <div
+          aria-hidden="true"
+          class="paper-leaf release-notes-detail__leaf release-notes-detail__leaf--mid"
+          style="--rot: -2.2deg;"
+        ></div>
+
+        <div class="paper-leaf release-notes-detail__sheet">
+          <div
+            aria-hidden="true"
+            class="release-notes-detail__fold"
+          ></div>
+
+          <header class="release-notes-detail__head">
+            <a href="/release-notes/" class="btn-pill release-notes-detail__back">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 3L5 8l5 5"/>
+              </svg>
+              All release notes
+            </a>
+            <h1 class="release-notes-detail__title">v{note.version}</h1>
+            <div class="release-notes-detail__meta">
+              {note.date && <time class="release-notes-detail__date">{note.date}</time>}
+              <span class="release-notes-detail__summary">{note.excerpt}</span>
+            </div>
+          </header>
+
+          <div class="release-notes-detail__entries">
+            {
+              note.entries.map((entry) => (
+                <section class="release-entry">
+                  <p class="release-entry__kicker">
+                    <span class:list={["release-entry__category", categoryTone(entry.category)]}>
+                      {entry.category}
+                    </span>
+                    {entry.date && (
+                      <>
+                        <span class="release-entry__sep" aria-hidden="true">·</span>
+                        <time class="release-entry__date">{entry.date}</time>
+                      </>
+                    )}
+                  </p>
+                  <h2 class="release-entry__title">{entry.title}</h2>
+                  {
+                    entry.lead && entry.lead !== entry.title && (
+                      <p class="release-entry__lead">{entry.lead}</p>
+                    )
+                  }
+                  {
+                    entry.bullets.length > 0 && (
+                      <ul class="release-entry__list">
+                        {entry.bullets.map((bullet) => (
+                          <li>{bullet}</li>
+                        ))}
+                      </ul>
+                    )
+                  }
+                </section>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </Container>
+  </article>
+</BaseLayout>
+
+<style>
+  .release-notes-detail {
+    flex: 1 1 auto;
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .release-notes-detail__stack {
+    position: relative;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  .release-notes-detail__leaf {
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    background-color: var(--paper-sheet);
+    box-shadow: 0 8px 24px -12px rgba(20, 18, 12, 0.1);
+  }
+  .release-notes-detail__leaf--mid {
+    z-index: 0;
+  }
+  .release-notes-detail__leaf--back {
+    z-index: -1;
+  }
+
+  .release-notes-detail__sheet {
+    position: relative;
+    z-index: 1;
+    border-radius: 2px;
+    padding: clamp(1.5rem, 4vw, 2.25rem) clamp(1.25rem, 4vw, 2rem) clamp(1.75rem, 4vw, 2.5rem);
+    background-color: var(--paper-sheet);
+    background-image:
+      radial-gradient(var(--pds-paper-grain-a) 1px, transparent 1px),
+      radial-gradient(var(--pds-paper-grain-b) 1px, transparent 1px);
+    background-size: 28px 28px, 17px 17px;
+    background-position: 0 0, 9px 9px;
+    box-shadow: var(--pds-paper-shadow);
+  }
+
+  .release-notes-detail__fold {
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(225deg, var(--pds-paper-fold-a) 0%, var(--pds-paper-fold-b) 40%, transparent 60%);
+  }
+
+  .release-notes-detail__back {
+    margin-bottom: 1.1rem;
+    padding-inline: 0.85rem 0.9rem;
+    padding-left: 0.68rem;
+  }
+  .release-notes-detail__back svg {
+    width: 0.8rem;
+    height: 0.8rem;
+    flex: none;
+    opacity: 0.88;
+  }
+
+  .release-notes-detail__title {
+    margin-top: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.35rem);
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+  }
+  .release-notes-detail__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-top: 0.55rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .release-notes-detail__summary {
+    color: var(--color-ink-faint);
+  }
+
+  .release-notes-detail__entries {
+    margin-top: clamp(1.75rem, 4vw, 2.25rem);
+    padding-top: 0.25rem;
+    border-top: 1px solid color-mix(in oklab, var(--color-rule) 70%, transparent);
+  }
+
+  .release-entry {
+    padding-block: 1.45rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-rule) 55%, transparent);
+  }
+  .release-entry:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .release-entry__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .release-entry__category--feature {
+    color: var(--color-accent);
+  }
+  .release-entry__category--fix {
+    color: #047857;
+  }
+  .release-entry__category--improvement {
+    color: var(--color-ink-soft);
+  }
+  .release-entry__sep {
+    opacity: 0.55;
+  }
+  .release-entry__date {
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .release-entry__title {
+    margin: 0.45rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    color: var(--color-ink);
+  }
+  .release-entry__lead {
+    margin: 0.7rem 0 0;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: var(--color-ink);
+  }
+  .release-entry__list {
+    margin: 0.75rem 0 0;
+    padding-left: 1.05rem;
+    font-size: 0.98rem;
+    line-height: 1.62;
+    color: var(--color-ink-soft);
+  }
+  .release-entry__list li {
+    padding-left: 0.15rem;
+  }
+  .release-entry__list li + li {
+    margin-top: 0.35rem;
+  }
+</style>

@@ -1,0 +1,119 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "./layout/Container.astro";
+import ReleaseNotesIndexCard from "./ReleaseNotesIndexCard.astro";
+import ReleaseNotesPagination from "./ReleaseNotesPagination.astro";
+import {
+  getReleaseNotesPage,
+  RELEASE_NOTES_PAGE_SIZE,
+  releaseNotesPageHref,
+} from "../lib/release-notes-data.ts";
+
+interface Props {
+  currentPage: number;
+}
+
+const { currentPage } = Astro.props;
+const page = getReleaseNotesPage(currentPage);
+const cardRotations = [-1.1, 0.8, -0.5, 1.2, -0.9, 0.4, -1.4, 0.6];
+const rotationOffset = (page.currentPage - 1) * RELEASE_NOTES_PAGE_SIZE;
+
+const site = "https://harvous.com";
+const pageUrl = releaseNotesPageHref(page.currentPage);
+const canonicalUrl = `${site}${pageUrl === "/" ? "/release-notes/" : pageUrl}`;
+
+const title =
+  page.currentPage === 1
+    ? "Release Notes — Harvous"
+    : `Release Notes (Page ${page.currentPage}) — Harvous`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: page.currentPage === 1 ? "Harvous Release Notes" : `Harvous Release Notes — Page ${page.currentPage}`,
+  description: "Release notes and updates for Harvous, the Bible study notes app.",
+  url: canonicalUrl,
+};
+---
+
+<BaseLayout title={title} description={jsonLd.description as string} jsonLd={jsonLd}>
+  <section class="release-notes-index release-notes-frame frame-divider">
+    <div class="release-notes-frame__grid" aria-hidden="true"></div>
+    <Container size="lg">
+      <header class="release-notes-index__head section-head" data-reveal>
+        <span class="eyebrow-pill">Updates</span>
+        <h1 class="section-title">Release Notes</h1>
+        <p class="release-notes-index__lead">
+          What shipped in Harvous — features, fixes, and improvements.
+          {
+            page.totalPages > 1 && (
+              <span class="release-notes-index__page-meta">
+                {" "}
+                Page {page.currentPage} of {page.totalPages}
+                <span class="sr-only"> ({page.totalCount} releases total)</span>
+              </span>
+            )
+          }
+        </p>
+      </header>
+
+      {
+        page.releases.length > 0 ? (
+          <>
+            <div class="release-notes-index__grid">
+              {
+                page.releases.map((release, index) => (
+                  <ReleaseNotesIndexCard
+                    release={release}
+                    rotation={cardRotations[(rotationOffset + index) % cardRotations.length]}
+                  />
+                ))
+              }
+            </div>
+            <ReleaseNotesPagination page={page} />
+          </>
+        ) : (
+          <p class="release-notes-index__empty">No release notes are published yet.</p>
+        )
+      }
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  .release-notes-index {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .release-notes-index__lead {
+    margin-top: 0.75rem;
+    max-width: 34rem;
+    margin-inline: auto;
+    color: var(--color-ink-soft);
+  }
+  .release-notes-index__page-meta {
+    color: var(--color-ink-faint);
+  }
+  .release-notes-index__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+    gap: 1.75rem 1.35rem;
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding-bottom: 0.5rem;
+  }
+  .release-notes-index__empty {
+    margin-top: 2rem;
+    color: var(--color-ink-soft);
+    text-align: center;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

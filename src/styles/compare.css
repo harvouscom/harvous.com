@@ -1,0 +1,129 @@
+/* Compare detail hero — release-notes-style square grid background. */
+.compare-hero__art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 2.2 / 1;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper);
+}
+
+.compare-hero__grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  container-type: inline-size;
+}
+
+.compare-hero__grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  --release-grid-size: calc(100cqw / round(nearest, 100cqw / 24px, 1));
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-rule) 38%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-rule) 38%, transparent) 1px, transparent 1px);
+  background-size: var(--release-grid-size) var(--release-grid-size);
+}
+
+.compare-hero__duel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 5vw, 2rem);
+  padding: 1.5rem;
+}
+
+.compare-hero__app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.compare-hero__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(4.5rem, 14vw, 5.75rem);
+  height: clamp(4.5rem, 14vw, 5.75rem);
+  border-radius: 1.25rem;
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+}
+
+.compare-hero__icon {
+  width: clamp(3.25rem, 10vw, 4.25rem);
+  height: clamp(3.25rem, 10vw, 4.25rem);
+  border-radius: 0.85rem;
+  object-fit: cover;
+}
+
+.compare-hero__vs {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.8vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: var(--color-ink-faint);
+}
+
+.compare-detail__table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.75rem;
+}
+
+.compare-detail__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.compare-detail__table th,
+.compare-detail__table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--color-rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.compare-detail__table tr:last-child th,
+.compare-detail__table tr:last-child td {
+  border-bottom: none;
+}
+
+.compare-detail__table thead th {
+  background: color-mix(in oklab, var(--color-ink) 4%, transparent);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.compare-detail__table tbody th {
+  font-weight: 600;
+  color: var(--color-ink);
+  width: 28%;
+  background: color-mix(in oklab, var(--color-warm) 40%, var(--color-paper));
+}
+
+.compare-detail__table td {
+  color: var(--color-ink-soft);
+  line-height: 1.5;
+}
+
+/* Shared compare hub + detail related slider band. */
+.compare-slider-band {
+  padding-block: clamp(2.75rem, 6vw, 4.25rem);
+  overflow-x: clip;
+}
+
+.compare-hub__band {
+  scroll-margin-top: 7.5rem;
+}

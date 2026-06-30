@@ -1,0 +1,65 @@
+---
+/**
+ * FeatureBento — the homepage's core-features section. A static responsive
+ * 2-up grid of ProductCards (no horizontal scroll) — the Mintlify "bento"
+ * treatment for the same four feature cards the Figma "Home" frame defined.
+ */
+import Container from "./layout/Container.astro";
+import ProductCard from "./ProductCard.astro";
+
+type PillType = "note" | "scripture" | "highlight" | "folder" | "thread";
+
+interface CardData {
+  pills: PillType[];
+  title: string;
+  body: string;
+  image: string;
+  imageAlt: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  cards: CardData[];
+  id?: string;
+}
+
+const { eyebrow, title, lead, cards, id } = Astro.props;
+---
+
+<section class="bento frame-divider" id={id}>
+  <Container size="xl">
+    <div class="bento__head section-head" data-reveal>
+      {eyebrow && <span class="eyebrow-pill">{eyebrow}</span>}
+      <h2 class="section-title">{title}</h2>
+      {lead && <p class="lead bento__lead">{lead}</p>}
+    </div>
+
+    <div class="bento__grid" data-reveal style="--reveal-delay: 80ms;">
+      {cards.map((c) => (
+        <ProductCard pills={c.pills} title={c.title} body={c.body} image={c.image} imageAlt={c.imageAlt} />
+      ))}
+    </div>
+  </Container>
+</section>
+
+<style>
+  .bento {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .bento__lead {
+    max-width: 32ch;
+    margin-inline: auto;
+  }
+  .bento__grid {
+    margin-top: clamp(2.25rem, 5vw, 3.5rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  @media (min-width: 720px) {
+    .bento__grid { grid-template-columns: repeat(2, 1fr); gap: 1.75rem; }
+  }
+</style>

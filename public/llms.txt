@@ -1,0 +1,31 @@
+# Harvous
+
+> Harvous is a Bible study notes app — a Bible notes alternative focused on helping you remember and reconnect with what you saved from Scripture.
+
+Harvous is not a Bible reader. It is not built around sermon transcription or AI-generated sermon summaries. You keep your favorite Bible app for reading; Harvous is where your study notes, highlights, and scripture-linked insights live — organized in threads and folders so you can find them again.
+
+## Key differentiators
+
+- Notes-first: scripture pills, highlights, and references linked to your writing
+- No built-in Bible reader — type a reference, open the text inline, keep studying in your notes
+- No sermon transcription focus — capture what matters to you, not auto-generated transcripts
+- Recall and review: resurface notes, highlights, and passages worth revisiting
+- Spaces, threads, and folders that organize themselves around what you study
+
+## Links
+
+- Homepage: https://harvous.com/
+- Compare Harvous to other apps: https://harvous.com/compare/
+- Release Notes: https://harvous.com/release-notes/
+- Sign up: https://app.harvous.com/
+
+## Compare pages
+
+Individual comparisons (Harvous vs alternatives): https://harvous.com/compare/
+
+Examples:
+- https://harvous.com/compare/youversion/
+- https://harvous.com/compare/logos/
+- https://harvous.com/compare/bible-note/
+- https://harvous.com/compare/obsidian/
+- https://harvous.com/compare/apple-notes/

@@ -1,0 +1,77 @@
+---
+/**
+ * TestimonialsSection — renders the testimonials content collection as open
+ * editorial quotes in a three-column row (hairline dividers on desktop, stacked
+ * on mobile).
+ */
+import { getCollection, render } from "astro:content";
+import Container from "./layout/Container.astro";
+import TestimonialCard from "./TestimonialCard.astro";
+
+const entries = (await getCollection("testimonials")).sort((a, b) => a.data.order - b.data.order);
+const items = await Promise.all(
+  entries.map(async (t) => {
+    const { Content } = await render(t);
+    return { data: t.data, Content };
+  })
+);
+---
+
+{items.length > 0 && (
+  <section class="testimonials">
+    <Container size="xl">
+      <div class="testimonials__grid" data-reveal>
+        {items.map(({ data, Content }) => (
+          <TestimonialCard name={data.name} when={data.when}>
+            <Content />
+          </TestimonialCard>
+        ))}
+      </div>
+    </Container>
+  </section>
+)}
+
+<style>
+  .testimonials {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    padding-top: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .testimonials__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .testimonials__grid :global(.testimonial) {
+    padding-block: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .testimonials__grid :global(.testimonial + .testimonial) {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  @media (min-width: 960px) {
+    .testimonials__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .testimonials__grid :global(.testimonial) {
+      padding-block: 0;
+      padding-inline: clamp(1.25rem, 2.5vw, 2rem);
+    }
+
+    .testimonials__grid :global(.testimonial:first-child) {
+      padding-left: 0;
+    }
+
+    .testimonials__grid :global(.testimonial:last-child) {
+      padding-right: 0;
+    }
+
+    .testimonials__grid :global(.testimonial + .testimonial) {
+      border-top: none;
+      border-left: 1px solid var(--color-rule);
+    }
+  }
+</style>

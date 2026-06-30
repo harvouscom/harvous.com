@@ -1,0 +1,208 @@
+---
+/**
+ * ComparePreview — homepage carousel of featured /compare/ pages.
+ */
+import Container from "./layout/Container.astro";
+import CompareCarousel from "./CompareCarousel.astro";
+import { getCompareBySlug } from "../lib/compare-data.ts";
+import { fathomCompare } from "../lib/fathom-events.ts";
+
+const featuredSlugs = [
+  "apple-notes",
+  "notion",
+  "youversion",
+  "logos",
+  "bible-note",
+  "obsidian",
+  "olive-tree",
+  "evernote",
+] as const;
+
+const featured = featuredSlugs
+  .map((slug) => getCompareBySlug(slug))
+  .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined);
+---
+
+<section class="compare-preview frame-divider" id="compare">
+  <Container size="xl">
+    <div class="compare-preview__head" data-reveal>
+      <div class="compare-preview__head-text">
+        <span class="eyebrow-pill">Compare</span>
+        <h2 class="section-title">How Harvous compares</h2>
+        <p class="lead">
+          Not a Bible reader. Not sermon transcription. See how Harvous stacks up against the apps you
+          might already use for reading, notes, or devotionals.
+        </p>
+      </div>
+
+      <div class="compare-preview__controls">
+        <button type="button" class="compare-preview__arrow" data-dir="prev" aria-label="Previous comparison" disabled>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 3L5 8l5 5"/>
+          </svg>
+        </button>
+        <button type="button" class="compare-preview__arrow" data-dir="next" aria-label="Next comparison">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 3l5 5-5 5"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </Container>
+
+  <CompareCarousel
+    class="compare-carousel--tight"
+    entries={featured}
+    trackLabel="App comparisons"
+    fathomTrack={fathomCompare.homeCard}
+    showBar={false}
+  />
+
+  <Container size="xl">
+    <p class="compare-preview__more" data-reveal style="--reveal-delay: 120ms;">
+      <a href="/compare/" class="compare-preview__all" data-fathom-track={fathomCompare.homeAll}>
+        See all comparisons
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </a>
+    </p>
+  </Container>
+</section>
+
+<style>
+  .compare-preview {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    overflow-x: hidden;
+  }
+
+  .compare-preview__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+  .compare-preview__head-text {
+    max-width: 34rem;
+  }
+  @media (min-width: 640px) {
+    .compare-preview__head-text .section-title {
+      white-space: nowrap;
+    }
+  }
+  .compare-preview__head-text > * + * {
+    margin-top: 0.85rem;
+  }
+  .compare-preview__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: none;
+  }
+
+  .compare-preview__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: none;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    color: var(--color-ink-soft);
+    transition: color 150ms ease, background-color 150ms ease, opacity 150ms ease;
+  }
+  .compare-preview__arrow svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  .compare-preview__arrow:hover:not(:disabled) {
+    color: var(--color-ink);
+    background: var(--color-warm);
+  }
+  .compare-preview__arrow:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .compare-preview__more {
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+    text-align: center;
+  }
+  .compare-preview__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .compare-preview__all svg {
+    width: 0.85rem;
+    height: 0.85rem;
+    transition: transform 0.15s ease;
+  }
+  .compare-preview__all:hover {
+    text-decoration: underline;
+  }
+  .compare-preview__all:hover svg {
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 640px) {
+    .compare-preview__arrow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  /** Wire homepage header arrows to the nested carousel track (controls live outside CompareCarousel). */
+  const section = document.querySelector<HTMLElement>(".compare-preview");
+  const track = section?.querySelector<HTMLElement>(".compare-carousel__track");
+  if (section && track) {
+    const prevBtn = section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="prev"]');
+    const nextBtn = section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="next"]');
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const updateArrows = () => {
+      const max = track.scrollWidth - track.clientWidth - 1;
+      if (prevBtn) prevBtn.disabled = track.scrollLeft <= 0;
+      if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
+    };
+
+    const step = () => {
+      const slide = track.querySelector<HTMLElement>(".compare-carousel__slide");
+      if (!slide) return track.clientWidth * 0.9;
+      const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+      return slide.getBoundingClientRect().width + gap;
+    };
+
+    const scrollByDir = (dir: 1 | -1) => {
+      track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
+    };
+
+    prevBtn?.addEventListener("click", () => scrollByDir(-1));
+    nextBtn?.addEventListener("click", () => scrollByDir(1));
+
+    let ticking = false;
+    track.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          updateArrows();
+          ticking = false;
+        });
+      },
+      { passive: true }
+    );
+
+    window.addEventListener("resize", updateArrows);
+    updateArrows();
+  }
+</script>

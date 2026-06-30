@@ -1,0 +1,132 @@
+---
+/**
+ * ReleaseNotesIndexCard — paper-stack index card for a versioned release group.
+ */
+import type { ChangelogRelease } from "../lib/release-notes-data.ts";
+
+interface Props {
+  release: ChangelogRelease;
+  rotation?: number;
+}
+
+const { release, rotation = 0 } = Astro.props;
+const href = `/release-notes/${release.slug}/`;
+const headline = release.entries[0]?.title ?? release.excerpt;
+---
+
+<a
+  href={href}
+  class="release-index-card"
+  style={`--card-rot: ${rotation}deg`}
+>
+  <span class="release-index-card__shadow" aria-hidden="true"></span>
+  <span class="release-index-card__shadow release-index-card__shadow--mid" aria-hidden="true"></span>
+  <span class="release-index-card__sheet">
+    <span class="release-index-card__meta">
+      <span class="release-index-card__version">v{release.version}</span>
+      {release.date && <time class="release-index-card__date">{release.date}</time>}
+    </span>
+    <span class="release-index-card__counts">{release.excerpt}</span>
+    <span class="release-index-card__title">{headline}</span>
+    {
+      release.entries.length > 1 && (
+        <span class="release-index-card__more">
+          +{release.entries.length - 1} more in this release
+        </span>
+      )
+    }
+  </span>
+</a>
+
+<style>
+  .release-index-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transform: rotate(var(--card-rot, -0.6deg));
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .release-index-card:hover {
+    transform: rotate(calc(var(--card-rot, -0.6deg) * 0.35)) translateY(-4px);
+  }
+
+  .release-index-card__shadow,
+  .release-index-card__sheet {
+    border-radius: 2px;
+  }
+
+  .release-index-card__shadow {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in oklab, var(--paper-sheet) 88%, var(--color-warm));
+    box-shadow: 0 8px 20px -14px rgba(15, 23, 42, 0.18);
+    pointer-events: none;
+  }
+  .release-index-card__shadow--mid {
+    transform: rotate(1.4deg) translate(3px, 4px);
+    opacity: 0.72;
+  }
+
+  .release-index-card__sheet {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    min-height: 10.5rem;
+    padding: 1.15rem 1.2rem 1.25rem;
+    background-color: var(--paper-sheet);
+    background-image:
+      radial-gradient(var(--pds-paper-grain-a) 1px, transparent 1px),
+      radial-gradient(var(--pds-paper-grain-b) 1px, transparent 1px);
+    background-size: 28px 28px, 17px 17px;
+    background-position: 0 0, 9px 9px;
+    box-shadow: var(--pds-paper-shadow, 0 10px 28px -18px rgba(15, 23, 42, 0.22));
+  }
+
+  .release-index-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 0.75rem;
+  }
+  .release-index-card__version {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .release-index-card__date {
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+  }
+  .release-index-card__counts {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .release-index-card__title {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .release-index-card__more {
+    margin-top: auto;
+    font-size: 0.78rem;
+    color: var(--color-ink-faint);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .release-index-card {
+      transition: none;
+    }
+  }
+</style>

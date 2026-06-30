@@ -1,0 +1,12 @@
+---
+import UseCaseDetailPage from "../../components/UseCaseDetailPage.astro";
+import { getUseCaseBySlug } from "../../lib/use-cases-data.ts";
+
+const useCase = getUseCaseBySlug("small-group");
+
+if (!useCase) {
+  throw new Error("Use case not found: small-group");
+}
+---
+
+<UseCaseDetailPage useCase={useCase} />

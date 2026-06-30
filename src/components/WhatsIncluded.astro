@@ -1,0 +1,259 @@
+---
+/**
+ * WhatsIncluded — replaces the old StatsBand. A Mintlify-style "everything
+ * works together" recap: a short lead, then a 12-item feature grid (3 rows
+ * of 4). Copy is cross-checked against the actual web prototype
+ * (spa/src/pages/prototype/, src/components/react/) rather than the older
+ * site/src/content/features/*.mdx drafts, which have drifted in places
+ * (e.g. one still says "seven translations" — the product has eleven).
+ */
+import { Icon } from "astro-icon/components";
+import Container from "./layout/Container.astro";
+
+const items = [
+  // Core writing / organizing
+  {
+    icon: "fa6-solid:folder-tree",
+    title: "Sorts itself",
+    desc: "Auto-folders and auto-tags organize every note. Add your own anytime.",
+  },
+  {
+    icon: "fa6-solid:arrow-right-arrow-left",
+    title: "Threads",
+    desc: "Manually connect notes together to create a thread, even across folders.",
+  },
+  {
+    icon: "fa6-solid:magnifying-glass",
+    title: "Search",
+    desc: "Search across notes, highlights, and scripture — find anything in seconds.",
+  },
+  // Scripture-specific
+  {
+    icon: "fa6-solid:book-bible",
+    title: "Scripture pills",
+    desc: "Type a reference and it becomes a pill — eleven translations, switchable per pill.",
+  },
+  {
+    icon: "fa6-solid:book-open",
+    title: "Easton's Dictionary built in",
+    desc: "Select a name or term in your note for its Easton's entry and cross-references.",
+  },
+  // Engagement
+  {
+    icon: "fa6-solid:highlighter",
+    title: "Highlight & annotations",
+    desc: "Color-code phrases, leave annotations, and find them in the highlights view.",
+  },
+  {
+    icon: "fa6-solid:calendar-days",
+    title: "Daily Passage",
+    desc: "A curated passage waits each day — one tap to read it, one tap to make it a note.",
+  },
+  {
+    icon: "fa6-solid:clock-rotate-left",
+    title: "Recall",
+    desc: "A fading note, a highlight, a passage — Recall resurfaces what's worth revisiting.",
+  },
+  // Platform / utility
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "Offline & sync",
+    desc: "Plane, pew, or basement — works offline and syncs the moment you reconnect.",
+  },
+  {
+    icon: "fa6-solid:share-nodes",
+    title: "Sharing",
+    desc: "Share a note with a link. No account needed on the other end.",
+  },
+  {
+    icon: "fa6-solid:circle-half-stroke",
+    title: "Make it yours",
+    desc: "Light or dark, a color or photo background — Harvous looks the way you want.",
+  },
+  {
+    icon: "fa6-solid:thumbtack",
+    title: "Pin what matters",
+    desc: "Pin a note, folder, or thread to keep it right at the top of the list.",
+  },
+] as const;
+
+const comingSoon = [
+  {
+    icon: "fa6-solid:people-group",
+    title: "Group spaces",
+    desc: "Shared spaces let everyone in your group contribute, so study keeps going between meetings.",
+  },
+  {
+    icon: "fa6-solid:mobile-screen",
+    title: "Mac, iPad & iPhone",
+    desc: "Native apps for Apple platforms. Harvous is on the web today.",
+  },
+  {
+    icon: "fa6-solid:clock-rotate-left",
+    title: "Recall & review",
+    desc: "An optional paid tier will add spaced review for your notes, highlights, and passages.",
+  },
+] as const;
+---
+
+<section class="included frame-divider" id="included">
+  <Container size="xl">
+    <div class="included__head section-head" data-reveal>
+      <span class="eyebrow-pill">What's included</span>
+      <h2 class="section-title">It all comes together.</h2>
+      <p class="lead included__lead">
+        <strong>Auto folders + tags</strong> organize as you write, <strong>Scripture pills</strong> link every
+        reference across eleven translations, and <strong>Highlights</strong> save what matters most — together,
+        every note becomes <mark>your own study Bible</mark>.
+      </p>
+    </div>
+
+    <div class="included__grid" data-reveal style="--reveal-delay: 100ms;">
+      {items.map((item) => (
+        <div class="included__item">
+          <div class="included__icon"><Icon name={item.icon} /></div>
+          <div class="included__title">{item.title}</div>
+          <p class="included__desc">{item.desc}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="included__soon" data-reveal style="--reveal-delay: 160ms;">
+      <div class="included__soon-divider">
+        <span class="included__soon-chip">Coming soon</span>
+      </div>
+      <p class="included__soon-lead">These features are on the roadmap, worth a look before you sign up.</p>
+      <div class="included__soon-grid">
+        {comingSoon.map((item) => (
+          <div class="included__soon-item">
+            <div class="included__soon-icon"><Icon name={item.icon} /></div>
+            <div class="included__soon-title">{item.title}</div>
+            <p class="included__soon-desc">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .included {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .included__lead {
+    max-width: 36rem;
+  }
+
+  /* Feature grid */
+  .included__grid {
+    margin-top: clamp(3rem, 7vw, 4.5rem);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+  }
+  @media (min-width: 720px) {
+    .included__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .included__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .included__icon :global(svg) { width: 1.05rem; height: 1.05rem; }
+  .included__title {
+    margin-top: 0.85rem;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--color-ink);
+  }
+  .included__desc {
+    margin-top: 0.3rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  /* Coming soon — hairline divider + centered chip, content below */
+  .included__soon {
+    margin-top: clamp(2.75rem, 6vw, 3.75rem);
+  }
+  .included__soon-divider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .included__soon-divider::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--color-rule);
+    pointer-events: none;
+  }
+  .included__soon-chip {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-soft);
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .included__soon-lead {
+    margin-top: 1.25rem;
+    max-width: 36ch;
+    margin-inline: auto;
+    text-align: center;
+    text-wrap: balance;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+  .included__soon-grid {
+    margin-top: clamp(1.5rem, 4vw, 2rem);
+    max-width: 48rem;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .included__soon-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .included__soon-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.65rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .included__soon-icon :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .included__soon-title {
+    margin-top: 0.65rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--color-ink);
+  }
+  .included__soon-desc {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+</style>

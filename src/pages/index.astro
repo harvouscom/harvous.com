@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroCentered from "../components/HeroCentered.astro";
+import FeatureBento from "../components/FeatureBento.astro";
+import WhatsIncluded from "../components/WhatsIncluded.astro";
+import UseCasesPreview from "../components/UseCasesPreview.astro";
+import ComparePreview from "../components/ComparePreview.astro";
+import TestimonialsSection from "../components/TestimonialsSection.astro";
+import FaqSection from "../components/FaqSection.astro";
+import FounderLetterSection from "../components/FounderLetterSection.astro";
+import DownloadCTA from "../components/DownloadCTA.astro";
+import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
+
+const homeJsonLd = await buildHomeJsonLd();
+
+// Feature cards — copy + pills straight from the Figma "Home" frame.
+const cards = [
+  {
+    pills: ["note"],
+    title: "Take notes like Google Docs",
+    body: "Rich text formatting is, of course, there from creating headings to adding bullets, dividers, and links.",
+    image: "/app-note.png",
+    imageAlt: "Writing a note in Harvous with rich-text formatting",
+  },
+  {
+    pills: ["scripture"],
+    title: "Just type the reference",
+    body: "Instead of a Bible reader just type the Scripture reference you want and open it. Available in 11 English translations.",
+    image: "/app-scripture.png",
+    imageAlt: "A scripture reference opened inline with a translation picker",
+  },
+  {
+    pills: ["highlight"],
+    title: "Highlight text and annotate",
+    body: "Select text to highlight and add an annotation. You can even do this within the Scripture you add.",
+    image: "/app-highlight.png",
+    imageAlt: "A highlighted phrase with an annotation",
+  },
+  {
+    pills: ["folder", "thread"],
+    title: "Auto or manually organized",
+    body: "Notes, by default, automatically organize into folders with tags. Manually connect notes together to create threads.",
+    image: "/app-organize.png",
+    imageAlt: "Notes auto-organized into folders, with threads connecting them",
+  },
+] as const;
+---
+
+<BaseLayout
+  title="Harvous — Bible notes app alternative"
+  description="Harvous is a Bible study notes app — not a Bible reader, not sermon transcription. Save scripture-linked notes, highlights, and threads so you remember what you saved."
+  jsonLd={homeJsonLd}
+>
+  <HeroCentered />
+
+  <FeatureBento
+    id="features"
+    title="Harvous is a notes app made for Bible study"
+    lead="Everything you need to study Scripture, write what you learn, and find it again later."
+    cards={cards}
+  />
+
+  <WhatsIncluded />
+
+  <UseCasesPreview />
+
+  <TestimonialsSection />
+
+  <ComparePreview />
+
+  <!-- Founder letter — a contrast "card" that breaks the grid frame on purpose. -->
+  <FounderLetterSection />
+
+  <FaqSection />
+
+  <DownloadCTA />
+</BaseLayout>

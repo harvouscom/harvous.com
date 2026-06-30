@@ -1,0 +1,204 @@
+---
+/**
+ * HeroCentered — Mintlify-style hero: centered headline (the "note" word is
+ * the fixed-shape cycling pill), a primary + secondary CTA pair, then the
+ * product shot with a soft float shadow (the screenshot includes its own
+ * window chrome — no outer hairline needed). The page's vertical frame lines
+ */
+import Container from "./layout/Container.astro";
+import HeroPillCycle from "./HeroPillCycle.astro";
+import HeroVideoLightbox from "./HeroVideoLightbox.astro";
+import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
+---
+
+<section class="hero">
+  <Container size="xl">
+    <div class="hero__inner">
+      <h1 class="hero__title" data-reveal>
+        <span class="hero__line">Make a study Bible</span>
+        <span class="hero__line hero__line--with-pill">one&nbsp;<HeroPillCycle /></span>
+        <span class="hero__line hero__line--tail">at a time</span>
+      </h1>
+
+      <div class="hero__actions" data-reveal style="--reveal-delay: 60ms;">
+        <a
+          class="hero__cta"
+          href="https://app.harvous.com/sign-up"
+          target="_blank"
+          rel="noopener"
+          data-fathom-track={fathomSignup.hero}
+        >
+          Sign up free
+        </a>
+        <a class="hero__cta-secondary" href="#features" data-fathom-track={fathomCta.featuresAnchor}>
+          More about Harvous
+        </a>
+      </div>
+
+      <div class="hero__shotwrap" data-reveal="scale" style="--reveal-delay: 200ms;">
+        <div class="hero__shot-frame">
+          <img
+            class="hero__shot"
+            src="/app-full.png"
+            alt="The Harvous app: My Home on the left and an open note on the right — scripture shown as tap-able pills, a highlighted phrase, and today's passage."
+            loading="eager"
+            decoding="async"
+          />
+          <HeroVideoLightbox src="/touring-new-harvous-share.mp4" />
+        </div>
+      </div>
+
+      <p class="hero__platforms" data-reveal style="--reveal-delay: 280ms;">
+        Available on Web. Mac, iPad, and iPhone apps coming later.
+      </p>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .hero {
+    background-color: var(--color-paper);
+  }
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: clamp(3rem, 7vw, 5.5rem);
+    padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    letter-spacing: -0.02em;
+    font-size: clamp(2.5rem, 6.5vw, 4rem);
+    line-height: 1.05;
+    color: var(--color-ink);
+    text-align: center;
+  }
+  .hero__line { display: block; }
+  @media (min-width: 640px) {
+    /* Desktop: lines 2 + 3 read as one inline row — "one [pill] at a time". */
+    .hero__line--with-pill,
+    .hero__line--tail {
+      display: inline;
+    }
+    .hero__line--tail::before {
+      content: "\00a0";
+    }
+  }
+  @media (max-width: 639px) {
+    /* svw scales with the small viewport so "Make a study Bible" stays one line
+       and the three-line mobile stack never grows to four (320–639px). */
+    .hero__title {
+      font-size: clamp(1.875rem, 9.25svw, 2.5rem);
+      line-height: 1;
+    }
+    .hero__line--with-pill,
+    .hero__line--tail {
+      display: block;
+    }
+    /* Pill padding inflates line 2's box; pull line 3 up for even gaps. */
+    .hero__line--tail {
+      margin-top: -0.12em;
+    }
+  }
+
+  .hero__actions {
+    margin-top: clamp(1.5rem, 3.5vw, 2rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 27px;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1rem;
+    color: #fff;
+    text-decoration: none;
+    background: var(--accent-btn-bg);
+    box-shadow: var(--accent-btn-shadow);
+    transition: filter 120ms ease;
+  }
+  .hero__cta:hover { filter: brightness(1.05); }
+
+  .hero__cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+  .hero__cta-secondary:hover {
+    background: var(--color-warm);
+    border-color: color-mix(in srgb, var(--color-ink) 16%, var(--color-rule));
+  }
+
+  /* Product shot — screenshot includes its own window chrome; shadow only. */
+  .hero__shotwrap {
+    margin-top: clamp(2.75rem, 6vw, 4.5rem);
+    width: 100%;
+    max-width: 1120px;
+  }
+  .hero__shot-frame {
+    position: relative;
+    border-radius: clamp(20px, 2.6vw, 32px);
+    overflow: hidden;
+    box-shadow: var(--shadow-float);
+  }
+  /* Darken bottom-left so the "Watch the tour" callout reads clearly. */
+  .hero__shot-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        ellipse 90% 75% at 6% 96%,
+        color-mix(in srgb, var(--color-ink) 52%, transparent) 0%,
+        color-mix(in srgb, var(--color-ink) 22%, transparent) 38%,
+        transparent 62%
+      ),
+      linear-gradient(
+        28deg,
+        color-mix(in srgb, var(--color-ink) 28%, transparent) 0%,
+        transparent 45%
+      );
+  }
+  .hero__shot {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Platform availability — quiet footnote under the hero shot. */
+  .hero__platforms {
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+    max-width: 34rem;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+</style>

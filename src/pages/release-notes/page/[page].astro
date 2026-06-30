@@ -1,0 +1,16 @@
+---
+import ReleaseNotesIndexPage from "../../../components/ReleaseNotesIndexPage.astro";
+import { getReleaseNotesPageCount } from "../../../lib/release-notes-data.ts";
+
+export function getStaticPaths() {
+  const totalPages = getReleaseNotesPageCount();
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => ({
+    params: { page: String(i + 2) },
+    props: { currentPage: i + 2 },
+  }));
+}
+
+const { currentPage } = Astro.props;
+---
+
+<ReleaseNotesIndexPage currentPage={currentPage} />

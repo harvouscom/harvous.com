@@ -1,0 +1,156 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageClosingCTA from "./PageClosingCTA.astro";
+import CompareHeroArt from "./CompareHeroArt.astro";
+import CompareCarousel from "./CompareCarousel.astro";
+import { fathomCompare, fathomSignup } from "../lib/fathom-events.ts";
+import type { CompareEntry } from "../lib/compare-data.ts";
+import "../styles/compare.css";
+
+interface Props {
+  entry: CompareEntry;
+  related: CompareEntry[];
+  jsonLd: Record<string, unknown>;
+}
+
+const { entry, related, jsonLd } = Astro.props;
+
+const HARVOUS_PITCH =
+  "You want a notes-first Bible study app — no built-in Bible reader, no sermon transcription — focused on remembering and reconnecting with what you saved.";
+---
+
+<BaseLayout title={entry.seoTitle} description={entry.seoDescription} ogImage={entry.ogImage} jsonLd={jsonLd}>
+  <article class="compare-detail">
+    <header class="border-b border-[var(--color-rule)]">
+      <div class="mx-auto max-w-3xl px-5 py-10 md:py-14">
+        <a href="/compare/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
+          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path
+              fill-rule="evenodd"
+              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+              clip-rule="evenodd"></path>
+          </svg>
+          Compare
+        </a>
+
+        <div class="mt-8">
+          <CompareHeroArt competitorImage={entry.competitorImage} />
+        </div>
+
+        <div class="mt-8 text-center">
+          <h1 class="font-display text-4xl leading-[1.05] md:text-5xl">Harvous vs {entry.name}</h1>
+          <p class="compare-detail__lead mx-auto mt-5 text-lg leading-relaxed text-[var(--color-ink-soft)]">
+            {entry.intro}
+          </p>
+          {
+            entry.competitorLink && (
+              <div class="mt-6">
+                <a
+                  href={entry.competitorLink}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  class="btn-pill inline-flex items-center gap-1.5"
+                >
+                  Visit {entry.name}
+                </a>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </header>
+
+    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16">
+      <div class="prose-letter space-y-8">
+        <div>
+          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Choose {entry.name} if…</h2>
+          <p class="mt-3 text-[var(--color-ink-soft)]">{entry.idealFor}</p>
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Choose Harvous if…</h2>
+          <p class="mt-3 text-[var(--color-ink-soft)]">{HARVOUS_PITCH}</p>
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Works best alongside</h2>
+          <p class="mt-3 text-[var(--color-ink-soft)]">{entry.worksBestAlongside}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="frame-divider">
+      <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
+        <h2 class="font-display text-2xl leading-snug md:text-3xl">Side by side</h2>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          A quick look at what each app is built for — not a feature checklist, but the job each one does best.
+        </p>
+        <div class="compare-detail__table-wrap mt-8">
+          <table class="compare-detail__table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Harvous</th>
+                <th scope="col">{entry.name}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Best at</th>
+                <td>Remembering and threading what you saved from Scripture</td>
+                <td>{entry.bestAt}</td>
+              </tr>
+              <tr>
+                <th scope="row">Primary use</th>
+                <td>Bible study notes with scripture pills, highlights, and recall</td>
+                <td>{entry.primaryUse}</td>
+              </tr>
+              <tr>
+                <th scope="row">Built-in Bible reader</th>
+                <td>No — type a reference, open inline text</td>
+                <td>{entry.competitorType === "Bible Reader" ? "Yes" : "Varies"}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sermon transcription</th>
+                <td>No</td>
+                <td>{entry.name === "Bible Note" || entry.name === "Bible Notes" ? "Yes" : "No / varies"}</td>
+              </tr>
+              <tr>
+                <th scope="row">Ideal for</th>
+                <td>People who want to remember what they saved from study</td>
+                <td>{entry.idealFor}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    {
+      related.length > 0 && (
+        <section
+          class="compare-detail__related compare-slider-band frame-divider"
+          aria-labelledby="compare-detail-related-title"
+        >
+          <CompareCarousel
+            entries={related}
+            groupTitle={`More in ${entry.competitorType}`}
+            groupTitleId="compare-detail-related-title"
+            trackLabel={`More in ${entry.competitorType}`}
+            fathomTrack={fathomCompare.detailRelated}
+          />
+        </section>
+      )
+    }
+  </article>
+
+  <PageClosingCTA
+    heading={`Harvous works alongside ${entry.name}.`}
+    lead={entry.worksBestAlongside}
+    fathomTrack={fathomSignup.compareDetail(entry.slug)}
+  />
+</BaseLayout>
+
+<style>
+  .compare-detail__lead {
+    max-width: 28rem;
+  }
+</style>

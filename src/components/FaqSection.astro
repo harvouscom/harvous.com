@@ -1,0 +1,47 @@
+---
+/**
+ * FaqSection — renders the faq content collection through FaqItem in a
+ * single accordion column. New to the homepage (previously unused).
+ */
+import { getCollection, render } from "astro:content";
+import Container from "./layout/Container.astro";
+import FaqItem from "./FaqItem.astro";
+
+const entries = (await getCollection("faq")).sort((a, b) => a.data.order - b.data.order);
+const items = await Promise.all(
+  entries.map(async (f) => {
+    const { Content } = await render(f);
+    return { data: f.data, Content };
+  })
+);
+---
+
+{items.length > 0 && (
+  <section class="faq-section frame-divider">
+    <Container size="xl">
+      <div class="faq-section__head section-head" data-reveal>
+        <span class="eyebrow-pill">FAQ</span>
+        <h2 class="section-title">Potentially Asked Questions</h2>
+      </div>
+
+      <div class="faq-section__list" data-reveal style="--reveal-delay: 80ms;">
+        {items.map(({ data, Content }) => (
+          <FaqItem question={data.question}>
+            <Content />
+          </FaqItem>
+        ))}
+      </div>
+    </Container>
+  </section>
+)}
+
+<style>
+  .faq-section {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .faq-section__list {
+    margin-top: clamp(2.25rem, 5vw, 3rem);
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+</style>

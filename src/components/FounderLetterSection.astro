@@ -1,0 +1,30 @@
+---
+/**
+ * FounderLetterSection — wraps the founder letter's paper-stack visual with a
+ * short, personal intro (eyebrow + title) so the section doesn't drop
+ * in cold. Mirrors the section-head pattern used by every other homepage
+ * section (see FaqSection, UseCasesPreview, WhatsIncluded).
+ */
+import Container from "./layout/Container.astro";
+import FounderLetter from "./FounderLetter.astro";
+---
+
+<section class="letter frame-divider">
+  <Container size="xl">
+    <div class="letter__head section-head" data-reveal>
+      <span class="eyebrow-pill">From the founder</span>
+      <h2 class="section-title">Why I made this.</h2>
+    </div>
+
+    <FounderLetter />
+  </Container>
+</section>
+
+<style>
+  .letter {
+    padding-block: clamp(2rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem);
+  }
+  .letter__head {
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+</style>

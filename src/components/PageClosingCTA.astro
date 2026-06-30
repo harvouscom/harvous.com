@@ -1,0 +1,61 @@
+---
+import CTAButton from "./CTAButton.astro";
+
+interface Props {
+  heading: string;
+  lead?: string;
+  href?: string;
+  label?: string;
+  fathomTrack?: string;
+}
+
+const {
+  heading,
+  lead,
+  href = "https://app.harvous.com/sign-up",
+  label = "Sign up free",
+  fathomTrack,
+} = Astro.props;
+---
+
+<section class="page-closing-cta frame-divider">
+  <div class="page-closing-cta__inner">
+    <h2 class="page-closing-cta__heading">{heading}</h2>
+    {lead && <p class="page-closing-cta__lead">{lead}</p>}
+    <div class="page-closing-cta__action">
+      <CTAButton href={href} variant="primary" size="lg" external fathomTrack={fathomTrack}>
+        {label}
+      </CTAButton>
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-closing-cta__inner {
+    margin-inline: auto;
+    max-width: 48rem;
+    padding: 5rem 1.25rem;
+    text-align: center;
+  }
+  .page-closing-cta__heading {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .page-closing-cta__lead {
+    max-width: 28rem;
+    margin-inline: auto;
+    margin-top: 1.25rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .page-closing-cta__action {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+</style>

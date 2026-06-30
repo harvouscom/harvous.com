@@ -1,0 +1,42 @@
+---
+import Container from "./layout/Container.astro";
+
+const year = new Date().getFullYear();
+
+const links = [
+  { label: "Compare", href: "/compare/" },
+  { label: "Release Notes", href: "/release-notes/" },
+  { label: "Support", href: "/support/" },
+  { label: "Status", href: "https://status.harvous.com/" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+];
+---
+
+<footer class="site-footer">
+  <Container size="xl">
+    <div>
+      <div class="flex flex-col items-center justify-between gap-4 text-xs text-[var(--color-ink-faint)] sm:flex-row">
+        <p>© {year} Testament Made LLC. All rights reserved.</p>
+        <nav class="flex flex-wrap items-center gap-x-5 gap-y-2">
+          {links.map((l) => (
+            <a href={l.href} class="transition hover:text-[var(--color-ink)]">{l.label}</a>
+          ))}
+        </nav>
+      </div>
+    </div>
+  </Container>
+</footer>
+
+<style>
+  .site-footer {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  @media (max-width: 639px) {
+    .site-footer {
+      padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px) + 0.75rem);
+    }
+  }
+</style>

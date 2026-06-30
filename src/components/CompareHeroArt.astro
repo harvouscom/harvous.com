@@ -1,0 +1,25 @@
+---
+interface Props {
+  competitorImage: string;
+}
+
+const { competitorImage } = Astro.props;
+const harvousIcon = "/images/harvous-icon-sm.png";
+---
+
+<div class="compare-hero__art">
+  <div class="compare-hero__grid" aria-hidden="true"></div>
+  <div class="compare-hero__duel">
+    <div class="compare-hero__app">
+      <span class="compare-hero__icon-wrap">
+        <img src={harvousIcon} alt="" width="80" height="80" class="compare-hero__icon" />
+      </span>
+    </div>
+    <span class="compare-hero__vs" aria-hidden="true">vs</span>
+    <div class="compare-hero__app">
+      <span class="compare-hero__icon-wrap">
+        <img src={competitorImage} alt="" width="80" height="80" class="compare-hero__icon" loading="eager" />
+      </span>
+    </div>
+  </div>
+</div>

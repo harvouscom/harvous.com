@@ -1,0 +1,212 @@
+---
+/**
+ * DownloadCTA — the homepage's final closing moment, just above the footer.
+ * A single rounded card split into two panels on a soft sage/cream wash
+ * (built from the site's existing pastel tokens, not a new color): a fuller
+ * personal sign-off on the left (the founder letter earlier on the page
+ * carries the origin story; this is the closing case for trying it, in a
+ * few more short paragraphs than before, plus an email + signature) and a
+ * faded product screenshot on the right with the one "Sign up free" pill on
+ * the whole card, floating above it. The pill reuses the exact
+ * gradient/shadow recipe from HeroCentered's `.hero__cta` so every primary
+ * CTA on the page matches.
+ */
+import { fathomSignup } from "../lib/fathom-events.ts";
+---
+
+<section class="cta frame-divider">
+  <div class="cta-card" data-reveal="scale">
+    <div class="cta-panel cta-panel--text">
+      <h2 class="cta-heading">One last thing</h2>
+      <div class="cta-copy">
+        <p>Harvous only helps if you actually use it — so consider this your nudge.</p>
+        <p>
+          I'm not trying to build the biggest Bible app out there. Just one I'd actually want to
+          open every morning, that remembers what I've studied so I'm not starting from scratch
+          each time.
+        </p>
+        <p>If it helps even one of your study sessions stick a little longer, it'll have done its job.</p>
+        <p>
+          Try it free, and if you ever want to talk shop or scripture, email me at
+          <a class="cta-mail" href="mailto:derek@harvous.com">derek@harvous.com</a>.
+        </p>
+      </div>
+      <div class="cta-sign">
+        <img src="/derek-signiture.png" alt="Derek's signature" class="signature-img cta-sign-img" />
+        <span class="cta-sign-name">Derek, founder of Harvous</span>
+      </div>
+    </div>
+
+    <div class="cta-panel cta-panel--shot">
+      <img
+        class="cta-shot"
+        src="/app-full.png"
+        alt="The Harvous app open on a note, with scripture pills and a highlight visible."
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="cta-btn-row">
+        <a
+          class="cta-btn"
+          href="https://app.harvous.com/sign-up"
+          target="_blank"
+          rel="noopener"
+          data-fathom-track={fathomSignup.last}
+        >
+          Sign up free
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding: 1.25rem 1.25rem 6rem;
+    overflow: hidden;
+  }
+  /* Calm sage/cream wash, built from the site's existing pastel tokens
+     (no new colors) instead of the old vivid blue full-bleed gradient. */
+  .cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(55% 65% at 14% 8%, color-mix(in oklab, var(--color-mint) 42%, transparent) 0%, transparent 70%),
+      radial-gradient(60% 75% at 88% 96%, color-mix(in oklab, var(--color-cream) 50%, transparent) 0%, transparent 72%);
+    pointer-events: none;
+  }
+
+  .cta-card {
+    position: relative;
+    z-index: 1;
+    margin-inline: auto;
+    max-width: 72rem;
+    border-radius: 2rem;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    box-shadow: var(--shadow-float);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 860px) {
+    .cta-card {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    }
+  }
+
+  /* ── Left panel: the closing word ─────────────────────────────────── */
+  .cta-panel--text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: clamp(2.25rem, 4.5vw, 3.5rem);
+  }
+  .cta-heading {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .cta-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .cta-copy p {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .cta-mail {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms ease;
+  }
+  .cta-mail:hover {
+    text-decoration-color: var(--color-ink);
+  }
+  .cta-sign {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .cta-sign-img {
+    height: 2.1rem;
+    width: auto;
+  }
+  .cta-sign-name {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--color-ink-faint);
+  }
+
+  /* ── Right panel: the product shot, faded at the edges, with the CTA
+     floating above it ─────────────────────────────────────────────── */
+  .cta-panel--shot {
+    position: relative;
+    min-height: 14rem;
+    background: var(--color-card);
+    overflow: hidden;
+  }
+  @media (min-width: 860px) {
+    .cta-panel--shot {
+      min-height: 28rem;
+    }
+  }
+  .cta-shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    display: block;
+    /* Vignette mask — the screenshot bleeds into the shared card
+       background instead of reading as a hard-edged rectangle. */
+    mask-image: radial-gradient(125% 105% at 78% 32%, #000 45%, transparent 100%);
+    -webkit-mask-image: radial-gradient(125% 105% at 78% 32%, #000 45%, transparent 100%);
+  }
+  .cta-btn-row {
+    position: absolute;
+    left: clamp(1.25rem, 3vw, 2rem);
+    bottom: clamp(1.25rem, 3vw, 2rem);
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: calc(100% - 2.5rem);
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 1.7rem;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1rem;
+    color: #fff;
+    text-decoration: none;
+    background: var(--accent-btn-bg);
+    box-shadow:
+      var(--accent-btn-shadow),
+      0 6px 18px -6px rgba(13, 14, 18, 0.25);
+    transition: filter 120ms ease, transform 120ms ease;
+  }
+  .cta-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+  }
+</style>

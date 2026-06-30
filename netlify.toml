@@ -1,0 +1,42 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Legacy Webflow paths → Astro marketing site
+[[redirects]]
+  from = "/updates"
+  to = "/release-notes/"
+  status = 301
+
+[[redirects]]
+  from = "/updates/*"
+  to = "/release-notes/"
+  status = 301
+
+[[redirects]]
+  from = "/changelog"
+  to = "/release-notes/"
+  status = 301
+
+[[redirects]]
+  from = "/changelog/"
+  to = "/release-notes/"
+  status = 301
+
+[[redirects]]
+  from = "/changelog/*"
+  to = "/release-notes/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/release-notes/page/1"
+  to = "/release-notes/"
+  status = 301
+
+[[redirects]]
+  from = "/release-notes/page/1/"
+  to = "/release-notes/"
+  status = 301

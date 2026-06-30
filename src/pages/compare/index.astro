@@ -1,0 +1,95 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/layout/Container.astro";
+import CompareCarousel from "../../components/CompareCarousel.astro";
+import CompareSectionNav from "../../components/CompareSectionNav.astro";
+import { getCompareTypes, getCompareByType, compareTypeToId } from "../../lib/compare-data.ts";
+import { fathomCompare } from "../../lib/fathom-events.ts";
+import "../../styles/compare.css";
+
+const types = getCompareTypes();
+const navItems = types.map((type) => ({ id: compareTypeToId(type), label: type }));
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      name: "Compare Harvous",
+      description:
+        "See how Harvous compares to other Bible apps, notes apps, and study tools — a Bible notes alternative focused on remembering what you saved.",
+      url: "https://harvous.com/compare/",
+      isPartOf: { "@type": "WebSite", name: "Harvous", url: "https://harvous.com" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
+        { "@type": "ListItem", position: 2, name: "Compare", item: "https://harvous.com/compare/" },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Compare Harvous — Bible notes app alternative"
+  description="Compare Harvous to YouVersion, Logos, Obsidian, Bible Note, and 40+ other apps. Harvous is notes-first — no Bible reader, no sermon transcription — built so you remember what you saved."
+  jsonLd={jsonLd}
+>
+  <section class="compare-hub-intro frame-divider">
+    <Container size="xl">
+      <header class="compare-hub-intro__head section-head" data-reveal>
+        <h1 class="section-title">Compare Harvous</h1>
+        <p class="compare-hub-intro__lead">
+          Harvous is a Bible study notes app — not a Bible reader, not sermon transcription. See how it
+          compares to the apps you might already use for reading, notes, or devotionals.
+        </p>
+      </header>
+    </Container>
+  </section>
+
+  <div class="compare-hub-main">
+    <CompareSectionNav items={navItems} />
+
+    {
+      types.map((type, index) => {
+        const sectionId = compareTypeToId(type);
+        return (
+          <section
+            id={sectionId}
+            class:list={["compare-hub__band compare-slider-band", { "frame-divider": index > 0 }]}
+            aria-labelledby={`${sectionId}-title`}
+          >
+            <CompareCarousel
+              entries={getCompareByType(type)}
+              groupTitle={type}
+              groupTitleId={`${sectionId}-title`}
+              trackLabel={`${type} app comparisons`}
+              fathomTrack={fathomCompare.hubCard}
+            />
+          </section>
+        );
+      })
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .compare-hub-intro {
+    padding-block: clamp(3rem, 7vw, 5rem) 0;
+  }
+  .compare-hub-intro__lead {
+    max-width: 34rem;
+    margin-inline: auto;
+    margin-top: 0.75rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  .compare-hub-main {
+    /* Sticky nav must share a tall ancestor with the bands it tracks. */
+    position: relative;
+  }
+</style>

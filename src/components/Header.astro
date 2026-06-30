@@ -1,0 +1,249 @@
+---
+import { fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
+
+const navLinks = [
+  { href: "/#features", label: "Features" },
+  { href: "/use-cases/", label: "Use cases" },
+  { href: "/compare/", label: "Compare" },
+];
+
+// Scroll threshold (px) at which the header switches from the flat,
+// full-width top-of-page bar into the floating pill. Kept in sync with the
+// inline script below.
+const SCROLL_THRESHOLD = 16;
+---
+
+<header class="site-header sticky" id="site-header" data-scroll-threshold={SCROLL_THRESHOLD}>
+  <div class="site-header__inner">
+    <a href="/" class="site-header__logo" aria-label="Harvous — Home">
+      <img
+        src="/images/harvous-icon-sm.png"
+        alt=""
+        width="32"
+        height="32"
+        class="site-header__logo-img"
+      />
+    </a>
+
+    <nav class="site-header__nav" aria-label="Primary">
+      {navLinks.map((link) => (
+        <a href={link.href} class="site-header__link">
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="https://app.harvous.com/sign-in"
+        class="site-header__link site-header__link--login"
+        data-fathom-track={fathomSignin.header}
+      >
+        Sign in
+      </a>
+    </nav>
+
+    <a href="https://app.harvous.com/sign-up" class="btn-pill site-header__cta" data-fathom-track={fathomSignup.header}>
+      Try free
+    </a>
+  </div>
+</header>
+
+<style>
+  /* Single easing convention used across this codebase's scroll/state
+     animations (paper-stack fan-in + reveal-on-scroll in global.css,
+     FaqItem's open transition) — reused here so the header morph reads as
+     part of the same motion language rather than its own thing. */
+  .site-header {
+    --header-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --header-duration: 360ms;
+
+    top: 0;
+    z-index: 40;
+    width: 100%;
+    isolation: isolate;
+    transition: top var(--header-duration) var(--header-ease);
+  }
+  /* Full-band paper fill in flat state — solid top chrome above the frame. */
+  .site-header:not(.is-scrolled) {
+    background-color: var(--color-paper);
+  }
+  .site-header.is-scrolled {
+    top: 0.75rem;
+  }
+
+  .site-header__inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    /* Resting (flat) state spans the full bar; once scrolled this shrinks to
+       --pill-width (measured in the inline script below from the row's own
+       natural content width) so the browser can smoothly interpolate the
+       width instead of snapping to the `fit-content` keyword. */
+    max-width: 100%;
+    margin-inline: auto;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 0px;
+    /* Opaque in flat state so the header bar reads as a solid top chrome. */
+    background-color: var(--color-paper);
+    /* Same shadow "recipe" (offsets/blur) in both states, only the alpha
+       changes — lets box-shadow cross-fade smoothly instead of popping in
+       from `none`. */
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0),
+      0 8px 24px -12px rgba(15, 23, 42, 0);
+    backdrop-filter: blur(0px);
+    transition:
+      max-width var(--header-duration) var(--header-ease),
+      border-radius var(--header-duration) var(--header-ease),
+      border-color var(--header-duration) var(--header-ease),
+      background-color var(--header-duration) var(--header-ease),
+      box-shadow var(--header-duration) var(--header-ease),
+      backdrop-filter var(--header-duration) var(--header-ease);
+  }
+  /* Bottom hairline — only present in the flat, top-of-page state; the
+     floating pill already has its own border, so this fades out together
+     with the rest of the chrome change. */
+  .site-header__inner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: var(--color-rule);
+    opacity: 1;
+    transition: opacity var(--header-duration) var(--header-ease);
+    pointer-events: none;
+  }
+
+  .site-header.is-scrolled .site-header__inner {
+    max-width: var(--pill-width, fit-content);
+    border-radius: 999px;
+    border-color: var(--color-rule);
+    background-color: color-mix(in oklab, var(--color-card) 88%, transparent);
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.04),
+      0 8px 24px -12px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(8px);
+  }
+  .site-header.is-scrolled .site-header__inner::after {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header,
+    .site-header__inner,
+    .site-header__inner::after {
+      transition: none;
+    }
+  }
+
+  .site-header__logo {
+    display: flex;
+    align-items: center;
+    flex: none;
+  }
+  .site-header__logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+    display: block;
+  }
+
+  .site-header__nav {
+    display: none;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .site-header__nav {
+      display: flex;
+    }
+  }
+  .site-header__link {
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+    white-space: nowrap;
+    transition: color 150ms ease;
+  }
+  .site-header__link:hover {
+    color: var(--color-ink);
+  }
+
+  .site-header__cta {
+    flex: none;
+  }
+</style>
+
+<script>
+  // Toggle .is-scrolled once the page scrolls past a small threshold,
+  // animating the header from the flat top-of-page bar into the floating
+  // pill (see scoped <style> above). rAF-ticked to avoid scroll jank,
+  // matching the pattern used elsewhere in this codebase (see
+  // UseCasesPreview.astro's track-scroll listener).
+  const header = document.getElementById("site-header");
+  if (header) {
+    const inner = header.querySelector<HTMLElement>(".site-header__inner");
+    const threshold = Number(header.dataset.scrollThreshold) || 16;
+    let scrollTicking = false;
+    let resizeTicking = false;
+
+    // The row's children (logo / nav / CTA) use `flex: none`, so their
+    // rendered width already equals their natural content width even while
+    // the row itself is stretched to 100% with `justify-content:
+    // space-between`. That lets us compute the "shrink-to-fit" pill width
+    // directly — without a hidden measurement clone — so `max-width` can
+    // transition to a real pixel value instead of snapping to `fit-content`.
+    const measurePillWidth = () => {
+      if (!inner) return;
+      const style = getComputedStyle(inner);
+      const gap = parseFloat(style.columnGap || style.gap) || 0;
+      const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const borderX = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+
+      const visible = Array.from(inner.children).filter(
+        (child) => getComputedStyle(child).display !== "none"
+      );
+      const contentWidth = visible.reduce((sum, child) => sum + child.getBoundingClientRect().width, 0);
+      const gapsWidth = Math.max(0, visible.length - 1) * gap;
+
+      const pillWidth = contentWidth + gapsWidth + paddingX + borderX;
+      if (pillWidth > 0) {
+        header.style.setProperty("--pill-width", `${pillWidth}px`);
+      }
+    };
+
+    const updateScrolled = () => {
+      header.classList.toggle("is-scrolled", window.scrollY > threshold);
+      scrollTicking = false;
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (scrollTicking) return;
+        scrollTicking = true;
+        requestAnimationFrame(updateScrolled);
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "resize",
+      () => {
+        if (resizeTicking) return;
+        resizeTicking = true;
+        requestAnimationFrame(() => {
+          measurePillWidth();
+          resizeTicking = false;
+        });
+      },
+      { passive: true }
+    );
+
+    updateScrolled();
+    measurePillWidth();
+  }
+</script>

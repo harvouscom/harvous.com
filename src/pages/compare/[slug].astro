@@ -1,0 +1,71 @@
+---
+import CompareDetailPage from "../../components/CompareDetailPage.astro";
+import { getCompareEntries, getCompareBySlug } from "../../lib/compare-data.ts";
+
+export function getStaticPaths() {
+  return getCompareEntries().map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const site = "https://harvous.com";
+const pageUrl = `${site}/compare/${entry.slug}/`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      name: entry.seoTitle,
+      description: entry.seoDescription,
+      url: pageUrl,
+      isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: site },
+        { "@type": "ListItem", position: 2, name: "Compare", item: `${site}/compare/` },
+        { "@type": "ListItem", position: 3, name: `Harvous vs ${entry.name}`, item: pageUrl },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: `Is Harvous a good alternative to ${entry.name}?`,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: entry.intro,
+          },
+        },
+        {
+          "@type": "Question",
+          name: `How does Harvous work alongside ${entry.name}?`,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: entry.worksBestAlongside,
+          },
+        },
+        {
+          "@type": "Question",
+          name: `What is ${entry.name} best at compared to Harvous?`,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: entry.bestAt,
+          },
+        },
+      ],
+    },
+  ],
+};
+
+const related = getCompareEntries()
+  .filter((e) => e.competitorType === entry.competitorType && e.slug !== entry.slug)
+  .slice(0, 5);
+---
+
+<CompareDetailPage entry={entry} related={related} jsonLd={jsonLd} />
