@@ -76,6 +76,9 @@ const SCROLL_THRESHOLD = 16;
             {link.label}
           </a>
         ))}
+        <a href={APP_SIGN_IN} class="site-header__mobile-link" data-fathom-track={fathomSignin.header}>
+          Sign in
+        </a>
       </div>
       <a href="https://app.harvous.com/sign-up" class="btn-accent site-header__mobile-cta" data-fathom-track={fathomSignup.header}>
         Sign up free
@@ -92,6 +95,7 @@ const SCROLL_THRESHOLD = 16;
   .site-header {
     --header-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --header-duration: 360ms;
+    --pill-inset: 0.75rem;
 
     top: 0;
     z-index: 40;
@@ -164,6 +168,9 @@ const SCROLL_THRESHOLD = 16;
   .site-header.is-scrolled .site-header__inner {
     max-width: var(--pill-width, fit-content);
     min-width: var(--pill-width, fit-content);
+    padding: var(--pill-inset);
+    gap: var(--pill-inset);
+    column-gap: var(--pill-inset);
     border-radius: 999px;
     border-color: var(--color-rule);
     background-color: color-mix(in oklab, var(--color-card) 88%, transparent);
@@ -418,11 +425,12 @@ const SCROLL_THRESHOLD = 16;
     let scrollTicking = false;
     let resizeTicking = false;
 
-    const measurePillWidth = () => {
+    const measurePillWidth = (forScrolled = header.classList.contains("is-scrolled")) => {
       if (!inner) return;
       const style = getComputedStyle(inner);
-      const gap = parseFloat(style.columnGap || style.gap) || 0;
-      const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const pillInset = 12; // 0.75rem — matches --pill-inset
+      const gap = forScrolled ? pillInset : parseFloat(style.columnGap || style.gap) || 0;
+      const paddingX = forScrolled ? pillInset * 2 : parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const borderX = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
 
       const measureNavWidth = (nav) => {
@@ -473,7 +481,7 @@ const SCROLL_THRESHOLD = 16;
 
     const updateScrolled = () => {
       const scrolled = window.scrollY > threshold;
-      if (scrolled) measurePillWidth();
+      if (scrolled) measurePillWidth(true);
       header.classList.toggle("is-scrolled", scrolled);
       scrollTicking = false;
     };
