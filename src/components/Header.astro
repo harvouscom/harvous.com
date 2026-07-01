@@ -1,8 +1,8 @@
 ---
-import { fathomOpenApp, fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
-import { APP_ORIGIN } from "../lib/app-origin.ts";
-import { HV_SIGNED_IN_COOKIE } from "../lib/marketing-session-hint.ts";
+import { fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
 import OptimizedImage from "./OptimizedImage.astro";
+
+const APP_SIGN_IN = "https://app.harvous.com/sign-in";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -21,10 +21,6 @@ const SCROLL_THRESHOLD = 16;
   class="site-header sticky"
   id="site-header"
   data-scroll-threshold={SCROLL_THRESHOLD}
-  data-app-origin={APP_ORIGIN}
-  data-fathom-signin={fathomSignin.header}
-  data-fathom-open-app={fathomOpenApp.header}
-  data-hv-signed-in-cookie={HV_SIGNED_IN_COOKIE}
 >
   <div class="site-header__inner">
     <a href="/" class="site-header__logo" aria-label="Harvous — Home">
@@ -43,16 +39,14 @@ const SCROLL_THRESHOLD = 16;
           {link.label}
         </a>
       ))}
-      <span class="site-header__auth" id="site-header-auth" hidden>
-        <a href={APP_ORIGIN} class="site-header__link site-header__link--login" id="site-header-auth-link">
-          …
-        </a>
-      </span>
     </nav>
 
     <div class="site-header__actions">
+      <a href={APP_SIGN_IN} class="site-header__link" data-fathom-track={fathomSignin.header}>
+        Sign in
+      </a>
       <a href="https://app.harvous.com/sign-up" class="btn-pill site-header__cta" data-fathom-track={fathomSignup.header}>
-        Try free
+        Sign up free
       </a>
 
       <button
@@ -82,14 +76,9 @@ const SCROLL_THRESHOLD = 16;
             {link.label}
           </a>
         ))}
-        <span class="site-header__auth site-header__auth--mobile" id="site-header-auth-mobile" hidden>
-          <a href={APP_ORIGIN} class="site-header__mobile-link" id="site-header-auth-link-mobile">
-            …
-          </a>
-        </span>
       </div>
       <a href="https://app.harvous.com/sign-up" class="btn-accent site-header__mobile-cta" data-fathom-track={fathomSignup.header}>
-        Try free
+        Sign up free
       </a>
     </nav>
   </div>
@@ -124,9 +113,10 @@ const SCROLL_THRESHOLD = 16;
   .site-header__inner {
     position: relative;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto auto;
     align-items: center;
-    gap: 1rem;
+    justify-content: space-between;
+    column-gap: 0.75rem;
     width: 100%;
     box-sizing: border-box;
     /* Resting (flat) state spans the full bar; once scrolled this shrinks to
@@ -173,6 +163,7 @@ const SCROLL_THRESHOLD = 16;
 
   .site-header.is-scrolled .site-header__inner {
     max-width: var(--pill-width, fit-content);
+    min-width: var(--pill-width, fit-content);
     border-radius: 999px;
     border-color: var(--color-rule);
     background-color: color-mix(in oklab, var(--color-card) 88%, transparent);
@@ -219,27 +210,35 @@ const SCROLL_THRESHOLD = 16;
   .site-header__nav {
     display: none;
     align-items: center;
+    justify-content: center;
     gap: 1.25rem;
-    justify-self: center;
-    grid-column: 2;
-    min-width: 0;
+    white-space: nowrap;
   }
   @media (min-width: 640px) {
+    .site-header__inner {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .site-header__logo {
+      position: relative;
+      z-index: 1;
+      flex: none;
+    }
     .site-header__nav {
       display: flex;
-    }
-  }
-  /* Mobile: logo + actions only — skip the desktop center column so the pill
-     shrink never compresses the icon track. */
-  @media (max-width: 639px) {
-    .site-header__inner {
-      grid-template-columns: auto auto;
-      justify-content: space-between;
-      column-gap: 0.75rem;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: auto;
     }
     .site-header__actions {
-      grid-column: 2;
-      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      flex: none;
+      margin-left: auto;
     }
   }
   .site-header__link {
@@ -252,13 +251,6 @@ const SCROLL_THRESHOLD = 16;
     color: var(--color-ink);
   }
 
-  .site-header__auth {
-    display: contents;
-  }
-  .site-header__auth[hidden] {
-    display: none;
-  }
-
   .site-header__cta {
     flex: none;
   }
@@ -266,9 +258,11 @@ const SCROLL_THRESHOLD = 16;
   .site-header__actions {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 0.5rem;
-    justify-self: end;
-    grid-column: 3;
+    flex: none;
+    grid-column: 2;
+    white-space: nowrap;
     /* Matches .btn-pill vertical box (padding + line-height + border). */
     --site-header-control-h: calc(0.4rem * 2 + 1.2 * 0.875rem + 2px);
   }
@@ -391,12 +385,6 @@ const SCROLL_THRESHOLD = 16;
     background: var(--color-warm);
     color: var(--color-ink);
   }
-  .site-header__auth--mobile {
-    display: block;
-  }
-  .site-header__auth--mobile[hidden] {
-    display: none;
-  }
   .site-header__mobile-cta {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -427,7 +415,6 @@ const SCROLL_THRESHOLD = 16;
   if (header) {
     const inner = header.querySelector(".site-header__inner");
     const threshold = Number(header.dataset.scrollThreshold) || 16;
-    const hvSignedInCookie = header.dataset.hvSignedInCookie || "hv_signed_in";
     let scrollTicking = false;
     let resizeTicking = false;
 
@@ -460,21 +447,25 @@ const SCROLL_THRESHOLD = 16;
         return itemsWidth + Math.max(0, items.length - 1) * actionGap;
       };
 
-      const measureChildWidth = (child) => {
-        if (getComputedStyle(child).display === "none") return 0;
-        if (child.classList.contains("site-header__nav")) return measureNavWidth(child);
-        if (child.classList.contains("site-header__logo")) return 32;
-        if (child.classList.contains("site-header__actions")) return measureActionsWidth(child);
-        return child.getBoundingClientRect().width;
-      };
+      const logo = inner.querySelector(".site-header__logo");
+      const nav = inner.querySelector(".site-header__nav");
+      const actions = inner.querySelector(".site-header__actions");
 
-      const visible = Array.from(inner.children).filter(
-        (child) => getComputedStyle(child).display !== "none"
-      );
-      const contentWidth = visible.reduce((sum, child) => sum + measureChildWidth(child), 0);
-      const gapsWidth = Math.max(0, visible.length - 1) * gap;
+      const logoWidth = logo && getComputedStyle(logo).display !== "none" ? 32 : 0;
+      const navWidth = nav && getComputedStyle(nav).display !== "none" ? measureNavWidth(nav) : 0;
+      const actionsWidth =
+        actions && getComputedStyle(actions).display !== "none" ? measureActionsWidth(actions) : 0;
 
-      const pillWidth = contentWidth + gapsWidth + paddingX + borderX;
+      let contentWidth;
+      if (navWidth > 0) {
+        // Grid is 1fr auto 1fr — pill needs symmetric flanks so centered nav clears both sides.
+        const flankWidth = Math.max(logoWidth, actionsWidth);
+        contentWidth = navWidth + 2 * flankWidth + 2 * gap;
+      } else {
+        contentWidth = logoWidth + actionsWidth + gap;
+      }
+
+      const pillWidth = contentWidth + paddingX + borderX;
       if (pillWidth > 0) {
         header.style.setProperty("--pill-width", `${pillWidth}px`);
       }
@@ -482,8 +473,8 @@ const SCROLL_THRESHOLD = 16;
 
     const updateScrolled = () => {
       const scrolled = window.scrollY > threshold;
-      header.classList.toggle("is-scrolled", scrolled);
       if (scrolled) measurePillWidth();
+      header.classList.toggle("is-scrolled", scrolled);
       scrollTicking = false;
     };
 
@@ -497,46 +488,9 @@ const SCROLL_THRESHOLD = 16;
       { passive: true }
     );
 
-    const authSlot = document.getElementById("site-header-auth");
-    const authLink = document.getElementById("site-header-auth-link");
-    const authSlotMobile = document.getElementById("site-header-auth-mobile");
-    const authLinkMobile = document.getElementById("site-header-auth-link-mobile");
-    const appOrigin = header.dataset.appOrigin;
-    const fathomSignin = header.dataset.fathomSignin;
-    const fathomOpenApp = header.dataset.fathomOpenApp;
     const menuToggle = document.getElementById("site-header-menu-toggle");
     const mobileNav = document.getElementById("site-header-mobile-nav");
     const mobileBackdrop = document.getElementById("site-header-mobile-backdrop");
-
-    const bindFathom = (el, eventName) => {
-      if (!eventName) return;
-      el.dataset.fathomTrack = eventName;
-      el.addEventListener("click", () => {
-        if (window.fathom) window.fathom.trackEvent(eventName);
-      });
-    };
-
-    const setAuthLink = (link, signedIn) => {
-      if (!link || !appOrigin) return;
-      if (signedIn) {
-        link.href = `${appOrigin}/`;
-        link.textContent = "Open app";
-        bindFathom(link, fathomOpenApp);
-      } else {
-        link.href = `${appOrigin}/sign-in`;
-        link.textContent = "Sign in";
-        bindFathom(link, fathomSignin);
-      }
-    };
-
-    const showAuthLink = (signedIn) => {
-      if (!appOrigin) return;
-      setAuthLink(authLink, signedIn);
-      setAuthLink(authLinkMobile, signedIn);
-      if (authSlot) authSlot.hidden = false;
-      if (authSlotMobile) authSlotMobile.hidden = false;
-      measurePillWidth();
-    };
 
     const setMenuOpen = (open) => {
       header.classList.toggle("is-menu-open", open);
@@ -579,19 +533,5 @@ const SCROLL_THRESHOLD = 16;
 
     updateScrolled();
     measurePillWidth();
-
-    const hasSessionHint = () =>
-      new RegExp(`(?:^|;\\s*)${hvSignedInCookie}=1(?:;|$)`).test(document.cookie);
-
-    if (appOrigin) {
-      if (hasSessionHint()) {
-        showAuthLink(true);
-      } else {
-        fetch(`${appOrigin}/api/auth/status`, { credentials: "include" })
-          .then((res) => (res.ok ? res.json() : { signedIn: false }))
-          .then((data) => showAuthLink(Boolean(data.signedIn)))
-          .catch(() => showAuthLink(false));
-      }
-    }
   }
 </script>

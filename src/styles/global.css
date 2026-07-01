@@ -238,7 +238,7 @@ main > section:first-child.border-b {
   margin-top: -1px;
 }
 
-/* Shared chrome pill — matches header "Try free" CTA. */
+/* Shared chrome pill — matches header "Sign up free" CTA. */
 .btn-pill {
   display: inline-flex;
   align-items: center;

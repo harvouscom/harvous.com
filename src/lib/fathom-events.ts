@@ -20,10 +20,6 @@ export const fathomSignin = {
   header: "signin_header",
 } as const;
 
-export const fathomOpenApp = {
-  header: "open_app_header",
-} as const;
-
 export const fathomCompare = {
   homeCard: "compare_home_card",
   homeAll: "compare_home_all",
