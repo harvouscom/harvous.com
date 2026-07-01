@@ -10,15 +10,6 @@
  * `--font-mono` to `--pds-*` stacks so embedded React surfaces never resolve Reddit Sans.
  */
 
-@font-face {
-  font-family: "Google Sans Flex";
-  src: url("/fonts/google-sans-flex/GoogleSansFlex-Variable.woff2")
-    format("woff2-variations");
-  font-weight: 1 1000;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ─── Design tokens ──────────────────────────────────────────────────────── */
 :root {
   /* Clerk default theme follows system light/dark when this is set (see Clerk appearance docs). */
