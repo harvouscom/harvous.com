@@ -45,15 +45,6 @@ const jsonLd = {
         <h1 class="section-title">Release Notes</h1>
         <p class="release-notes-index__lead">
           What shipped in Harvous — features, fixes, and improvements.
-          {
-            page.totalPages > 1 && (
-              <span class="release-notes-index__page-meta">
-                {" "}
-                Page {page.currentPage} of {page.totalPages}
-                <span class="sr-only"> ({page.totalCount} releases total)</span>
-              </span>
-            )
-          }
         </p>
       </header>
 
@@ -90,9 +81,6 @@ const jsonLd = {
     margin-inline: auto;
     color: var(--color-ink-soft);
   }
-  .release-notes-index__page-meta {
-    color: var(--color-ink-faint);
-  }
   .release-notes-index__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
@@ -104,16 +92,5 @@ const jsonLd = {
     margin-top: 2rem;
     color: var(--color-ink-soft);
     text-align: center;
-  }
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
   }
 </style>
