@@ -1,0 +1,86 @@
+---
+import { Icon } from "astro-icon/components";
+import CTAButton from "./CTAButton.astro";
+import type { FreePlan, PricingAddon } from "../lib/pricing-data.ts";
+
+interface FreeProps {
+  variant: "primary";
+  plan: FreePlan;
+}
+
+interface AddonProps {
+  variant: "addon";
+  plan: PricingAddon;
+}
+
+type Props = FreeProps | AddonProps;
+
+const props = Astro.props;
+const isPrimary = props.variant === "primary";
+---
+
+{
+  isPrimary ? (
+    <article class="pricing-plan-card pricing-plan-card--primary">
+      <header class="pricing-plan-card__head">
+        <span class="pricing-plan-card__icon pricing-plan-card__icon--plan">
+          <Icon name={props.plan.icon} />
+        </span>
+        <h2 class="pricing-plan-card__name">{props.plan.name}</h2>
+      </header>
+
+      <div class="pricing-plan-card__price-block">
+        <p class="pricing-plan-card__price">{props.plan.priceDisplay}</p>
+        <p class="pricing-plan-card__tagline">{props.plan.tagline}</p>
+      </div>
+
+      <ul class="pricing-plan-card__features" role="list">
+        {props.plan.features.map((feature) => (
+          <li>
+            <span class="pricing-plan-card__check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M3 8.5l3.5 3.5L13 4.5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span>{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div class="pricing-plan-card__footer">
+        <CTAButton
+          href={props.plan.cta.href}
+          variant="primary"
+          size="lg"
+          external={props.plan.cta.external}
+          fathomTrack={props.plan.cta.fathomTrack}
+          class="pricing-plan-card__cta"
+        >
+          {props.plan.cta.label}
+        </CTAButton>
+      </div>
+    </article>
+  ) : (
+    <article class="pricing-plan-card pricing-plan-card--addon">
+      <div class="pricing-addon-card__main">
+        <span class="pricing-plan-card__icon pricing-plan-card__icon--addon-block">
+          <Icon name={props.plan.icon} />
+        </span>
+        <div class="pricing-addon-card__heading">
+          <h2 class="pricing-plan-card__name">{props.plan.name}</h2>
+          <div class="pricing-plan-card__badges">
+            <span class="pricing-plan-card__addon-badge">Paid add-on</span>
+            <span class="pricing-plan-card__soon-badge">Coming soon</span>
+          </div>
+        </div>
+        <p class="pricing-addon-card__tagline">{props.plan.tagline}</p>
+      </div>
+    </article>
+  )
+}

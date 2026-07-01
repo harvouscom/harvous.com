@@ -1,0 +1,82 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/layout/Container.astro";
+import PageIntro from "../components/PageIntro.astro";
+import PricingPlanCard from "../components/PricingPlanCard.astro";
+import { FREE_PLAN, PRICING_ADDONS } from "../lib/pricing-data.ts";
+import "../styles/pricing.css";
+
+const pricingHeroImage = "/images/auth-hero/ai_bg_051.webp";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      name: "Harvous Pricing",
+      description:
+        "Harvous is free for personal Bible study. Optional paid add-ons: Review, Shared Spaces, and Challenges.",
+      url: "https://harvous.com/pricing/",
+      isPartOf: { "@type": "WebSite", name: "Harvous", url: "https://harvous.com" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
+        { "@type": "ListItem", position: 2, name: "Pricing", item: "https://harvous.com/pricing/" },
+      ],
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "Harvous",
+      applicationCategory: "ProductivityApplication",
+      operatingSystem: "Web",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        description: "Free tier — unlimited notes and core Bible study features",
+      },
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Pricing — Harvous"
+  description="Harvous is free for personal Bible study — unlimited notes, scripture pills, highlights, and more. Optional paid add-ons: Review, Shared Spaces, and Challenges."
+  jsonLd={jsonLd}
+>
+  <section class="pricing-hero" style={`--pricing-hero-image: url('${pricingHeroImage}');`}>
+    <div class="pricing-hero__backdrop" aria-hidden="true"></div>
+    <div class="pricing-hero__inner">
+      <PageIntro>
+        <h1 class="font-display text-5xl leading-[1.0] md:text-6xl">Pricing on your terms</h1>
+        <p class="mt-4 text-lg leading-relaxed text-[var(--color-ink-soft)]">
+          Add-ons are optional paid upgrades when you need more than solo study.
+        </p>
+      </PageIntro>
+    </div>
+  </section>
+
+  <section class="pricing-page">
+    <Container>
+      <div class="pricing-page__inner" data-reveal style="--reveal-delay: 80ms;">
+        <div class="pricing-grid">
+          <PricingPlanCard plan={FREE_PLAN} variant="primary" />
+
+          <div class="pricing-addons">
+            {PRICING_ADDONS.map((plan) => (
+              <PricingPlanCard plan={plan} variant="addon" />
+            ))}
+          </div>
+        </div>
+
+        <p class="pricing-page__note">
+          Questions about billing or church plans? Email
+          <a href="mailto:derek@harvous.com">derek@harvous.com</a>.
+        </p>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

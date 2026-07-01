@@ -3,12 +3,15 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/layout/Container.astro";
 import CompareCarousel from "../../components/CompareCarousel.astro";
 import CompareSectionNav from "../../components/CompareSectionNav.astro";
-import { getCompareTypes, getCompareByType, compareTypeToId } from "../../lib/compare-data.ts";
-import { fathomCompare } from "../../lib/fathom-events.ts";
+import PageClosingCTA from "../../components/PageClosingCTA.astro";
+import IntroChip from "../../components/IntroChip.astro";
+import { getCompareTypes, getCompareByType, compareTypeToId, getCompareEntries } from "../../lib/compare-data.ts";
+import { fathomCompare, fathomSignup } from "../../lib/fathom-events.ts";
 import "../../styles/compare.css";
 
 const types = getCompareTypes();
 const navItems = types.map((type) => ({ id: compareTypeToId(type), label: type }));
+const compareAppCount = getCompareEntries().length;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -43,7 +46,8 @@ const jsonLd = {
         <h1 class="section-title">Compare Harvous</h1>
         <p class="compare-hub-intro__lead">
           Harvous is a Bible study notes app — not a Bible reader, not sermon transcription. See how it
-          compares to the apps you might already use for reading, notes, or devotionals.
+          compares to <IntroChip><span class="tabular-nums">{compareAppCount}</span> apps</IntroChip> you might
+          already use for reading, notes, or devotionals.
         </p>
       </header>
     </Container>
@@ -73,6 +77,12 @@ const jsonLd = {
       })
     }
   </div>
+
+  <PageClosingCTA
+    heading="You've seen how Harvous compares."
+    lead="Sign up free and try a notes-first Bible study app built to help you remember what you saved."
+    fathomTrack={fathomSignup.compareHub}
+  />
 </BaseLayout>
 
 <style>

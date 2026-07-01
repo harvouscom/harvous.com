@@ -1,11 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
+import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
+import ComparePreview from "./ComparePreview.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { UseCase } from "../lib/use-cases-data.ts";
-import { fathomSignup } from "../lib/fathom-events.ts";
+import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import "../styles/use-cases.css";
 
 interface Props {
@@ -22,11 +24,6 @@ const relatedFeatures = useCase.featureIds
 const relatedCompare = useCase.compareSlugs
   .map((slug) => getCompareBySlug(slug))
   .filter((e): e is NonNullable<typeof e> => e !== undefined);
-
-function compareIntroExcerpt(intro: string): string {
-  const line = intro.split(/\n/).find((l) => l.trim())?.trim() ?? intro.trim();
-  return line.length > 160 ? `${line.slice(0, 157)}…` : line;
-}
 
 const pageUrl = `https://harvous.com${useCase.href}`;
 const jsonLd = {
@@ -55,24 +52,18 @@ const jsonLd = {
     <!-- Hero -->
     <header class="border-b border-[var(--color-rule)]">
       <div class="mx-auto max-w-3xl px-5 py-10 md:py-14">
-        <a href="/use-cases/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
-          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path
-              fill-rule="evenodd"
-              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-              clip-rule="evenodd"></path>
-          </svg>
-          Use cases
-        </a>
-
-        {
-          useCase.earlyAccess && (
-            <p class="mt-6 rounded-xl border border-[var(--color-rule)] bg-[var(--color-warm)] px-4 py-3 text-sm leading-relaxed text-[var(--color-ink-soft)]">
-              Shared spaces are rolling out. You can use Harvous for personal study today — shared group
-              spaces are coming soon.
-            </p>
-          )
-        }
+        <div data-reveal>
+          <div class="use-case-detail__nav">
+          <a href="/use-cases/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path
+                fill-rule="evenodd"
+                d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+                clip-rule="evenodd"></path>
+            </svg>
+            Use cases
+          </a>
+        </div>
 
         <div
           class="use-case-hero__art mt-8"
@@ -84,22 +75,30 @@ const jsonLd = {
         </div>
 
         <div class="mt-8 text-center">
-          <span
-            class="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider"
-            style={`background: color-mix(in oklab, ${useCase.ink} 14%, var(--color-paper)); color: ${useCase.ink};`}
-          >
-            {useCase.title}
-          </span>
+          <div class="use-case-detail__badges">
+            <span
+              class="use-case-detail__title-badge"
+              style={`background: color-mix(in oklab, ${useCase.ink} 14%, var(--color-paper)); color: ${useCase.ink};`}
+            >
+              {useCase.title}
+            </span>
+            {useCase.comingSoon && (
+              <span class="use-case-detail__soon-badge">
+                {useCase.comingSoonLine ?? "Coming soon"}
+              </span>
+            )}
+          </div>
           <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">{useCase.heroTitle}</h1>
           <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-ink-soft)]">
             {useCase.heroLead}
           </p>
         </div>
+        </div>
       </div>
     </header>
 
     <!-- Prose body -->
-    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16">
+    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
       <div class="prose-letter space-y-8">
         {
           useCase.sections.map((section) => (
@@ -136,66 +135,20 @@ const jsonLd = {
       </div>
     </section>
 
-    <!-- Related features -->
-    {
-      relatedFeatures.length > 0 && (
-        <section class="frame-divider">
-          <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
-            <h2 class="font-display text-2xl leading-snug md:text-3xl">Features that fit this use case</h2>
-            <p class="mt-3 text-[var(--color-ink-soft)]">
-              Harvous is a notes app for Scripture study — these are the pieces people reach for most.
-            </p>
-            <ul class="mt-8 space-y-4" role="list">
-              {relatedFeatures.map((f) => (
-                <li>
-                  <a
-                    href="/features/"
-                    class="group block rounded-xl border border-[var(--color-rule)] bg-white px-5 py-4 transition hover:border-[var(--color-ink-faint)] hover:shadow-[var(--shadow-card)]"
-                  >
-                    <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-ink-faint)]">
-                      {f.data.tagline}
-                    </span>
-                    <span class="mt-1 block text-[var(--color-ink)] group-hover:text-[var(--color-accent)]">
-                      {f.data.title}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )
-    }
+    <UseCaseRelatedFeatures useCase={useCase} features={relatedFeatures} />
 
-    <!-- Related compare -->
     {
       relatedCompare.length > 0 && (
-        <section class="frame-divider">
-          <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
-            <h2 class="font-display text-2xl leading-snug md:text-3xl">Works alongside other tools</h2>
-            <p class="mt-3 text-[var(--color-ink-soft)]">
-              Harvous does a different job than most Bible apps. Many people use it next to something
-              they already love.
-            </p>
-            <ul class="mt-8 space-y-4" role="list">
-              {relatedCompare.map((entry) => (
-                <li>
-                  <a
-                    href={`/compare/${entry.slug}/`}
-                    class="group block rounded-xl border border-[var(--color-rule)] bg-white px-5 py-4 transition hover:border-[var(--color-ink-faint)] hover:shadow-[var(--shadow-card)]"
-                  >
-                    <span class="font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-accent)]">
-                      Harvous vs {entry.name}
-                    </span>
-                    <span class="mt-1 block text-sm leading-relaxed text-[var(--color-ink-soft)]">
-                      {compareIntroExcerpt(entry.intro)}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <ComparePreview
+          id="works-alongside"
+          entries={relatedCompare}
+          eyebrow="Compare"
+          title="Works alongside other tools"
+          lead="Harvous does a different job than most Bible apps. Many people use it next to something they already love."
+          showAllLink
+          fathomTrack={fathomCompare.detailRelated}
+          fathomAllTrack={fathomCompare.homeAll}
+        />
       )
     }
 

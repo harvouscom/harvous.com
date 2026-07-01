@@ -23,6 +23,7 @@ const HARVOUS_PITCH =
   <article class="compare-detail">
     <header class="border-b border-[var(--color-rule)]">
       <div class="mx-auto max-w-3xl px-5 py-10 md:py-14">
+        <div data-reveal>
         <a href="/compare/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
           <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path
@@ -57,10 +58,11 @@ const HARVOUS_PITCH =
             )
           }
         </div>
+        </div>
       </div>
     </header>
 
-    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16">
+    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
       <div class="prose-letter space-y-8">
         <div>
           <h2 class="text-xl font-semibold text-[var(--color-ink)]">Choose {entry.name} if…</h2>
@@ -77,7 +79,7 @@ const HARVOUS_PITCH =
       </div>
     </section>
 
-    <section class="frame-divider">
+    <section class="frame-divider" data-reveal style="--reveal-delay: 120ms;">
       <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
         <h2 class="font-display text-2xl leading-snug md:text-3xl">Side by side</h2>
         <p class="mt-3 text-[var(--color-ink-soft)]">

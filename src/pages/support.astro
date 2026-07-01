@@ -57,7 +57,7 @@ const jsonLd = {
 >
   <section class="support-page frame-divider">
     <Container size="md">
-      <header class="support-page__head">
+      <header class="support-page__head" data-reveal>
         <span class="eyebrow-pill">Help</span>
         <h1 class="section-title">Support</h1>
         <p class="support-page__lead">
@@ -66,7 +66,7 @@ const jsonLd = {
         <p class="support-page__byline">— Derek, the founder</p>
       </header>
 
-      <div class="support-page__contact">
+      <div class="support-page__contact" data-reveal style="--reveal-delay: 80ms;">
         <article class="support-contact-card support-contact-card--email">
           <span class="support-contact-card__label">Email</span>
           <a href={mailtoHref} class="support-contact-card__title">{SUPPORT_EMAIL}</a>
@@ -102,7 +102,7 @@ const jsonLd = {
 
       {
         faqItems.length > 0 && (
-          <div class="support-page__faq">
+          <div class="support-page__faq" data-reveal style="--reveal-delay: 140ms;">
             <h2 class="support-page__faq-title">Common questions</h2>
             <div class="support-page__faq-list">
               {faqItems.map(({ data, Content }) => (

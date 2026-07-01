@@ -19,7 +19,7 @@ const {
 ---
 
 <section class="page-closing-cta frame-divider">
-  <div class="page-closing-cta__inner">
+  <div class="page-closing-cta__inner" data-reveal>
     <h2 class="page-closing-cta__heading">{heading}</h2>
     {lead && <p class="page-closing-cta__lead">{lead}</p>}
     <div class="page-closing-cta__action">
@@ -44,6 +44,7 @@ const {
     letter-spacing: -0.02em;
     font-weight: 600;
     color: var(--color-ink);
+    text-wrap: pretty;
   }
   .page-closing-cta__lead {
     max-width: 28rem;

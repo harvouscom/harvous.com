@@ -1,13 +1,14 @@
 ---
 /**
- * ComparePreview — homepage carousel of featured /compare/ pages.
+ * ComparePreview — carousel of /compare/ pages (homepage featured set or custom entries).
  */
 import Container from "./layout/Container.astro";
 import CompareCarousel from "./CompareCarousel.astro";
 import { getCompareBySlug } from "../lib/compare-data.ts";
+import type { CompareEntry } from "../lib/compare-data.ts";
 import { fathomCompare } from "../lib/fathom-events.ts";
 
-const featuredSlugs = [
+const DEFAULT_SLUGS = [
   "apple-notes",
   "notion",
   "youversion",
@@ -18,21 +19,42 @@ const featuredSlugs = [
   "evernote",
 ] as const;
 
-const featured = featuredSlugs
-  .map((slug) => getCompareBySlug(slug))
-  .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined);
+interface Props {
+  entries?: CompareEntry[];
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  showAllLink?: boolean;
+  fathomTrack?: string;
+  fathomAllTrack?: string;
+  id?: string;
+}
+
+const {
+  entries: entriesProp,
+  eyebrow = "Compare",
+  title = "How Harvous compares",
+  lead = "Not a Bible reader. Not sermon transcription. See how Harvous stacks up against the apps you might already use for reading, notes, or devotionals.",
+  showAllLink = true,
+  fathomTrack = fathomCompare.homeCard,
+  fathomAllTrack = fathomCompare.homeAll,
+  id = "compare",
+} = Astro.props;
+
+const entries =
+  entriesProp ??
+  DEFAULT_SLUGS.map((slug) => getCompareBySlug(slug)).filter(
+    (entry): entry is NonNullable<typeof entry> => entry !== undefined
+  );
 ---
 
-<section class="compare-preview frame-divider" id="compare">
+<section class="compare-preview frame-divider" id={id}>
   <Container size="xl">
     <div class="compare-preview__head" data-reveal>
       <div class="compare-preview__head-text">
-        <span class="eyebrow-pill">Compare</span>
-        <h2 class="section-title">How Harvous compares</h2>
-        <p class="lead">
-          Not a Bible reader. Not sermon transcription. See how Harvous stacks up against the apps you
-          might already use for reading, notes, or devotionals.
-        </p>
+        <span class="eyebrow-pill">{eyebrow}</span>
+        <h2 class="section-title">{title}</h2>
+        <p class="lead">{lead}</p>
       </div>
 
       <div class="compare-preview__controls">
@@ -52,22 +74,26 @@ const featured = featuredSlugs
 
   <CompareCarousel
     class="compare-carousel--tight"
-    entries={featured}
+    entries={entries}
     trackLabel="App comparisons"
-    fathomTrack={fathomCompare.homeCard}
+    fathomTrack={fathomTrack}
     showBar={false}
   />
 
-  <Container size="xl">
-    <p class="compare-preview__more" data-reveal style="--reveal-delay: 120ms;">
-      <a href="/compare/" class="compare-preview__all" data-fathom-track={fathomCompare.homeAll}>
-        See all comparisons
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 8h10M9 4l4 4-4 4"/>
-        </svg>
-      </a>
-    </p>
-  </Container>
+  {
+    showAllLink && (
+      <Container size="xl">
+        <p class="compare-preview__more" data-reveal style="--reveal-delay: 120ms;">
+          <a href="/compare/" class="compare-preview__all" data-fathom-track={fathomAllTrack}>
+            See all comparisons
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+        </p>
+      </Container>
+    )
+  }
 </section>
 
 <style>
@@ -161,49 +187,22 @@ const featured = featuredSlugs
 </style>
 
 <script>
-  /** Wire homepage header arrows to the nested carousel track (controls live outside CompareCarousel). */
-  const section = document.querySelector<HTMLElement>(".compare-preview");
-  const track = section?.querySelector<HTMLElement>(".compare-carousel__track");
-  if (section && track) {
-    const prevBtn = section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="prev"]');
-    const nextBtn = section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="next"]');
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  import { bindCarouselFit } from "../lib/carousel-fit.ts";
 
-    const updateArrows = () => {
-      const max = track.scrollWidth - track.clientWidth - 1;
-      if (prevBtn) prevBtn.disabled = track.scrollLeft <= 0;
-      if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
-    };
+  document.querySelectorAll<HTMLElement>(".compare-preview").forEach((section) => {
+    const track = section.querySelector<HTMLElement>(".compare-carousel__track");
+    const carousel = section.querySelector<HTMLElement>(".compare-carousel");
+    if (!track) return;
 
-    const step = () => {
-      const slide = track.querySelector<HTMLElement>(".compare-carousel__slide");
-      if (!slide) return track.clientWidth * 0.9;
-      const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
-      return slide.getBoundingClientRect().width + gap;
-    };
+    const fitRoots = carousel ? [section, carousel] : [section];
 
-    const scrollByDir = (dir: 1 | -1) => {
-      track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
-    };
-
-    prevBtn?.addEventListener("click", () => scrollByDir(-1));
-    nextBtn?.addEventListener("click", () => scrollByDir(1));
-
-    let ticking = false;
-    track.addEventListener(
-      "scroll",
-      () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          updateArrows();
-          ticking = false;
-        });
-      },
-      { passive: true }
-    );
-
-    window.addEventListener("resize", updateArrows);
-    updateArrows();
-  }
+    bindCarouselFit({
+      fitRoots,
+      track,
+      slideSelector: ".compare-carousel__slide",
+      controlRoots: Array.from(section.querySelectorAll<HTMLElement>(".compare-preview__controls")),
+      prevBtn: section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="prev"]'),
+      nextBtn: section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="next"]'),
+    });
+  });
 </script>

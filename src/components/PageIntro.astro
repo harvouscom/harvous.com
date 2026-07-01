@@ -1,0 +1,16 @@
+---
+/**
+ * Centered subpage hero copy — pairs with data-reveal fade-in (BaseLayout).
+ */
+interface Props {
+  class?: string;
+  size?: "default" | "compact";
+}
+
+const { class: className = "", size = "default" } = Astro.props;
+const pad = size === "compact" ? "py-10 md:py-14" : "py-16 md:py-24";
+---
+
+<div class:list={["mx-auto max-w-3xl px-5 text-center", pad, className]} data-reveal>
+  <slot />
+</div>

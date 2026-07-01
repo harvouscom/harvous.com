@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
 
 const updated = "June 30, 2025";
 ---
@@ -9,14 +10,14 @@ const updated = "June 30, 2025";
   description="How Harvous collects, uses, and protects your data."
 >
   <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-16 text-center md:py-24">
+    <PageIntro>
       <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">Legal</div>
       <h1 class="mt-3 font-display text-5xl leading-[1.0] md:text-6xl">Privacy Policy</h1>
       <p class="mt-4 text-sm text-[var(--color-ink-faint)]">Last updated {updated}</p>
-    </div>
+    </PageIntro>
   </section>
 
-  <section class="mx-auto max-w-3xl px-5 py-16 md:py-20">
+  <section class="mx-auto max-w-3xl px-5 py-16 md:py-20" data-reveal style="--reveal-delay: 80ms;">
     <div class="prose-letter space-y-8">
       <div>
         <h2 class="text-xl font-semibold text-[var(--color-ink)]">Overview</h2>

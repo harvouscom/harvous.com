@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
 import CTAButton from "../components/CTAButton.astro";
 import { fathomSignup } from "../lib/fathom-events.ts";
 ---
@@ -9,15 +10,15 @@ import { fathomSignup } from "../lib/fathom-events.ts";
   description="A letter from Derek Castelli, the maker of Harvous."
 >
   <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-16 text-center md:py-24">
+    <PageIntro>
       <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">A letter from Derek</div>
       <h1 class="mt-3 font-display text-5xl leading-[1.0] md:text-7xl">
         I made Harvous because I need to remember the Bible, better.
       </h1>
-    </div>
+    </PageIntro>
   </section>
 
-  <section class="mx-auto max-w-5xl px-5 py-16">
+  <section class="mx-auto max-w-5xl px-5 py-16" data-reveal style="--reveal-delay: 80ms;">
     <div class="paper-grain rounded-3xl border border-[var(--color-rule)] p-6 md:p-12">
       <div class="grid gap-10 md:grid-cols-2">
         <div class="prose-letter">

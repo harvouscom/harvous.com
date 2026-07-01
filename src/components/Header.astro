@@ -1,11 +1,13 @@
 ---
-import { fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
+import { fathomOpenApp, fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
+import { APP_ORIGIN } from "../lib/app-origin.ts";
 import OptimizedImage from "./OptimizedImage.astro";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
   { href: "/use-cases/", label: "Use cases" },
   { href: "/compare/", label: "Compare" },
+  { href: "/pricing/", label: "Pricing" },
 ];
 
 // Scroll threshold (px) at which the header switches from the flat,
@@ -14,7 +16,14 @@ const navLinks = [
 const SCROLL_THRESHOLD = 16;
 ---
 
-<header class="site-header sticky" id="site-header" data-scroll-threshold={SCROLL_THRESHOLD}>
+<header
+  class="site-header sticky"
+  id="site-header"
+  data-scroll-threshold={SCROLL_THRESHOLD}
+  data-app-origin={APP_ORIGIN}
+  data-fathom-signin={fathomSignin.header}
+  data-fathom-open-app={fathomOpenApp.header}
+>
   <div class="site-header__inner">
     <a href="/" class="site-header__logo" aria-label="Harvous — Home">
       <OptimizedImage
@@ -32,13 +41,11 @@ const SCROLL_THRESHOLD = 16;
           {link.label}
         </a>
       ))}
-      <a
-        href="https://app.harvous.com/sign-in"
-        class="site-header__link site-header__link--login"
-        data-fathom-track={fathomSignin.header}
-      >
-        Sign in
-      </a>
+      <span class="site-header__auth" id="site-header-auth" hidden>
+        <a href={APP_ORIGIN} class="site-header__link site-header__link--login" id="site-header-auth-link">
+          …
+        </a>
+      </span>
     </nav>
 
     <a href="https://app.harvous.com/sign-up" class="btn-pill site-header__cta" data-fathom-track={fathomSignup.header}>
@@ -178,6 +185,13 @@ const SCROLL_THRESHOLD = 16;
     color: var(--color-ink);
   }
 
+  .site-header__auth {
+    display: contents;
+  }
+  .site-header__auth[hidden] {
+    display: none;
+  }
+
   .site-header__cta {
     flex: none;
   }
@@ -251,5 +265,41 @@ const SCROLL_THRESHOLD = 16;
 
     updateScrolled();
     measurePillWidth();
+
+    const authSlot = document.getElementById("site-header-auth");
+    const authLink = document.getElementById("site-header-auth-link");
+    const appOrigin = header.dataset.appOrigin;
+    const fathomSignin = header.dataset.fathomSignin;
+    const fathomOpenApp = header.dataset.fathomOpenApp;
+
+    const bindFathom = (el: HTMLElement, eventName: string | undefined) => {
+      if (!eventName) return;
+      el.dataset.fathomTrack = eventName;
+      el.addEventListener("click", () => {
+        if (window.fathom) window.fathom.trackEvent(eventName);
+      });
+    };
+
+    const showAuthLink = (signedIn: boolean) => {
+      if (!authSlot || !authLink || !appOrigin) return;
+      if (signedIn) {
+        authLink.href = `${appOrigin}/`;
+        authLink.textContent = "Open app";
+        bindFathom(authLink, fathomOpenApp);
+      } else {
+        authLink.href = `${appOrigin}/sign-in`;
+        authLink.textContent = "Sign in";
+        bindFathom(authLink, fathomSignin);
+      }
+      authSlot.hidden = false;
+      measurePillWidth();
+    };
+
+    if (authSlot && authLink && appOrigin) {
+      fetch(`${appOrigin}/api/auth/status`, { credentials: "include" })
+        .then((res) => (res.ok ? res.json() : { signedIn: false }))
+        .then((data: { signedIn?: boolean }) => showAuthLink(Boolean(data.signedIn)))
+        .catch(() => showAuthLink(false));
+    }
   }
 </script>

@@ -10,12 +10,18 @@ export const fathomSignup = {
   features: "signup_features",
   about: "signup_about",
   useCasesHub: "signup_use_cases",
+  compareHub: "signup_compare",
+  pricing: "signup_pricing",
   useCaseDetail: (slug: string) => `signup_use_case_${slug}`,
   compareDetail: (slug: string) => `signup_compare_${slug}`,
 } as const;
 
 export const fathomSignin = {
   header: "signin_header",
+} as const;
+
+export const fathomOpenApp = {
+  header: "open_app_header",
 } as const;
 
 export const fathomCompare = {

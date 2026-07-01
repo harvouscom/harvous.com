@@ -60,3 +60,41 @@
   height: 1.25rem;
   color: var(--use-case-ink);
 }
+
+.use-case-detail__nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.use-case-detail__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.use-case-detail__title-badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.use-case-detail__soon-badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+  background: color-mix(in oklab, var(--color-card) 88%, transparent);
+  border: 1px solid var(--color-rule);
+  backdrop-filter: blur(6px);
+}

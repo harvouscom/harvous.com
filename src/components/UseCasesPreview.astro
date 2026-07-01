@@ -41,7 +41,13 @@ const useCases = getUseCases();
   </Container>
 
   <div class="usecases__track-wrap" data-reveal style="--reveal-delay: 80ms;">
-    <ul class="usecases__track" role="list" aria-label="Use cases" tabindex="0">
+    <ul
+      class="usecases__track"
+      role="list"
+      aria-label="Use cases"
+      tabindex="0"
+      style={`--carousel-cols: ${useCases.length};`}
+    >
       {useCases.map((uc) => {
         const title = getUseCaseDisplayTitle(uc);
         const caption = (
@@ -285,48 +291,19 @@ const useCases = getUseCases();
 </style>
 
 <script>
-  const root = document.querySelector<HTMLElement>(".usecases");
-  const track = root?.querySelector<HTMLElement>(".usecases__track");
-  if (root && track) {
-    const prevBtn = root.querySelector<HTMLButtonElement>('.usecases__arrow[data-dir="prev"]');
-    const nextBtn = root.querySelector<HTMLButtonElement>('.usecases__arrow[data-dir="next"]');
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  import { bindCarouselFit } from "../lib/carousel-fit.ts";
 
-    const updateArrows = () => {
-      const max = track.scrollWidth - track.clientWidth - 1;
-      if (prevBtn) prevBtn.disabled = track.scrollLeft <= 0;
-      if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
-    };
+  document.querySelectorAll<HTMLElement>(".usecases").forEach((root) => {
+    const track = root.querySelector<HTMLElement>(".usecases__track");
+    if (!track) return;
 
-    const step = () => {
-      const slide = track.querySelector<HTMLElement>(".usecases__slide");
-      if (!slide) return track.clientWidth * 0.9;
-      const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
-      return slide.getBoundingClientRect().width + gap;
-    };
-
-    const scrollByDir = (dir: 1 | -1) => {
-      track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
-    };
-
-    prevBtn?.addEventListener("click", () => scrollByDir(-1));
-    nextBtn?.addEventListener("click", () => scrollByDir(1));
-
-    let ticking = false;
-    track.addEventListener(
-      "scroll",
-      () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          updateArrows();
-          ticking = false;
-        });
-      },
-      { passive: true }
-    );
-
-    window.addEventListener("resize", updateArrows);
-    updateArrows();
-  }
+    bindCarouselFit({
+      fitRoots: [root],
+      track,
+      slideSelector: ".usecases__slide",
+      controlRoots: Array.from(root.querySelectorAll<HTMLElement>(".usecases__controls")),
+      prevBtn: root.querySelector<HTMLButtonElement>('.usecases__arrow[data-dir="prev"]'),
+      nextBtn: root.querySelector<HTMLButtonElement>('.usecases__arrow[data-dir="next"]'),
+    });
+  });
 </script>

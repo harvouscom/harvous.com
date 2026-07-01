@@ -1,0 +1,123 @@
+---
+/**
+ * Use-case feature list — same content as featureIds → MDX, styled like WhatsIncluded grid.
+ */
+import type { CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
+import Container from "./layout/Container.astro";
+import { FEATURE_ICONS } from "../lib/feature-icons.ts";
+import type { UseCase } from "../lib/use-cases-data.ts";
+
+interface Props {
+  useCase: UseCase;
+  features: CollectionEntry<"features">[];
+}
+
+const { useCase, features } = Astro.props;
+---
+
+{
+  features.length > 0 && (
+    <section class="use-case-features frame-divider">
+      <Container size="xl">
+        <div class="use-case-features__head section-head" data-reveal>
+          <span class="eyebrow-pill">Features</span>
+          <h2 class="section-title">{useCase.featuresHeading}</h2>
+          <p class="lead use-case-features__lead">{useCase.featuresLead}</p>
+        </div>
+
+        <ul class="use-case-features__grid" data-reveal style="--reveal-delay: 100ms;" role="list">
+          {features.map((f) => (
+            <li>
+              <a href="/features/" class="use-case-features__card">
+                <span class="use-case-features__icon">
+                  <Icon name={FEATURE_ICONS[f.id] ?? "fa6-solid:note-sticky"} />
+                </span>
+                <span class="use-case-features__title">{f.data.tagline}</span>
+                <p class="use-case-features__desc">{f.data.title}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </section>
+  )
+}
+
+<style>
+  .use-case-features {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  }
+  .use-case-features__head .section-title {
+    max-width: 18ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .use-case-features__lead {
+    max-width: 38rem;
+    margin-inline: auto;
+    text-wrap: pretty;
+  }
+  .use-case-features__grid {
+    margin-top: clamp(3rem, 7vw, 4.5rem);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+  @media (min-width: 720px) {
+    .use-case-features__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .use-case-features__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .use-case-features__card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 1rem;
+    padding: 0.25rem;
+    margin: -0.25rem;
+    transition: background-color 150ms ease;
+  }
+  .use-case-features__card:hover {
+    background: color-mix(in oklab, var(--color-warm) 55%, transparent);
+  }
+  .use-case-features__card:hover .use-case-features__title {
+    color: var(--color-accent);
+  }
+  .use-case-features__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .use-case-features__icon :global(svg) {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+  .use-case-features__title {
+    display: block;
+    margin-top: 0.85rem;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--color-ink);
+    transition: color 150ms ease;
+  }
+  .use-case-features__desc {
+    margin-top: 0.3rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+</style>

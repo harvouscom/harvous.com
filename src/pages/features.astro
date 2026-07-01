@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
 import FeatureRow from "../components/FeatureRow.astro";
 import CTAButton from "../components/CTAButton.astro";
 import { getCollection, render } from "astro:content";
@@ -20,7 +21,7 @@ const items = await Promise.all(
 >
   <!-- Page header -->
   <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-16 text-center md:py-24">
+    <PageIntro>
       <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">Features</div>
       <h1 class="mt-3 font-display text-5xl leading-[1.0] md:text-8xl">
         Everything you need to study. Nothing you don't.
@@ -28,10 +29,10 @@ const items = await Promise.all(
       <p class="mx-auto mt-5 max-w-xl text-lg text-[var(--color-ink-soft)]">
         The same features on every device — web, iOS, iPad, and Mac.
       </p>
-    </div>
+    </PageIntro>
   </section>
 
-  <section class="mx-auto max-w-6xl space-y-24 px-5 py-20">
+  <section class="mx-auto max-w-6xl space-y-24 px-5 py-20" data-reveal style="--reveal-delay: 80ms;">
     {items.map(({ data, Content }) => (
       <FeatureRow title={data.title} tagline={data.tagline} align={data.align}>
         <Fragment slot="body">

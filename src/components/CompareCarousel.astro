@@ -55,7 +55,13 @@ const {
   }
 
   <div class="compare-carousel__track-wrap">
-    <ul class="compare-carousel__track" role="list" aria-label={trackLabel} tabindex="0">
+    <ul
+      class="compare-carousel__track"
+      role="list"
+      aria-label={trackLabel}
+      tabindex="0"
+      style={`--carousel-cols: ${entries.length};`}
+    >
       {
         entries.map((entry) => (
           <li class="compare-carousel__slide">
@@ -107,9 +113,6 @@ const {
     gap: 0.6rem;
     flex: none;
     margin-left: auto;
-  }
-  .compare-carousel__controls--hidden {
-    display: none;
   }
 
   .compare-carousel__arrow {
@@ -249,72 +252,19 @@ const {
 </style>
 
 <script>
-  const carousels = document.querySelectorAll<HTMLElement>(".compare-carousel");
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  import { bindCarouselFit } from "../lib/carousel-fit.ts";
 
-  carousels.forEach((root) => {
+  document.querySelectorAll<HTMLElement>(".compare-carousel").forEach((root) => {
     const track = root.querySelector<HTMLElement>(".compare-carousel__track");
     if (!track) return;
 
-    const controls = root.querySelector<HTMLElement>(".compare-carousel__controls");
-    const prevBtn = root.querySelector<HTMLButtonElement>('.compare-carousel__arrow[data-dir="prev"]');
-    const nextBtn = root.querySelector<HTMLButtonElement>('.compare-carousel__arrow[data-dir="next"]');
-
-    const isScrollable = () => track.scrollWidth > track.clientWidth + 2;
-
-    const updateArrows = () => {
-      const scrollable = isScrollable();
-      controls?.classList.toggle("compare-carousel__controls--hidden", !scrollable);
-
-      if (!scrollable) {
-        track.scrollLeft = 0;
-        if (prevBtn) prevBtn.disabled = true;
-        if (nextBtn) nextBtn.disabled = true;
-        return;
-      }
-
-      const max = track.scrollWidth - track.clientWidth - 1;
-      if (prevBtn) prevBtn.disabled = track.scrollLeft <= 0;
-      if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
-    };
-
-    const step = () => {
-      const slide = track.querySelector<HTMLElement>(".compare-carousel__slide");
-      if (!slide) return track.clientWidth * 0.9;
-      const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
-      return slide.getBoundingClientRect().width + gap;
-    };
-
-    const scrollByDir = (dir: 1 | -1) => {
-      if (!isScrollable()) return;
-      track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
-    };
-
-    prevBtn?.addEventListener("click", () => scrollByDir(-1));
-    nextBtn?.addEventListener("click", () => scrollByDir(1));
-
-    let ticking = false;
-    track.addEventListener(
-      "scroll",
-      () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          updateArrows();
-          ticking = false;
-        });
-      },
-      { passive: true }
-    );
-
-    track.querySelectorAll("img").forEach((img) => {
-      if (!img.complete) img.addEventListener("load", updateArrows, { once: true });
+    bindCarouselFit({
+      fitRoots: [root],
+      track,
+      slideSelector: ".compare-carousel__slide",
+      controlRoots: Array.from(root.querySelectorAll<HTMLElement>(".compare-carousel__controls")),
+      prevBtn: root.querySelector<HTMLButtonElement>('.compare-carousel__arrow[data-dir="prev"]'),
+      nextBtn: root.querySelector<HTMLButtonElement>('.compare-carousel__arrow[data-dir="next"]'),
     });
-
-    const resizeObserver = new ResizeObserver(() => updateArrows());
-    resizeObserver.observe(track);
-
-    window.addEventListener("resize", updateArrows);
-    updateArrows();
   });
 </script>

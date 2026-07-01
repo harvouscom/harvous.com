@@ -25,8 +25,8 @@ export type UseCase = {
   image: string;
   ink: string;
   comingSoon?: boolean;
-  /** Detail page: shared spaces rolling out — softer banner + CTA. */
-  earlyAccess?: boolean;
+  /** Detail page: one-line label beside the back link (e.g. Coming soon). */
+  comingSoonLine?: string;
   seoTitle: string;
   seoDescription: string;
   heroTitle: string;
@@ -34,6 +34,9 @@ export type UseCase = {
   sections: UseCaseSection[];
   moments: UseCaseMoment[];
   featureIds: string[];
+  /** Detail page: related-tools section (no "features" label). */
+  featuresHeading: string;
+  featuresLead: string;
   compareSlugs: string[];
   testimonial?: UseCaseTestimonial;
 };
@@ -92,6 +95,9 @@ const useCases: UseCase[] = [
       },
     ],
     featureIds: ["scripture-pills", "daily-passage", "sidebar-modes", "offline-sync"],
+    featuresHeading: "What daily study asks of your notes",
+    featuresLead:
+      "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
     compareSlugs: ["youversion", "dwell", "readscripture", "spirit-notes", "abide"],
     testimonial: {
       quote: "Looking forward to continuing to use it to help in my study.",
@@ -157,6 +163,9 @@ const useCases: UseCase[] = [
       },
     ],
     featureIds: ["scripture-pills", "highlights", "sidebar-modes", "offline-sync"],
+    featuresHeading: "What sermon notes need to survive the week",
+    featuresLead:
+      "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
     compareSlugs: ["bible-note", "bible-notes", "pencil-bible", "spirit-notes", "goodnotes"],
     testimonial: {
       quote: "Harvous is simple and efficient compared to other apps I've tried.",
@@ -215,6 +224,9 @@ const useCases: UseCase[] = [
       },
     ],
     featureIds: ["scripture-pills", "dictionary", "sidebar-modes", "highlights"],
+    featuresHeading: "What book study asks of your notes",
+    featuresLead:
+      "Chapter by chapter, cross-reference by cross-reference — the Harvous pieces that help one book compound instead of scatter.",
     compareSlugs: ["logos", "bibleproject", "faithstudy", "life-bible"],
     testimonial: {
       quote: "Looking forward to continuing to use it to help in my study.",
@@ -272,6 +284,9 @@ const useCases: UseCase[] = [
       },
     ],
     featureIds: ["scripture-pills", "sidebar-modes", "highlights", "dictionary"],
+    featuresHeading: "What topical study needs to hold a thread",
+    featuresLead:
+      "Notes from everywhere, organized by what they're about — the pieces that let a theme run across the whole Bible.",
     compareSlugs: ["logos", "life-bible", "readscripture", "obsidian"],
     testimonial: {
       quote: "Harvous is simple and efficient compared to other apps I've tried.",
@@ -281,15 +296,15 @@ const useCases: UseCase[] = [
   {
     slug: "small-group",
     href: "/use-cases/small-group/",
-    title: "Small group",
-    carouselTitle: "Group spaces",
+    title: "Group study",
+    carouselTitle: "Group study",
     tagline: "Lead your group. Shared spaces keep what you build together.",
     icon: "fa6-solid:people-group",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_047.webp",
     comingSoon: true,
-    earlyAccess: true,
-    seoTitle: "Small group Bible study — Harvous",
+    comingSoonLine: "Coming soon",
+    seoTitle: "Group study — Harvous",
     seoDescription:
       "Lead your group. Harvous shared spaces let your whole group add notes to the same threads — so what you discover together doesn't disappear.",
     heroTitle: "For the person who leads the discussion and wants to keep what the group builds.",
@@ -297,7 +312,7 @@ const useCases: UseCase[] = [
       "You prep questions, you facilitate, you watch people have realizations out loud. And then next week you start from scratch. The things your group discovered together — they're in someone's head, maybe, but not anywhere you can all come back to.",
     sections: [
       {
-        heading: "Shared spaces are rolling out",
+        heading: "Shared spaces are coming soon",
         paragraphs: [
           "We're building shared spaces so a whole group can study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. It's not fully launched yet, but the foundation is the same Harvous you use for personal study today.",
           "If you lead a group and want early access, sign up and reach out — we'd love to hear how you study together.",
@@ -333,6 +348,9 @@ const useCases: UseCase[] = [
       },
     ],
     featureIds: ["sharing", "sidebar-modes", "scripture-pills", "highlights"],
+    featuresHeading: "What group study will need from Harvous",
+    featuresLead:
+      "Shared spaces are on the way — until then, these are the personal-study pieces leaders reach for when prepping and following up.",
     compareSlugs: ["pray-com", "youversion", "notion"],
     testimonial: {
       quote: "This is one of the most beautiful pieces of software I've used recently.",

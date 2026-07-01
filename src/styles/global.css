@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @import "./fonts.css";
+@import "./carousel-fit.css";
 
 /* App design-system tokens (--pds-*) + study accents — drives the AppShell
    replica and gives us the app's already-designed light/dark "night" palette.

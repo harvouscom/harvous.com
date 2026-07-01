@@ -52,7 +52,13 @@ const { eyebrow, title, lead, cards, id } = Astro.props;
   </Container>
 
   <div class="bento__track-wrap" data-reveal style="--reveal-delay: 80ms;">
-    <ul class="bento__track" role="list" aria-label="Features" tabindex="0">
+    <ul
+      class="bento__track"
+      role="list"
+      aria-label="Features"
+      tabindex="0"
+      style={`--carousel-cols: ${cards.length};`}
+    >
       {
         cards.map((c) => (
           <li class="bento__slide">
@@ -111,9 +117,6 @@ const { eyebrow, title, lead, cards, id } = Astro.props;
     align-items: center;
     gap: 0.6rem;
     flex: none;
-  }
-  .bento__controls--hidden {
-    display: none;
   }
 
   .bento__arrow {
@@ -217,82 +220,22 @@ const { eyebrow, title, lead, cards, id } = Astro.props;
 </style>
 
 <script>
-  const bento = document.querySelector<HTMLElement>(".bento");
-  const track = bento?.querySelector<HTMLElement>(".bento__track");
-  const controls = bento?.querySelector<HTMLElement>(".bento__controls");
+  import { bindCarouselFit } from "../lib/carousel-fit.ts";
+
   const SLIDER_MQ = window.matchMedia("(max-width: 719px)");
 
-  if (bento && track && controls) {
-    const prevBtn = bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="prev"]');
-    const nextBtn = bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="next"]');
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll<HTMLElement>(".bento").forEach((bento) => {
+    const track = bento.querySelector<HTMLElement>(".bento__track");
+    if (!track) return;
 
-    const isSlider = () => SLIDER_MQ.matches;
-
-    const isScrollable = () => track.scrollWidth > track.clientWidth + 2;
-
-    const updateArrows = () => {
-      if (!isSlider()) {
-        controls.classList.add("bento__controls--hidden");
-        return;
-      }
-
-      const scrollable = isScrollable();
-      controls.classList.toggle("bento__controls--hidden", !scrollable);
-
-      if (!scrollable) {
-        track.scrollLeft = 0;
-        if (prevBtn) prevBtn.disabled = true;
-        if (nextBtn) nextBtn.disabled = true;
-        return;
-      }
-
-      const max = track.scrollWidth - track.clientWidth - 1;
-      if (prevBtn) prevBtn.disabled = track.scrollLeft <= 0;
-      if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
-    };
-
-    const step = () => {
-      const slide = track.querySelector<HTMLElement>(".bento__slide");
-      if (!slide) return track.clientWidth * 0.9;
-      const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0") || 0;
-      return slide.getBoundingClientRect().width + gap;
-    };
-
-    const scrollByDir = (dir: 1 | -1) => {
-      if (!isSlider() || !isScrollable()) return;
-      track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
-    };
-
-    prevBtn?.addEventListener("click", () => scrollByDir(-1));
-    nextBtn?.addEventListener("click", () => scrollByDir(1));
-
-    let ticking = false;
-    track.addEventListener(
-      "scroll",
-      () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          updateArrows();
-          ticking = false;
-        });
-      },
-      { passive: true }
-    );
-
-    track.querySelectorAll("img").forEach((img) => {
-      if (!img.complete) img.addEventListener("load", updateArrows, { once: true });
+    bindCarouselFit({
+      fitRoots: [bento],
+      track,
+      slideSelector: ".bento__slide",
+      controlRoots: Array.from(bento.querySelectorAll<HTMLElement>(".bento__controls")),
+      prevBtn: bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="prev"]'),
+      nextBtn: bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="next"]'),
+      enabled: () => SLIDER_MQ.matches,
     });
-
-    SLIDER_MQ.addEventListener("change", updateArrows);
-    window.addEventListener("resize", updateArrows, { passive: true });
-
-    if (typeof ResizeObserver !== "undefined") {
-      const ro = new ResizeObserver(() => updateArrows());
-      ro.observe(track);
-    }
-
-    updateArrows();
-  }
+  });
 </script>

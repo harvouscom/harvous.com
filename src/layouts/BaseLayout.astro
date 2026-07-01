@@ -114,9 +114,16 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
       const stacks = document.querySelectorAll(".paper-stack");
       const reveals = document.querySelectorAll("[data-reveal]");
 
+      const revealEl = (el: Element) => el.classList.add("revealed");
+
+      const isInView = (el: Element) => {
+        const rect = el.getBoundingClientRect();
+        return rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
+      };
+
       if ("IntersectionObserver" in window) {
         const reveal = (el: Element, cls: string, ob: IntersectionObserver) => {
-          el.classList.add(cls);
+          revealEl(el);
           ob.unobserve(el);
         };
         const stackObserver = new IntersectionObserver(
@@ -133,10 +140,16 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
           },
           { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
         );
-        reveals.forEach((el) => revealObserver.observe(el));
+        reveals.forEach((el) => {
+          if (isInView(el)) {
+            requestAnimationFrame(() => revealEl(el));
+          } else {
+            revealObserver.observe(el);
+          }
+        });
       } else {
         stacks.forEach((el) => el.classList.add("in-view"));
-        reveals.forEach((el) => el.classList.add("revealed"));
+        reveals.forEach((el) => revealEl(el));
       }
     </script>
 
