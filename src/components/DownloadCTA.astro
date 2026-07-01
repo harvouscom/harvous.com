@@ -40,7 +40,7 @@ import { fathomSignup } from "../lib/fathom-events.ts";
           width={3262}
           height={809}
         />
-        <span class="cta-sign-name">Derek, founder of Harvous</span>
+        <span class="cta-sign-name">Derek Castelli, founder of Harvous</span>
       </div>
     </div>
 
@@ -99,6 +99,7 @@ import { fathomSignup } from "../lib/fathom-events.ts";
     overflow: hidden;
     display: grid;
     grid-template-columns: 1fr;
+    align-items: stretch;
   }
   @media (min-width: 860px) {
     .cta-card {
@@ -145,16 +146,19 @@ import { fathomSignup } from "../lib/fathom-events.ts";
   }
   .cta-sign {
     display: flex;
-    align-items: center;
-    gap: 0.65rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
   }
-  .cta-sign-img {
-    height: 2.1rem;
-    width: auto;
+  .cta-sign :global(picture),
+  .cta-sign :global(img) {
+    max-width: 180px;
+    width: 100%;
+    height: auto;
+    display: block;
   }
   .cta-sign-name {
     font-size: 0.85rem;
-    font-style: italic;
     color: var(--color-ink-faint);
   }
 
@@ -163,6 +167,8 @@ import { fathomSignup } from "../lib/fathom-events.ts";
   .cta-panel--shot {
     position: relative;
     min-height: 14rem;
+    height: 100%;
+    align-self: stretch;
     background: var(--color-card);
     overflow: hidden;
   }
@@ -171,6 +177,14 @@ import { fathomSignup } from "../lib/fathom-events.ts";
       min-height: 28rem;
     }
   }
+  .cta-panel--shot :global(picture) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .cta-panel--shot :global(img),
   .cta-shot {
     position: absolute;
     inset: 0;

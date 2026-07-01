@@ -16,7 +16,12 @@ const links = [
 <footer class="site-footer">
   <Container size="xl">
     <div>
-      <div class="flex flex-col items-center justify-between gap-4 text-xs text-[var(--color-ink-faint)] sm:flex-row">
+      <div class="site-footer__bar">
+        <nav class="site-footer__nav" aria-label="Footer">
+          {links.map((l) => (
+            <a href={l.href} class="site-footer__link">{l.label}</a>
+          ))}
+        </nav>
         <p>
           © {year} Testament Made LLC.{" "}
           <a
@@ -27,11 +32,6 @@ const links = [
             CC BY 4.0
           </a>
         </p>
-        <nav class="flex flex-wrap items-center gap-x-5 gap-y-2">
-          {links.map((l) => (
-            <a href={l.href} class="transition hover:text-[var(--color-ink)]">{l.label}</a>
-          ))}
-        </nav>
       </div>
     </div>
   </Container>
@@ -41,6 +41,48 @@ const links = [
   .site-footer {
     padding-top: 2rem;
     padding-bottom: 2rem;
+  }
+
+  .site-footer__bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+  }
+
+  .site-footer__nav {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    justify-items: center;
+    column-gap: 1.25rem;
+    row-gap: 0.5rem;
+    max-width: 100%;
+  }
+
+  .site-footer__link {
+    white-space: nowrap;
+    transition: color 150ms ease;
+  }
+  .site-footer__link:hover {
+    color: var(--color-ink);
+  }
+
+  @media (min-width: 640px) {
+    .site-footer__bar {
+      flex-direction: row-reverse;
+    }
+
+    .site-footer__nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.5rem 1.25rem;
+    }
   }
 
   @media (max-width: 639px) {

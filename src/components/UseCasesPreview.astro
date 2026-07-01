@@ -38,59 +38,60 @@ const useCases = getUseCases();
         </button>
       </div>
     </div>
-
-    <div class="usecases__track-wrap" data-reveal style="--reveal-delay: 80ms;">
-      <ul class="usecases__track" role="list" aria-label="Use cases" tabindex="0">
-        {useCases.map((uc) => {
-          const title = getUseCaseDisplayTitle(uc);
-          const caption = (
-            <span class="usecases__caption">
-              <strong>{title}.</strong> {uc.tagline}
-              {!uc.comingSoon && (
-                <span class="usecases__link"> See how it works →</span>
-              )}
-            </span>
-          );
-          return (
-            <li class="usecases__slide">
-              {uc.comingSoon ? (
-                <article class="usecases__card usecases__card--soon">
-                  <span
-                    class="usecases__art"
-                    style={`--usecase-art-image: url('${uc.image}');`}
-                  >
-                    <span class="usecases__soon">Coming soon</span>
-                    <span class="usecases__badge">
-                      <Icon name={uc.icon} style={`color: ${uc.ink};`} />
-                    </span>
-                  </span>
-                  {caption}
-                </article>
-              ) : (
-                <a href={uc.href} class="usecases__card usecases__card--link">
-                  <span
-                    class="usecases__art"
-                    style={`--usecase-art-image: url('${uc.image}');`}
-                  >
-                    <span class="usecases__badge">
-                      <Icon name={uc.icon} style={`color: ${uc.ink};`} />
-                    </span>
-                  </span>
-                  {caption}
-                </a>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
   </Container>
+
+  <div class="usecases__track-wrap" data-reveal style="--reveal-delay: 80ms;">
+    <ul class="usecases__track" role="list" aria-label="Use cases" tabindex="0">
+      {useCases.map((uc) => {
+        const title = getUseCaseDisplayTitle(uc);
+        const caption = (
+          <span class="usecases__caption">
+            <strong>{title}.</strong> {uc.tagline}
+            {!uc.comingSoon && (
+              <span class="usecases__link"> See how it works →</span>
+            )}
+          </span>
+        );
+        return (
+          <li class="usecases__slide">
+            {uc.comingSoon ? (
+              <article class="usecases__card usecases__card--soon">
+                <span
+                  class="usecases__art"
+                  style={`--usecase-art-image: url('${uc.image}');`}
+                >
+                  <span class="usecases__soon">Coming soon</span>
+                  <span class="usecases__badge">
+                    <Icon name={uc.icon} style={`color: ${uc.ink};`} />
+                  </span>
+                </span>
+                {caption}
+              </article>
+            ) : (
+              <a href={uc.href} class="usecases__card usecases__card--link">
+                <span
+                  class="usecases__art"
+                  style={`--usecase-art-image: url('${uc.image}');`}
+                >
+                  <span class="usecases__badge">
+                    <Icon name={uc.icon} style={`color: ${uc.ink};`} />
+                  </span>
+                </span>
+                {caption}
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  </div>
 </section>
 
 <style>
   .usecases {
     padding-block: clamp(3.5rem, 8vw, 6.5rem);
     padding-bottom: clamp(1.25rem, 3vw, 2rem);
+    overflow-x: hidden;
   }
 
   .usecases__head {
@@ -141,9 +142,8 @@ const useCases = getUseCases();
 
   .usecases__track-wrap {
     position: relative;
-    width: 100vw;
-    left: 50%;
-    transform: translateX(-50%);
+    overflow: hidden;
+    margin-inline: var(--frame-inset);
     margin-top: clamp(2.25rem, 5vw, 3.25rem);
   }
 
@@ -152,9 +152,15 @@ const useCases = getUseCases();
     gap: 1.5rem;
     margin: 0;
     padding-block: 0.25rem;
-    padding-left: max(var(--frame-content-pad), calc((100vw - 72rem) / 2 + var(--frame-content-pad)));
-    padding-right: var(--frame-gutter);
-    scroll-padding-left: max(var(--frame-content-pad), calc((100vw - 72rem) / 2 + var(--frame-content-pad)));
+    padding-left: max(
+      var(--frame-inset),
+      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
+    );
+    padding-right: var(--frame-inset);
+    scroll-padding-left: max(
+      var(--frame-inset),
+      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
+    );
     list-style: none;
     overflow-x: auto;
     scroll-snap-type: x mandatory;

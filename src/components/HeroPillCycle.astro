@@ -27,14 +27,17 @@ const TYPES = ["note", "scripture", "highlight", "folder", "thread"] as const;
   .pillcycle {
     position: relative;
     display: inline-flex;
-    /* inline-flex baseline sits on the pill box, not the word — nudge up so
-       cpill text shares the headline alphabetic baseline (hero line-height 1.05).
-       0.15em ≈ former 6px at clamp min (2.5rem / 40px); scales with headline. */
-    vertical-align: calc(0.16em - 0.15em);
+    align-items: baseline;
+    vertical-align: baseline;
     white-space: nowrap;
   }
   .pillcycle :global(.cpill) {
-    line-height: 1.05;
+    align-items: baseline;
+    line-height: 1;
+    padding-block: 0.08em 0.12em;
+  }
+  .pillcycle :global(.cpill__icon) {
+    align-self: center;
   }
   .pillcycle__item {
     opacity: 0;

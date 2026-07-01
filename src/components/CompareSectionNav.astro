@@ -1,8 +1,8 @@
 ---
 /**
  * CompareSectionNav — secondary floating nav below the site header.
- * Desktop: centered gradient pills at rest; compact dropdown when pinned on scroll.
- * Mobile: dropdown always. Scroll-spy on both.
+ * Desktop-wide: centered gradient pills at rest; compact dropdown when pinned on scroll.
+ * Narrow viewports: dropdown whenever the pill row would not fit (ResizeObserver).
  */
 interface NavItem {
   id: string;
@@ -94,28 +94,35 @@ const defaultId = items[0]?.id ?? "";
 
   .compare-hub__nav-pills {
     display: none;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
     gap: 0.35rem;
-    max-width: 56rem;
+    max-width: none;
   }
 
-  @media (min-width: 640px) {
-    .compare-hub__nav-pills {
-      display: flex;
-    }
-    .compare-hub__nav-select-wrap {
-      display: none;
-    }
+  .compare-hub__nav-select-wrap {
+    display: block;
+  }
 
-    .compare-hub__nav-float.is-pinned .compare-hub__nav-pills {
-      display: none;
-    }
+  .compare-hub__nav-float:not(.is-compact):not(.is-pinned) .compare-hub__nav-pills {
+    display: flex;
+  }
 
-    .compare-hub__nav-float.is-pinned .compare-hub__nav-select-wrap {
-      display: block;
-    }
+  .compare-hub__nav-float:not(.is-compact):not(.is-pinned) .compare-hub__nav-select-wrap {
+    display: none;
+  }
+
+  .compare-hub__nav-float.is-measuring .compare-hub__nav-pills {
+    display: flex !important;
+    visibility: hidden;
+    position: absolute;
+    inset: 0 auto auto 0;
+    pointer-events: none;
+  }
+
+  .compare-hub__nav-float.is-measuring .compare-hub__nav-select-wrap {
+    visibility: hidden;
   }
 
   .compare-hub__nav-pill {
@@ -217,6 +224,23 @@ const defaultId = items[0]?.id ?? "";
 
     const pinTop = () => (header?.getBoundingClientRect().bottom ?? 0) + PIN_GAP;
 
+    const pillsNav = navFloat.querySelector<HTMLElement>(".compare-hub__nav-pills");
+
+    const syncCompact = () => {
+      if (!pillsNav) return;
+      navFloat.classList.add("is-measuring");
+      const floatStyle = getComputedStyle(navFloat);
+      const chromeX =
+        parseFloat(floatStyle.paddingLeft) +
+        parseFloat(floatStyle.paddingRight) +
+        parseFloat(floatStyle.borderLeftWidth) +
+        parseFloat(floatStyle.borderRightWidth);
+      const needed = pillsNav.scrollWidth + chromeX;
+      navFloat.classList.remove("is-measuring");
+      const available = navSlot.getBoundingClientRect().width;
+      navFloat.classList.toggle("is-compact", needed > available);
+    };
+
     const syncPin = () => {
       const top = pinTop();
       const slotTop = navSlot.getBoundingClientRect().top;
@@ -265,6 +289,7 @@ const defaultId = items[0]?.id ?? "";
       const markerPx = () => navFloat.getBoundingClientRect().bottom + 12;
 
       const updateActive = () => {
+        syncCompact();
         syncPin();
         const marker = markerPx();
         let current = sections[0]!.id;
@@ -286,6 +311,7 @@ const defaultId = items[0]?.id ?? "";
       };
 
       setActive(sections[0]!.id);
+      syncCompact();
       syncPin();
 
       select?.addEventListener("change", () => {
@@ -313,10 +339,18 @@ const defaultId = items[0]?.id ?? "";
 
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", updateActive, { passive: true });
+      if (typeof ResizeObserver !== "undefined") {
+        const ro = new ResizeObserver(() => syncCompact());
+        ro.observe(navSlot);
+      }
       updateActive();
     } else {
+      syncCompact();
       syncPin();
-      window.addEventListener("resize", syncPin, { passive: true });
+      window.addEventListener("resize", () => {
+        syncCompact();
+        syncPin();
+      }, { passive: true });
       window.addEventListener("scroll", syncPin, { passive: true });
     }
   }

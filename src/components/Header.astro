@@ -22,7 +22,6 @@ const SCROLL_THRESHOLD = 16;
         alt=""
         width={32}
         height={32}
-        class="site-header__logo-img"
         loading="eager"
       />
     </a>
@@ -146,8 +145,13 @@ const SCROLL_THRESHOLD = 16;
     display: flex;
     align-items: center;
     flex: none;
+    line-height: 0;
   }
-  .site-header__logo-img {
+  /* OptimizedImage renders <picture><img> — :global so scoped styles still apply. */
+  .site-header__logo :global(picture) {
+    display: block;
+  }
+  .site-header__logo :global(img) {
     width: 32px;
     height: 32px;
     border-radius: 12px;

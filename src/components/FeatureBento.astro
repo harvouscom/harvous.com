@@ -1,8 +1,7 @@
 ---
 /**
- * FeatureBento — the homepage's core-features section. A static responsive
- * 2-up grid of ProductCards (no horizontal scroll) — the Mintlify "bento"
- * treatment for the same four feature cards the Figma "Home" frame defined.
+ * FeatureBento — core-features section. Two-up grid from 720px; horizontal
+ * scroll-snap slider below that (same bleed + arrows as use cases / compare).
  */
 import Container from "./layout/Container.astro";
 import ProductCard from "./ProductCard.astro";
@@ -30,36 +29,269 @@ const { eyebrow, title, lead, cards, id } = Astro.props;
 
 <section class="bento frame-divider" id={id}>
   <Container size="xl">
-    <div class="bento__head section-head" data-reveal>
-      {eyebrow && <span class="eyebrow-pill">{eyebrow}</span>}
-      <h2 class="section-title">{title}</h2>
-      {lead && <p class="lead bento__lead">{lead}</p>}
-    </div>
+    <div class="bento__head" data-reveal>
+      <div class="bento__head-text">
+        {eyebrow && <span class="eyebrow-pill">{eyebrow}</span>}
+        <h2 class="section-title">{title}</h2>
+        {lead && <p class="lead bento__lead">{lead}</p>}
+      </div>
 
-    <div class="bento__grid" data-reveal style="--reveal-delay: 80ms;">
-      {cards.map((c) => (
-        <ProductCard pills={c.pills} title={c.title} body={c.body} image={c.image} imageAlt={c.imageAlt} />
-      ))}
+      <div class="bento__controls">
+        <button type="button" class="bento__arrow" data-dir="prev" aria-label="Previous feature" disabled>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 3L5 8l5 5"/>
+          </svg>
+        </button>
+        <button type="button" class="bento__arrow" data-dir="next" aria-label="Next feature">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 3l5 5-5 5"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </Container>
+
+  <div class="bento__track-wrap" data-reveal style="--reveal-delay: 80ms;">
+    <ul class="bento__track" role="list" aria-label="Features" tabindex="0">
+      {
+        cards.map((c) => (
+          <li class="bento__slide">
+            <ProductCard pills={c.pills} title={c.title} body={c.body} image={c.image} imageAlt={c.imageAlt} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
 
 <style>
   .bento {
     padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    overflow-x: hidden;
+  }
+  .bento__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+  .bento__head-text {
+    flex: 1;
+    min-width: min(100%, 20rem);
+    max-width: 36rem;
+  }
+  .bento__head-text > * + * {
+    margin-top: 0.85rem;
+  }
+  .bento__head-text .section-title {
+    max-width: 18ch;
   }
   .bento__lead {
     max-width: 32ch;
-    margin-inline: auto;
   }
-  .bento__grid {
-    margin-top: clamp(2.25rem, 5vw, 3.5rem);
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: stretch;
-    gap: 1.5rem;
-  }
+
   @media (min-width: 720px) {
-    .bento__grid { grid-template-columns: repeat(2, 1fr); gap: 1.75rem; }
+    .bento__head {
+      display: block;
+    }
+    .bento__head-text {
+      margin-inline: auto;
+      text-align: center;
+    }
+    .bento__head-text .section-title {
+      margin-inline: auto;
+    }
+    .bento__lead {
+      margin-inline: auto;
+    }
+  }
+  .bento__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: none;
+  }
+  .bento__controls--hidden {
+    display: none;
+  }
+
+  .bento__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: none;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    color: var(--color-ink-soft);
+    transition: color 150ms ease, background-color 150ms ease, opacity 150ms ease;
+  }
+  .bento__arrow svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  .bento__arrow:hover:not(:disabled) {
+    color: var(--color-ink);
+    background: var(--color-warm);
+  }
+  .bento__arrow:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .bento__track-wrap {
+    position: relative;
+    margin-top: clamp(2.25rem, 5vw, 3.5rem);
+    overflow: hidden;
+    margin-inline: var(--frame-inset);
+  }
+
+  .bento__track {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding-block: 0.25rem;
+    padding-left: max(
+      var(--frame-inset),
+      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
+    );
+    padding-right: var(--frame-inset);
+    scroll-padding-left: max(
+      var(--frame-inset),
+      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
+    );
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .bento__track::-webkit-scrollbar {
+    display: none;
+  }
+  .bento__track:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+
+  .bento__slide {
+    flex: none;
+    width: clamp(17rem, 88vw, 22rem);
+    scroll-snap-align: start;
+  }
+  .bento__slide :global(.pcard) {
+    height: 100%;
+  }
+
+  @media (min-width: 720px) {
+    .bento {
+      overflow-x: visible;
+    }
+    .bento__controls {
+      display: none;
+    }
+    .bento__track-wrap {
+      max-width: 72rem;
+      margin-inline: auto;
+      padding-inline: var(--frame-content-pad);
+      overflow: visible;
+    }
+    .bento__track {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: stretch;
+      gap: 1.75rem;
+      overflow: visible;
+      padding: 0;
+      scroll-snap-type: none;
+    }
+    .bento__slide {
+      width: auto;
+      scroll-snap-align: unset;
+    }
   }
 </style>
+
+<script>
+  const bento = document.querySelector<HTMLElement>(".bento");
+  const track = bento?.querySelector<HTMLElement>(".bento__track");
+  const controls = bento?.querySelector<HTMLElement>(".bento__controls");
+  const SLIDER_MQ = window.matchMedia("(max-width: 719px)");
+
+  if (bento && track && controls) {
+    const prevBtn = bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="prev"]');
+    const nextBtn = bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="next"]');
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const isSlider = () => SLIDER_MQ.matches;
+
+    const isScrollable = () => track.scrollWidth > track.clientWidth + 2;
+
+    const updateArrows = () => {
+      if (!isSlider()) {
+        controls.classList.add("bento__controls--hidden");
+        return;
+      }
+
+      const scrollable = isScrollable();
+      controls.classList.toggle("bento__controls--hidden", !scrollable);
+
+      if (!scrollable) {
+        track.scrollLeft = 0;
+        if (prevBtn) prevBtn.disabled = true;
+        if (nextBtn) nextBtn.disabled = true;
+        return;
+      }
+
+      const max = track.scrollWidth - track.clientWidth - 1;
+      if (prevBtn) prevBtn.disabled = track.scrollLeft <= 0;
+      if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
+    };
+
+    const step = () => {
+      const slide = track.querySelector<HTMLElement>(".bento__slide");
+      if (!slide) return track.clientWidth * 0.9;
+      const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0") || 0;
+      return slide.getBoundingClientRect().width + gap;
+    };
+
+    const scrollByDir = (dir: 1 | -1) => {
+      if (!isSlider() || !isScrollable()) return;
+      track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
+    };
+
+    prevBtn?.addEventListener("click", () => scrollByDir(-1));
+    nextBtn?.addEventListener("click", () => scrollByDir(1));
+
+    let ticking = false;
+    track.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          updateArrows();
+          ticking = false;
+        });
+      },
+      { passive: true }
+    );
+
+    track.querySelectorAll("img").forEach((img) => {
+      if (!img.complete) img.addEventListener("load", updateArrows, { once: true });
+    });
+
+    SLIDER_MQ.addEventListener("change", updateArrows);
+    window.addEventListener("resize", updateArrows, { passive: true });
+
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(() => updateArrows());
+      ro.observe(track);
+    }
+
+    updateArrows();
+  }
+</script>

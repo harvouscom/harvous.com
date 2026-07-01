@@ -53,10 +53,16 @@ const { pills, title, body, image, imageAlt } = Astro.props;
     flex-direction: column;
     flex: 1;
     gap: 0.75rem;
-    padding: 2rem;
+    padding: 24px;
   }
   .pcard__head { display: flex; flex-direction: column; gap: 1rem; }
-  .pcard__pills { display: flex; flex-wrap: wrap; gap: 0.56rem; font-size: 1.25rem; }
+  .pcard__pills { display: flex; flex-wrap: wrap; gap: 0.56rem; font-size: calc(1.25rem - 4px); }
+  .pcard__pills :global(.cpill) {
+    padding: 0.28em 0.55em;
+  }
+  .pcard__pills :global(.cpill__icon) {
+    font-size: 0.625em;
+  }
   .pcard__title {
     font-family: "Google Sans Flex", "Google Sans", ui-sans-serif, system-ui, sans-serif;
     font-weight: 600;
@@ -68,29 +74,20 @@ const { pills, title, body, image, imageAlt } = Astro.props;
   }
   .pcard__text {
     font-family: "Google Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size: 1.125rem;
+    font-size: 1rem;
     line-height: 1.6;
     color: var(--color-ink-soft);
   }
 
-  /* Screenshot panel — fixed height, image anchored bottom and allowed to bleed/crop at top. */
+  /* Screenshot panel — height follows the image. */
   .pcard__shot {
-    position: relative;
     flex-shrink: 0;
-    height: 240px;
     border-top: 1px solid var(--color-rule);
     overflow: hidden;
     background: var(--color-warm);
+    line-height: 0;
   }
-  .pcard__shot picture {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 108%;
-    max-width: none;
-    display: block;
-  }
+  .pcard__shot picture,
   .pcard__shot img {
     width: 100%;
     height: auto;
