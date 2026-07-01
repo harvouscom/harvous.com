@@ -1,6 +1,7 @@
 ---
 import { fathomOpenApp, fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
 import { APP_ORIGIN } from "../lib/app-origin.ts";
+import { HV_SIGNED_IN_COOKIE } from "../lib/marketing-session-hint.ts";
 import OptimizedImage from "./OptimizedImage.astro";
 
 const navLinks = [
@@ -23,6 +24,7 @@ const SCROLL_THRESHOLD = 16;
   data-app-origin={APP_ORIGIN}
   data-fathom-signin={fathomSignin.header}
   data-fathom-open-app={fathomOpenApp.header}
+  data-hv-signed-in-cookie={HV_SIGNED_IN_COOKIE}
 >
   <div class="site-header__inner">
     <a href="/" class="site-header__logo" aria-label="Harvous — Home">
@@ -48,9 +50,48 @@ const SCROLL_THRESHOLD = 16;
       </span>
     </nav>
 
-    <a href="https://app.harvous.com/sign-up" class="btn-pill site-header__cta" data-fathom-track={fathomSignup.header}>
-      Try free
-    </a>
+    <div class="site-header__actions">
+      <a href="https://app.harvous.com/sign-up" class="btn-pill site-header__cta" data-fathom-track={fathomSignup.header}>
+        Try free
+      </a>
+
+      <button
+        type="button"
+        class="site-header__menu-toggle"
+        id="site-header-menu-toggle"
+        aria-expanded="false"
+        aria-controls="site-header-mobile-nav"
+      >
+        <span class="site-header__menu-toggle-label">Menu</span>
+        <svg class="site-header__menu-icon site-header__menu-icon--open" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <svg class="site-header__menu-icon site-header__menu-icon--close" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="site-header__mobile-nav" id="site-header-mobile-nav" aria-hidden="true">
+    <button type="button" class="site-header__mobile-nav-backdrop" id="site-header-mobile-backdrop" tabindex="-1" aria-label="Close menu"></button>
+    <nav class="site-header__mobile-nav-panel" aria-label="Mobile">
+      <div class="site-header__mobile-nav-links">
+        {navLinks.map((link) => (
+          <a href={link.href} class="site-header__mobile-link">
+            {link.label}
+          </a>
+        ))}
+        <span class="site-header__auth site-header__auth--mobile" id="site-header-auth-mobile" hidden>
+          <a href={APP_ORIGIN} class="site-header__mobile-link" id="site-header-auth-link-mobile">
+            …
+          </a>
+        </span>
+      </div>
+      <a href="https://app.harvous.com/sign-up" class="btn-accent site-header__mobile-cta" data-fathom-track={fathomSignup.header}>
+        Try free
+      </a>
+    </nav>
   </div>
 </header>
 
@@ -76,12 +117,14 @@ const SCROLL_THRESHOLD = 16;
   .site-header.is-scrolled {
     top: 0.75rem;
   }
+  .site-header.is-menu-open {
+    z-index: 100;
+  }
 
   .site-header__inner {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem;
     width: 100%;
     /* Resting (flat) state spans the full bar; once scrolled this shrinks to
@@ -169,6 +212,9 @@ const SCROLL_THRESHOLD = 16;
     display: none;
     align-items: center;
     gap: 1.25rem;
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
   }
   @media (min-width: 640px) {
     .site-header__nav {
@@ -195,6 +241,159 @@ const SCROLL_THRESHOLD = 16;
   .site-header__cta {
     flex: none;
   }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: none;
+    margin-left: auto;
+    /* Matches .btn-pill vertical box (padding + line-height + border). */
+    --site-header-control-h: calc(0.4rem * 2 + 1.2 * 0.875rem + 2px);
+  }
+
+  .site-header__menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    box-sizing: border-box;
+    width: var(--site-header-control-h);
+    height: var(--site-header-control-h);
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    color: var(--color-ink);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+  .site-header__menu-toggle:hover {
+    background: var(--color-warm);
+  }
+  .site-header__menu-toggle-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .site-header__menu-icon--close {
+    display: none;
+  }
+  .site-header.is-menu-open .site-header__menu-icon--open {
+    display: none;
+  }
+  .site-header.is-menu-open .site-header__menu-icon--close {
+    display: block;
+  }
+  @media (min-width: 640px) {
+    .site-header__menu-toggle {
+      display: none;
+    }
+  }
+
+  .site-header__mobile-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+  }
+  .site-header__mobile-nav:not(.is-open) {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .site-header__mobile-nav.is-open {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .site-header__mobile-nav-backdrop {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(15, 23, 42, 0.28);
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity var(--header-duration) var(--header-ease);
+  }
+  .site-header.is-menu-open .site-header__mobile-nav-backdrop {
+    opacity: 1;
+  }
+
+  .site-header__mobile-nav-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: min(100%, 18.5rem);
+    padding:
+      calc(4.25rem + env(safe-area-inset-top, 0px))
+      1.25rem
+      calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    background: var(--color-paper);
+    border-left: 1px solid var(--color-rule);
+    box-shadow: -8px 0 32px -12px rgba(15, 23, 42, 0.12);
+    transform: translateX(100%);
+    transition: transform var(--header-duration) var(--header-ease);
+  }
+  .site-header__mobile-nav.is-open .site-header__mobile-nav-panel {
+    transform: translateX(0);
+  }
+
+  .site-header__mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .site-header__mobile-link {
+    display: block;
+    padding: 0.75rem 0.5rem;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    border-radius: 0.75rem;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .site-header__mobile-link:hover {
+    background: var(--color-warm);
+    color: var(--color-ink);
+  }
+  .site-header__auth--mobile {
+    display: block;
+  }
+  .site-header__auth--mobile[hidden] {
+    display: none;
+  }
+  .site-header__mobile-cta {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header__mobile-nav-backdrop,
+    .site-header__mobile-nav-panel {
+      transition: none;
+    }
+  }
+  @media (min-width: 640px) {
+    .site-header__mobile-nav {
+      display: none;
+    }
+  }
 </style>
 
 <script>
@@ -205,17 +404,12 @@ const SCROLL_THRESHOLD = 16;
   // UseCasesPreview.astro's track-scroll listener).
   const header = document.getElementById("site-header");
   if (header) {
-    const inner = header.querySelector<HTMLElement>(".site-header__inner");
+    const inner = header.querySelector(".site-header__inner");
     const threshold = Number(header.dataset.scrollThreshold) || 16;
+    const hvSignedInCookie = header.dataset.hvSignedInCookie || "hv_signed_in";
     let scrollTicking = false;
     let resizeTicking = false;
 
-    // The row's children (logo / nav / CTA) use `flex: none`, so their
-    // rendered width already equals their natural content width even while
-    // the row itself is stretched to 100% with `justify-content:
-    // space-between`. That lets us compute the "shrink-to-fit" pill width
-    // directly — without a hidden measurement clone — so `max-width` can
-    // transition to a real pixel value instead of snapping to `fit-content`.
     const measurePillWidth = () => {
       if (!inner) return;
       const style = getComputedStyle(inner);
@@ -250,6 +444,72 @@ const SCROLL_THRESHOLD = 16;
       { passive: true }
     );
 
+    const authSlot = document.getElementById("site-header-auth");
+    const authLink = document.getElementById("site-header-auth-link");
+    const authSlotMobile = document.getElementById("site-header-auth-mobile");
+    const authLinkMobile = document.getElementById("site-header-auth-link-mobile");
+    const appOrigin = header.dataset.appOrigin;
+    const fathomSignin = header.dataset.fathomSignin;
+    const fathomOpenApp = header.dataset.fathomOpenApp;
+    const menuToggle = document.getElementById("site-header-menu-toggle");
+    const mobileNav = document.getElementById("site-header-mobile-nav");
+    const mobileBackdrop = document.getElementById("site-header-mobile-backdrop");
+
+    const bindFathom = (el, eventName) => {
+      if (!eventName) return;
+      el.dataset.fathomTrack = eventName;
+      el.addEventListener("click", () => {
+        if (window.fathom) window.fathom.trackEvent(eventName);
+      });
+    };
+
+    const setAuthLink = (link, signedIn) => {
+      if (!link || !appOrigin) return;
+      if (signedIn) {
+        link.href = `${appOrigin}/`;
+        link.textContent = "Open app";
+        bindFathom(link, fathomOpenApp);
+      } else {
+        link.href = `${appOrigin}/sign-in`;
+        link.textContent = "Sign in";
+        bindFathom(link, fathomSignin);
+      }
+    };
+
+    const showAuthLink = (signedIn) => {
+      if (!appOrigin) return;
+      setAuthLink(authLink, signedIn);
+      setAuthLink(authLinkMobile, signedIn);
+      if (authSlot) authSlot.hidden = false;
+      if (authSlotMobile) authSlotMobile.hidden = false;
+      measurePillWidth();
+    };
+
+    const setMenuOpen = (open) => {
+      header.classList.toggle("is-menu-open", open);
+      if (menuToggle) menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (mobileNav) {
+        mobileNav.classList.toggle("is-open", open);
+        mobileNav.setAttribute("aria-hidden", open ? "false" : "true");
+      }
+      document.documentElement.style.overflow = open ? "hidden" : "";
+    };
+
+    const closeMenu = () => setMenuOpen(false);
+    const openMenu = () => setMenuOpen(true);
+
+    menuToggle?.addEventListener("click", () => {
+      if (header.classList.contains("is-menu-open")) closeMenu();
+      else openMenu();
+    });
+    mobileBackdrop?.addEventListener("click", closeMenu);
+    mobileNav?.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && header.classList.contains("is-menu-open")) closeMenu();
+    });
+
     window.addEventListener(
       "resize",
       () => {
@@ -257,6 +517,7 @@ const SCROLL_THRESHOLD = 16;
         resizeTicking = true;
         requestAnimationFrame(() => {
           measurePillWidth();
+          if (window.innerWidth >= 640 && header.classList.contains("is-menu-open")) closeMenu();
           resizeTicking = false;
         });
       },
@@ -266,40 +527,18 @@ const SCROLL_THRESHOLD = 16;
     updateScrolled();
     measurePillWidth();
 
-    const authSlot = document.getElementById("site-header-auth");
-    const authLink = document.getElementById("site-header-auth-link");
-    const appOrigin = header.dataset.appOrigin;
-    const fathomSignin = header.dataset.fathomSignin;
-    const fathomOpenApp = header.dataset.fathomOpenApp;
+    const hasSessionHint = () =>
+      new RegExp(`(?:^|;\\s*)${hvSignedInCookie}=1(?:;|$)`).test(document.cookie);
 
-    const bindFathom = (el: HTMLElement, eventName: string | undefined) => {
-      if (!eventName) return;
-      el.dataset.fathomTrack = eventName;
-      el.addEventListener("click", () => {
-        if (window.fathom) window.fathom.trackEvent(eventName);
-      });
-    };
-
-    const showAuthLink = (signedIn: boolean) => {
-      if (!authSlot || !authLink || !appOrigin) return;
-      if (signedIn) {
-        authLink.href = `${appOrigin}/`;
-        authLink.textContent = "Open app";
-        bindFathom(authLink, fathomOpenApp);
+    if (appOrigin) {
+      if (hasSessionHint()) {
+        showAuthLink(true);
       } else {
-        authLink.href = `${appOrigin}/sign-in`;
-        authLink.textContent = "Sign in";
-        bindFathom(authLink, fathomSignin);
+        fetch(`${appOrigin}/api/auth/status`, { credentials: "include" })
+          .then((res) => (res.ok ? res.json() : { signedIn: false }))
+          .then((data) => showAuthLink(Boolean(data.signedIn)))
+          .catch(() => showAuthLink(false));
       }
-      authSlot.hidden = false;
-      measurePillWidth();
-    };
-
-    if (authSlot && authLink && appOrigin) {
-      fetch(`${appOrigin}/api/auth/status`, { credentials: "include" })
-        .then((res) => (res.ok ? res.json() : { signedIn: false }))
-        .then((data: { signedIn?: boolean }) => showAuthLink(Boolean(data.signedIn)))
-        .catch(() => showAuthLink(false));
     }
   }
 </script>
