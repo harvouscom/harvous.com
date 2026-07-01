@@ -440,10 +440,8 @@ details > summary::-webkit-details-marker {
 
 /* ──────────────────────────────────────────────────────────────────────────
    Day / Night theme — "the light shines in the darkness" (John 1:5)
-   One attribute (`data-color-scheme`) drives both the site chrome (--color-*)
-   and the embedded AppShell replica (--pds-*, from prototype-tokens.css), so a
-   single toggle re-themes the whole page in lockstep. Light values live in the
-   @theme block above; the dark overrides + glow tokens live here.
+   TEMP: dark mode disabled in BaseLayout.astro (forced data-color-scheme=light).
+   Dark overrides below remain for when night theme is re-enabled.
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {

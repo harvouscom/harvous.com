@@ -27,7 +27,7 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-color-scheme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -56,18 +56,8 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
     <script is:inline>
       (() => {
-        try {
-          const stored = localStorage.getItem("harvous-color-scheme");
-          const scheme =
-            stored === "light" || stored === "dark"
-              ? stored
-              : window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light";
-          document.documentElement.dataset.colorScheme = scheme;
-        } catch (e) {
-          document.documentElement.dataset.colorScheme = "light";
-        }
+        // TEMP: dark mode disabled — always light until night theme is ready to ship.
+        document.documentElement.dataset.colorScheme = "light";
       })();
     </script>
 

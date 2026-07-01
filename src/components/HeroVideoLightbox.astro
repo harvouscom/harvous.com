@@ -46,6 +46,8 @@ const { src, label = "Watch the tour" } = Astro.props;
 
 <style>
   .hero-video {
+    --hero-video-chrome: #0d0e12;
+
     position: absolute;
     inset: 0;
     z-index: 2;
@@ -64,7 +66,7 @@ const { src, label = "Watch the tour" } = Astro.props;
     padding: 0.375rem 0.875rem 0.375rem 0.375rem;
     border-radius: var(--radius-pill);
     border: 1px solid color-mix(in srgb, #fff 35%, transparent);
-    background: color-mix(in srgb, var(--color-ink) 58%, transparent);
+    background: color-mix(in srgb, var(--hero-video-chrome) 58%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: #fff;
@@ -76,7 +78,7 @@ const { src, label = "Watch the tour" } = Astro.props;
     transition: background-color 150ms ease, border-color 150ms ease;
   }
   .hero-video-callout:hover {
-    background: color-mix(in srgb, var(--color-ink) 68%, transparent);
+    background: color-mix(in srgb, var(--hero-video-chrome) 68%, transparent);
     border-color: color-mix(in srgb, #fff 45%, transparent);
   }
   .hero-video-callout:focus-visible {
@@ -120,7 +122,7 @@ const { src, label = "Watch the tour" } = Astro.props;
     border: none;
     padding: 0;
     margin: 0;
-    background: color-mix(in srgb, var(--color-ink) 72%, transparent);
+    background: color-mix(in srgb, var(--hero-video-chrome) 72%, transparent);
     cursor: pointer;
   }
 
@@ -132,7 +134,7 @@ const { src, label = "Watch the tour" } = Astro.props;
     border-radius: clamp(12px, 2vw, var(--radius-card));
     overflow: hidden;
     border: 1px solid var(--color-rule);
-    background: var(--color-ink);
+    background: var(--hero-video-chrome);
     box-shadow: var(--shadow-float);
   }
 
@@ -150,14 +152,14 @@ const { src, label = "Watch the tour" } = Astro.props;
     border-radius: 50%;
     padding: 0;
     color: #fff;
-    background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+    background: color-mix(in srgb, var(--hero-video-chrome) 55%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     cursor: pointer;
     transition: background-color 150ms ease;
   }
   .hero-video-lightbox__close:hover {
-    background: color-mix(in srgb, var(--color-ink) 75%, transparent);
+    background: color-mix(in srgb, var(--hero-video-chrome) 75%, transparent);
   }
   .hero-video-lightbox__close:focus-visible {
     outline: 2px solid var(--color-accent);
