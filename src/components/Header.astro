@@ -123,10 +123,12 @@ const SCROLL_THRESHOLD = 16;
 
   .site-header__inner {
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 1rem;
     width: 100%;
+    box-sizing: border-box;
     /* Resting (flat) state spans the full bar; once scrolled this shrinks to
        --pill-width (measured in the inline script below from the row's own
        natural content width) so the browser can smoothly interpolate the
@@ -195,30 +197,49 @@ const SCROLL_THRESHOLD = 16;
     display: flex;
     align-items: center;
     flex: none;
+    grid-column: 1;
+    min-width: 32px;
     line-height: 0;
   }
   /* OptimizedImage renders <picture><img> — :global so scoped styles still apply. */
   .site-header__logo :global(picture) {
     display: block;
+    flex: none;
+    min-width: 32px;
   }
   .site-header__logo :global(img) {
     width: 32px;
     height: 32px;
+    min-width: 32px;
     border-radius: 12px;
     display: block;
+    object-fit: contain;
   }
 
   .site-header__nav {
     display: none;
     align-items: center;
     gap: 1.25rem;
-    flex: 1;
-    justify-content: center;
+    justify-self: center;
+    grid-column: 2;
     min-width: 0;
   }
   @media (min-width: 640px) {
     .site-header__nav {
       display: flex;
+    }
+  }
+  /* Mobile: logo + actions only — skip the desktop center column so the pill
+     shrink never compresses the icon track. */
+  @media (max-width: 639px) {
+    .site-header__inner {
+      grid-template-columns: auto auto;
+      justify-content: space-between;
+      column-gap: 0.75rem;
+    }
+    .site-header__actions {
+      grid-column: 2;
+      flex-shrink: 0;
     }
   }
   .site-header__link {
@@ -246,8 +267,8 @@ const SCROLL_THRESHOLD = 16;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    flex: none;
-    margin-left: auto;
+    justify-self: end;
+    grid-column: 3;
     /* Matches .btn-pill vertical box (padding + line-height + border). */
     --site-header-control-h: calc(0.4rem * 2 + 1.2 * 0.875rem + 2px);
   }
@@ -417,10 +438,40 @@ const SCROLL_THRESHOLD = 16;
       const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const borderX = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
 
+      const measureNavWidth = (nav) => {
+        const navStyle = getComputedStyle(nav);
+        const navGap = parseFloat(navStyle.columnGap || navStyle.gap) || 0;
+        const links = [...nav.querySelectorAll("a")].filter(
+          (link) => getComputedStyle(link).display !== "none" && link.offsetParent !== null
+        );
+        if (links.length === 0) return 0;
+        const linksWidth = links.reduce((sum, link) => sum + link.getBoundingClientRect().width, 0);
+        return linksWidth + Math.max(0, links.length - 1) * navGap;
+      };
+
+      const measureActionsWidth = (actions) => {
+        const actionStyle = getComputedStyle(actions);
+        const actionGap = parseFloat(actionStyle.columnGap || actionStyle.gap) || 0;
+        const items = [...actions.children].filter(
+          (child) => getComputedStyle(child).display !== "none"
+        );
+        if (items.length === 0) return 0;
+        const itemsWidth = items.reduce((sum, child) => sum + child.getBoundingClientRect().width, 0);
+        return itemsWidth + Math.max(0, items.length - 1) * actionGap;
+      };
+
+      const measureChildWidth = (child) => {
+        if (getComputedStyle(child).display === "none") return 0;
+        if (child.classList.contains("site-header__nav")) return measureNavWidth(child);
+        if (child.classList.contains("site-header__logo")) return 32;
+        if (child.classList.contains("site-header__actions")) return measureActionsWidth(child);
+        return child.getBoundingClientRect().width;
+      };
+
       const visible = Array.from(inner.children).filter(
         (child) => getComputedStyle(child).display !== "none"
       );
-      const contentWidth = visible.reduce((sum, child) => sum + child.getBoundingClientRect().width, 0);
+      const contentWidth = visible.reduce((sum, child) => sum + measureChildWidth(child), 0);
       const gapsWidth = Math.max(0, visible.length - 1) * gap;
 
       const pillWidth = contentWidth + gapsWidth + paddingX + borderX;
@@ -430,7 +481,9 @@ const SCROLL_THRESHOLD = 16;
     };
 
     const updateScrolled = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > threshold);
+      const scrolled = window.scrollY > threshold;
+      header.classList.toggle("is-scrolled", scrolled);
+      if (scrolled) measurePillWidth();
       scrollTicking = false;
     };
 
