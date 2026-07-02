@@ -67,7 +67,7 @@ const useCases: UseCase[] = [
       {
         heading: "How people use it day to day",
         paragraphs: [
-          "Open a thread for whatever you're in — a book, a theme, or just \"this month.\" Add a note next to the passage while the thought is still warm. Scripture pills keep verses one tap away across seven translations.",
+          "Open a thread for whatever you're in — a book, a theme, or just \"this month.\" Add a note next to the passage while the thought is still warm. Scripture pills keep verses one tap away across 11 translations.",
           "The daily passage gives you a starting point when you're not sure where to begin. Everything syncs across web, iOS, iPad, and Mac so your journal follows you.",
         ],
       },
@@ -81,7 +81,7 @@ const useCases: UseCase[] = [
       {
         icon: "fa6-solid:book-bible",
         heading: "Scripture pills keep it connected",
-        body: 'Type "Romans 8:1" and it becomes a tap-able link across all 7 translations. The verse text is there whenever you need it — no app-switching, no losing your place.',
+        body: 'Type "Romans 8:1" and it becomes a tap-able link across all 11 translations. The verse text is there whenever you need it — no app-switching, no losing your place.',
       },
       {
         icon: "fa6-solid:layer-group",
@@ -196,7 +196,7 @@ const useCases: UseCase[] = [
       {
         heading: "Depth without the research-suite weight",
         paragraphs: [
-          "Serious tools exist for academic Bible study. Harvous sits in the middle: scripture pills across seven translations, Easton's dictionary built in, threads per chapter, notes that can live in more than one collection when a theme spans books.",
+          "Serious tools exist for academic Bible study. Harvous sits in the middle: scripture pills across 11 translations, Easton's dictionary built in, threads per chapter, notes that can live in more than one collection when a theme spans books.",
           "You write. Harvous keeps the references, the organization, and the search — so months into Romans you can still find what you noticed in chapter 4.",
         ],
       },
@@ -210,7 +210,7 @@ const useCases: UseCase[] = [
       {
         icon: "fa6-solid:book-bible",
         heading: "Scripture pills that go deep",
-        body: "Every reference links out in one tap. Cross-reference a verse in Romans to something in Galatians and read it right there, in whichever of the 7 translations you prefer.",
+        body: "Every reference links out in one tap. Cross-reference a verse in Romans to something in Galatians and read it right there, in whichever of the 11 translations you prefer.",
       },
       {
         icon: "fa6-solid:diagram-project",

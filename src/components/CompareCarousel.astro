@@ -244,11 +244,6 @@ const {
     font-weight: 600;
   }
 
-  @media (max-width: 640px) {
-    .compare-carousel__controls {
-      display: none;
-    }
-  }
 </style>
 
 <script>
@@ -259,10 +254,8 @@ const {
     if (!track) return;
 
     bindCarouselFit({
-      fitRoots: [root],
       track,
       slideSelector: ".compare-carousel__slide",
-      controlRoots: Array.from(root.querySelectorAll<HTMLElement>(".compare-carousel__controls")),
       prevBtn: root.querySelector<HTMLButtonElement>('.compare-carousel__arrow[data-dir="prev"]'),
       nextBtn: root.querySelector<HTMLButtonElement>('.compare-carousel__arrow[data-dir="next"]'),
     });

@@ -179,11 +179,6 @@ const entries =
     transform: translateX(2px);
   }
 
-  @media (max-width: 640px) {
-    .compare-preview__arrow {
-      display: none;
-    }
-  }
 </style>
 
 <script>
@@ -191,16 +186,11 @@ const entries =
 
   document.querySelectorAll<HTMLElement>(".compare-preview").forEach((section) => {
     const track = section.querySelector<HTMLElement>(".compare-carousel__track");
-    const carousel = section.querySelector<HTMLElement>(".compare-carousel");
     if (!track) return;
 
-    const fitRoots = carousel ? [section, carousel] : [section];
-
     bindCarouselFit({
-      fitRoots,
       track,
       slideSelector: ".compare-carousel__slide",
-      controlRoots: Array.from(section.querySelectorAll<HTMLElement>(".compare-preview__controls")),
       prevBtn: section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="prev"]'),
       nextBtn: section.querySelector<HTMLButtonElement>('.compare-preview__arrow[data-dir="next"]'),
     });

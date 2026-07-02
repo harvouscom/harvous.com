@@ -283,11 +283,6 @@ const useCases = getUseCases();
     font-weight: 600;
   }
 
-  @media (max-width: 640px) {
-    .usecases__arrow {
-      display: none;
-    }
-  }
 </style>
 
 <script>
@@ -298,10 +293,8 @@ const useCases = getUseCases();
     if (!track) return;
 
     bindCarouselFit({
-      fitRoots: [root],
       track,
       slideSelector: ".usecases__slide",
-      controlRoots: Array.from(root.querySelectorAll<HTMLElement>(".usecases__controls")),
       prevBtn: root.querySelector<HTMLButtonElement>('.usecases__arrow[data-dir="prev"]'),
       nextBtn: root.querySelector<HTMLButtonElement>('.usecases__arrow[data-dir="next"]'),
     });

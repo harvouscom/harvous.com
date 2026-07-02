@@ -13,9 +13,6 @@ export function carouselFitsAll(track: HTMLElement, slideSelector: string): bool
   return first.left >= trackRect.left - 1 && last.right <= trackRect.right + 1;
 }
 
-export const CAROUSEL_FIT_CLASS = "is-fits-all";
-export const CAROUSEL_CONTROLS_HIDDEN_CLASS = "carousel-controls--hidden";
-
 type BindCarouselFitOptions = {
   fitRoots: HTMLElement[];
   track: HTMLElement;
@@ -23,19 +20,14 @@ type BindCarouselFitOptions = {
   controlRoots?: HTMLElement[];
   prevBtn?: HTMLButtonElement | null;
   nextBtn?: HTMLButtonElement | null;
-  /** When false, fit layout is cleared (e.g. bento desktop grid). */
-  enabled?: () => boolean;
 };
 
-/** Toggle fit layout, hide nav, and keep arrow disabled state in sync. */
+/** Keep prev/next disabled state in sync with scroll position. */
 export function bindCarouselFit({
-  fitRoots,
   track,
   slideSelector,
-  controlRoots = [],
   prevBtn,
   nextBtn,
-  enabled,
 }: BindCarouselFitOptions): void {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -46,28 +38,8 @@ export function bindCarouselFit({
     return slide.getBoundingClientRect().width + gap;
   };
 
-  const setControlsHidden = (hidden: boolean) => {
-    for (const el of controlRoots) {
-      el.classList.toggle(CAROUSEL_CONTROLS_HIDDEN_CLASS, hidden);
-    }
-  };
-
   const update = () => {
-    if (enabled && !enabled()) {
-      for (const root of fitRoots) {
-        root.classList.remove(CAROUSEL_FIT_CLASS);
-      }
-      setControlsHidden(false);
-      return;
-    }
-
-    const fitsAll = carouselFitsAll(track, slideSelector);
-    for (const root of fitRoots) {
-      root.classList.toggle(CAROUSEL_FIT_CLASS, fitsAll);
-    }
-    setControlsHidden(fitsAll);
-
-    if (fitsAll) {
+    if (carouselFitsAll(track, slideSelector)) {
       track.scrollLeft = 0;
       if (prevBtn) prevBtn.disabled = true;
       if (nextBtn) nextBtn.disabled = true;
