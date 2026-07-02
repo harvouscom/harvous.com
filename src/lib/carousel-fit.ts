@@ -20,6 +20,8 @@ type BindCarouselFitOptions = {
   controlRoots?: HTMLElement[];
   prevBtn?: HTMLButtonElement | null;
   nextBtn?: HTMLButtonElement | null;
+  /** When false, the slider is treated as a static grid — scrolling/arrows are skipped. */
+  enabled?: () => boolean;
 };
 
 /** Keep prev/next disabled state in sync with scroll position. */
@@ -28,6 +30,7 @@ export function bindCarouselFit({
   slideSelector,
   prevBtn,
   nextBtn,
+  enabled,
 }: BindCarouselFitOptions): void {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -39,6 +42,8 @@ export function bindCarouselFit({
   };
 
   const update = () => {
+    if (enabled && !enabled()) return;
+
     if (carouselFitsAll(track, slideSelector)) {
       track.scrollLeft = 0;
       if (prevBtn) prevBtn.disabled = true;
@@ -52,6 +57,7 @@ export function bindCarouselFit({
   };
 
   const scrollByDir = (dir: 1 | -1) => {
+    if (enabled && !enabled()) return;
     if (carouselFitsAll(track, slideSelector)) return;
     track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
   };

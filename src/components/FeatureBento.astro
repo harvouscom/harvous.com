@@ -1,7 +1,9 @@
 ---
 /**
- * FeatureBento — core-features section. Two-up grid from 720px; horizontal
- * scroll-snap slider below that (same bleed + arrows as use cases / compare).
+ * FeatureBento — core-features section. 2x2 grid inside a medium (md,
+ * 56rem) container from 720px; horizontal scroll-snap slider (same bleed
+ * + arrows as use cases / compare) below that, where a 2-up grid would be
+ * too cramped.
  */
 import Container from "./layout/Container.astro";
 import ProductCard from "./ProductCard.astro";
@@ -189,10 +191,40 @@ const { eyebrow, title, lead, cards, id } = Astro.props;
   .bento__slide :global(.pcard) {
     height: 100%;
   }
+
+  @media (min-width: 720px) {
+    .bento {
+      overflow-x: visible;
+    }
+    .bento__controls {
+      display: none;
+    }
+    .bento__track-wrap {
+      max-width: 56rem;
+      margin-inline: auto;
+      padding-inline: var(--frame-content-pad);
+      overflow: visible;
+    }
+    .bento__track {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: stretch;
+      gap: 1.75rem;
+      overflow: visible;
+      padding: 0;
+      scroll-snap-type: none;
+    }
+    .bento__slide {
+      width: auto;
+      scroll-snap-align: unset;
+    }
+  }
 </style>
 
 <script>
   import { bindCarouselFit } from "../lib/carousel-fit.ts";
+
+  const SLIDER_MQ = window.matchMedia("(max-width: 719px)");
 
   document.querySelectorAll<HTMLElement>(".bento").forEach((bento) => {
     const track = bento.querySelector<HTMLElement>(".bento__track");
@@ -203,6 +235,7 @@ const { eyebrow, title, lead, cards, id } = Astro.props;
       slideSelector: ".bento__slide",
       prevBtn: bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="prev"]'),
       nextBtn: bento.querySelector<HTMLButtonElement>('.bento__arrow[data-dir="next"]'),
+      enabled: () => SLIDER_MQ.matches,
     });
   });
 </script>
