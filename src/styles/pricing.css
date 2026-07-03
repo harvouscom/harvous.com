@@ -29,12 +29,19 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--color-paper) 18%, transparent) 0%,
-    color-mix(in oklab, var(--color-paper) 42%, transparent) 45%,
-    color-mix(in oklab, var(--color-paper) 18%, transparent) 100%
-  );
+  background:
+    radial-gradient(
+      110% 100% at 50% 50%,
+      color-mix(in oklab, var(--color-paper) 52%, transparent) 0%,
+      color-mix(in oklab, var(--color-paper) 22%, transparent) 55%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-paper) 14%, transparent) 0%,
+      color-mix(in oklab, var(--color-paper) 24%, transparent) 45%,
+      color-mix(in oklab, var(--color-paper) 14%, transparent) 100%
+    );
   pointer-events: none;
 }
 

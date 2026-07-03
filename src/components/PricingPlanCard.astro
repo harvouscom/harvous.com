@@ -76,7 +76,7 @@ const isPrimary = props.variant === "primary";
           <h2 class="pricing-plan-card__name">{props.plan.name}</h2>
           <div class="pricing-plan-card__badges">
             <span class="pricing-plan-card__addon-badge">Paid add-on</span>
-            <span class="pricing-plan-card__soon-badge">Coming soon</span>
+            <span class="pricing-plan-card__soon-badge">{props.plan.soonLabel ?? "Coming soon"}</span>
           </div>
         </div>
         <p class="pricing-addon-card__tagline">{props.plan.tagline}</p>

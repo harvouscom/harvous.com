@@ -6,6 +6,8 @@ export type PricingAddon = {
   icon: string;
   name: string;
   tagline: string;
+  /** Badge shown beside "Paid add-on" (defaults to "Coming soon"). */
+  soonLabel?: string;
 };
 
 export type FreePlan = {
@@ -47,21 +49,23 @@ export const FREE_PLAN: FreePlan = {
 
 export const PRICING_ADDONS: PricingAddon[] = [
   {
+    id: "shared-spaces",
+    icon: "fa6-solid:user-group",
+    name: "Shared Spaces",
+    tagline: "Study together — everyone contributes to the same threads.",
+  },
+  {
     id: "review",
     icon: "fa6-solid:clock-rotate-left",
     name: "Review",
     tagline: "Spaced practice from your notes, highlights, and passages.",
-  },
-  {
-    id: "shared-spaces",
-    icon: "fa6-solid:people-group",
-    name: "Shared Spaces",
-    tagline: "Study together — everyone contributes to the same threads.",
+    soonLabel: "Coming later",
   },
   {
     id: "challenges",
     icon: "fa6-solid:trophy",
     name: "Challenges",
     tagline: "Themed study seasons with guides, leaderboards, and more.",
+    soonLabel: "Coming later",
   },
 ];

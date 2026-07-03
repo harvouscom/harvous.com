@@ -111,7 +111,7 @@ const useCases: UseCase[] = [
     tagline: "Sunday thoughts have a habit of fading by Monday.",
     icon: "fa6-solid:church",
     ink: "var(--study-dock-accent-violet)",
-    image: "/images/auth-hero/ai_bg_045.webp",
+    image: "/images/auth-hero/ai_bg_072.webp",
     seoTitle: "Sermon notes app — Harvous",
     seoDescription:
       "Sunday thoughts fade by Monday. Harvous keeps sermon notes organized in series threads, searchable and scripture-linked — a notes app, not sermon transcription.",
@@ -299,9 +299,9 @@ const useCases: UseCase[] = [
     title: "Group study",
     carouselTitle: "Group study",
     tagline: "Lead your group. Shared spaces keep what you build together.",
-    icon: "fa6-solid:people-group",
+    icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
-    image: "/images/auth-hero/ai_bg_047.webp",
+    image: "/images/auth-hero/ai_bg_045.webp",
     comingSoon: true,
     comingSoonLine: "Coming soon",
     seoTitle: "Group study — Harvous",
@@ -327,7 +327,7 @@ const useCases: UseCase[] = [
     ],
     moments: [
       {
-        icon: "fa6-solid:people-group",
+        icon: "fa6-solid:user-group",
         heading: "A shared space for your group",
         body: "Everyone in the group can add to the same threads. Questions, answers, connections — all in one place that lives beyond the hour you meet.",
       },
