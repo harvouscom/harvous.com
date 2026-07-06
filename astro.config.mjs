@@ -14,7 +14,7 @@ const releaseNoteRedirects = Object.fromEntries(
 
 export default defineConfig({
   site: "https://harvous.com",
-  integrations: [mdx(), sitemap(), icon()],
+  integrations: [mdx(), sitemap({ filter: (page) => !page.includes("/blog") }), icon()],
   redirects: releaseNoteRedirects,
   vite: {
     plugins: [tailwindcss()],

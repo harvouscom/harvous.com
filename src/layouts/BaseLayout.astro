@@ -10,6 +10,10 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   /** Preload LCP image (WebP path under public/). */
   preloadImage?: string;
+  /** When true, adds noindex to keep error pages out of search results. */
+  noindex?: boolean;
+  /** Full content for meta robots (e.g. "noindex, nofollow"). Overrides noindex when set. */
+  robots?: string;
 }
 
 const {
@@ -18,7 +22,11 @@ const {
   ogImage = "/og.png",
   jsonLd,
   preloadImage,
+  noindex = false,
+  robots,
 } = Astro.props;
+
+const robotsContent = robots ?? (noindex ? "noindex" : undefined);
 
 const siteOrigin = Astro.site ?? "https://harvous.com";
 const canonical = new URL(Astro.url.pathname, siteOrigin).toString();
@@ -63,6 +71,7 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {robotsContent && <meta name="robots" content={robotsContent} />}
     <link rel="canonical" href={canonical} />
     {preloadImage && (
       <link rel="preload" as="image" href={preloadImage} type="image/webp" fetchpriority="high" />

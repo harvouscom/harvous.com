@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import Container from "../components/layout/Container.astro";
+import { Icon } from "astro-icon/components";
+
+const links = [
+  { label: "Home", href: "/", detail: "Back to the main page", icon: "fa6-solid:house" },
+  { label: "Use cases", href: "/use-cases/", detail: "See how people study with Harvous", icon: "fa6-solid:book-open-reader" },
+  { label: "Compare", href: "/compare/", detail: "How Harvous stacks up", icon: "fa6-solid:circle-half-stroke" },
+  { label: "Support", href: "/support/", detail: "FAQs and contact", icon: "fa6-solid:circle-question" },
+] as const;
+---
+
+<BaseLayout
+  title="Page not found — Harvous"
+  description="This page doesn't exist. Head back to Harvous — the Bible study notes app."
+  noindex
+>
+  <section class="not-found frame-divider">
+    <PageIntro size="compact">
+      <p class="not-found__code" aria-hidden="true">404</p>
+      <h1 class="not-found__title mt-3 font-display text-5xl leading-[1.0] md:text-7xl">
+        This page got lost.
+      </h1>
+      <p class="not-found__lead mt-5 text-lg text-[var(--color-ink-soft)]">
+        Maybe an old link, maybe a typo — either way, the study notes live elsewhere.
+        Here are a few good places to pick back up.
+      </p>
+    </PageIntro>
+
+    <Container size="md">
+      <ul class="not-found__links" data-reveal style="--reveal-delay: 80ms;">
+        {links.map((link) => (
+          <li>
+            <a href={link.href} class="not-found__link">
+              <span class="not-found__link-icon" aria-hidden="true">
+                <Icon name={link.icon} />
+              </span>
+              <span class="not-found__link-text">
+                <span class="not-found__link-label">{link.label}</span>
+                <span class="not-found__link-detail">{link.detail}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding-bottom: clamp(3rem, 8vw, 5rem);
+  }
+
+  .not-found__code {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 12vw, 6.5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--color-ink-faint);
+    opacity: 0.45;
+  }
+
+  .not-found__title {
+    text-wrap: pretty;
+  }
+
+  .not-found__lead {
+    max-width: 32rem;
+    margin-inline: auto;
+    text-wrap: pretty;
+  }
+
+  .not-found__links {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (min-width: 640px) {
+    .not-found__links {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .not-found__link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    padding: 1rem 1.125rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 150ms ease, transform 150ms ease;
+  }
+
+  .not-found__link:hover {
+    box-shadow: var(--shadow-float);
+    transform: translateY(-1px);
+  }
+
+  .not-found__link-icon {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.65rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+
+  .not-found__link-icon :global(svg) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .not-found__link-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .not-found__link-label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+  }
+
+  .not-found__link-detail {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+  }
+</style>
