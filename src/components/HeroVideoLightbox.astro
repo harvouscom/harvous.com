@@ -1,4 +1,6 @@
 ---
+import { fathomCta } from "../lib/fathom-events.ts";
+
 interface Props {
   src: string;
   label?: string;
@@ -13,6 +15,7 @@ const { src, label = "Watch the tour" } = Astro.props;
     class="hero-video-callout"
     aria-label={`${label} — opens video in a lightbox`}
     data-hero-video-trigger
+    data-fathom-track={fathomCta.videoTour}
   >
   <span class="hero-video-callout__play" aria-hidden="true">
     <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
@@ -30,7 +33,7 @@ const { src, label = "Watch the tour" } = Astro.props;
     hidden
     data-hero-video-lightbox
   >
-    <div class="hero-video-lightbox__backdrop" data-hero-video-close></div>
+    <div class="hero-video-lightbox__backdrop" data-hero-video-close aria-hidden="true"></div>
   <div class="hero-video-lightbox__panel">
     <button type="button" class="hero-video-lightbox__close" data-hero-video-close aria-label="Close video">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
@@ -103,6 +106,8 @@ const { src, label = "Watch the tour" } = Astro.props;
   }
 
   .hero-video-lightbox {
+    --hero-video-chrome: #0d0e12;
+
     position: fixed;
     inset: 0;
     z-index: 10000;
@@ -117,12 +122,14 @@ const { src, label = "Watch the tour" } = Astro.props;
   }
 
   .hero-video-lightbox__backdrop {
-    position: fixed;
+    position: absolute;
     inset: 0;
     border: none;
     padding: 0;
     margin: 0;
-    background: color-mix(in srgb, var(--hero-video-chrome) 72%, transparent);
+    background: color-mix(in srgb, var(--color-ink) 62%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     cursor: pointer;
   }
 

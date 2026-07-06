@@ -31,4 +31,5 @@ export const fathomCompare = {
 export const fathomCta = {
   featuresAnchor: "cta_features",
   faqAnchor: "cta_faq",
+  videoTour: "video_tour_click",
 } as const;
