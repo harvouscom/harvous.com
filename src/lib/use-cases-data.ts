@@ -9,11 +9,6 @@ export type UseCaseSection = {
   paragraphs: string[];
 };
 
-export type UseCaseTestimonial = {
-  quote: string;
-  attribution: string;
-};
-
 export type UseCase = {
   slug: string;
   href: string;
@@ -38,7 +33,8 @@ export type UseCase = {
   featuresHeading: string;
   featuresLead: string;
   compareSlugs: string[];
-  testimonial?: UseCaseTestimonial;
+  /** Slug in src/content/testimonials/ (e.g. "joschua"). */
+  testimonialId?: string;
 };
 
 const useCases: UseCase[] = [
@@ -99,10 +95,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
     compareSlugs: ["youversion", "dwell", "readscripture", "spirit-notes", "abide"],
-    testimonial: {
-      quote: "Looking forward to continuing to use it to help in my study.",
-      attribution: "Theo, Nov 2025",
-    },
+    testimonialId: "theo",
   },
   {
     slug: "sermon-notes",
@@ -167,10 +160,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
     compareSlugs: ["bible-note", "bible-notes", "pencil-bible", "spirit-notes", "goodnotes"],
-    testimonial: {
-      quote: "Harvous is simple and efficient compared to other apps I've tried.",
-      attribution: "Teaella, Apr 2026",
-    },
+    testimonialId: "teaella",
   },
   {
     slug: "book-study",
@@ -228,10 +218,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Chapter by chapter, cross-reference by cross-reference — the Harvous pieces that help one book compound instead of scatter.",
     compareSlugs: ["logos", "bibleproject", "faithstudy", "life-bible"],
-    testimonial: {
-      quote: "Looking forward to continuing to use it to help in my study.",
-      attribution: "Theo, Nov 2025",
-    },
+    testimonialId: "theo",
   },
   {
     slug: "topical-study",
@@ -288,10 +275,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Notes from everywhere, organized by what they're about — the pieces that let a theme run across the whole Bible.",
     compareSlugs: ["logos", "life-bible", "readscripture", "obsidian"],
-    testimonial: {
-      quote: "Harvous is simple and efficient compared to other apps I've tried.",
-      attribution: "Teaella, Apr 2026",
-    },
+    testimonialId: "teaella",
   },
   {
     slug: "small-group",
@@ -352,10 +336,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Shared spaces are on the way — until then, these are the personal-study pieces leaders reach for when prepping and following up.",
     compareSlugs: ["pray-com", "youversion", "notion"],
-    testimonial: {
-      quote: "This is one of the most beautiful pieces of software I've used recently.",
-      attribution: "Joschua, Dec 2025",
-    },
+    testimonialId: "joschua",
   },
 ];
 

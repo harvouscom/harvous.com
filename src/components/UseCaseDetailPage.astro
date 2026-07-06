@@ -4,7 +4,7 @@ import PageClosingCTA from "./PageClosingCTA.astro";
 import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
 import ComparePreview from "./ComparePreview.astro";
 import { Icon } from "astro-icon/components";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { UseCase } from "../lib/use-cases-data.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
@@ -24,6 +24,11 @@ const relatedFeatures = useCase.featureIds
 const relatedCompare = useCase.compareSlugs
   .map((slug) => getCompareBySlug(slug))
   .filter((e): e is NonNullable<typeof e> => e !== undefined);
+
+const testimonialEntry = useCase.testimonialId
+  ? await getEntry("testimonials", useCase.testimonialId)
+  : undefined;
+const testimonialRender = testimonialEntry ? await render(testimonialEntry) : undefined;
 
 const pageUrl = `https://harvous.com${useCase.href}`;
 const jsonLd = {
@@ -154,14 +159,14 @@ const jsonLd = {
 
     <!-- Testimonial -->
     {
-      useCase.testimonial && (
+      testimonialRender && testimonialEntry && (
         <section class="fade-rule-t">
-          <div class="mx-auto max-w-2xl px-5 py-16 text-center">
-            <blockquote class="font-display text-3xl leading-snug md:text-4xl">
-              "{useCase.testimonial.quote}"
+          <div class="mx-auto max-w-2xl px-5 py-16 text-center use-case-testimonial">
+            <blockquote class="use-case-testimonial__quote font-display text-3xl leading-snug md:text-4xl">
+              <testimonialRender.Content />
             </blockquote>
             <figcaption class="mt-6 text-sm italic text-[var(--color-ink-soft)]">
-              &mdash;{useCase.testimonial.attribution}
+              &mdash;{testimonialEntry.data.name}, {testimonialEntry.data.when}
             </figcaption>
           </div>
         </section>

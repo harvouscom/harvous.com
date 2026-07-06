@@ -98,3 +98,8 @@
   border: 1px solid var(--color-rule);
   backdrop-filter: blur(6px);
 }
+
+.use-case-testimonial__quote :global(mark) {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
