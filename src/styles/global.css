@@ -452,6 +452,12 @@ details > summary::-webkit-details-marker {
   --frame-inset: var(--frame-gutter);
   --frame-content-pad: calc(2 * var(--frame-inset));
 
+  /* Horizontal carousels — scale slide width so ~3.5 cards stay visible on wide screens. */
+  --carousel-peek-slides: 3.5;
+  --carousel-peek-gap-count: 3;
+  --carousel-slide-gap: 1.5rem;
+  --carousel-slide-min: 16rem;
+
   /* Light: light is a warm marker, no glow. */
   --glow-highlight: transparent;
   --glow-accent: transparent;
@@ -468,6 +474,33 @@ details > summary::-webkit-details-marker {
   --accent-btn-shadow-sm:
     0 1px 0 rgba(255, 255, 255, 0.28) inset,
     0 4px 10px -4px rgba(0, 110, 255, 0.42);
+}
+
+/* Shared horizontal carousel sizing — parent must set container-type: inline-size. */
+.carousel-track-wrap {
+  container-type: inline-size;
+  /* Matches track padding-left — slides start after this inset at scroll 0. */
+  --carousel-track-pad-start: max(
+    var(--frame-inset),
+    calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
+  );
+}
+
+.carousel-slide {
+  flex: none;
+  width: clamp(
+    var(--carousel-slide-min),
+    calc(
+      (
+        100cqw
+        - var(--carousel-track-pad-start)
+        - var(--carousel-peek-gap-count) * var(--carousel-slide-gap)
+      )
+      / var(--carousel-peek-slides)
+    ),
+    100%
+  );
+  scroll-snap-align: start;
 }
 
 /* Native form controls / scrollbars follow the resolved theme. */

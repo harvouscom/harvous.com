@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroCentered from "../components/HeroCentered.astro";
 import FeatureBento from "../components/FeatureBento.astro";
 import WhatsIncluded from "../components/WhatsIncluded.astro";
+import PageClosingCTA from "../components/PageClosingCTA.astro";
 import UseCasesPreview from "../components/UseCasesPreview.astro";
 import ComparePreview from "../components/ComparePreview.astro";
 import TestimonialsSection from "../components/TestimonialsSection.astro";
@@ -11,6 +12,7 @@ import FounderLetterSection from "../components/FounderLetterSection.astro";
 import DownloadCTA from "../components/DownloadCTA.astro";
 import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
 import { HOME_FEATURE_CARDS } from "../lib/home-feature-cards.ts";
+import { fathomSignup, fathomCta } from "../lib/fathom-events.ts";
 
 const homeJsonLd = await buildHomeJsonLd();
 ---
@@ -31,6 +33,15 @@ const homeJsonLd = await buildHomeJsonLd();
   />
 
   <WhatsIncluded />
+
+  <PageClosingCTA
+    heading="Ready to try it?"
+    lead="Everything above is free — unlimited notes, scripture pills, highlights, and offline sync. No credit card."
+    fathomTrack={fathomSignup.included}
+    secondaryHref="/#faq"
+    secondaryLabel="Read the FAQs"
+    secondaryFathomTrack={fathomCta.faqAnchor}
+  />
 
   <UseCasesPreview />
 

@@ -68,4 +68,10 @@ export const PRICING_ADDONS: PricingAddon[] = [
     tagline: "Themed study seasons with guides, leaderboards, and more.",
     soonLabel: "Coming later",
   },
+  {
+    id: "connector",
+    icon: "fa6-solid:plug",
+    name: "Connector",
+    tagline: "Reference your Harvous study wherever you already work.",
+  },
 ];

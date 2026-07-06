@@ -40,7 +40,7 @@ const useCases = getUseCases();
     </div>
   </Container>
 
-  <div class="usecases__track-wrap" data-reveal style="--reveal-delay: 80ms;">
+  <div class="usecases__track-wrap carousel-track-wrap" data-reveal style="--reveal-delay: 80ms;">
     <ul
       class="usecases__track"
       role="list"
@@ -59,7 +59,7 @@ const useCases = getUseCases();
           </span>
         );
         return (
-          <li class="usecases__slide">
+          <li class="usecases__slide carousel-slide">
             {uc.comingSoon ? (
               <a href={uc.href} class="usecases__card usecases__card--link usecases__card--soon">
                 <span
@@ -182,12 +182,6 @@ const useCases = getUseCases();
     outline-offset: 4px;
   }
 
-  .usecases__slide {
-    flex: none;
-    width: clamp(16rem, 70vw, 18.5rem);
-    scroll-snap-align: start;
-  }
-
   .usecases__card {
     display: flex;
     flex-direction: column;
@@ -253,7 +247,6 @@ const useCases = getUseCases();
     border-radius: 999px;
     color: var(--color-ink-faint);
     background: color-mix(in oklab, var(--color-card) 88%, transparent);
-    border: 1px solid var(--color-rule);
     backdrop-filter: blur(6px);
   }
   .usecases__badge {
@@ -277,6 +270,7 @@ const useCases = getUseCases();
     font-size: 0.9rem;
     line-height: 1.55;
     color: var(--color-ink-soft);
+    text-wrap: pretty;
   }
   .usecases__caption strong {
     color: var(--color-ink);

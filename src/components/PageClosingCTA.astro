@@ -7,6 +7,9 @@ interface Props {
   href?: string;
   label?: string;
   fathomTrack?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  secondaryFathomTrack?: string;
 }
 
 const {
@@ -15,6 +18,9 @@ const {
   href = "https://app.harvous.com/sign-up",
   label = "Sign up free",
   fathomTrack,
+  secondaryHref,
+  secondaryLabel,
+  secondaryFathomTrack,
 } = Astro.props;
 ---
 
@@ -26,6 +32,13 @@ const {
       <CTAButton href={href} variant="primary" size="lg" external fathomTrack={fathomTrack}>
         {label}
       </CTAButton>
+      {
+        secondaryHref && secondaryLabel && (
+          <CTAButton href={secondaryHref} variant="secondary" size="lg" fathomTrack={secondaryFathomTrack}>
+            {secondaryLabel}
+          </CTAButton>
+        )
+      }
     </div>
   </div>
 </section>
@@ -47,16 +60,20 @@ const {
     text-wrap: pretty;
   }
   .page-closing-cta__lead {
-    max-width: 28rem;
+    max-width: 34rem;
     margin-inline: auto;
     margin-top: 1.25rem;
     font-size: 1.0625rem;
     line-height: 1.6;
     color: var(--color-ink-soft);
+    text-wrap: pretty;
   }
   .page-closing-cta__action {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
+    gap: 0.75rem;
     margin-top: 2rem;
   }
 </style>

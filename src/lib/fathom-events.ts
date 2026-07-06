@@ -8,6 +8,7 @@ export const fathomSignup = {
   hero: "signup_nav",
   last: "signup_last",
   features: "signup_features",
+  included: "signup_included",
   about: "signup_about",
   useCasesHub: "signup_use_cases",
   compareHub: "signup_compare",
@@ -29,4 +30,5 @@ export const fathomCompare = {
 
 export const fathomCta = {
   featuresAnchor: "cta_features",
+  faqAnchor: "cta_faq",
 } as const;

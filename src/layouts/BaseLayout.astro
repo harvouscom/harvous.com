@@ -150,6 +150,37 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
         stacks.forEach((el) => el.classList.add("in-view"));
         reveals.forEach((el) => revealEl(el));
       }
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const revealHashTarget = (hash: string) => {
+        const id = hash.replace(/^#/, "");
+        if (!id) return false;
+        const target = document.getElementById(id);
+        if (!target) return false;
+        target.querySelectorAll("[data-reveal]").forEach(revealEl);
+        target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+        return true;
+      };
+
+      document.addEventListener("click", (event) => {
+        const link = (event.target as Element).closest('a[href*="#"]');
+        if (!link) return;
+        const href = link.getAttribute("href");
+        if (!href || href === "#") return;
+        const hash = href.includes("#") ? href.slice(href.indexOf("#")) : "";
+        if (!hash || hash === "#") return;
+        if (!document.getElementById(hash.slice(1))) return;
+        if (link instanceof HTMLAnchorElement && link.origin !== window.location.origin) return;
+        event.preventDefault();
+        history.pushState(null, "", hash);
+        revealHashTarget(hash);
+      });
+
+      if (window.location.hash) {
+        requestAnimationFrame(() => revealHashTarget(window.location.hash));
+      }
+      window.addEventListener("hashchange", () => revealHashTarget(window.location.hash));
     </script>
 
     <script is:inline>

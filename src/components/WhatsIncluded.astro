@@ -55,17 +55,7 @@ const items = [
   },
   // Platform / utility
   {
-    icon: "fa6-solid:arrows-rotate",
-    title: "Offline & sync",
-    desc: "Plane, pew, or basement — works offline and syncs the moment you reconnect.",
-  },
-  {
-    icon: "fa6-solid:share-nodes",
-    title: "Sharing",
-    desc: "Share a note with a link. No account needed on the other end.",
-  },
-  {
-    icon: "fa6-solid:circle-half-stroke",
+    icon: "fa6-solid:palette",
     title: "Make it yours",
     desc: "Light or dark, a color or photo background — Harvous looks the way you want.",
   },
@@ -73,6 +63,16 @@ const items = [
     icon: "fa6-solid:thumbtack",
     title: "Pin what matters",
     desc: "Pin a note, folder, or thread to keep it right at the top of the list.",
+  },
+  {
+    icon: "fa6-solid:share-nodes",
+    title: "Sharing",
+    desc: "Share a note with a link. No account needed on the other end.",
+  },
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "Offline & sync",
+    desc: "Plane, pew, or basement — works offline and syncs the moment you reconnect.",
   },
 ] as const;
 
@@ -83,14 +83,19 @@ const comingSoon = [
     desc: "An optional paid add-on will add shared spaces your whole group can study in.",
   },
   {
+    icon: "fa6-solid:plug",
+    title: "Connector",
+    desc: "An optional paid add-on will let you reference your study in Claude, Cursor, and other tools.",
+  },
+  {
+    icons: ["fa6-solid:clock-rotate-left", "fa6-solid:trophy"] as const,
+    title: "Review & Challenges",
+    desc: "Optional paid add-ons for spaced review from your notes and themed study seasons with guides and leaderboards.",
+  },
+  {
     icon: "fa6-solid:mobile-screen",
     title: "Mac, iPad & iPhone",
     desc: "Native apps for Apple platforms. Harvous is on the web today.",
-  },
-  {
-    icon: "fa6-solid:clock-rotate-left",
-    title: "Recall & review",
-    desc: "An optional paid add-on will add spaced review for your notes, highlights, and passages.",
   },
 ] as const;
 ---
@@ -125,7 +130,11 @@ const comingSoon = [
       <div class="included__soon-grid">
         {comingSoon.map((item) => (
           <div class="included__soon-item">
-            <div class="included__soon-icon"><Icon name={item.icon} /></div>
+            <div class="included__soon-icons">
+              {("icons" in item ? item.icons : [item.icon]).map((icon) => (
+                <div class="included__soon-icon"><Icon name={icon} /></div>
+              ))}
+            </div>
             <div class="included__soon-title">{item.title}</div>
             <p class="included__soon-desc">{item.desc}</p>
           </div>
@@ -178,6 +187,7 @@ const comingSoon = [
     font-size: 0.875rem;
     line-height: 1.5;
     color: var(--color-ink-soft);
+    text-wrap: pretty;
   }
 
   /* Coming soon — hairline divider + centered chip, content below */
@@ -233,7 +243,15 @@ const comingSoon = [
     grid-template-columns: 1fr;
   }
   @media (min-width: 640px) {
-    .included__soon-grid { grid-template-columns: repeat(3, 1fr); }
+    .included__soon-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .included__soon-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .included__soon-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
   .included__soon-icon {
     display: inline-flex;
@@ -257,5 +275,6 @@ const comingSoon = [
     font-size: 0.8125rem;
     line-height: 1.5;
     color: var(--color-ink-soft);
+    text-wrap: pretty;
   }
 </style>

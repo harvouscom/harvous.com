@@ -2,12 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import FaqItem from "../components/FaqItem.astro";
+import SupportContactCards from "../components/SupportContactCards.astro";
 import { getCollection, render } from "astro:content";
 import { readFileSync } from "node:fs";
-
-const APP_SUPPORT_URL = "https://app.harvous.com/settings/support";
-const SUPPORT_EMAIL = "derek@harvous.com";
-const mailtoHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Harvous support")}`;
 
 const entries = (await getCollection("faq")).sort((a, b) => a.data.order - b.data.order);
 const faqItems = await Promise.all(
@@ -66,38 +63,8 @@ const jsonLd = {
         <p class="support-page__byline">— Derek, the founder</p>
       </header>
 
-      <div class="support-page__contact" data-reveal style="--reveal-delay: 80ms;">
-        <article class="support-contact-card support-contact-card--email">
-          <span class="support-contact-card__label">Email</span>
-          <a href={mailtoHref} class="support-contact-card__title">{SUPPORT_EMAIL}</a>
-          <p class="support-contact-card__detail">
-            Best for account questions, billing, or anything you prefer to send from your mail app.
-          </p>
-          <button
-            type="button"
-            class="btn-pill support-contact-card__copy"
-            data-copy-email={SUPPORT_EMAIL}
-            aria-label="Copy email address"
-          >
-            <svg class="support-contact-card__copy-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="5.5" y="5.5" width="8" height="8" rx="1.2"/>
-              <path d="M10.5 5.5V4.8a1.3 1.3 0 0 0-1.3-1.3H3.8a1.3 1.3 0 0 0-1.3 1.3v5.4a1.3 1.3 0 0 0 1.3 1.3h.7"/>
-            </svg>
-            <svg class="support-contact-card__copy-icon support-contact-card__copy-icon--check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3.5 8.5l3 3 6-6"/>
-            </svg>
-            <span class="support-contact-card__copy-label">Copy email</span>
-          </button>
-        </article>
-
-        <a href={APP_SUPPORT_URL} class="support-contact-card">
-          <span class="support-contact-card__label">In the app</span>
-          <span class="support-contact-card__title">Settings → Support</span>
-          <span class="support-contact-card__detail">
-            Signed-in users can send bug reports, ideas, and questions with app version and device context attached.
-          </span>
-          <span class="support-contact-card__meta">Opens app.harvous.com</span>
-        </a>
+      <div class="support-page__cards" data-reveal style="--reveal-delay: 80ms;">
+        <SupportContactCards />
       </div>
 
       {
@@ -117,36 +84,6 @@ const jsonLd = {
     </Container>
   </section>
 </BaseLayout>
-
-<script>
-  const copyButtons = document.querySelectorAll<HTMLButtonElement>("[data-copy-email]");
-
-  for (const button of copyButtons) {
-    button.addEventListener("click", async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      const email = button.dataset.copyEmail;
-      if (!email) return;
-
-      try {
-        await navigator.clipboard.writeText(email);
-        button.classList.add("is-copied");
-        button.setAttribute("aria-label", "Copied email address");
-        const label = button.querySelector(".support-contact-card__copy-label");
-        if (label) label.textContent = "Copied";
-
-        window.setTimeout(() => {
-          button.classList.remove("is-copied");
-          button.setAttribute("aria-label", "Copy email address");
-          if (label) label.textContent = "Copy email";
-        }, 2000);
-      } catch {
-        button.setAttribute("aria-label", "Could not copy email address");
-      }
-    });
-  }
-</script>
 
 <style>
   .support-page {
@@ -173,96 +110,10 @@ const jsonLd = {
     color: var(--color-ink-faint);
   }
 
-  .support-page__contact {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .support-page__cards {
     margin-top: clamp(2.25rem, 5vw, 3rem);
     max-width: 34rem;
     margin-inline: auto;
-  }
-  @media (min-width: 640px) {
-    .support-page__contact {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .support-contact-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    padding: 1.15rem 1.2rem 1.25rem;
-    border-radius: 2px;
-    background-color: var(--paper-sheet);
-    background-image:
-      radial-gradient(var(--pds-paper-grain-a) 1px, transparent 1px),
-      radial-gradient(var(--pds-paper-grain-b) 1px, transparent 1px);
-    background-size: 28px 28px, 17px 17px;
-    background-position: 0 0, 9px 9px;
-    text-decoration: none;
-    color: inherit;
-    transition: background-color 150ms ease, transform 150ms ease;
-  }
-  .support-contact-card:hover {
-    background-color: color-mix(in oklab, var(--color-highlight) 18%, var(--paper-sheet));
-    transform: translateY(-1px);
-  }
-
-  .support-contact-card__label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-  }
-  .support-contact-card__title {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-    text-decoration: none;
-  }
-  .support-contact-card__title:hover {
-    color: var(--color-ink);
-    text-decoration: underline;
-    text-decoration-color: color-mix(in oklab, var(--color-rule) 80%, transparent);
-    text-underline-offset: 3px;
-  }
-
-  .support-contact-card__copy {
-    width: 100%;
-    margin-top: auto;
-  }
-  .support-contact-card__copy-icon {
-    width: 0.9rem;
-    height: 0.9rem;
-    flex: none;
-  }
-  .support-contact-card__copy-icon--check {
-    display: none;
-  }
-  .support-contact-card__copy.is-copied .support-contact-card__copy-icon:not(.support-contact-card__copy-icon--check) {
-    display: none;
-  }
-  .support-contact-card__copy.is-copied .support-contact-card__copy-icon--check {
-    display: block;
-    color: #047857;
-  }
-  .support-contact-card__copy.is-copied {
-    color: #047857;
-  }
-
-  .support-contact-card__detail {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: var(--color-ink-soft);
-  }
-  .support-contact-card__meta {
-    margin-top: auto;
-    padding-top: 0.35rem;
-    font-size: 0.78rem;
-    color: var(--color-ink-faint);
   }
 
   .support-page__faq {

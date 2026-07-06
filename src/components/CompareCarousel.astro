@@ -54,7 +54,7 @@ const {
     )
   }
 
-  <div class="compare-carousel__track-wrap">
+  <div class="compare-carousel__track-wrap carousel-track-wrap">
     <ul
       class="compare-carousel__track"
       role="list"
@@ -64,7 +64,7 @@ const {
     >
       {
         entries.map((entry) => (
-          <li class="compare-carousel__slide">
+          <li class="compare-carousel__slide carousel-slide">
             <a class="compare-carousel__card" href={`/compare/${entry.slug}/`} data-fathom-track={fathomTrack}>
               <span class="compare-carousel__art">
                 <span class="compare-carousel__icon-wrap">
@@ -180,12 +180,6 @@ const {
     outline-offset: 4px;
   }
 
-  .compare-carousel__slide {
-    flex: none;
-    width: clamp(16rem, 70vw, 18.5rem);
-    scroll-snap-align: start;
-  }
-
   .compare-carousel__card {
     display: flex;
     flex-direction: column;
@@ -238,6 +232,7 @@ const {
     font-size: 0.9rem;
     line-height: 1.55;
     color: var(--color-ink-soft);
+    text-wrap: pretty;
   }
   .compare-carousel__caption strong {
     color: var(--color-ink);
