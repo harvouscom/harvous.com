@@ -114,40 +114,72 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
       const reveals = document.querySelectorAll("[data-reveal]");
 
       const revealEl = (el: Element) => el.classList.add("revealed");
+      const revealStack = (el: Element) => el.classList.add("in-view");
 
-      const isInView = (el: Element) => {
+      /** True when any part of the element is in the viewport and layout has size. */
+      const isInViewport = (el: Element) => {
         const rect = el.getBoundingClientRect();
-        return rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
+        if (rect.width === 0 && rect.height === 0) return false;
+        return rect.top < window.innerHeight && rect.bottom > 0;
+      };
+
+      const revealVisibleNow = () => {
+        reveals.forEach((el) => {
+          if (!el.classList.contains("revealed") && isInViewport(el)) revealEl(el);
+        });
+        stacks.forEach((el) => {
+          if (!el.classList.contains("in-view") && isInViewport(el)) revealStack(el);
+        });
       };
 
       if ("IntersectionObserver" in window) {
-        const reveal = (el: Element, cls: string, ob: IntersectionObserver) => {
-          revealEl(el);
-          ob.unobserve(el);
-        };
         const stackObserver = new IntersectionObserver(
           (entries, ob) => {
-            entries.forEach((e) => e.isIntersecting && reveal(e.target, "in-view", ob));
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              revealStack(e.target);
+              ob.unobserve(e.target);
+            });
           },
-          { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+          { threshold: 0, rootMargin: "0px 0px -10% 0px" }
         );
-        stacks.forEach((el) => stackObserver.observe(el));
 
         const revealObserver = new IntersectionObserver(
           (entries, ob) => {
-            entries.forEach((e) => e.isIntersecting && reveal(e.target, "revealed", ob));
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              revealEl(e.target);
+              ob.unobserve(e.target);
+            });
           },
-          { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+          { threshold: 0, rootMargin: "0px 0px -8% 0px" }
         );
+
         reveals.forEach((el) => {
-          if (isInView(el)) {
-            requestAnimationFrame(() => revealEl(el));
+          if (isInViewport(el)) {
+            revealEl(el);
           } else {
             revealObserver.observe(el);
           }
         });
+
+        stacks.forEach((el) => {
+          if (isInViewport(el)) {
+            revealStack(el);
+          } else {
+            stackObserver.observe(el);
+          }
+        });
+
+        // Layout/fonts/images can settle after the module runs — re-check so above-the-fold
+        // content is not left at opacity: 0 until the user scrolls.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(revealVisibleNow);
+        });
+        window.addEventListener("load", revealVisibleNow, { once: true });
+        document.fonts?.ready.then(revealVisibleNow);
       } else {
-        stacks.forEach((el) => el.classList.add("in-view"));
+        stacks.forEach((el) => revealStack(el));
         reveals.forEach((el) => revealEl(el));
       }
 
