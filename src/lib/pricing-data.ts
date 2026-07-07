@@ -70,7 +70,7 @@ export const PRICING_ADDONS: PricingAddon[] = [
   },
   {
     id: "connector",
-    icon: "fa6-solid:plug",
+    icon: "fa6-solid:puzzle-piece",
     name: "Connector",
     tagline: "Reference your Harvous study wherever you already work.",
   },
