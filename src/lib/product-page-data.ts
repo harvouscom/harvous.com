@@ -79,6 +79,16 @@ export function hasDetailContent(data: FeatureDetailData): boolean {
   return Boolean(data.heroTitle && data.sections?.length);
 }
 
+/** Light accent inks need dark text on tinted badges and icons for WCAG contrast. */
+export const LIGHT_FEATURE_INKS = new Set([
+  "var(--study-dock-accent-warmAmber)",
+  "var(--study-dock-accent-mintGreen)",
+]);
+
+export function isLightFeatureInk(ink: string): boolean {
+  return LIGHT_FEATURE_INKS.has(ink);
+}
+
 export function featureToProductPage(slug: string, data: FeatureDetailData): ProductPage {
   return {
     kind: "feature",

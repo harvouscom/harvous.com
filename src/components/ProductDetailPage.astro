@@ -9,7 +9,7 @@ import { getCollection } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { ProductPage } from "../lib/product-page-data.ts";
 import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
-import { hasDetailContent } from "../lib/product-page-data.ts";
+import { hasDetailContent, isLightFeatureInk } from "../lib/product-page-data.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import "../styles/use-cases.css";
 
@@ -44,10 +44,14 @@ const fathomTrack =
     : fathomSignup.addonDetail(page.slug);
 const defaultHeroImage =
   page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
+const lightAccent = page.kind === "feature" && isLightFeatureInk(page.ink);
 ---
 
 <BaseLayout title={page.seoTitle} description={page.seoDescription} jsonLd={jsonLd}>
-  <article class="use-case-detail product-detail" style={`--use-case-ink: ${page.ink};`}>
+  <article
+    class:list={["use-case-detail product-detail", lightAccent && "product-detail--light-accent"]}
+    style={`--use-case-ink: ${page.ink};`}
+  >
     <header class="border-b border-[var(--color-rule)]">
       <div class="detail-content py-10 md:py-14">
         <div data-reveal>
@@ -75,18 +79,13 @@ const defaultHeroImage =
             }
           >
             <span class="use-case-hero__badge">
-              <Icon name={page.icon} style={`color: ${page.ink};`} />
+              <Icon name={page.icon} />
             </span>
           </div>
 
           <div class="mt-8 text-center">
             <div class="use-case-detail__badges">
-              <span
-                class="use-case-detail__title-badge"
-                style={`background: color-mix(in oklab, ${page.ink} 14%, var(--color-paper)); color: ${page.ink};`}
-              >
-                {page.title}
-              </span>
+              <span class="use-case-detail__title-badge">{page.title}</span>
               {page.comingSoon && (
                 <span class="use-case-detail__soon-badge">
                   {page.comingSoonLine ?? "Coming soon"}
