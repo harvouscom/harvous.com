@@ -29,13 +29,11 @@ const { useCase, features } = Astro.props;
         <ul class="use-case-features__grid" data-reveal style="--reveal-delay: 100ms;" role="list">
           {features.map((f) => (
             <li>
-              <a href="/features/" class="use-case-features__card">
-                <span class="use-case-features__icon">
-                  <Icon name={FEATURE_ICONS[f.id] ?? "fa6-solid:note-sticky"} />
-                </span>
-                <span class="use-case-features__title">{f.data.tagline}</span>
-                <p class="use-case-features__desc">{f.data.title}</p>
-              </a>
+              <span class="use-case-features__icon">
+                <Icon name={FEATURE_ICONS[f.id] ?? "fa6-solid:note-sticky"} />
+              </span>
+              <span class="use-case-features__title">{f.data.tagline}</span>
+              <p class="use-case-features__desc">{f.data.title}</p>
             </li>
           ))}
         </ul>
@@ -77,21 +75,6 @@ const { useCase, features } = Astro.props;
       grid-template-columns: repeat(4, 1fr);
     }
   }
-  .use-case-features__card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    border-radius: 1rem;
-    padding: 0.25rem;
-    margin: -0.25rem;
-    transition: background-color 150ms ease;
-  }
-  .use-case-features__card:hover {
-    background: color-mix(in oklab, var(--color-warm) 55%, transparent);
-  }
-  .use-case-features__card:hover .use-case-features__title {
-    color: var(--color-accent);
-  }
   .use-case-features__icon {
     display: inline-flex;
     align-items: center;
@@ -112,7 +95,6 @@ const { useCase, features } = Astro.props;
     font-weight: 600;
     font-size: 0.98rem;
     color: var(--color-ink);
-    transition: color 150ms ease;
   }
   .use-case-features__desc {
     margin-top: 0.3rem;
