@@ -681,3 +681,19 @@ html.js [data-reveal].revealed { opacity: 1; transform: none; }
     transition: none;
   }
 }
+
+/* Draft marketing pages (features, about) — dev preview only. */
+.draft-page-banner {
+  margin: 0;
+  padding: 0.625rem 1rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-peach-ink);
+  background: color-mix(in oklab, var(--color-peach) 40%, var(--color-paper));
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.draft-page-banner code {
+  font-size: 0.75rem;
+}
+
