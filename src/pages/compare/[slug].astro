@@ -1,71 +1,116 @@
 ---
 import CompareDetailPage from "../../components/CompareDetailPage.astro";
+import CompareAlternativePage from "../../components/CompareAlternativePage.astro";
+import CompareCategoryHubPage from "../../components/CompareCategoryHubPage.astro";
 import { getCompareEntries, getCompareBySlug } from "../../lib/compare-data.ts";
+import {
+  getCompareSeoPagesForBuild,
+  resolvePickSlugs,
+  buildCategoryJsonLd,
+  buildAlternativeJsonLd,
+  isCompareSeoPageDraft,
+  type CompareSeoPage,
+} from "../../lib/compare-seo-pages.ts";
+import type { CompareEntry } from "../../lib/compare-data.ts";
 
 export function getStaticPaths() {
-  return getCompareEntries().map((entry) => ({
+  const vsPaths = getCompareEntries().map((entry) => ({
     params: { slug: entry.slug },
-    props: { entry },
+    props: { kind: "vs" as const, entry },
   }));
+
+  const seoPaths = getCompareSeoPagesForBuild().map((page) => ({
+    params: { slug: page.slug },
+    props: { kind: "seo" as const, page },
+  }));
+
+  return [...vsPaths, ...seoPaths];
 }
 
-const { entry } = Astro.props;
+type VsProps = { kind: "vs"; entry: CompareEntry };
+type SeoProps = { kind: "seo"; page: CompareSeoPage };
+type Props = VsProps | SeoProps;
+
+const props = Astro.props as Props;
 const site = "https://harvous.com";
-const pageUrl = `${site}/compare/${entry.slug}/`;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebPage",
-      name: entry.seoTitle,
-      description: entry.seoDescription,
-      url: pageUrl,
-      isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
-    },
-    {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Harvous", item: site },
-        { "@type": "ListItem", position: 2, name: "Compare", item: `${site}/compare/` },
-        { "@type": "ListItem", position: 3, name: `Harvous vs ${entry.name}`, item: pageUrl },
-      ],
-    },
-    {
-      "@type": "FAQPage",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: `Is Harvous a good alternative to ${entry.name}?`,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: entry.intro,
-          },
-        },
-        {
-          "@type": "Question",
-          name: `How does Harvous work alongside ${entry.name}?`,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: entry.worksBestAlongside,
-          },
-        },
-        {
-          "@type": "Question",
-          name: `What is ${entry.name} best at compared to Harvous?`,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: entry.bestAt,
-          },
-        },
-      ],
-    },
-  ],
-};
+let vsEntry: CompareEntry | undefined;
+let vsJsonLd: Record<string, unknown> | undefined;
+let vsRelated: CompareEntry[] = [];
+let seoPage: CompareSeoPage | undefined;
+let seoPicks = [];
+let seoJsonLd: Record<string, unknown> | undefined;
+let seoNoindex = false;
+let seoTarget: CompareEntry | undefined;
 
-const related = getCompareEntries()
-  .filter((e) => e.competitorType === entry.competitorType && e.slug !== entry.slug)
-  .slice(0, 5);
+if (props.kind === "vs") {
+  vsEntry = props.entry;
+  const pageUrl = `${site}/compare/${vsEntry.slug}/`;
+  vsJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        name: vsEntry.seoTitle,
+        description: vsEntry.seoDescription,
+        url: pageUrl,
+        isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Harvous", item: site },
+          { "@type": "ListItem", position: 2, name: "Compare", item: `${site}/compare/` },
+          { "@type": "ListItem", position: 3, name: `Harvous vs ${vsEntry.name}`, item: pageUrl },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: `Is Harvous a good alternative to ${vsEntry.name}?`,
+            acceptedAnswer: { "@type": "Answer", text: vsEntry.intro },
+          },
+          {
+            "@type": "Question",
+            name: `How does Harvous work alongside ${vsEntry.name}?`,
+            acceptedAnswer: { "@type": "Answer", text: vsEntry.worksBestAlongside },
+          },
+          {
+            "@type": "Question",
+            name: `What is ${vsEntry.name} best at compared to Harvous?`,
+            acceptedAnswer: { "@type": "Answer", text: vsEntry.bestAt },
+          },
+        ],
+      },
+    ],
+  };
+  vsRelated = getCompareEntries()
+    .filter((e) => e.competitorType === vsEntry!.competitorType && e.slug !== vsEntry!.slug)
+    .slice(0, 5);
+} else {
+  seoPage = props.page;
+  seoNoindex = isCompareSeoPageDraft(seoPage);
+  seoPicks = resolvePickSlugs(seoPage.pickSlugs);
+  if (seoPage.kind === "category") {
+    seoJsonLd = buildCategoryJsonLd(seoPage, seoPicks);
+  } else {
+    seoTarget = getCompareBySlug(seoPage.targetSlug);
+    if (!seoTarget) {
+      throw new Error(`Compare SEO page "${seoPage.slug}" references missing target "${seoPage.targetSlug}"`);
+    }
+    seoJsonLd = buildAlternativeJsonLd(seoPage, seoTarget, seoPicks);
+  }
+}
 ---
 
-<CompareDetailPage entry={entry} related={related} jsonLd={jsonLd} />
+{
+  vsEntry && vsJsonLd ? (
+    <CompareDetailPage entry={vsEntry} related={vsRelated} jsonLd={vsJsonLd} />
+  ) : seoPage?.kind === "category" && seoJsonLd ? (
+    <CompareCategoryHubPage page={seoPage} picks={seoPicks} jsonLd={seoJsonLd} noindex={seoNoindex} />
+  ) : seoPage?.kind === "alternative" && seoTarget && seoJsonLd ? (
+    <CompareAlternativePage page={seoPage} target={seoTarget} picks={seoPicks} jsonLd={seoJsonLd} noindex={seoNoindex} />
+  ) : null
+}

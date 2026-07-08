@@ -6,12 +6,15 @@ import CompareSectionNav from "../../components/CompareSectionNav.astro";
 import PageClosingCTA from "../../components/PageClosingCTA.astro";
 import IntroChip from "../../components/IntroChip.astro";
 import { getCompareTypes, getCompareByType, compareTypeToId, getCompareEntries } from "../../lib/compare-data.ts";
+import { getCompareGuidesForHub } from "../../lib/compare-seo-pages.ts";
 import { fathomCompare, fathomSignup } from "../../lib/fathom-events.ts";
 import "../../styles/compare.css";
 
 const types = getCompareTypes();
 const navItems = types.map((type) => ({ id: compareTypeToId(type), label: type }));
 const compareAppCount = getCompareEntries().length;
+const compareGuides = getCompareGuidesForHub();
+const hasCompareGuides = compareGuides.category.length > 0 || compareGuides.alternatives.length > 0;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -52,6 +55,63 @@ const jsonLd = {
       </header>
     </Container>
   </section>
+
+  {
+    hasCompareGuides && (
+      <section class="compare-hub-guides frame-divider" aria-labelledby="compare-guides-title">
+        <Container size="xl">
+          <header class="compare-hub-guides__head" data-reveal>
+            <h2 class="font-display text-2xl leading-snug md:text-3xl" id="compare-guides-title">Guides</h2>
+            <p class="compare-hub-guides__lead">
+              Category roundups and alternative pages — for searches like "best bible notes app" or "Logos alternative."
+            </p>
+          </header>
+
+          {
+            compareGuides.category.length > 0 && (
+              <div class="compare-hub-guides__group" data-reveal style="--reveal-delay: 60ms;">
+                <h3 class="compare-hub-guides__label">Category</h3>
+                <ul class="compare-hub-guides__grid" role="list">
+                  {
+                    compareGuides.category.map((guide) => (
+                      <li>
+                        <a class="compare-hub-guides__card" href={`/compare/${guide.slug}/`} data-fathom-track={fathomCompare.hubCard}>
+                          <span class="compare-hub-guides__card-title">{guide.label}</span>
+                          <span class="compare-hub-guides__card-desc">{guide.description}</span>
+                          <span class="compare-hub-guides__card-link">Read guide →</span>
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            )
+          }
+
+          {
+            compareGuides.alternatives.length > 0 && (
+              <div class="compare-hub-guides__group" data-reveal style="--reveal-delay: 100ms;">
+                <h3 class="compare-hub-guides__label">Alternatives</h3>
+                <ul class="compare-hub-guides__grid" role="list">
+                  {
+                    compareGuides.alternatives.map((guide) => (
+                      <li>
+                        <a class="compare-hub-guides__card" href={`/compare/${guide.slug}/`} data-fathom-track={fathomCompare.hubCard}>
+                          <span class="compare-hub-guides__card-title">{guide.label}</span>
+                          <span class="compare-hub-guides__card-desc">{guide.description}</span>
+                          <span class="compare-hub-guides__card-link">Read guide →</span>
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            )
+          }
+        </Container>
+      </section>
+    )
+  }
 
   <div class="compare-hub-main">
     <CompareSectionNav items={navItems} />

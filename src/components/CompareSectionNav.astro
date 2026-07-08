@@ -136,9 +136,9 @@ const defaultId = items[0]?.id ?? "";
     color: var(--color-ink-soft);
     text-decoration: none;
     white-space: nowrap;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, filter 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   }
-  .compare-hub__nav-pill:hover {
+  .compare-hub__nav-pill:hover:not(.compare-hub__nav-pill--active) {
     color: var(--color-ink);
     background: var(--color-warm);
     border-color: var(--color-rule);
@@ -152,7 +152,9 @@ const defaultId = items[0]?.id ?? "";
   }
   .compare-hub__nav-pill--active:hover {
     color: #fff;
-    filter: brightness(1.05);
+    background: var(--accent-btn-bg);
+    border-color: transparent;
+    box-shadow: var(--accent-btn-shadow);
   }
   .compare-hub__nav-pill:focus-visible {
     outline: 2px solid var(--color-accent);
