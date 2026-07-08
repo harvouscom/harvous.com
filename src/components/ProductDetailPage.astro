@@ -1,0 +1,175 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageClosingCTA from "./PageClosingCTA.astro";
+import FeatureShowcase from "./FeatureShowcase.astro";
+import ProductMoments from "./ProductMoments.astro";
+import ProductRelatedStrip from "./ProductRelatedStrip.astro";
+import ComparePreview from "./ComparePreview.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+import { getCompareBySlug } from "../lib/compare-data.ts";
+import type { ProductPage } from "../lib/product-page-data.ts";
+import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
+import { hasDetailContent } from "../lib/product-page-data.ts";
+import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
+import "../styles/use-cases.css";
+
+interface Props {
+  page: ProductPage;
+}
+
+const { page } = Astro.props;
+
+const allFeatures = await getCollection("features");
+const publishedFeatureSlugs = new Set(
+  allFeatures.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id)
+);
+
+const relatedFeatures =
+  page.kind === "feature"
+    ? page.relatedIds
+        .map((id) => allFeatures.find((f) => f.id === id))
+        .filter((f): f is NonNullable<typeof f> => f !== undefined)
+    : [];
+
+const relatedCompare = (page.compareSlugs ?? [])
+  .map((slug) => getCompareBySlug(slug))
+  .filter((e): e is NonNullable<typeof e> => e !== undefined);
+
+const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJsonLd(page);
+const backHref = page.kind === "feature" ? "/#features" : "/pricing/";
+const backLabel = page.kind === "feature" ? "Features" : "Pricing";
+const fathomTrack =
+  page.kind === "feature"
+    ? fathomSignup.featureDetail(page.slug)
+    : fathomSignup.addonDetail(page.slug);
+const defaultHeroImage =
+  page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
+---
+
+<BaseLayout title={page.seoTitle} description={page.seoDescription} jsonLd={jsonLd}>
+  <article class="use-case-detail product-detail" style={`--use-case-ink: ${page.ink};`}>
+    <header class="border-b border-[var(--color-rule)]">
+      <div class="detail-content py-10 md:py-14">
+        <div data-reveal>
+          <div class="use-case-detail__nav">
+            <a href={backHref} class="btn-pill inline-flex items-center gap-1.5 text-sm">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path
+                  fill-rule="evenodd"
+                  d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              {backLabel}
+            </a>
+          </div>
+
+          <div
+            class:list={[
+              "use-case-hero__art mt-8",
+              page.kind === "feature" && "use-case-hero__art--tint",
+            ]}
+            style={
+              page.kind !== "feature"
+                ? `--usecase-art-image: url('${page.image ?? defaultHeroImage}');`
+                : undefined
+            }
+          >
+            <span class="use-case-hero__badge">
+              <Icon name={page.icon} style={`color: ${page.ink};`} />
+            </span>
+          </div>
+
+          <div class="mt-8 text-center">
+            <div class="use-case-detail__badges">
+              <span
+                class="use-case-detail__title-badge"
+                style={`background: color-mix(in oklab, ${page.ink} 14%, var(--color-paper)); color: ${page.ink};`}
+              >
+                {page.title}
+              </span>
+              {page.comingSoon && (
+                <span class="use-case-detail__soon-badge">
+                  {page.comingSoonLine ?? "Coming soon"}
+                </span>
+              )}
+            </div>
+            <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">{page.heroTitle}</h1>
+            <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-ink-soft)]">
+              {page.heroLead}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {
+      page.sections.length > 0 && (
+        <section class="detail-content py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
+          <div class="prose-letter space-y-8">
+            {page.sections.map((section) => (
+              <div>
+                <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
+                {section.paragraphs.map((p) => (
+                  <p class="mt-3 text-[var(--color-ink-soft)]">{p}</p>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      page.showcases.map((showcase, i) => (
+        <FeatureShowcase
+          eyebrow={showcase.eyebrow}
+          title={showcase.title}
+          color={showcase.color}
+          reverse={showcase.reverse ?? i % 2 === 1}
+        >
+          <Fragment slot="body">
+            {showcase.body.map((p) => (
+              <p>{p}</p>
+            ))}
+          </Fragment>
+        </FeatureShowcase>
+      ))
+    }
+
+    <ProductMoments moments={page.moments} />
+
+    {
+      page.kind === "feature" && (
+        <ProductRelatedStrip
+          page={page}
+          relatedFeatures={relatedFeatures}
+          publishedFeatureSlugs={publishedFeatureSlugs}
+        />
+      )
+    }
+
+    {
+      relatedCompare.length > 0 && (
+        <ComparePreview
+          id="works-alongside"
+          entries={relatedCompare}
+          eyebrow="Compare"
+          title="Works alongside other tools"
+          lead="Harvous does a different job than most Bible apps. Many people use it next to something they already love."
+          showAllLink
+          fathomTrack={fathomCompare.detailRelated}
+          fathomAllTrack={fathomCompare.homeAll}
+        />
+      )
+    }
+  </article>
+
+  <PageClosingCTA
+    heading={page.closingHeading}
+    lead={page.closingLead}
+    fathomTrack={fathomTrack}
+    secondaryHref={page.kind === "addon" ? "/pricing/" : undefined}
+    secondaryLabel={page.kind === "addon" ? "See all pricing" : undefined}
+  />
+</BaseLayout>

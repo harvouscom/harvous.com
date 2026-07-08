@@ -1,4 +1,10 @@
 /* Shared use-case hero art (carousel + detail pages). */
+.detail-content {
+  margin-inline: auto;
+  max-width: 48rem;
+  padding-inline: var(--frame-content-pad);
+}
+
 .use-case-hero__art {
   position: relative;
   display: flex;
@@ -24,6 +30,16 @@
     color-mix(in oklab, var(--color-ink) 6%, transparent) 100%
   );
   pointer-events: none;
+}
+
+/* Feature detail pages — flat tint from the feature ink instead of a photo. */
+.use-case-hero__art--tint {
+  background-image: none;
+  background-color: color-mix(in oklab, var(--use-case-ink) 18%, var(--color-paper));
+}
+
+.use-case-hero__art--tint::before {
+  display: none;
 }
 
 .use-case-hero__badge {

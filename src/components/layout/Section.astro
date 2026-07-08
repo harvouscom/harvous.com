@@ -33,6 +33,16 @@ const { tone = "paper", space = "lg", divider = "none", id, class: className = "
 // any token-driven children read correctly on a dark/saturated ground.
 const invert = tone === "accent" || tone === "ink";
 
+// Saturated section tones paint edge-to-edge — suppress the next frame hairline.
+const colorBand =
+  tone === "sky" ||
+  tone === "mint" ||
+  tone === "lilac" ||
+  tone === "peach" ||
+  tone === "pink" ||
+  tone === "accent" ||
+  tone === "ink";
+
 const dividerClass =
   divider === "top"
     ? "fade-rule-t"
@@ -50,6 +60,7 @@ const dividerClass =
     `section--tone-${tone}`,
     `section--space-${space}`,
     invert && "section--invert",
+    colorBand && "color-band",
     dividerClass,
     className,
   ]}

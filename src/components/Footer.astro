@@ -7,6 +7,7 @@ const links = [
   { label: "Use cases", href: "/use-cases/" },
   { label: "Compare", href: "/compare/" },
   { label: "Pricing", href: "/pricing/" },
+  { label: "Add-ons", href: "/pricing/" },
   { label: "Release Notes", href: "/release-notes/" },
   { label: "Support", href: "/support/" },
   { label: "Status", href: "https://status.harvous.com/" },
@@ -24,7 +25,7 @@ const links = [
             <a href={l.href} class="site-footer__link">{l.label}</a>
           ))}
         </nav>
-        <p>
+        <p class="site-footer__legal">
           © {year}{" "}
           <a
             href="https://testamentmade.com"
@@ -55,10 +56,16 @@ const links = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1rem;
     font-size: 0.75rem;
     color: var(--color-ink-faint);
+    text-align: center;
+  }
+
+  .site-footer__legal {
+    margin: 0;
+    text-wrap: balance;
   }
 
   .site-footer__nav {
@@ -78,12 +85,23 @@ const links = [
     color: var(--color-ink);
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 75rem) {
     .site-footer__bar {
       flex-direction: row-reverse;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      text-align: left;
+    }
+
+    .site-footer__legal {
+      flex-shrink: 0;
+      white-space: nowrap;
+      text-wrap: nowrap;
     }
 
     .site-footer__nav {
+      flex: 1 1 auto;
       justify-content: flex-end;
       gap: 0.5rem 1.25rem;
     }

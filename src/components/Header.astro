@@ -96,6 +96,7 @@ const SCROLL_THRESHOLD = 16;
     --header-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --header-duration: 360ms;
     --pill-inset: 0.75rem;
+    --header-nav-actions-gap: 1.25rem;
 
     top: 0;
     z-index: 40;
@@ -246,6 +247,11 @@ const SCROLL_THRESHOLD = 16;
       z-index: 1;
       flex: none;
       margin-left: auto;
+    }
+    .site-header__actions::before {
+      content: "";
+      width: var(--header-nav-actions-gap);
+      flex-shrink: 0;
     }
   }
   .site-header__link {
@@ -462,7 +468,10 @@ const SCROLL_THRESHOLD = 16;
       const logoWidth = logo && getComputedStyle(logo).display !== "none" ? 32 : 0;
       const navWidth = nav && getComputedStyle(nav).display !== "none" ? measureNavWidth(nav) : 0;
       const actionsWidth =
-        actions && getComputedStyle(actions).display !== "none" ? measureActionsWidth(actions) : 0;
+        actions && getComputedStyle(actions).display !== "none"
+          ? measureActionsWidth(actions) +
+            (navWidth > 0 ? parseFloat(getComputedStyle(header).getPropertyValue("--header-nav-actions-gap")) || 20 : 0)
+          : 0;
 
       let contentWidth;
       if (navWidth > 0) {

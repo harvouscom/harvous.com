@@ -6,8 +6,10 @@
  * (spa/src/pages/prototype/, src/components/react/) rather than the older
  * site/src/content/features/*.mdx drafts, which have drifted in places.
  */
+import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
+import { hasDetailContent } from "../lib/product-page-data.ts";
 
 const items = [
   // Core writing / organizing
@@ -20,12 +22,14 @@ const items = [
     icon: "fa6-solid:arrow-right-arrow-left",
     title: "Threads",
     desc: "Manually connect notes together to create a thread, even across folders.",
+    featureSlug: "threads",
   },
   // Scripture-specific
   {
     icon: "fa6-solid:book-bible",
     title: "Scripture pills",
     desc: "Type a reference and it becomes a pill — 11 translations, switchable per pill.",
+    featureSlug: "scripture-pills",
   },
   {
     icon: "fa6-solid:clock-rotate-left",
@@ -42,6 +46,7 @@ const items = [
     icon: "fa6-solid:highlighter",
     title: "Highlight & annotations",
     desc: "Color-code phrases, leave annotations, and find them in the highlights view.",
+    featureSlug: "highlights",
   },
   {
     icon: "fa6-solid:calendar-days",
@@ -76,11 +81,21 @@ const items = [
   },
 ] as const;
 
+const features = await getCollection("features");
+const publishedFeatureSlugs = new Set(
+  features.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id)
+);
+
+function featureHref(slug?: string) {
+  return slug && publishedFeatureSlugs.has(slug) ? `/features/${slug}/` : undefined;
+}
+
 const comingSoon = [
   {
     icon: "fa6-solid:user-group",
     title: "Shared spaces",
     desc: "An optional paid add-on will add shared spaces your whole group can study in.",
+    href: "/add-ons/shared-spaces/",
   },
   {
     icon: "fa6-solid:puzzle-piece",
@@ -113,13 +128,18 @@ const comingSoon = [
     </div>
 
     <div class="included__grid" data-reveal style="--reveal-delay: 100ms;">
-      {items.map((item) => (
-        <div class="included__item">
-          <div class="included__icon"><Icon name={item.icon} /></div>
-          <div class="included__title">{item.title}</div>
-          <p class="included__desc">{item.desc}</p>
-        </div>
-      ))}
+      {items.map((item) => {
+        const href = featureHref("featureSlug" in item ? item.featureSlug : undefined);
+        const Tag = href ? "a" : "div";
+        return (
+          <Tag class:list={["included__item", href && "included__item--link"]} href={href}>
+            <div class="included__icon"><Icon name={item.icon} /></div>
+            <div class="included__title">{item.title}</div>
+            <p class="included__desc">{item.desc}</p>
+            {href && <span class="included__more">Learn more →</span>}
+          </Tag>
+        );
+      })}
     </div>
 
     <div class="included__soon" data-reveal style="--reveal-delay: 160ms;">
@@ -128,17 +148,24 @@ const comingSoon = [
       </div>
       <p class="included__soon-lead">These features are on the roadmap, worth a look before you sign up.</p>
       <div class="included__soon-grid">
-        {comingSoon.map((item) => (
-          <div class="included__soon-item">
-            <div class="included__soon-icons">
-              {("icons" in item ? item.icons : [item.icon]).map((icon) => (
-                <div class="included__soon-icon"><Icon name={icon} /></div>
-              ))}
-            </div>
-            <div class="included__soon-title">{item.title}</div>
-            <p class="included__soon-desc">{item.desc}</p>
-          </div>
-        ))}
+        {comingSoon.map((item) => {
+          const Tag = "href" in item && item.href ? "a" : "div";
+          return (
+            <Tag
+              class:list={["included__soon-item", "href" in item && item.href && "included__soon-item--link"]}
+              href={"href" in item ? item.href : undefined}
+            >
+              <div class="included__soon-icons">
+                {("icons" in item ? item.icons : [item.icon]).map((icon) => (
+                  <div class="included__soon-icon"><Icon name={icon} /></div>
+                ))}
+              </div>
+              <div class="included__soon-title">{item.title}</div>
+              <p class="included__soon-desc">{item.desc}</p>
+              {"href" in item && item.href && <span class="included__soon-more">Learn more →</span>}
+            </Tag>
+          );
+        })}
       </div>
     </div>
   </Container>
@@ -188,6 +215,25 @@ const comingSoon = [
     line-height: 1.5;
     color: var(--color-ink-soft);
     text-wrap: pretty;
+  }
+  .included__item--link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 200ms ease;
+  }
+  .included__item--link:hover {
+    transform: translateY(-2px);
+  }
+  .included__item--link:hover .included__title {
+    color: var(--color-accent);
+  }
+  .included__more {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-accent);
   }
 
   /* Coming soon — hairline divider + centered chip, content below */
@@ -276,5 +322,24 @@ const comingSoon = [
     line-height: 1.5;
     color: var(--color-ink-soft);
     text-wrap: pretty;
+  }
+  .included__soon-item--link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 200ms ease;
+  }
+  .included__soon-item--link:hover {
+    transform: translateY(-2px);
+  }
+  .included__soon-item--link:hover .included__soon-title {
+    color: var(--color-accent);
+  }
+  .included__soon-more {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-accent);
   }
 </style>

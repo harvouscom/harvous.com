@@ -186,6 +186,11 @@ h3, h4, h5, h6 {
   background: var(--color-rule);
   pointer-events: none;
 }
+/* Omit the top hairline when the previous sibling paints a full-width color ground. */
+.color-band + .frame-divider::before,
+article:has(> .color-band:last-child) + .frame-divider::before {
+  display: none;
+}
 /* Do not also add border-top on .frame-divider — it duplicates this hairline. */
 
 /* Release notes index + detail — frame-bounded square grid background. */

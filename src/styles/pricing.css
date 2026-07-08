@@ -234,6 +234,19 @@
   color: var(--color-ink-soft);
 }
 
+.pricing-addon-card__link {
+  grid-column: 2;
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.pricing-addon-card__link:hover {
+  text-decoration: underline;
+}
+
 .pricing-plan-card__head {
   display: flex;
   align-items: flex-start;

@@ -1,0 +1,34 @@
+---
+import { Icon } from "astro-icon/components";
+import type { ProductMoment } from "../lib/product-page-data.ts";
+
+interface Props {
+  moments: ProductMoment[];
+  heading?: string;
+}
+
+const { moments, heading = "What that looks like in Harvous" } = Astro.props;
+---
+
+{
+  moments.length > 0 && (
+    <section class="frame-divider">
+      <div class="detail-content py-14 md:py-16">
+        <h2 class="font-display text-2xl leading-snug md:text-3xl">{heading}</h2>
+        <ul class="mt-8 grid gap-8 sm:grid-cols-2" role="list">
+          {moments.map((m) => (
+            <li class="flex gap-4">
+              <span class="use-case-moment__icon">
+                <Icon name={m.icon} />
+              </span>
+              <div>
+                <h3 class="font-semibold text-[var(--color-ink)]">{m.heading}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">{m.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

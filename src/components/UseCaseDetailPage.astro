@@ -56,7 +56,7 @@ const jsonLd = {
   <article class="use-case-detail" style={`--use-case-ink: ${useCase.ink};`}>
     <!-- Hero -->
     <header class="border-b border-[var(--color-rule)]">
-      <div class="mx-auto max-w-3xl px-5 py-10 md:py-14">
+      <div class="detail-content py-10 md:py-14">
         <div data-reveal>
           <div class="use-case-detail__nav">
           <a href="/use-cases/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
@@ -103,7 +103,7 @@ const jsonLd = {
     </header>
 
     <!-- Prose body -->
-    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
+    <section class="detail-content py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
       <div class="prose-letter space-y-8">
         {
           useCase.sections.map((section) => (
@@ -120,7 +120,7 @@ const jsonLd = {
 
     <!-- Feature moments -->
     <section class="frame-divider">
-      <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
+      <div class="detail-content py-14 md:py-16">
         <h2 class="font-display text-2xl leading-snug md:text-3xl">What that looks like in Harvous</h2>
         <ul class="mt-8 grid gap-8 sm:grid-cols-2" role="list">
           {
@@ -161,7 +161,7 @@ const jsonLd = {
     {
       testimonialRender && testimonialEntry && (
         <section class="fade-rule-t">
-          <div class="mx-auto max-w-2xl px-5 py-16 text-center use-case-testimonial">
+          <div class="detail-content max-w-2xl py-16 text-center use-case-testimonial">
             <blockquote class="use-case-testimonial__quote font-display text-3xl leading-snug md:text-4xl">
               <testimonialRender.Content />
             </blockquote>

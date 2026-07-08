@@ -6,12 +6,15 @@ import CTAButton from "../components/CTAButton.astro";
 import ComparePreview from "../components/ComparePreview.astro";
 import { getCollection, render } from "astro:content";
 import { fathomSignup } from "../lib/fathom-events.ts";
+import { hasDetailContent } from "../lib/product-page-data.ts";
 
 const features = (await getCollection("features")).sort((a, b) => a.data.order - b.data.order);
 const items = await Promise.all(
   features.map(async (f) => {
     const { Content } = await render(f);
-    return { data: f.data, Content };
+    const detailHref =
+      !f.data.draft && hasDetailContent(f.data) ? `/features/${f.id}/` : undefined;
+    return { id: f.id, data: f.data, Content, detailHref };
   })
 );
 
@@ -71,8 +74,8 @@ const jsonLd = {
   </section>
 
   <section class="mx-auto max-w-6xl space-y-24 px-5 py-20" data-reveal style="--reveal-delay: 80ms;">
-    {items.map(({ data, Content }) => (
-      <FeatureRow title={data.title} tagline={data.tagline} align={data.align}>
+    {items.map(({ data, Content, detailHref }) => (
+      <FeatureRow title={data.title} tagline={data.tagline} align={data.align} detailHref={detailHref}>
         <Fragment slot="body">
           <Content />
         </Fragment>

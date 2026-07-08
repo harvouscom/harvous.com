@@ -22,7 +22,13 @@ function stripDraftPages() {
     hooks: {
       "astro:build:done": ({ dir }) => {
         for (const slug of DRAFT_PAGE_SLUGS) {
-          rmSync(join(dir.pathname, slug), { recursive: true, force: true });
+          const pageDir = join(dir.pathname, slug);
+          if (slug === "features") {
+            // Hub only — keep /features/[slug]/ detail pages in production.
+            rmSync(join(pageDir, "index.html"), { force: true });
+          } else {
+            rmSync(pageDir, { recursive: true, force: true });
+          }
         }
       },
     },
@@ -36,7 +42,9 @@ export default defineConfig({
     sitemap({
       filter: (page) => {
         if (page.includes("/blog")) return false;
-        if (page.includes("/features/") || page.includes("/about/")) return false;
+        // Features hub only — detail pages under /features/{slug}/ are indexed.
+        if (page.endsWith("/features/") || page.endsWith("/features")) return false;
+        if (page.includes("/about/")) return false;
         // Individual changelog pages are noindex — keep crawl budget on compare/use-cases.
         if (/\/release-notes\/[^/]+\//.test(page) && !page.endsWith("/release-notes/")) return false;
         if (page.includes("/release-notes/page/")) return false;

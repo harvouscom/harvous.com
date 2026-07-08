@@ -11,6 +11,7 @@ interface FreeProps {
 interface AddonProps {
   variant: "addon";
   plan: PricingAddon;
+  detailHref?: string;
 }
 
 type Props = FreeProps | AddonProps;
@@ -80,6 +81,11 @@ const isPrimary = props.variant === "primary";
           </div>
         </div>
         <p class="pricing-addon-card__tagline">{props.plan.tagline}</p>
+        {props.detailHref && (
+          <a href={props.detailHref} class="pricing-addon-card__link">
+            Learn more →
+          </a>
+        )}
       </div>
     </article>
   )

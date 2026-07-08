@@ -1,0 +1,17 @@
+---
+import ProductDetailPage from "../../components/ProductDetailPage.astro";
+import { getAddonPages } from "../../lib/addons-data.ts";
+
+export function getStaticPaths() {
+  return getAddonPages()
+    .filter((a) => !a.draft)
+    .map((a) => ({
+      params: { slug: a.slug },
+      props: { page: a },
+    }));
+}
+
+const { page } = Astro.props;
+---
+
+<ProductDetailPage page={page} />

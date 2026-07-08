@@ -3,19 +3,31 @@ interface Props {
   title: string;
   tagline: string;
   align?: "left" | "right";
+  detailHref?: string;
 }
 
-const { title, tagline, align = "left" } = Astro.props;
+const { title, tagline, align = "left", detailHref } = Astro.props;
 const reverse = align === "right";
 ---
 
 <article class="grid items-center gap-8 md:gap-12 md:grid-cols-2" data-reveal>
   <div class={reverse ? "md:order-2" : "md:order-1"}>
     <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">{tagline}</div>
-    <h3 class="mt-2 text-3xl font-semibold leading-tight md:text-4xl">{title}</h3>
+    <h3 class="mt-2 text-3xl font-semibold leading-tight md:text-4xl">
+      {detailHref ? (
+        <a href={detailHref} class="transition hover:text-[var(--color-accent)]">{title}</a>
+      ) : (
+        title
+      )}
+    </h3>
     <div class="mt-4 prose-letter text-[var(--color-ink-soft)]">
       <slot name="body" />
     </div>
+    {detailHref && (
+      <a href={detailHref} class="mt-5 inline-block text-sm font-medium text-[var(--color-accent)] hover:underline">
+        Learn more →
+      </a>
+    )}
   </div>
 
   <div class={reverse ? "md:order-1" : "md:order-2"}>

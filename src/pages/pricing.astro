@@ -4,6 +4,7 @@ import Container from "../components/layout/Container.astro";
 import PageIntro from "../components/PageIntro.astro";
 import PricingPlanCard from "../components/PricingPlanCard.astro";
 import { FREE_PLAN, PRICING_ADDONS } from "../lib/pricing-data.ts";
+import { getAddonDetailHref } from "../lib/addons-data.ts";
 import "../styles/pricing.css";
 
 const pricingHeroImage = "/images/auth-hero/ai_bg_072.webp";
@@ -67,7 +68,7 @@ const jsonLd = {
 
           <div class="pricing-addons">
             {PRICING_ADDONS.map((plan) => (
-              <PricingPlanCard plan={plan} variant="addon" />
+              <PricingPlanCard plan={plan} variant="addon" detailHref={getAddonDetailHref(plan.id)} />
             ))}
           </div>
         </div>

@@ -1,54 +1,45 @@
 ---
-/**
- * Use-case feature list — same content as featureIds → MDX, styled like WhatsIncluded grid.
- */
-import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
 import { FEATURE_ICONS } from "../lib/feature-icons.ts";
-import { hasDetailContent } from "../lib/product-page-data.ts";
-import type { UseCase } from "../lib/use-cases-data.ts";
+import type { ProductPage } from "../lib/product-page-data.ts";
+import type { CollectionEntry } from "astro:content";
 
 interface Props {
-  useCase: UseCase;
-  features: CollectionEntry<"features">[];
+  page: ProductPage;
+  relatedFeatures: CollectionEntry<"features">[];
+  publishedFeatureSlugs: Set<string>;
 }
 
-const { useCase, features } = Astro.props;
-
-const allFeatures = await getCollection("features");
-const publishedSlugs = new Set(
-  allFeatures.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id)
-);
+const { page, relatedFeatures, publishedFeatureSlugs } = Astro.props;
 ---
 
 {
-  features.length > 0 && (
-    <section class="use-case-features frame-divider">
+  relatedFeatures.length > 0 && (
+    <section class="product-related frame-divider">
       <Container size="xl">
-        <div class="use-case-features__head section-head" data-reveal>
+        <div class="product-related__head section-head" data-reveal>
           <span class="eyebrow-pill">Features</span>
-          <h2 class="section-title">{useCase.featuresHeading}</h2>
-          <p class="lead use-case-features__lead">{useCase.featuresLead}</p>
+          <h2 class="section-title">{page.relatedHeading}</h2>
+          <p class="lead product-related__lead">{page.relatedLead}</p>
         </div>
 
-        <ul class="use-case-features__grid" data-reveal style="--reveal-delay: 100ms;" role="list">
-          {features.map((f) => {
-            const href = publishedSlugs.has(f.id) ? `/features/${f.id}/` : undefined;
+        <ul class="product-related__grid" data-reveal style="--reveal-delay: 100ms;" role="list">
+          {relatedFeatures.map((f) => {
+            const href = publishedFeatureSlugs.has(f.id) ? `/features/${f.id}/` : undefined;
             const Tag = href ? "a" : "div";
             return (
               <li>
                 <Tag
-                  class:list={["use-case-features__card", href && "use-case-features__card--link"]}
+                  class:list={["product-related__card", href && "product-related__card--link"]}
                   href={href}
                 >
-                  <span class="use-case-features__icon">
+                  <span class="product-related__icon">
                     <Icon name={FEATURE_ICONS[f.id] ?? "fa6-solid:note-sticky"} />
                   </span>
-                  <span class="use-case-features__title">{f.data.tagline}</span>
-                  <p class="use-case-features__desc">{f.data.title}</p>
-                  {href && <span class="use-case-features__more">Learn more →</span>}
+                  <span class="product-related__title">{f.data.tagline}</span>
+                  <p class="product-related__desc">{f.data.title}</p>
+                  {href && <span class="product-related__more">Learn more →</span>}
                 </Tag>
               </li>
             );
@@ -60,20 +51,20 @@ const publishedSlugs = new Set(
 }
 
 <style>
-  .use-case-features {
+  .product-related {
     padding-block: clamp(3.5rem, 8vw, 6.5rem);
   }
-  .use-case-features__head .section-title {
+  .product-related__head .section-title {
     max-width: 18ch;
     margin-inline: auto;
     text-wrap: balance;
   }
-  .use-case-features__lead {
+  .product-related__lead {
     max-width: 38rem;
     margin-inline: auto;
     text-wrap: pretty;
   }
-  .use-case-features__grid {
+  .product-related__grid {
     margin-top: clamp(3rem, 7vw, 4.5rem);
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -83,30 +74,30 @@ const publishedSlugs = new Set(
     margin-bottom: 0;
   }
   @media (min-width: 720px) {
-    .use-case-features__grid {
+    .product-related__grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
   @media (min-width: 1024px) {
-    .use-case-features__grid {
+    .product-related__grid {
       grid-template-columns: repeat(4, 1fr);
     }
   }
-  .use-case-features__card {
+  .product-related__card {
     display: block;
     text-decoration: none;
     color: inherit;
   }
-  .use-case-features__card--link {
+  .product-related__card--link {
     transition: transform 200ms ease;
   }
-  .use-case-features__card--link:hover {
+  .product-related__card--link:hover {
     transform: translateY(-2px);
   }
-  .use-case-features__card--link:hover .use-case-features__title {
+  .product-related__card--link:hover .product-related__title {
     color: var(--color-accent);
   }
-  .use-case-features__icon {
+  .product-related__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -116,11 +107,11 @@ const publishedSlugs = new Set(
     background: var(--color-accent-soft);
     color: var(--color-accent);
   }
-  .use-case-features__icon :global(svg) {
+  .product-related__icon :global(svg) {
     width: 1.05rem;
     height: 1.05rem;
   }
-  .use-case-features__title {
+  .product-related__title {
     display: block;
     margin-top: 0.85rem;
     font-weight: 600;
@@ -128,13 +119,13 @@ const publishedSlugs = new Set(
     color: var(--color-ink);
     transition: color 200ms ease;
   }
-  .use-case-features__desc {
+  .product-related__desc {
     margin-top: 0.3rem;
     font-size: 0.875rem;
     line-height: 1.5;
     color: var(--color-ink-soft);
   }
-  .use-case-features__more {
+  .product-related__more {
     display: inline-block;
     margin-top: 0.65rem;
     font-size: 0.8125rem;

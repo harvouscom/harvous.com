@@ -7,4 +7,5 @@ export const FEATURE_ICONS: Record<string, string> = {
   "offline-sync": "fa6-solid:arrows-rotate",
   sharing: "fa6-solid:share-nodes",
   "sidebar-modes": "fa6-solid:magnifying-glass",
+  threads: "fa6-solid:arrow-right-arrow-left",
 };

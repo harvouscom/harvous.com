@@ -1,21 +1,9 @@
 ---
 /**
- * FeatureShowcase — a feature presented as a big rounded *card* in one of the
- * app's vibrant highlight colors (color lives in the card, not a full-bleed
- * band). Copy on one side, a visual on the other; alternate with `reverse`.
- * Copy is authored first so it leads on mobile.
- *
- *   <FeatureShowcase eyebrow="Scripture pills" title="…" color="sky">
- *     <Fragment slot="body"> … </Fragment>
- *     <div slot="visual"> … </div>
- *   </FeatureShowcase>
- *
- * Colors map exactly to the prototype's highlight accents
- * (study-highlight-accent-colors.css).
+ * FeatureShowcase — full-width accent band. Copy stays contained on one side;
+ * the visual placeholder bleeds to the outer edge on the other.
  */
 import Section from "./layout/Section.astro";
-import Container from "./layout/Container.astro";
-import Row from "./layout/Row.astro";
 
 interface Props {
   eyebrow?: string;
@@ -26,63 +14,172 @@ interface Props {
 }
 
 const { eyebrow, title, color = "sky", reverse = false, id } = Astro.props;
+const visualSide = reverse ? "start" : "end";
 ---
 
-<Section space="sm" id={id} class="showcase">
-  <Container size="lg">
-    <div class:list={["fc", `fc--${color}`]}>
-      <Row cols={2} gap="lg" align="center" reverse={reverse}>
-        <div class="showcase__copy" data-reveal>
-          {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-          <h2 class="section-title showcase__title">{title}</h2>
-          <div class="lead showcase__body"><slot name="body" /></div>
-          {Astro.slots.has("cta") && <div class="showcase__cta"><slot name="cta" /></div>}
-        </div>
-
-        <div class="showcase__visual" data-reveal="scale" style="--reveal-delay: 100ms;">
-          <slot name="visual" />
-        </div>
-      </Row>
+<Section space="none" id={id} class:list={["showcase", "color-band", `showcase--${color}`, `showcase--visual-${visualSide}`]}>
+  <div class="showcase__layout">
+    <div class="showcase__copy-wrap">
+      <div class="showcase__copy" data-reveal>
+        {eyebrow && <p class="eyebrow showcase__eyebrow">{eyebrow}</p>}
+        <h2 class="showcase__title font-display text-2xl md:text-3xl">{title}</h2>
+        <div class="showcase__body"><slot name="body" /></div>
+        {Astro.slots.has("cta") && <div class="showcase__cta"><slot name="cta" /></div>}
+      </div>
     </div>
-  </Container>
+
+    <div class="showcase__visual" data-reveal="scale" style="--reveal-delay: 100ms;">
+      <div class="showcase__frame" aria-hidden="true">
+        {Astro.slots.has("visual") ? (
+          <slot name="visual" />
+        ) : (
+          <div class="showcase__placeholder" />
+        )}
+      </div>
+    </div>
+  </div>
 </Section>
 
 <style>
-  .fc {
-    border-radius: 2rem;
-    padding: 2.25rem 1.5rem;
-    box-shadow: var(--shadow-float);
-  }
-  @media (min-width: 768px) {
-    .fc { padding: 3.25rem 3rem; }
+  :global(section.showcase) {
+    overflow: hidden;
   }
 
-  /* Card fills — the exact prototype highlight accents. */
-  .fc--amber { background: var(--study-dock-accent-warmAmber); }
-  .fc--sky { background: var(--study-dock-accent-skyBlue); }
-  .fc--mint { background: var(--study-dock-accent-mintGreen); }
-  .fc--violet { background: var(--study-dock-accent-violet); }
-  .fc--coral { background: var(--study-dock-accent-coralRose); }
+  :global(section.showcase.showcase--amber) { background: var(--study-dock-accent-warmAmber); }
+  :global(section.showcase.showcase--sky) { background: var(--study-dock-accent-skyBlue); }
+  :global(section.showcase.showcase--mint) { background: var(--study-dock-accent-mintGreen); }
+  :global(section.showcase.showcase--violet) { background: var(--study-dock-accent-violet); }
+  :global(section.showcase.showcase--coral) { background: var(--study-dock-accent-coralRose); }
 
-  /* Text contrast is scoped to the copy column only, so the visual slot keeps
-     the normal (themeable) tokens for its own card. */
-  .fc--sky .showcase__copy,
-  .fc--violet .showcase__copy,
-  .fc--coral .showcase__copy {
+  .showcase__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  /* Match product-detail section rhythm (py-14 / md:py-16). */
+  .showcase__copy-wrap {
+    padding-block: 3.5rem;
+    padding-inline: var(--frame-content-pad);
+  }
+
+  /* Text contrast is scoped to the copy column only. */
+  :global(section.showcase.showcase--sky) .showcase__copy,
+  :global(section.showcase.showcase--violet) .showcase__copy,
+  :global(section.showcase.showcase--coral) .showcase__copy {
     --color-ink: #ffffff;
     --color-ink-soft: rgba(255, 255, 255, 0.88);
     --color-ink-faint: rgba(255, 255, 255, 0.74);
   }
-  .fc--amber .showcase__copy,
-  .fc--mint .showcase__copy {
+  :global(section.showcase.showcase--amber) .showcase__copy,
+  :global(section.showcase.showcase--mint) .showcase__copy {
     --color-ink: #1a1916;
     --color-ink-soft: rgba(26, 25, 22, 0.74);
     --color-ink-faint: rgba(26, 25, 22, 0.58);
   }
 
-  .showcase__title { margin-top: 0.5rem; }
-  .showcase__body { margin-top: 1rem; }
+  .showcase__eyebrow {
+    font-size: 0.6875rem;
+  }
+
+  .showcase__title {
+    margin-top: 0.5rem;
+    line-height: 1.12;
+    color: var(--color-ink);
+  }
+
+  .showcase__body {
+    margin-top: 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
   .showcase__body :global(p + p) { margin-top: 0.75rem; }
-  .showcase__cta { margin-top: 1.75rem; }
-  .showcase__visual { position: relative; }
+  .showcase__cta { margin-top: 1.5rem; }
+
+  .showcase__copy {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    max-width: 36rem;
+  }
+
+  .showcase__visual {
+    position: relative;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .showcase__frame {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    line-height: 0;
+  }
+
+  .showcase__placeholder {
+    width: 100%;
+    height: 100%;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.44) 0%, rgba(255, 255, 255, 0.22) 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  }
+
+  @media (min-width: 768px) {
+    .showcase__layout {
+      grid-template-columns: 5fr 7fr;
+    }
+
+    :global(section.showcase.showcase--visual-start) .showcase__layout {
+      grid-template-columns: 7fr 5fr;
+    }
+
+    :global(section.showcase.showcase--visual-start) .showcase__copy-wrap {
+      order: 2;
+    }
+
+    :global(section.showcase.showcase--visual-start) .showcase__visual {
+      order: 1;
+    }
+
+    .showcase__copy-wrap {
+      padding-block: 4rem;
+      padding-right: clamp(1.5rem, 3vw, 3rem);
+      padding-left: max(
+        var(--frame-content-pad),
+        calc((100vw - 64rem) / 2 + var(--frame-content-pad))
+      );
+    }
+
+    :global(section.showcase.showcase--visual-start) .showcase__copy-wrap {
+      padding-left: clamp(1.5rem, 3vw, 3rem);
+      padding-right: max(
+        var(--frame-content-pad),
+        calc((100vw - 64rem) / 2 + var(--frame-content-pad))
+      );
+    }
+  }
+
+  @media (max-width: 767px) {
+    .showcase__visual {
+      order: -1;
+      margin-inline: calc(-1 * var(--frame-content-pad));
+    }
+
+    .showcase__copy-wrap {
+      order: 2;
+      padding-top: 2rem;
+    }
+  }
+
+  /* Optional future screenshot — fills the bleed frame when provided. */
+  .showcase__frame :global(img),
+  .showcase__frame :global(picture),
+  .showcase__frame :global(picture img) {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: top center;
+  }
 </style>

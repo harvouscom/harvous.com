@@ -1,0 +1,19 @@
+---
+import ProductDetailPage from "../../components/ProductDetailPage.astro";
+import { getCollection } from "astro:content";
+import { featureToProductPage, hasDetailContent } from "../../lib/product-page-data.ts";
+
+export async function getStaticPaths() {
+  const features = await getCollection("features");
+  return features
+    .filter((f) => !f.data.draft && hasDetailContent(f.data))
+    .map((f) => ({
+      params: { slug: f.id },
+      props: { page: featureToProductPage(f.id, f.data) },
+    }));
+}
+
+const { page } = Astro.props;
+---
+
+<ProductDetailPage page={page} />
