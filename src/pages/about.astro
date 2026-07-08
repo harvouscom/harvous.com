@@ -3,11 +3,44 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageIntro from "../components/PageIntro.astro";
 import CTAButton from "../components/CTAButton.astro";
 import { fathomSignup } from "../lib/fathom-events.ts";
+
+const site = "https://harvous.com";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      name: "About Harvous",
+      description: "A letter from Derek Castelli, the maker of Harvous.",
+      url: `${site}/about/`,
+      isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
+    },
+    {
+      "@type": "Organization",
+      name: "Testament Made LLC",
+      url: site,
+      logo: `${site}/images/harvous-2-icon.png`,
+      founder: {
+        "@type": "Person",
+        name: "Derek Castelli",
+        email: "derek@harvous.com",
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: site },
+        { "@type": "ListItem", position: 2, name: "About", item: `${site}/about/` },
+      ],
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title="About — Harvous"
   description="A letter from Derek Castelli, the maker of Harvous."
+  jsonLd={jsonLd}
 >
   <section class="border-b border-[var(--color-rule)]">
     <PageIntro>

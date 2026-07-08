@@ -36,7 +36,12 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={title} description={jsonLd.description as string} jsonLd={jsonLd}>
+<BaseLayout
+  title={title}
+  description={jsonLd.description as string}
+  jsonLd={jsonLd}
+  noindex={page.currentPage > 1}
+>
   <section class="release-notes-index release-notes-frame frame-divider">
     <div class="release-notes-frame__grid" aria-hidden="true"></div>
     <Container size="lg">

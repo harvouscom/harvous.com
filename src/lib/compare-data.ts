@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 export type CompareEntry = {
@@ -66,6 +66,14 @@ function parseCsvRows(text: string): string[][] {
   return rows;
 }
 
+function resolveCompareOgImage(slug: string, remoteUrl: string): string {
+  const localPath = `/images/compare/og/${slug}.png`;
+  if (existsSync(join(process.cwd(), "public", localPath.slice(1)))) {
+    return localPath;
+  }
+  return remoteUrl;
+}
+
 function rowToEntry(headers: string[], values: string[]): CompareEntry | null {
   const get = (key: string) => values[headers.indexOf(key)]?.trim() ?? "";
   const slug = get("Slug");
@@ -79,7 +87,7 @@ function rowToEntry(headers: string[], values: string[]): CompareEntry | null {
     seoDescription: get("SEO Description"),
     competitorLink: get("Competitor link"),
     intro: get("Intro"),
-    ogImage: get("Open Graph"),
+    ogImage: resolveCompareOgImage(slug, get("Open Graph")),
     competitorImage: get("Competitor app image"),
     bestAt: get("Competitor Best at"),
     primaryUse: get("Competitor Primary Use"),

@@ -7,6 +7,8 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   /** Preload LCP image (WebP path under public/). */
   preloadImage?: string;
@@ -20,6 +22,8 @@ const {
   title = "Harvous — Bible notes app alternative",
   description = "Harvous is a Bible study notes app — not a Bible reader, not sermon transcription. Save scripture-linked notes and remember what you saved.",
   ogImage = "/og.png",
+  ogImageWidth = 1200,
+  ogImageHeight = 630,
   jsonLd,
   preloadImage,
   noindex = false,
@@ -63,10 +67,9 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="generator" content={Astro.generator} />
 
     <script is:inline>
-      (() => {
-        // TEMP: dark mode disabled — always light until night theme is ready to ship.
-        document.documentElement.dataset.colorScheme = "light";
-      })();
+      document.documentElement.classList.add("js");
+      // TEMP: dark mode disabled — always light until night theme is ready to ship.
+      document.documentElement.dataset.colorScheme = "light";
     </script>
 
     <title>{title}</title>
@@ -84,6 +87,8 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(ogImageWidth)} />
+    <meta property="og:image:height" content={String(ogImageHeight)} />
     <meta property="og:site_name" content="Harvous" />
     <meta property="og:locale" content="en_US" />
 

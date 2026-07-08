@@ -662,7 +662,7 @@ details > summary::-webkit-details-marker {
 }
 
 /* ── Reveal-on-scroll — generalizes the paper-stack observer (see BaseLayout) ── */
-[data-reveal] {
+html.js [data-reveal] {
   opacity: 0;
   transform: translateY(18px);
   transition:
@@ -671,11 +671,11 @@ details > summary::-webkit-details-marker {
   transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
-[data-reveal="scale"] { transform: translateY(18px) scale(0.97); }
-[data-reveal].revealed { opacity: 1; transform: none; }
+html.js [data-reveal="scale"] { transform: translateY(18px) scale(0.97); }
+html.js [data-reveal].revealed { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
+  html.js [data-reveal] {
     opacity: 1;
     transform: none;
     transition: none;
