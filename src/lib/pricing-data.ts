@@ -52,7 +52,7 @@ export const PRICING_ADDONS: PricingAddon[] = [
     id: "shared-spaces",
     icon: "fa6-solid:user-group",
     name: "Shared Spaces",
-    tagline: "Study together — everyone contributes to the same threads.",
+    tagline: "Shared spaces where your group contributes notes together. Joining is free.",
   },
   {
     id: "review",
