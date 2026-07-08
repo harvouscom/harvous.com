@@ -483,12 +483,44 @@ details > summary::-webkit-details-marker {
 
 /* Shared horizontal carousel sizing — parent must set container-type: inline-size. */
 .carousel-track-wrap {
+  position: relative;
   container-type: inline-size;
   /* Matches track padding-left — slides start after this inset at scroll 0. */
   --carousel-track-pad-start: max(
     var(--frame-inset),
     calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
   );
+}
+
+/* Page-frame verticals sit at z-index: -1; redraw them above scrolling carousel cards. */
+.carousel-track-wrap::before,
+.carousel-track-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-rule);
+  pointer-events: none;
+  z-index: 1;
+}
+.carousel-track-wrap::before { left: 0; }
+.carousel-track-wrap::after { right: 0; }
+
+@media (max-width: 719px) {
+  .bento__track-wrap::before,
+  .bento__track-wrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-rule);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .bento__track-wrap::before { left: 0; }
+  .bento__track-wrap::after { right: 0; }
 }
 
 .carousel-slide {

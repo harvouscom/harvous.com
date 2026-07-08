@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
-import FeatureShowcase from "./FeatureShowcase.astro";
 import ProductMoments from "./ProductMoments.astro";
 import ProductRelatedStrip from "./ProductRelatedStrip.astro";
 import ComparePreview from "./ComparePreview.astro";
@@ -118,23 +117,6 @@ const defaultHeroImage =
           </div>
         </section>
       )
-    }
-
-    {
-      page.showcases.map((showcase, i) => (
-        <FeatureShowcase
-          eyebrow={showcase.eyebrow}
-          title={showcase.title}
-          color={showcase.color}
-          reverse={showcase.reverse ?? i % 2 === 1}
-        >
-          <Fragment slot="body">
-            {showcase.body.map((p) => (
-              <p>{p}</p>
-            ))}
-          </Fragment>
-        </FeatureShowcase>
-      ))
     }
 
     <ProductMoments moments={page.moments} />

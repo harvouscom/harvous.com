@@ -66,21 +66,26 @@ const { page, relatedFeatures, publishedFeatureSlugs } = Astro.props;
   }
   .product-related__grid {
     margin-top: clamp(3rem, 7vw, 4.5rem);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 2rem 1.5rem;
     list-style: none;
     padding: 0;
     margin-bottom: 0;
   }
+  .product-related__grid > li {
+    flex: 0 1 calc(50% - 0.75rem);
+    max-width: 16rem;
+  }
   @media (min-width: 720px) {
-    .product-related__grid {
-      grid-template-columns: repeat(3, 1fr);
+    .product-related__grid > li {
+      flex: 0 1 calc(33.333% - 1rem);
     }
   }
   @media (min-width: 1024px) {
-    .product-related__grid {
-      grid-template-columns: repeat(4, 1fr);
+    .product-related__grid > li {
+      flex: 0 1 calc(25% - 1.125rem);
     }
   }
   .product-related__card {
