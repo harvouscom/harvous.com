@@ -111,19 +111,14 @@ const { compact = false } = Astro.props;
     padding: 1.15rem 1.2rem 1.25rem;
     border-radius: 0.75rem;
     border: 1px solid var(--color-rule);
-    background-color: var(--paper-sheet);
-    background-image:
-      radial-gradient(var(--pds-paper-grain-a) 1px, transparent 1px),
-      radial-gradient(var(--pds-paper-grain-b) 1px, transparent 1px);
-    background-size: 28px 28px, 17px 17px;
-    background-position: 0 0, 9px 9px;
+    background-color: var(--color-paper);
     text-decoration: none;
     color: inherit;
     transition: background-color 150ms ease, transform 150ms ease, border-color 150ms ease;
   }
   .support-contact-card:hover {
     text-decoration: none;
-    background-color: color-mix(in oklab, var(--color-highlight) 18%, var(--paper-sheet));
+    background-color: var(--color-warm);
     border-color: color-mix(in srgb, var(--color-ink) 10%, var(--color-rule));
     transform: translateY(-1px);
   }
