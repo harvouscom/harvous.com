@@ -1,5 +1,5 @@
 /** Marketing pages kept as drafts — noindex, excluded from sitemap, removed from production builds. */
-export const DRAFT_PAGE_SLUGS = ["features", "about"] as const;
+export const DRAFT_PAGE_SLUGS = ["features"] as const;
 
 export type DraftPageSlug = (typeof DRAFT_PAGE_SLUGS)[number];
 

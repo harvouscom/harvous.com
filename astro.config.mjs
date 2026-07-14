@@ -44,7 +44,6 @@ export default defineConfig({
         if (page.includes("/blog")) return false;
         // Features hub only — detail pages under /features/{slug}/ are indexed.
         if (page.endsWith("/features/") || page.endsWith("/features")) return false;
-        if (page.includes("/about/")) return false;
         // Individual changelog pages are noindex — keep crawl budget on compare/use-cases.
         if (/\/release-notes\/[^/]+\//.test(page) && !page.endsWith("/release-notes/")) return false;
         if (page.includes("/release-notes/page/")) return false;

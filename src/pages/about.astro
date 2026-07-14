@@ -1,17 +1,43 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageIntro from "../components/PageIntro.astro";
-import CTAButton from "../components/CTAButton.astro";
+import PageClosingCTA from "../components/PageClosingCTA.astro";
+import FounderLetter from "../components/FounderLetter.astro";
 import { fathomSignup } from "../lib/fathom-events.ts";
 
 const site = "https://harvous.com";
+
+const beliefs = [
+  {
+    title: "Tools only help.",
+    body: "Harvous is a tool — a memory place for Bible study — not a substitute for pastors, friends, or the Spirit.",
+  },
+  {
+    title: "Keep your Bible app.",
+    body: "Harvous sits beside the reader you already love. Notes, highlights, and scripture links live here so Sunday's thoughts can still be there on Thursday.",
+  },
+  {
+    title: "Beauty belongs here.",
+    body: "For how beautiful God is, software that helps people remember Scripture deserves care — clarity, warmth, and room to write without noise.",
+  },
+  {
+    title: "The search is yours.",
+    body: "Proverbs 25:2 says searching out a matter is the glory of kings — not having it delivered. Harvous serves the searching. It doesn't try to study for you.",
+  },
+  {
+    title: "Education for the church.",
+    body: "Long-term, Harvous wants to serve how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
+  },
+] as const;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "AboutPage",
       name: "About Harvous",
-      description: "A letter from Derek Castelli, the maker of Harvous.",
+      description:
+        "Why Derek Castelli made Harvous — a notes app for remembering Bible study. Humans help humans. Tools only help.",
       url: `${site}/about/`,
       isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
     },
@@ -39,79 +65,162 @@ const jsonLd = {
 
 <BaseLayout
   title="About — Harvous"
-  description="A letter from Derek Castelli, the maker of Harvous."
+  description="Why Derek Castelli made Harvous — a notes app for remembering Bible study. Humans help humans. Tools only help."
   jsonLd={jsonLd}
-  noindex
 >
-  <div class="draft-page-banner" role="status">
-    Draft — not indexed or deployed. Remove <code>noindex</code> and the build strip hook to publish.
-  </div>
   <section class="border-b border-[var(--color-rule)]">
     <PageIntro>
-      <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">A letter from Derek</div>
-      <h1 class="mt-3 font-display text-5xl leading-[1.0] md:text-7xl">
-        I made Harvous because I need to remember the Bible, better.
+      <span class="eyebrow-pill">A letter from Derek</span>
+      <h1 class="mt-4 font-display text-5xl leading-[1.0] md:text-7xl text-pretty">
+        Why I made Harvous
       </h1>
     </PageIntro>
   </section>
 
-  <section class="mx-auto max-w-5xl px-5 py-16" data-reveal style="--reveal-delay: 80ms;">
-    <div class="paper-grain rounded-3xl border border-[var(--color-rule)] p-6 md:p-12">
-      <div class="grid gap-10 md:grid-cols-2">
-        <div class="prose-letter">
-          <p>
-            Since 2016 I've been studying the Bible. Many highlights
-            saved in my Bible app of choice. Some notes in said Bible app. Some in Apple
-            Notes. And some somewhere on a piece of paper I don't have anymore.
-            It was all scattered.
-          </p>
-          <p>
-            I've tried many apps for my Bible study. Some were made for scholars
-            and felt archaic. Some were built for readers with notes as an
-            afterthought. None seem to be made for someone who is curious about
-            the Bible wanting to remember their study.
-          </p>
-          <p>
-            So I made one. Harvous is the app I've been wanting — a clean,
-            focused place for notes that knows what a Bible reference is, looks
-            up a word when I'm curious, and gets out of the way when I just want
-            to write.
-          </p>
-        </div>
-        <div class="prose-letter">
-          <p>
-            It's named after Proverbs 25:2 — "It is the glory of God to conceal
-            a matter; to search out a matter is the glory of kings." Studying
-            the Bible is searching. Harvous is the place where the search
-            settles into something you can come back to.
-          </p>
-          <p>
-            What started as a web app is now also a native app on iOS and Mac too,
-            with scripture pills that switch translations, a built-in
-            dictionary, highlights that link back to passages, and a sidebar
-            that finds notes five different ways.
-          </p>
-          <p>
-            If any of that sounds like what you've been looking for, I'd love
-            to have you try it. And if it doesn't work for you yet — write me
-            at <a class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]" href="mailto:derek@harvous.com">derek@harvous.com</a> and tell me why.
-          </p>
-          <p class="mt-8 text-lg font-semibold">— Derek Castelli</p>
-          <p class="text-sm text-[var(--color-ink-faint)]">Testament Made LLC</p>
-        </div>
-      </div>
-    </div>
+  <!-- The letter -->
+  <section class="mx-auto max-w-5xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
+    <FounderLetter variant="full" />
+  </section>
 
-    <div class="mt-12 flex justify-center">
-      <CTAButton
-        href="https://app.harvous.com/sign-up"
-        variant="primary"
-        size="lg"
-        external
-        fathomTrack={fathomSignup.about}
-      >
-        Sign up free
-      </CTAButton>
+  <!-- What we believe — thin philosophy coda -->
+  <section class="about-believe frame-divider" data-reveal style="--reveal-delay: 100ms;">
+    <div class="about-believe__inner">
+      <h2 class="about-believe__heading font-display text-pretty">
+        What Harvous cares about
+      </h2>
+      <ul class="about-believe__list" role="list" data-reveal="stagger">
+        {
+          beliefs.map((belief, i) => (
+            <li class="about-believe__item">
+              <span class="about-believe__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <h3 class="about-believe__title">{belief.title}</h3>
+              <p class="about-believe__body">{belief.body}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
+
+  <!-- Who's behind it -->
+  <section class="frame-divider" data-reveal style="--reveal-delay: 120ms;">
+    <div class="about-who detail-content py-14 md:py-16 text-center">
+      <h2 class="font-display text-2xl leading-snug md:text-3xl">Who's behind it</h2>
+      <p class="mt-4 text-[var(--color-ink-soft)] text-pretty">
+        I'm making Harvous solo under Testament Made LLC — designing and shipping in public,
+        one note at a time. Questions, bugs, or ideas: write me at
+        <a
+          class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+          href="mailto:derek@harvous.com"
+        >
+          derek@harvous.com
+        </a>.
+      </p>
+      <p class="about-who__note">
+        <mark>God-willing, I'll work on Harvous full-time one day with a small team — and keep at it for many years to come.</mark>
+      </p>
+    </div>
+  </section>
+
+  <PageClosingCTA
+    heading="Maybe you needed this too."
+    lead="Sign up free and give your Bible study a place to live."
+    fathomTrack={fathomSignup.about}
+  />
 </BaseLayout>
+
+<style>
+  .detail-content {
+    margin-inline: auto;
+    max-width: 40rem;
+    padding-inline: var(--frame-content-pad);
+  }
+
+  .about-believe__inner {
+    margin-inline: auto;
+    max-width: 64rem;
+    padding: clamp(3rem, 7vw, 5rem) var(--frame-content-pad);
+  }
+
+  .about-believe__heading {
+    margin: 0 auto;
+    text-align: center;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .about-believe__list {
+    list-style: none;
+    margin: clamp(2.25rem, 5vw, 3.25rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .about-believe__item {
+    display: grid;
+    gap: 0.65rem 1.5rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .about-believe__item:last-child {
+    padding-bottom: 0;
+  }
+
+  .about-believe__index {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+  }
+
+  .about-believe__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  .about-believe__body {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .about-who > p:not(.about-who__note) {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  .about-who__note {
+    margin: 1.25rem auto 0;
+    max-width: 22rem;
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 768px) {
+    .about-believe__item {
+      grid-template-columns: 2.5rem minmax(0, 1fr) minmax(0, 1.35fr);
+      align-items: start;
+      gap: 1.25rem 2rem;
+      padding-block: 1.75rem;
+    }
+
+    .about-believe__title {
+      font-size: 1.35rem;
+    }
+  }
+</style>

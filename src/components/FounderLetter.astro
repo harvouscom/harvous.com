@@ -1,8 +1,16 @@
 ---
 // Founder letter — the paper-stack + fan-in is a signature, kept intact and made
 // theme-aware (at night the sheet glows like a lit letter on a dark desk via the
-// app's --pds-paper-* tokens). Used by both the homepage and /about.
+// app's --pds-paper-* tokens). Used by both the homepage (teaser) and /about (full).
 import OptimizedImage from "./OptimizedImage.astro";
+
+interface Props {
+  /** Homepage teaser stays short; About uses the full letter. */
+  variant?: "teaser" | "full";
+}
+
+const { variant = "teaser" } = Astro.props;
+const isFull = variant === "full";
 ---
 
 <div class="paper-stack relative">
@@ -45,11 +53,32 @@ import OptimizedImage from "./OptimizedImage.astro";
           Notes. And some somewhere on a piece of paper I don't have anymore.
           It was all scattered.
         </p>
-        <p>I've tried many Bible study apps. None helped me remember and feed my curiosity.</p>
-        <p>
-          So I made one. Harvous knows scripture, looks up words I'm
-          curious about, and stays out of the way when I want to write.
-        </p>
+        {
+          isFull ? (
+            <>
+              <p>
+                I've tried many apps for my Bible study. Some were made for scholars
+                and felt archaic. Some were built for readers with notes as an
+                afterthought. None seem to be made for someone who is curious about
+                the Bible and wants to remember their study.
+              </p>
+              <p>
+                So I made one. Harvous is the app I've been wanting — a clean,
+                focused place for notes that knows what a Bible reference is, looks
+                up a word when I'm curious, and gets out of the way when I just want
+                to write.
+              </p>
+            </>
+          ) : (
+            <>
+              <p>I've tried many Bible study apps. None helped me remember and feed my curiosity.</p>
+              <p>
+                So I made one. Harvous knows scripture, looks up words I'm
+                curious about, and stays out of the way when I want to write.
+              </p>
+            </>
+          )
+        }
       </div>
       <div class="prose-letter">
         <p>
@@ -58,14 +87,47 @@ import OptimizedImage from "./OptimizedImage.astro";
           the Bible is searching. Harvous is the place where the search
           settles into something you can come back to.
         </p>
-        <p>
-          Right now it's available on web with Mac, iPad, and iPhone apps coming later. You can add
-          scripture in 11 English translations, see automatic built-in dictionary suggestions, and highlight what
-          stands out to you.
-        </p>
-        <p>
-          If you have any questions, write me at <a class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]" href="mailto:derek@harvous.com">derek@harvous.com</a>.
-        </p>
+        {
+          isFull ? (
+            <>
+              <p>
+                It's on the web today. Mac, iPad, and iPhone apps are coming later.
+                Scripture across 11 translations, a built-in dictionary, highlights
+                that stay linked to passages — and a home for the thoughts that used to disappear.
+              </p>
+              <p>
+                If any of that sounds like what you've been looking for, I'd love
+                for you to try it. And if it isn't there yet — write me
+                at{" "}
+                <a
+                  class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+                  href="mailto:derek@harvous.com"
+                >
+                  derek@harvous.com
+                </a>{" "}
+                and tell me why.
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                Right now it's available on web with Mac, iPad, and iPhone apps coming later. You can add
+                scripture in 11 English translations, see automatic built-in dictionary suggestions, and highlight what
+                stands out to you.
+              </p>
+              <p>
+                If you have any questions, write me at{" "}
+                <a
+                  class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+                  href="mailto:derek@harvous.com"
+                >
+                  derek@harvous.com
+                </a>
+                .
+              </p>
+            </>
+          )
+        }
         <div class="mt-6">
           <OptimizedImage
             src="/derek-signiture.png"
@@ -88,6 +150,18 @@ import OptimizedImage from "./OptimizedImage.astro";
             </div>
           </div>
         </div>
+        {
+          !isFull && (
+            <p class="mt-8 mb-0">
+              <a
+                href="/about/"
+                class="text-sm font-medium underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+              >
+                Read the full letter →
+              </a>
+            </p>
+          )
+        }
       </div>
     </div>
   </div>
