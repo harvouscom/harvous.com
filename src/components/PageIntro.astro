@@ -5,10 +5,19 @@
 interface Props {
   class?: string;
   size?: "default" | "compact";
+  /** Top padding only — for hub intros that flow into a section nav. */
+  flushBottom?: boolean;
 }
 
-const { class: className = "", size = "default" } = Astro.props;
-const pad = size === "compact" ? "py-10 md:py-14" : "py-16 md:py-24";
+const { class: className = "", size = "default", flushBottom = false } = Astro.props;
+const pad =
+  size === "compact"
+    ? flushBottom
+      ? "pt-10 md:pt-14 pb-0"
+      : "py-10 md:py-14"
+    : flushBottom
+      ? "pt-16 md:pt-24 pb-0"
+      : "py-16 md:py-24";
 ---
 
 <div class:list={["mx-auto max-w-3xl px-5 text-center", pad, className]} data-reveal>

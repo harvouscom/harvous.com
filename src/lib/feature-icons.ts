@@ -8,4 +8,5 @@ export const FEATURE_ICONS: Record<string, string> = {
   sharing: "fa6-solid:share-nodes",
   "sidebar-modes": "fa6-solid:magnifying-glass",
   threads: "fa6-solid:arrow-right-arrow-left",
+  recall: "fa6-solid:clock-rotate-left",
 };

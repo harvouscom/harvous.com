@@ -1,0 +1,370 @@
+---
+/**
+ * HubSectionNav — secondary floating nav below the site header.
+ * Desktop-wide: centered gradient pills at rest; compact dropdown when pinned on scroll.
+ * Narrow viewports: dropdown whenever the pill row would not fit (ResizeObserver).
+ *
+ * Parent page must wrap nav + sections in an element with [data-hub-section-nav-main]
+ * so pin/unpin stays within the tracked content.
+ */
+interface NavItem {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  items: NavItem[];
+  ariaLabel?: string;
+  selectLabel?: string;
+  selectId?: string;
+}
+
+const {
+  items,
+  ariaLabel = "Sections",
+  selectLabel = "Jump to section",
+  selectId = "hub-section-select",
+} = Astro.props;
+const defaultId = items[0]?.id ?? "";
+---
+
+{
+  items.length > 0 && (
+    <div class="hub-section-nav__slot" data-hub-section-nav-slot>
+      <div class="hub-section-nav__float" data-hub-section-nav-float>
+        <nav class="hub-section-nav__pills" aria-label={ariaLabel}>
+          {
+            items.map((item) => (
+              <a
+                href={`#${item.id}`}
+                class="hub-section-nav__pill"
+                data-section-id={item.id}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+
+        <div class="hub-section-nav__select-wrap">
+          <label class="hub-section-nav__select-label" for={selectId}>
+            {selectLabel}
+          </label>
+          <select
+            id={selectId}
+            class="hub-section-nav__select"
+            data-hub-section-nav-select
+          >
+            {
+              items.map((item) => (
+                <option value={item.id} selected={item.id === defaultId}>
+                  {item.label}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .hub-section-nav__slot {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .hub-section-nav__float {
+    position: relative;
+    z-index: 35;
+    width: fit-content;
+    max-width: calc(100% - 2 * var(--frame-content-pad));
+    padding: 0.4rem 0.55rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 1.125rem;
+    background: color-mix(in oklab, var(--color-card) 90%, transparent);
+    backdrop-filter: blur(8px);
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.04),
+      0 8px 24px -12px rgba(15, 23, 42, 0.1);
+  }
+
+  .hub-section-nav__float.is-fixed {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .hub-section-nav__float.is-pinned {
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.06),
+      0 10px 28px -10px rgba(15, 23, 42, 0.14);
+  }
+
+  .hub-section-nav__pills {
+    display: none;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: none;
+  }
+
+  .hub-section-nav__select-wrap {
+    display: block;
+  }
+
+  .hub-section-nav__float:not(.is-compact):not(.is-pinned) .hub-section-nav__pills {
+    display: flex;
+  }
+
+  .hub-section-nav__float:not(.is-compact):not(.is-pinned) .hub-section-nav__select-wrap {
+    display: none;
+  }
+
+  .hub-section-nav__float.is-measuring .hub-section-nav__pills {
+    display: flex !important;
+    visibility: hidden;
+    position: absolute;
+    inset: 0 auto auto 0;
+    pointer-events: none;
+  }
+
+  .hub-section-nav__float.is-measuring .hub-section-nav__select-wrap {
+    visibility: hidden;
+  }
+
+  .hub-section-nav__pill {
+    flex-shrink: 0;
+    padding: 0.38rem 0.72rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hub-section-nav__pill:hover:not(.hub-section-nav__pill--active) {
+    color: var(--color-ink);
+    background: var(--color-warm);
+    border-color: var(--color-rule);
+  }
+  .hub-section-nav__pill--active {
+    background: var(--accent-btn-bg);
+    border-color: transparent;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: var(--accent-btn-shadow-sm);
+  }
+  .hub-section-nav__pill--active:hover {
+    color: #fff;
+    background: var(--accent-btn-bg);
+    border-color: transparent;
+    box-shadow: var(--accent-btn-shadow);
+  }
+  .hub-section-nav__pill:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .hub-section-nav__select-wrap {
+    position: relative;
+    min-width: min(100%, 16rem);
+  }
+
+  .hub-section-nav__select-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .hub-section-nav__select {
+    width: 100%;
+    appearance: none;
+    padding: 0.45rem 2.25rem 0.45rem 0.9rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23585c66' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      no-repeat right 0.75rem center;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+  .hub-section-nav__select:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hub-section-nav__float {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const navSlot = document.querySelector<HTMLElement>("[data-hub-section-nav-slot]");
+  const navFloat = document.querySelector<HTMLElement>("[data-hub-section-nav-float]");
+  const hubMain = document.querySelector<HTMLElement>("[data-hub-section-nav-main]");
+  const header = document.getElementById("site-header");
+
+  if (navSlot && navFloat) {
+    const pills = navFloat.querySelectorAll<HTMLAnchorElement>("[data-section-id]");
+    const select = navFloat.querySelector<HTMLSelectElement>("[data-hub-section-nav-select]");
+    const PIN_GAP = 10;
+
+    const sections = [...pills]
+      .map((pill) => {
+        const id = pill.dataset.sectionId;
+        const el = id ? document.getElementById(id) : null;
+        return el ? { id, el } : null;
+      })
+      .filter((entry): entry is { id: string; el: HTMLElement } => entry !== null);
+
+    const pinTop = () => (header?.getBoundingClientRect().bottom ?? 0) + PIN_GAP;
+
+    const pillsNav = navFloat.querySelector<HTMLElement>(".hub-section-nav__pills");
+
+    const syncCompact = () => {
+      if (!pillsNav) return;
+      navFloat.classList.add("is-measuring");
+      const floatStyle = getComputedStyle(navFloat);
+      const chromeX =
+        parseFloat(floatStyle.paddingLeft) +
+        parseFloat(floatStyle.paddingRight) +
+        parseFloat(floatStyle.borderLeftWidth) +
+        parseFloat(floatStyle.borderRightWidth);
+      const needed = pillsNav.scrollWidth + chromeX;
+      navFloat.classList.remove("is-measuring");
+      const available = navSlot.getBoundingClientRect().width;
+      navFloat.classList.toggle("is-compact", needed > available);
+    };
+
+    const syncPin = () => {
+      const top = pinTop();
+      const slotTop = navSlot.getBoundingClientRect().top;
+      const mainBottom = hubMain?.getBoundingClientRect().bottom ?? Infinity;
+      const wantsPin = slotTop <= top;
+
+      navFloat.classList.toggle("is-pinned", wantsPin);
+      const floatHeight = navFloat.offsetHeight;
+      const shouldPin = wantsPin && mainBottom > top + floatHeight;
+
+      navFloat.classList.toggle("is-fixed", shouldPin);
+      navFloat.classList.toggle("is-pinned", shouldPin);
+
+      if (shouldPin) {
+        navFloat.style.top = `${top}px`;
+        navSlot.style.minHeight = `${floatHeight}px`;
+      } else {
+        navFloat.style.top = "";
+        navSlot.style.minHeight = "";
+      }
+    };
+
+    const setActive = (id: string) => {
+      pills.forEach((pill) => {
+        const active = pill.dataset.sectionId === id;
+        pill.classList.toggle("hub-section-nav__pill--active", active);
+        pill.setAttribute("aria-current", active ? "location" : "false");
+      });
+      if (select && select.value !== id) {
+        select.value = id;
+      }
+    };
+
+    const scrollToSection = (id: string) => {
+      const target = document.getElementById(id);
+      if (!target) return;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const navHeight = navFloat.offsetHeight;
+      const offset = pinTop() + navHeight + 8;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+      history.replaceState(null, "", `#${id}`);
+    };
+
+    if (sections.length > 0) {
+      const markerPx = () => navFloat.getBoundingClientRect().bottom + 12;
+
+      const updateActive = () => {
+        syncCompact();
+        syncPin();
+        const marker = markerPx();
+        let current = sections[0]!.id;
+
+        for (const section of sections) {
+          if (section.el.getBoundingClientRect().top <= marker) {
+            current = section.id;
+          }
+        }
+
+        const scrollRoot = document.documentElement;
+        const atBottom =
+          scrollRoot.scrollHeight - scrollRoot.scrollTop - window.innerHeight < 2;
+        if (atBottom) {
+          current = sections[sections.length - 1]!.id;
+        }
+
+        setActive(current);
+      };
+
+      setActive(sections[0]!.id);
+      syncCompact();
+      syncPin();
+
+      select?.addEventListener("change", () => {
+        if (select.value) scrollToSection(select.value);
+      });
+
+      pills.forEach((pill) => {
+        pill.addEventListener("click", (event) => {
+          const id = pill.dataset.sectionId;
+          if (!id) return;
+          event.preventDefault();
+          scrollToSection(id);
+        });
+      });
+
+      let ticking = false;
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          updateActive();
+          ticking = false;
+        });
+      };
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", updateActive, { passive: true });
+      if (typeof ResizeObserver !== "undefined") {
+        const ro = new ResizeObserver(() => syncCompact());
+        ro.observe(navSlot);
+      }
+      updateActive();
+    } else {
+      syncCompact();
+      syncPin();
+      window.addEventListener("resize", () => {
+        syncCompact();
+        syncPin();
+      }, { passive: true });
+      window.addEventListener("scroll", syncPin, { passive: true });
+    }
+  }
+</script>

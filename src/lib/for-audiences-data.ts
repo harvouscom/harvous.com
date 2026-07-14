@@ -84,12 +84,12 @@ const audiences: ForAudience[] = [
         body: "Whether it's a chapter a day or a theme for the month, a thread collects what you're noticing so it compounds.",
       },
       {
-        icon: "fa6-solid:calendar-days",
-        heading: "A starting point when you need one",
-        body: "The daily passage gives you somewhere to begin, with space to write what stays with you.",
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall brings a note back",
+        body: "When the week gets loud, Recall can resurface a fading note or passage — so Monday's thought isn't gone by Thursday.",
       },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "sidebar-modes", "offline-sync"],
+    featureIds: ["scripture-pills", "daily-passage", "sidebar-modes", "recall"],
     featuresHeading: "What a daily rhythm asks of your notes",
     featuresLead:
       "Open a verse, save what stood out, and find it again later — the pieces people lean on most for everyday study.",
@@ -262,12 +262,12 @@ const audiences: ForAudience[] = [
         body: "Drop the passages that were read or referenced as pills — tapable later when you want the text again.",
       },
       {
-        icon: "fa6-solid:magnifying-glass",
-        heading: "Search that half-memory",
-        body: "Start typing what you remember. Harvous looks across threads so Monday's fog doesn't win.",
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall finds what Monday buried",
+        body: "When half a phrase is all you have, Recall can resurface a fading sermon note — so October still has Sunday in it.",
       },
     ],
-    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "offline-sync"],
+    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "recall"],
     featuresHeading: "What Sunday notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you have — so Sunday doesn't disappear by Monday.",
@@ -396,6 +396,64 @@ const audiences: ForAudience[] = [
     testimonialId: "theo",
   },
   {
+    slug: "seminary-students",
+    href: "/for/seminary-students/",
+    title: "Seminary & Bible college",
+    tagline: "Classes, papers, long sits — notes that have to last a term.",
+    icon: "fa6-solid:graduation-cap",
+    ink: "var(--study-dock-accent-warmAmber)",
+    image: "/images/auth-hero/ai_bg_051.webp",
+    seoTitle: "For seminary and Bible college students — Harvous",
+    seoDescription:
+      "Seminary and Bible college notes that compound — deep sits, book and topical threads, scripture pills, and Recall when week 10 needs week 3.",
+    heroTitle: "For people whose study has to last a term.",
+    heroLead:
+      "You're not collecting inspirational snippets. You're sitting with texts for class, tracing themes for a paper, working a book for weeks — and you need notes that still make sense when midterms show up.",
+    sections: [
+      {
+        heading: "Depth without the heavy suite (unless you want one)",
+        paragraphs: [
+          "Logos and library stacks have their place. Harvous sits in the middle for the notes you write while you study — scripture pills across translations, a built-in dictionary, spaces and threads per class or book, highlights that stay attached to the line that mattered.",
+          "A deep sit with one passage can live next to a semester-long book thread. You're not forced into one study mode.",
+        ],
+      },
+      {
+        heading: "Week 10 should still find week 3",
+        paragraphs: [
+          "Search and threads help you dig on purpose. Recall helps when you weren't looking — a fading note from early in the term can resurface when you're writing later. The point is that your own work compounds instead of living in a graveyard of untitled docs.",
+        ],
+      },
+    ],
+    moments: [
+      {
+        icon: "fa6-solid:glasses",
+        heading: "Room for a long sit",
+        body: "Keep scripture open beside your writing, look up a word, stack cross-references — a deep study session without losing the note.",
+      },
+      {
+        icon: "fa6-solid:book-open",
+        heading: "Threads per book or class",
+        body: "Give Romans, a systematics class, or a paper theme its own thread so notes compound instead of scattering across files.",
+      },
+      {
+        icon: "fa6-solid:tags",
+        heading: "Themes across assignments",
+        body: "A topical thread can hold grace, covenant, or prayer notes from wherever they showed up — not only the syllabus order.",
+      },
+      {
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall mid-term",
+        body: "When you're drafting week 10, Recall can bring back a note from week 3 you meant to use — still linked to the passage.",
+      },
+    ],
+    featureIds: ["scripture-pills", "dictionary", "recall", "highlights"],
+    featuresHeading: "What a term of study asks of your notes",
+    featuresLead:
+      "Scripture nearby, a dictionary in reach, threads that last — and Recall when an earlier note needs to show up again.",
+    compareSlugs: ["logos", "obsidian", "notion", "life-bible"],
+    useCaseSlugs: ["deep-study", "book-study", "topical-study"],
+  },
+  {
     slug: "following-a-theme",
     href: "/for/following-a-theme/",
     title: "Following a theme",
@@ -513,6 +571,71 @@ const audiences: ForAudience[] = [
     compareSlugs: ["pray-com", "youversion", "notion"],
     useCaseSlugs: ["small-group"],
     testimonialId: "joschua",
+  },
+  {
+    slug: "bible-app-users",
+    href: "/for/bible-app-users/",
+    title: "Bible app users",
+    tagline: "Keep the app you already read in. Harvous is where the notes go.",
+    icon: "fa6-solid:mobile-screen",
+    ink: "var(--study-dock-accent-neutral)",
+    image: "/images/auth-hero/ai_bg_061.webp",
+    seoTitle: "For YouVersion and Bible app users — Harvous",
+    seoDescription:
+      "Keep YouVersion, Dwell, Logos, or your church app for reading. Harvous is the notes hub — scripture-linked, findable, with Recall when thoughts fade.",
+    heroTitle: "For people who already have a Bible app.",
+    heroLead:
+      "You're not looking for another place to read Scripture. You already open YouVersion, Dwell, Logos, or your church's app. What you need is somewhere the thoughts stick — linked to the verse, findable later, not trapped in a reading plan streak.",
+    sections: [
+      {
+        heading: "Keep your Bible app. Add a notes hub.",
+        paragraphs: [
+          "Harvous isn't a Bible reader and it isn't trying to replace the app you already trust for reading plans, audio, or a church feed. It's built for the part in between — capture what stood out, keep it next to scripture, and find it again when half a phrase is all you remember.",
+          "Type a reference and it becomes a scripture pill across translations. Your notes stay yours. Your reading habit can stay exactly where it is.",
+        ],
+      },
+      {
+        heading: "What you saved shouldn't disappear",
+        paragraphs: [
+          "A short note after a plan day. A longer sit with one passage. A line from Sunday. Harvous holds those across days — and Recall can bring a fading note back so last week's insight isn't gone just because the plan moved on.",
+        ],
+      },
+    ],
+    moments: [
+      {
+        icon: "fa6-solid:book-bible",
+        heading: "Read there. Note here.",
+        body: "Keep your Bible app for reading. Drop the verse into Harvous as a pill and write what stuck — without switching your whole study life.",
+      },
+      {
+        icon: "fa6-solid:pen",
+        heading: "Capture while it's warm",
+        body: "A note next to the passage before the moment passes. No filing ritual — just the thought and where it belongs.",
+      },
+      {
+        icon: "fa6-solid:layer-group",
+        heading: "Threads for what you're actually in",
+        body: "A plan, a book, a theme — a thread collects the notes so they compound instead of living as one-off plan checkmarks.",
+      },
+      {
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall when the plan has moved on",
+        body: "Plans keep going. Your notes shouldn't vanish with them. Recall resurfaces a fading note, highlight, or passage from your own study.",
+      },
+    ],
+    featureIds: ["scripture-pills", "recall", "sidebar-modes", "offline-sync"],
+    featuresHeading: "What dual-app study asks of your notes",
+    featuresLead:
+      "Scripture that stays linked, a way back to what you saved, and capture that works when you're offline in the pew or on a plane.",
+    compareSlugs: ["youversion", "dwell", "logos", "readscripture", "abide"],
+    useCaseSlugs: [
+      "daily-journal",
+      "sermon-notes",
+      "book-study",
+      "topical-study",
+      "deep-study",
+      "small-group",
+    ],
   },
 ];
 

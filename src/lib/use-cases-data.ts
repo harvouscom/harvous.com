@@ -85,12 +85,12 @@ const useCases: UseCase[] = [
         body: "Whether you're working through a chapter a day or a whole book in a week, a thread collects all your thoughts on the same topic. The thread becomes your record.",
       },
       {
-        icon: "fa6-solid:calendar-days",
-        heading: "The daily passage",
-        body: "A reading for each day of the year, with space to add what stays with you. Start there if you're not sure where to begin.",
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall brings a note back",
+        body: "When the habit thins out, Recall resurfaces a fading note, highlight, or passage — so last week's thought isn't gone just because Tuesday got loud.",
       },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "sidebar-modes", "offline-sync"],
+    featureIds: ["scripture-pills", "daily-passage", "sidebar-modes", "recall"],
     featuresHeading: "What daily study asks of your notes",
     featuresLead:
       "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
@@ -150,12 +150,12 @@ const useCases: UseCase[] = [
         body: "That line the pastor said that you underlined — it's a highlight now, with a color and an annotation you can add later. Your highlighted phrases stay linked to the note they came from.",
       },
       {
-        icon: "fa6-solid:magnifying-glass",
-        heading: "Search that actually works",
-        body: "Half-remember something from two months ago? Start typing what you remember. Harvous searches across all your threads and notes. You'll find it.",
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall finds October for you",
+        body: "When half a phrase is all you have, Recall can resurface a fading sermon note — so Sunday's thought isn't buried under two months of life.",
       },
     ],
-    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "offline-sync"],
+    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "recall"],
     featuresHeading: "What sermon notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
@@ -276,6 +276,64 @@ const useCases: UseCase[] = [
       "Notes from everywhere, organized by what they're about — the pieces that let a theme run across the whole Bible.",
     compareSlugs: ["logos", "life-bible", "readscripture", "obsidian"],
     testimonialId: "teaella",
+  },
+  {
+    slug: "deep-study",
+    href: "/use-cases/deep-study/",
+    title: "Deep study",
+    tagline: "When one passage deserves more than a skim.",
+    icon: "fa6-solid:glasses",
+    ink: "var(--study-dock-accent-neutral)",
+    image: "/images/auth-hero/ai_bg_051.webp",
+    seoTitle: "Deep Bible study notes — Harvous",
+    seoDescription:
+      "When one passage deserves more than a skim — Harvous keeps scripture open beside your notes, with a dictionary and threads so a long sit compounds instead of disappearing.",
+    heroTitle: "When one passage deserves more than a skim.",
+    heroLead:
+      "You're not racing a reading plan. You're sitting with a short stretch of Scripture — maybe for an hour, maybe for a morning — writing questions, checking cross-references, looking up a word, and wanting all of that to stay in one place.",
+    sections: [
+      {
+        heading: "A sit is different from a skim",
+        paragraphs: [
+          "Deep study isn't a chapter-a-day habit and it isn't weeks through a whole book. It's one passage (or a short stretch) that you stay with — notes beside the text, other verses open when a connection pulls, a word looked up without losing your place.",
+          "Harvous is built for that kind of sit. Not a research suite. A notes app that keeps scripture, dictionary, and your writing on the same page.",
+        ],
+      },
+      {
+        heading: "Leave with a record, not a fog",
+        paragraphs: [
+          "When the sit ends, you shouldn't have to reconstruct what you found from memory. Threads hold the notes from that stretch. Highlights mark the lines that mattered. Weeks later, Recall can bring a fading note back — so the morning wasn't only for the morning.",
+        ],
+      },
+    ],
+    moments: [
+      {
+        icon: "fa6-solid:book-bible",
+        heading: "Scripture stays open beside you",
+        body: "Type a reference and it becomes a pill — read it in the translation you want without leaving the note. Stack more passages when a cross-reference pulls you sideways.",
+      },
+      {
+        icon: "fa6-solid:book",
+        heading: "Look up a word without leaving",
+        body: "Easton's dictionary is right there. An unfamiliar word shouldn't send you into a pile of tabs that kills the sit.",
+      },
+      {
+        icon: "fa6-solid:highlighter",
+        heading: "Mark what you'll want again",
+        body: "Highlight a phrase in your note or inside the passage. The annotation stays attached — so the line that stopped you is findable later.",
+      },
+      {
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "The sit isn't lost",
+        body: "Weeks later, Recall can resurface a fading note from that morning — or search finds it when half a phrase is all you remember.",
+      },
+    ],
+    featureIds: ["scripture-pills", "dictionary", "highlights", "recall"],
+    featuresHeading: "What a long sit asks of your notes",
+    featuresLead:
+      "Scripture nearby, a dictionary in reach, highlights that stick — and a way for the sit to come back when life has moved on.",
+    compareSlugs: ["logos", "obsidian", "life-bible", "faithstudy"],
+    testimonialId: "theo",
   },
   {
     slug: "small-group",

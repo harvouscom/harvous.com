@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageIntro from "../../components/PageIntro.astro";
 import PageClosingCTA from "../../components/PageClosingCTA.astro";
+import HubSectionNav from "../../components/HubSectionNav.astro";
 import { fathomSignup } from "../../lib/fathom-events.ts";
 import { Icon } from "astro-icon/components";
 import {
@@ -10,14 +11,18 @@ import {
 import { getUseCaseDisplayTitle } from "../../lib/use-cases-data.ts";
 
 const groups = getAudiencesGroupedByUseCase();
+const navItems = groups.map((group) => ({
+  id: group.useCase.slug,
+  label: getUseCaseDisplayTitle(group.useCase),
+}));
 ---
 
 <BaseLayout
   title="Who Harvous is for — Harvous"
-  description="Harvous is for daily readers, Sunday note-takers, teachers, people going through a book, theme-chasers, group leaders, and anyone still finding their footing in Scripture."
+  description="Harvous is for daily readers, Bible app users, Sunday note-takers, seminary students, teachers, people going through a book, theme-chasers, group leaders, and anyone still finding their footing in Scripture."
 >
-  <section class="border-b border-[var(--color-rule)]">
-    <PageIntro>
+  <section>
+    <PageIntro flushBottom>
       <h1 class="font-display text-5xl leading-[1.0] md:text-7xl">
         For people who want to remember their Bible study.
       </h1>
@@ -27,70 +32,83 @@ const groups = getAudiencesGroupedByUseCase();
     </PageIntro>
   </section>
 
-  {
-    groups.map((group, groupIndex) => (
-      <section
-        class:list={["for-hub__group", groupIndex > 0 && "border-t border-[var(--color-rule)]"]}
-      >
-        <div class="for-hub__group-inner">
-          <div class="for-hub__group-head" data-reveal style={`--reveal-delay: ${80 + groupIndex * 40}ms;`}>
-            <a href={group.useCase.href} class="for-hub__use-case-link">
-              <span
-                class="for-hub__use-case-icon"
-                style={`background: color-mix(in oklab, ${group.useCase.ink} 14%, var(--color-paper)); color: ${group.useCase.ink};`}
-              >
-                <Icon name={group.useCase.icon} />
-              </span>
-              <span>
-                <span class="for-hub__use-case-label">Use case</span>
-                <span class="for-hub__use-case-title">{getUseCaseDisplayTitle(group.useCase)}</span>
-              </span>
-            </a>
-            <p class="for-hub__use-case-tagline">{group.useCase.tagline}</p>
-          </div>
+  <div class="for-hub-main" data-hub-section-nav-main>
+    <HubSectionNav
+      items={navItems}
+      ariaLabel="Use cases"
+      selectLabel="Jump to use case"
+      selectId="for-use-case-select"
+    />
 
-          <div class="for-hub__cards" data-reveal="stagger" style={`--reveal-delay: ${120 + groupIndex * 40}ms;`}>
-            {group.audiences.map((audience) => (
-              <a
-                href={audience.href}
-                class="use-case-card group flex flex-col overflow-hidden rounded-2xl border border-[var(--color-rule)] bg-white shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-float)] hover:-translate-y-0.5"
-              >
-                <div
-                  class="use-case-card__art relative flex aspect-[1.6/1] items-center justify-center"
-                  style={`--usecase-art-image: url('${audience.image}');`}
+    {
+      groups.map((group, groupIndex) => (
+        <section
+          id={group.useCase.slug}
+          class:list={["for-hub__group", groupIndex > 0 && "border-t border-[var(--color-rule)]"]}
+          aria-labelledby={`${group.useCase.slug}-title`}
+        >
+          <div class="for-hub__group-inner">
+            <div class="for-hub__group-head" data-reveal style={`--reveal-delay: ${80 + groupIndex * 40}ms;`}>
+              <a href={group.useCase.href} class="for-hub__use-case-link">
+                <span
+                  class="for-hub__use-case-icon"
+                  style={`background: color-mix(in oklab, ${group.useCase.ink} 14%, var(--color-paper)); color: ${group.useCase.ink};`}
                 >
-                  {audience.comingSoon && (
-                    <span class="absolute right-3 top-3 z-[1] rounded-full border border-[var(--color-rule)] bg-[color-mix(in_oklab,var(--color-card)_88%,transparent)] px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-[var(--color-ink-faint)] backdrop-blur-sm">
-                      Coming soon
-                    </span>
-                  )}
-                  <span class="use-case-card__badge inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-[var(--shadow-card)]">
-                    <Icon name={audience.icon} class="h-5 w-5" style={`color: ${audience.ink};`} />
+                  <Icon name={group.useCase.icon} />
+                </span>
+                <span>
+                  <span class="for-hub__use-case-label">Use case</span>
+                  <span class="for-hub__use-case-title" id={`${group.useCase.slug}-title`}>
+                    {getUseCaseDisplayTitle(group.useCase)}
                   </span>
-                </div>
-                <div class="flex flex-1 flex-col gap-5 p-6">
-                  <div>
-                    <h2 class="text-lg font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-accent)]">
-                      {audience.title}
-                    </h2>
-                    <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">
-                      {audience.tagline}
-                    </p>
-                  </div>
-                  <div class="mt-auto flex items-center gap-1 text-sm font-medium text-[var(--color-accent)]">
-                    {audience.comingSoon ? "See how it will work" : "See how it fits"}
-                    <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 16 16" fill="currentColor">
-                      <path fill-rule="evenodd" d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
-                </div>
+                </span>
               </a>
-            ))}
+              <p class="for-hub__use-case-tagline">{group.useCase.tagline}</p>
+            </div>
+
+            <div class="for-hub__cards" data-reveal="stagger" style={`--reveal-delay: ${120 + groupIndex * 40}ms;`}>
+              {group.audiences.map((audience) => (
+                <a
+                  href={audience.href}
+                  class="use-case-card group flex flex-col overflow-hidden rounded-2xl border border-[var(--color-rule)] bg-white shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-float)] hover:-translate-y-0.5"
+                >
+                  <div
+                    class="use-case-card__art relative flex aspect-[1.6/1] items-center justify-center"
+                    style={`--usecase-art-image: url('${audience.image}');`}
+                  >
+                    {audience.comingSoon && (
+                      <span class="absolute right-3 top-3 z-[1] rounded-full border border-[var(--color-rule)] bg-[color-mix(in_oklab,var(--color-card)_88%,transparent)] px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-[var(--color-ink-faint)] backdrop-blur-sm">
+                        Coming soon
+                      </span>
+                    )}
+                    <span class="use-case-card__badge inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-[var(--shadow-card)]">
+                      <Icon name={audience.icon} class="h-5 w-5" style={`color: ${audience.ink};`} />
+                    </span>
+                  </div>
+                  <div class="flex flex-1 flex-col gap-5 p-6">
+                    <div>
+                      <h2 class="text-lg font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-accent)]">
+                        {audience.title}
+                      </h2>
+                      <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">
+                        {audience.tagline}
+                      </p>
+                    </div>
+                    <div class="mt-auto flex items-center gap-1 text-sm font-medium text-[var(--color-accent)]">
+                      {audience.comingSoon ? "See how it will work" : "See how it fits"}
+                      <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 16 16" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z" clip-rule="evenodd"/>
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-    ))
-  }
+        </section>
+      ))
+    }
+  </div>
 
   <PageClosingCTA
     heading="Whether you're just starting or continuing, there's space for you here."
@@ -104,6 +122,11 @@ const groups = getAudiencesGroupedByUseCase();
   .for-hub__lead {
     max-width: 32rem;
     margin-inline: auto;
+  }
+
+  .for-hub-main {
+    /* Sticky nav must share a tall ancestor with the bands it tracks. */
+    position: relative;
   }
 
   .for-hub__group-inner {
