@@ -1,0 +1,292 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageClosingCTA from "./PageClosingCTA.astro";
+import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
+import ComparePreview from "./ComparePreview.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection, getEntry, render } from "astro:content";
+import { getCompareBySlug } from "../lib/compare-data.ts";
+import {
+  getUseCasesForAudience,
+  type ForAudience,
+} from "../lib/for-audiences-data.ts";
+import { getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
+import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
+import { buildSignupUrl } from "../lib/signup-url.ts";
+import "../styles/use-cases.css";
+
+interface Props {
+  audience: ForAudience;
+}
+
+const { audience } = Astro.props;
+
+const allFeatures = await getCollection("features");
+const relatedFeatures = audience.featureIds
+  .map((id) => allFeatures.find((f) => f.id === id))
+  .filter((f): f is NonNullable<typeof f> => f !== undefined);
+
+const relatedCompare = audience.compareSlugs
+  .map((slug) => getCompareBySlug(slug))
+  .filter((e): e is NonNullable<typeof e> => e !== undefined);
+
+const relatedUseCases = getUseCasesForAudience(audience);
+
+const testimonialEntry = audience.testimonialId
+  ? await getEntry("testimonials", audience.testimonialId)
+  : undefined;
+const testimonialRender = testimonialEntry ? await render(testimonialEntry) : undefined;
+
+const pageUrl = `https://harvous.com${audience.href}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      name: audience.seoTitle,
+      description: audience.seoDescription,
+      url: pageUrl,
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
+        { "@type": "ListItem", position: 2, name: "Who it's for", item: "https://harvous.com/for/" },
+        { "@type": "ListItem", position: 3, name: audience.title, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout title={audience.seoTitle} description={audience.seoDescription} jsonLd={jsonLd}>
+  <article class="use-case-detail" style={`--use-case-ink: ${audience.ink};`}>
+    <header class="border-b border-[var(--color-rule)]">
+      <div class="detail-content py-10 md:py-14">
+        <div data-reveal>
+          <div class="use-case-detail__nav">
+            <a href="/for/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path
+                  fill-rule="evenodd"
+                  d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              Who it's for
+            </a>
+          </div>
+
+          <div
+            class="use-case-hero__art mt-8"
+            style={`--usecase-art-image: url('${audience.image}');`}
+          >
+            <span class="use-case-hero__badge">
+              <Icon name={audience.icon} style={`color: ${audience.ink};`} />
+            </span>
+          </div>
+
+          <div class="mt-8 text-center">
+            <div class="use-case-detail__badges">
+              <span
+                class="use-case-detail__title-badge"
+                style={`background: color-mix(in oklab, ${audience.ink} 14%, var(--color-paper)); color: ${audience.ink};`}
+              >
+                {audience.title}
+              </span>
+              {
+                audience.comingSoon && (
+                  <span class="use-case-detail__soon-badge">
+                    {audience.comingSoonLine ?? "Coming soon"}
+                  </span>
+                )
+              }
+            </div>
+            <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">{audience.heroTitle}</h1>
+            <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-ink-soft)]">
+              {audience.heroLead}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="detail-content py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
+      <div class="prose-letter space-y-8">
+        {
+          audience.sections.map((section) => (
+            <div>
+              <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
+              {section.paragraphs.map((p) => (
+                <p class="mt-3 text-[var(--color-ink-soft)]">{p}</p>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="frame-divider">
+      <div class="detail-content py-14 md:py-16">
+        <h2 class="font-display text-2xl leading-snug md:text-3xl">What that looks like in Harvous</h2>
+        <ul class="mt-8 grid gap-8 sm:grid-cols-2" data-reveal="stagger" role="list">
+          {
+            audience.moments.map((m) => (
+              <li class="flex gap-4">
+                <span class="use-case-moment__icon">
+                  <Icon name={m.icon} />
+                </span>
+                <div>
+                  <h3 class="font-semibold text-[var(--color-ink)]">{m.heading}</h3>
+                  <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">{m.body}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    {
+      relatedUseCases.length > 0 && (
+        <section class="frame-divider">
+          <div class="detail-content py-14 md:py-16">
+            <h2 class="font-display text-2xl leading-snug md:text-3xl">Ways people like you study</h2>
+            <p class="mt-3 text-[var(--color-ink-soft)]">
+              Use cases are how the work shows up day to day. These are the ones that fit this audience best.
+            </p>
+            <ul class="for-related-list" data-reveal="stagger" role="list">
+              {relatedUseCases.map((uc) => (
+                <li>
+                  <a href={uc.href} class="for-related-card">
+                    <span
+                      class="for-related-card__icon"
+                      style={`background: color-mix(in oklab, ${uc.ink} 14%, var(--color-paper)); color: ${uc.ink};`}
+                    >
+                      <Icon name={uc.icon} />
+                    </span>
+                    <span class="for-related-card__body">
+                      <span class="for-related-card__title">{getUseCaseDisplayTitle(uc)}</span>
+                      <span class="for-related-card__tagline">{uc.tagline}</span>
+                    </span>
+                    <span class="for-related-card__arrow" aria-hidden="true">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )
+    }
+
+    <UseCaseRelatedFeatures
+      featuresHeading={audience.featuresHeading}
+      featuresLead={audience.featuresLead}
+      features={relatedFeatures}
+    />
+
+    {
+      relatedCompare.length > 0 && (
+        <ComparePreview
+          id="works-alongside"
+          entries={relatedCompare}
+          eyebrow="Compare"
+          title="Works alongside other tools"
+          lead="Harvous does a different job than most Bible apps. Many people use it next to something they already love."
+          showAllLink
+          fathomTrack={fathomCompare.detailRelated}
+          fathomAllTrack={fathomCompare.homeAll}
+        />
+      )
+    }
+
+    {
+      testimonialRender && testimonialEntry && (
+        <section class="fade-rule-t">
+          <div class="detail-content max-w-2xl py-16 text-center use-case-testimonial">
+            <blockquote class="use-case-testimonial__quote font-display text-3xl leading-snug md:text-4xl">
+              <testimonialRender.Content />
+            </blockquote>
+            <figcaption class="mt-6 text-sm italic text-[var(--color-ink-soft)]">
+              &mdash;{testimonialEntry.data.name}, {testimonialEntry.data.when}
+            </figcaption>
+          </div>
+        </section>
+      )
+    }
+  </article>
+
+  <PageClosingCTA
+    heading={audience.heroTitle}
+    lead={audience.tagline}
+    href={buildSignupUrl({
+      audience: audience.slug,
+      useCase: audience.useCaseSlugs[0],
+    })}
+    fathomTrack={fathomSignup.forDetail(audience.slug)}
+  />
+</BaseLayout>
+
+<style>
+  .for-related-list {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .for-related-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.15rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  }
+  .for-related-card:hover {
+    border-color: color-mix(in srgb, var(--color-ink) 16%, var(--color-rule));
+    box-shadow: var(--shadow-card);
+    transform: translateY(-1px);
+  }
+  .for-related-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+  }
+  .for-related-card__icon :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .for-related-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    flex: 1;
+    text-align: left;
+  }
+  .for-related-card__title {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .for-related-card:hover .for-related-card__title {
+    color: var(--color-accent);
+  }
+  .for-related-card__tagline {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+  }
+  .for-related-card__arrow {
+    color: var(--color-accent);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+</style>

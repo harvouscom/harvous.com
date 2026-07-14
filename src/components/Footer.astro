@@ -3,45 +3,62 @@ import Container from "./layout/Container.astro";
 
 const year = new Date().getFullYear();
 
-const links = [
-  { label: "Use cases", href: "/use-cases/" },
-  { label: "Compare", href: "/compare/" },
-  { label: "Pricing", href: "/pricing/" },
-  { label: "Add-ons", href: "/pricing/" },
-  { label: "Release Notes", href: "/release-notes/" },
-  { label: "Support", href: "/support/" },
-  { label: "Status", href: "https://status.harvous.com/" },
-  { label: "Privacy", href: "/privacy/" },
-  { label: "Terms", href: "/terms/" },
+const groups = [
+  {
+    label: "Product",
+    links: [
+      { label: "Use cases", href: "/use-cases/" },
+      { label: "Who it's for", href: "/for/" },
+      { label: "Compare", href: "/compare/" },
+      { label: "Pricing", href: "/pricing/" },
+      { label: "Add-ons", href: "/pricing/" },
+    ],
+  },
+  {
+    label: "Company",
+    links: [
+      { label: "Release Notes", href: "/release-notes/" },
+      { label: "Support", href: "/support/" },
+      { label: "Status", href: "https://status.harvous.com/" },
+    ],
+  },
+  {
+    label: "Legal",
+    links: [
+      { label: "Privacy", href: "/privacy/" },
+      { label: "Terms", href: "/terms/" },
+    ],
+  },
 ];
 ---
 
 <footer class="site-footer">
   <Container size="xl">
-    <div>
-      <div class="site-footer__bar">
-        <nav class="site-footer__nav" aria-label="Footer">
-          {links.map((l) => (
-            <a href={l.href} class="site-footer__link">{l.label}</a>
-          ))}
-        </nav>
-        <p class="site-footer__legal">
-          © {year}{" "}
-          <a
-            href="https://testamentmade.com"
-            class="transition hover:text-[var(--color-ink)]"
-          >
-            Testament Made LLC
-          </a>.{" "}
-          <a
-            href="https://github.com/harvouscom/harvous.com/blob/main/LICENSE"
-            class="transition hover:text-[var(--color-ink)]"
-            rel="license"
-          >
-            CC BY 4.0
-          </a>
-        </p>
-      </div>
+    <div class="site-footer__bar">
+      <nav class="site-footer__nav" aria-label="Footer">
+        {
+          groups.map((group) => (
+            <div class="site-footer__group" role="group" aria-label={group.label}>
+              {group.links.map((l) => (
+                <a href={l.href} class="site-footer__link">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          ))
+        }
+      </nav>
+      <p class="site-footer__legal">
+        © {year}{" "}
+        <a href="https://testamentmade.com">Testament Made LLC</a>
+        <span class="site-footer__dot" aria-hidden="true">·</span>
+        <a
+          href="https://github.com/harvouscom/harvous.com/blob/main/LICENSE"
+          rel="license"
+        >
+          CC BY 4.0
+        </a>
+      </p>
     </div>
   </Container>
 </footer>
@@ -50,66 +67,107 @@ const links = [
   .site-footer {
     padding-top: 2rem;
     padding-bottom: 2rem;
+    border-top: 1px solid var(--color-rule);
   }
 
   .site-footer__bar {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    font-size: 0.75rem;
+    align-items: stretch;
+    gap: 1.25rem;
+    font-size: 0.8125rem;
     color: var(--color-ink-faint);
-    text-align: center;
+  }
+
+  .site-footer__nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .site-footer__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.25rem;
+  }
+
+  .site-footer__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.25rem 0.55rem;
+    margin-inline: -0.15rem;
+    border-radius: 0.4rem;
+    white-space: nowrap;
+    color: var(--color-ink-soft);
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+  .site-footer__link:hover {
+    color: var(--color-ink);
+    background: var(--color-warm);
   }
 
   .site-footer__legal {
     margin: 0;
-    text-wrap: balance;
+    padding-top: 0.15rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-wrap: pretty;
   }
-
-  .site-footer__nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 0.375rem 0.875rem;
-    max-width: 100%;
-  }
-
-  .site-footer__link {
-    white-space: nowrap;
+  .site-footer__legal a {
+    color: inherit;
     transition: color 150ms ease;
   }
-  .site-footer__link:hover {
+  .site-footer__legal a:hover {
     color: var(--color-ink);
   }
 
-  @media (min-width: 75rem) {
+  .site-footer__dot {
+    margin-inline: 0.35rem;
+  }
+
+  @media (min-width: 640px) {
+    .site-footer__nav {
+      grid-template-columns: repeat(3, minmax(0, auto));
+      justify-content: start;
+      column-gap: 2rem;
+      row-gap: 0.75rem;
+    }
+  }
+
+  @media (min-width: 900px) {
     .site-footer__bar {
-      flex-direction: row-reverse;
+      flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      gap: 1.5rem;
-      text-align: left;
-    }
-
-    .site-footer__legal {
-      flex-shrink: 0;
-      white-space: nowrap;
-      text-wrap: nowrap;
+      gap: 2rem;
     }
 
     .site-footer__nav {
       flex: 1 1 auto;
-      justify-content: flex-end;
-      gap: 0.5rem 1.25rem;
+    }
+
+    .site-footer__legal {
+      flex-shrink: 0;
+      order: -1;
+      padding-top: 0;
+      white-space: nowrap;
     }
   }
 
   @media (max-width: 639px) {
     .site-footer {
       padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px) + 0.75rem);
+    }
+
+    .site-footer__group {
+      gap: 0.15rem 0.1rem;
+    }
+
+    .site-footer__link {
+      min-height: 2.25rem;
+      padding: 0.35rem 0.6rem;
     }
   }
 </style>

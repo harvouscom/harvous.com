@@ -8,14 +8,13 @@ import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
 import { FEATURE_ICONS } from "../lib/feature-icons.ts";
 import { hasDetailContent } from "../lib/product-page-data.ts";
-import type { UseCase } from "../lib/use-cases-data.ts";
-
 interface Props {
-  useCase: UseCase;
+  featuresHeading: string;
+  featuresLead: string;
   features: CollectionEntry<"features">[];
 }
 
-const { useCase, features } = Astro.props;
+const { featuresHeading, featuresLead, features } = Astro.props;
 
 const allFeatures = await getCollection("features");
 const publishedSlugs = new Set(
@@ -29,11 +28,11 @@ const publishedSlugs = new Set(
       <Container size="xl">
         <div class="use-case-features__head section-head" data-reveal>
           <span class="eyebrow-pill">Features</span>
-          <h2 class="section-title">{useCase.featuresHeading}</h2>
-          <p class="lead use-case-features__lead">{useCase.featuresLead}</p>
+          <h2 class="section-title">{featuresHeading}</h2>
+          <p class="lead use-case-features__lead">{featuresLead}</p>
         </div>
 
-        <ul class="use-case-features__grid" data-reveal style="--reveal-delay: 100ms;" role="list">
+        <ul class="use-case-features__grid" data-reveal="stagger" style="--reveal-delay: 100ms;" role="list">
           {features.map((f) => {
             const href = publishedSlugs.has(f.id) ? `/features/${f.id}/` : undefined;
             const Tag = href ? "a" : "div";

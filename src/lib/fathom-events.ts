@@ -14,6 +14,8 @@ export const fathomSignup = {
   compareHub: "signup_compare",
   pricing: "signup_pricing",
   useCaseDetail: (slug: string) => `signup_use_case_${slug}`,
+  forHub: "signup_for",
+  forDetail: (slug: string) => `signup_for_${slug}`,
   compareDetail: (slug: string) => `signup_compare_${slug}`,
   featureDetail: (slug: string) => `signup_feature_${slug}`,
   addonDetail: (slug: string) => `signup_addon_${slug}`,

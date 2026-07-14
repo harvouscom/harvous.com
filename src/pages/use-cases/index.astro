@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageIntro from "../../components/PageIntro.astro";
-import CTAButton from "../../components/CTAButton.astro";
+import PageClosingCTA from "../../components/PageClosingCTA.astro";
 import { fathomSignup } from "../../lib/fathom-events.ts";
 import { Icon } from "astro-icon/components";
 import { getUseCases, getUseCaseDisplayTitle } from "../../lib/use-cases-data.ts";
@@ -23,12 +23,16 @@ const useCases = getUseCases();
       <p class="use-cases-hub__lead mt-5 text-lg text-[var(--color-ink-soft)]">
         Not a Bible reader. Not a devotional. A place for your notes, your questions, and everything you want to hold onto from studying Scripture.
       </p>
+      <p class="mt-4 text-sm text-[var(--color-ink-soft)]">
+        Looking for who you are, not how you study?{" "}
+        <a href="/for/" class="font-medium text-[var(--color-accent)] hover:underline">See who Harvous is for</a>.
+      </p>
     </PageIntro>
   </section>
 
   <!-- Use case cards -->
-  <section class="mx-auto max-w-5xl px-5 py-16 md:py-20" data-reveal style="--reveal-delay: 80ms;">
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+  <section class="mx-auto max-w-5xl px-5 py-16 md:py-20">
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger" style="--reveal-delay: 80ms;">
       {useCases.map((uc) => (
         <a
           href={uc.href}
@@ -68,25 +72,10 @@ const useCases = getUseCases();
     </div>
   </section>
 
-  <!-- Bottom CTA -->
-  <section class="border-t border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-20 text-center">
-      <h2 class="font-display text-4xl leading-[1.05] md:text-5xl">
-        Whatever way you study, there's a place for it here.
-      </h2>
-      <div class="mt-8 flex justify-center">
-        <CTAButton
-          href="https://app.harvous.com/sign-up"
-          variant="primary"
-          size="lg"
-          external
-          fathomTrack={fathomSignup.useCasesHub}
-        >
-          Sign up free
-        </CTAButton>
-      </div>
-    </div>
-  </section>
+  <PageClosingCTA
+    heading="Whatever way you study, there's a place for it here."
+    fathomTrack={fathomSignup.useCasesHub}
+  />
 </BaseLayout>
 
 <style>

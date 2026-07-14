@@ -20,7 +20,7 @@ const items = await Promise.all(
 {items.length > 0 && (
   <section class="testimonials">
     <Container size="xl">
-      <div class="testimonials__grid" data-reveal>
+      <div class="testimonials__grid" data-reveal="stagger">
         {items.map(({ data, Content }) => (
           <TestimonialCard name={data.name} when={data.when}>
             <Content />

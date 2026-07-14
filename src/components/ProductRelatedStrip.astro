@@ -24,7 +24,7 @@ const { page, relatedFeatures, publishedFeatureSlugs } = Astro.props;
           <p class="lead product-related__lead">{page.relatedLead}</p>
         </div>
 
-        <ul class="product-related__grid" data-reveal style="--reveal-delay: 100ms;" role="list">
+        <ul class="product-related__grid" data-reveal="stagger" style="--reveal-delay: 100ms;" role="list">
           {relatedFeatures.map((f) => {
             const href = publishedFeatureSlugs.has(f.id) ? `/features/${f.id}/` : undefined;
             const Tag = href ? "a" : "div";

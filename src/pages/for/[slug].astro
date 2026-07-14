@@ -1,0 +1,19 @@
+---
+import ForAudienceDetailPage from "../../components/ForAudienceDetailPage.astro";
+import { getAudiences, getAudienceBySlug } from "../../lib/for-audiences-data.ts";
+
+export function getStaticPaths() {
+  return getAudiences().map((audience) => ({
+    params: { slug: audience.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const audience = getAudienceBySlug(slug!);
+
+if (!audience) {
+  throw new Error(`Audience not found: ${slug}`);
+}
+---
+
+<ForAudienceDetailPage audience={audience} />

@@ -24,7 +24,7 @@ const items = await Promise.all(
         <h2 class="section-title">Potentially Asked Questions</h2>
       </div>
 
-      <div class="faq-section__list" data-reveal style="--reveal-delay: 80ms;">
+      <div class="faq-section__list" data-reveal="stagger" style="--reveal-delay: 80ms;">
         {items.map(({ data, Content }) => (
           <FaqItem question={data.question}>
             <Content />

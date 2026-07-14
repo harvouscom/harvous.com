@@ -7,7 +7,9 @@ import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { UseCase } from "../lib/use-cases-data.ts";
+import { getAudiencesForUseCase } from "../lib/for-audiences-data.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
+import { buildSignupUrl } from "../lib/signup-url.ts";
 import "../styles/use-cases.css";
 
 interface Props {
@@ -24,6 +26,8 @@ const relatedFeatures = useCase.featureIds
 const relatedCompare = useCase.compareSlugs
   .map((slug) => getCompareBySlug(slug))
   .filter((e): e is NonNullable<typeof e> => e !== undefined);
+
+const relatedAudiences = getAudiencesForUseCase(useCase.slug);
 
 const testimonialEntry = useCase.testimonialId
   ? await getEntry("testimonials", useCase.testimonialId)
@@ -122,7 +126,7 @@ const jsonLd = {
     <section class="frame-divider">
       <div class="detail-content py-14 md:py-16">
         <h2 class="font-display text-2xl leading-snug md:text-3xl">What that looks like in Harvous</h2>
-        <ul class="mt-8 grid gap-8 sm:grid-cols-2" role="list">
+        <ul class="mt-8 grid gap-8 sm:grid-cols-2" data-reveal="stagger" role="list">
           {
             useCase.moments.map((m) => (
               <li class="flex gap-4">
@@ -140,7 +144,39 @@ const jsonLd = {
       </div>
     </section>
 
-    <UseCaseRelatedFeatures useCase={useCase} features={relatedFeatures} />
+    {
+      relatedAudiences.length > 0 && (
+        <section class="frame-divider">
+          <div class="detail-content py-14 md:py-16">
+            <h2 class="font-display text-2xl leading-snug md:text-3xl">Harvous is for…</h2>
+            <p class="mt-3 text-[var(--color-ink-soft)]">
+              Same way of studying — different people who show up that way. Pick the one that sounds like you.
+            </p>
+            <ul class="use-case-audiences" data-reveal="stagger" role="list">
+              {relatedAudiences.map((audience) => (
+                <li>
+                  <a href={audience.href} class="use-case-audiences__pill">
+                    <Icon name={audience.icon} />
+                    <span>{audience.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-5">
+              <a href="/for/" class="text-sm font-medium text-[var(--color-accent)] hover:underline">
+                See everyone Harvous is for →
+              </a>
+            </p>
+          </div>
+        </section>
+      )
+    }
+
+    <UseCaseRelatedFeatures
+      featuresHeading={useCase.featuresHeading}
+      featuresLead={useCase.featuresLead}
+      features={relatedFeatures}
+    />
 
     {
       relatedCompare.length > 0 && (
@@ -177,6 +213,42 @@ const jsonLd = {
   <PageClosingCTA
     heading={useCase.heroTitle}
     lead={useCase.tagline}
+    href={buildSignupUrl({ useCase: useCase.slug })}
     fathomTrack={fathomSignup.useCaseDetail(useCase.slug)}
   />
 </BaseLayout>
+
+<style>
+  .use-case-audiences {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .use-case-audiences__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+  }
+  .use-case-audiences__pill:hover {
+    border-color: color-mix(in srgb, var(--use-case-ink) 35%, var(--color-rule));
+    background: color-mix(in oklab, var(--use-case-ink) 10%, var(--color-paper));
+    color: var(--use-case-ink);
+  }
+  .use-case-audiences__pill :global(svg) {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--use-case-ink);
+  }
+</style>

@@ -1,0 +1,208 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import PageClosingCTA from "../../components/PageClosingCTA.astro";
+import { fathomSignup } from "../../lib/fathom-events.ts";
+import { Icon } from "astro-icon/components";
+import {
+  getAudiencesGroupedByUseCase,
+} from "../../lib/for-audiences-data.ts";
+import { getUseCaseDisplayTitle } from "../../lib/use-cases-data.ts";
+
+const groups = getAudiencesGroupedByUseCase();
+---
+
+<BaseLayout
+  title="Who Harvous is for — Harvous"
+  description="Harvous is for daily readers, Sunday note-takers, teachers, people going through a book, theme-chasers, group leaders, and anyone still finding their footing in Scripture."
+>
+  <section class="border-b border-[var(--color-rule)]">
+    <PageIntro>
+      <h1 class="font-display text-5xl leading-[1.0] md:text-7xl">
+        For people who study with technology.
+      </h1>
+      <p class="for-hub__lead mt-5 text-lg text-[var(--color-ink-soft)]">
+        Use cases are how you study. These pages are who you are — linked so you can find the fit that sounds like you.
+      </p>
+    </PageIntro>
+  </section>
+
+  {
+    groups.map((group, groupIndex) => (
+      <section
+        class:list={["for-hub__group", groupIndex > 0 && "border-t border-[var(--color-rule)]"]}
+      >
+        <div class="for-hub__group-inner">
+          <div class="for-hub__group-head" data-reveal style={`--reveal-delay: ${80 + groupIndex * 40}ms;`}>
+            <a href={group.useCase.href} class="for-hub__use-case-link">
+              <span
+                class="for-hub__use-case-icon"
+                style={`background: color-mix(in oklab, ${group.useCase.ink} 14%, var(--color-paper)); color: ${group.useCase.ink};`}
+              >
+                <Icon name={group.useCase.icon} />
+              </span>
+              <span>
+                <span class="for-hub__use-case-label">Use case</span>
+                <span class="for-hub__use-case-title">{getUseCaseDisplayTitle(group.useCase)}</span>
+              </span>
+            </a>
+            <p class="for-hub__use-case-tagline">{group.useCase.tagline}</p>
+          </div>
+
+          <div class="for-hub__cards" data-reveal="stagger" style={`--reveal-delay: ${120 + groupIndex * 40}ms;`}>
+            {group.audiences.map((audience) => (
+              <a
+                href={audience.href}
+                class="use-case-card group flex flex-col overflow-hidden rounded-2xl border border-[var(--color-rule)] bg-white shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-float)] hover:-translate-y-0.5"
+              >
+                <div
+                  class="use-case-card__art relative flex aspect-[1.6/1] items-center justify-center"
+                  style={`--usecase-art-image: url('${audience.image}');`}
+                >
+                  {audience.comingSoon && (
+                    <span class="absolute right-3 top-3 z-[1] rounded-full border border-[var(--color-rule)] bg-[color-mix(in_oklab,var(--color-card)_88%,transparent)] px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-[var(--color-ink-faint)] backdrop-blur-sm">
+                      Coming soon
+                    </span>
+                  )}
+                  <span class="use-case-card__badge inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-[var(--shadow-card)]">
+                    <Icon name={audience.icon} class="h-5 w-5" style={`color: ${audience.ink};`} />
+                  </span>
+                </div>
+                <div class="flex flex-1 flex-col gap-5 p-6">
+                  <div>
+                    <h2 class="text-lg font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-accent)]">
+                      {audience.title}
+                    </h2>
+                    <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">
+                      {audience.tagline}
+                    </p>
+                  </div>
+                  <div class="mt-auto flex items-center gap-1 text-sm font-medium text-[var(--color-accent)]">
+                    {audience.comingSoon ? "See how it will work" : "See how it fits"}
+                    <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 16 16" fill="currentColor">
+                      <path fill-rule="evenodd" d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z" clip-rule="evenodd"/>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <PageClosingCTA
+    heading="Whether you're just starting or continuing, there's space for you here."
+    fathomTrack={fathomSignup.forHub}
+  />
+</BaseLayout>
+
+<style>
+  @import "../../styles/use-cases.css";
+
+  .for-hub__lead {
+    max-width: 32rem;
+    margin-inline: auto;
+  }
+
+  .for-hub__group-inner {
+    margin-inline: auto;
+    max-width: 64rem;
+    padding: clamp(2.5rem, 6vw, 4rem) var(--frame-content-pad);
+  }
+
+  .for-hub__group-head {
+    margin-bottom: 1.5rem;
+  }
+
+  .for-hub__use-case-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .for-hub__use-case-link:hover .for-hub__use-case-title {
+    color: var(--color-accent);
+  }
+
+  .for-hub__use-case-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+  }
+  .for-hub__use-case-icon :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .for-hub__use-case-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .for-hub__use-case-title {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    transition: color 150ms ease;
+  }
+
+  .for-hub__use-case-tagline {
+    margin: 0.65rem 0 0;
+    max-width: 36rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  .for-hub__cards {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .for-hub__cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .for-hub__cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .use-case-card__art {
+    background-color: var(--color-warm);
+    background-image: var(--usecase-art-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .use-case-card__art::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-paper) 12%, transparent) 0%,
+      color-mix(in oklab, var(--color-ink) 8%, transparent) 100%
+    );
+    pointer-events: none;
+  }
+  .use-case-card__badge {
+    position: relative;
+    z-index: 1;
+  }
+</style>

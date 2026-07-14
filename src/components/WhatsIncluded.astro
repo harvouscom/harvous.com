@@ -127,7 +127,7 @@ const comingSoon = [
       </p>
     </div>
 
-    <div class="included__grid" data-reveal style="--reveal-delay: 100ms;">
+    <div class="included__grid" data-reveal="stagger" style="--reveal-delay: 100ms;">
       {items.map((item) => {
         const href = featureHref("featureSlug" in item ? item.featureSlug : undefined);
         const Tag = href ? "a" : "div";
@@ -147,7 +147,7 @@ const comingSoon = [
         <span class="included__soon-chip">Coming soon</span>
       </div>
       <p class="included__soon-lead">These features are on the roadmap, worth a look before you sign up.</p>
-      <div class="included__soon-grid">
+      <div class="included__soon-grid" data-reveal="stagger" style="--reveal-delay: 200ms;">
         {comingSoon.map((item) => {
           const Tag = "href" in item && item.href ? "a" : "div";
           return (

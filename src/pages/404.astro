@@ -30,7 +30,7 @@ const links = [
     </PageIntro>
 
     <Container size="md">
-      <ul class="not-found__links" data-reveal style="--reveal-delay: 80ms;">
+      <ul class="not-found__links" data-reveal="stagger" style="--reveal-delay: 80ms;">
         {links.map((link) => (
           <li>
             <a href={link.href} class="not-found__link">

@@ -178,10 +178,14 @@ import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
   }
 
   /* Product shot — screenshot includes its own window chrome; shadow only. */
+  .hero :global(.container--xl) {
+    /* Room for the wider shot + symmetric frame gutters. */
+    max-width: calc(1320px + 2 * var(--frame-content-pad));
+  }
   .hero__shotwrap {
     margin-top: clamp(2.75rem, 6vw, 4.5rem);
     width: 100%;
-    max-width: 1120px;
+    max-width: 1320px;
   }
   .hero__shot-frame {
     position: relative;

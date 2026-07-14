@@ -29,11 +29,11 @@ const posts = allPosts
   </section>
 
   <!-- Post grid -->
-  <section class="mx-auto max-w-5xl px-5 py-16 md:py-20" data-reveal style="--reveal-delay: 80ms;">
+  <section class="mx-auto max-w-5xl px-5 py-16 md:py-20">
     {posts.length === 0 ? (
-      <p class="text-center text-[var(--color-ink-soft)]">Nothing here yet. Check back soon.</p>
+      <p class="text-center text-[var(--color-ink-soft)]" data-reveal>Nothing here yet. Check back soon.</p>
     ) : (
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="stagger" style="--reveal-delay: 80ms;">
         {posts.map((post) => (
           <BlogCard
             title={post.data.title}

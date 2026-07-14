@@ -13,7 +13,7 @@ const { compact = false } = Astro.props;
 ---
 
 <div class:list={["support-contact", { "support-contact--compact": compact }]}>
-  <div class="support-contact__grid">
+  <div class="support-contact__grid" data-reveal="stagger" style="--reveal-delay: 80ms;">
     <article class="support-contact-card support-contact-card--email">
       <span class="support-contact-card__label">Email</span>
       <a href={mailtoHref} class="support-contact-card__title">{SUPPORT_EMAIL}</a>
