@@ -71,15 +71,17 @@ const jsonLd = {
   <section class="border-b border-[var(--color-rule)]">
     <PageIntro>
       <span class="eyebrow-pill">A letter from Derek</span>
-      <h1 class="mt-4 font-display text-5xl leading-[1.0] md:text-7xl text-pretty">
+      <h1 class="section-title mt-4 text-pretty">
         Why I made Harvous
       </h1>
     </PageIntro>
   </section>
 
   <!-- The letter -->
-  <section class="mx-auto max-w-5xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
-    <FounderLetter variant="full" />
+  <section class="about-letter" data-reveal style="--reveal-delay: 80ms;">
+    <div class="about-letter__inner">
+      <FounderLetter variant="full" />
+    </div>
   </section>
 
   <!-- What we believe — thin philosophy coda -->
@@ -134,6 +136,23 @@ const jsonLd = {
     margin-inline: auto;
     max-width: 40rem;
     padding-inline: var(--frame-content-pad);
+  }
+
+  /* Full-bleed clip so the paper-stack fan can't force horizontal page scroll. */
+  .about-letter {
+    overflow-x: clip;
+  }
+
+  .about-letter__inner {
+    margin-inline: auto;
+    max-width: 64rem;
+    padding: 3.5rem var(--frame-content-pad) 4rem;
+  }
+
+  @media (min-width: 768px) {
+    .about-letter__inner {
+      padding-block: 4rem;
+    }
   }
 
   .about-believe__inner {
