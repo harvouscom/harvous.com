@@ -150,6 +150,7 @@ const ADDON_PAGES: AddonPage[] = [
     closingHeading: "Connector",
     closingLead: "",
     draft: true,
+    soonLabel: "Coming later",
   },
 ];
 

@@ -73,5 +73,6 @@ export const PRICING_ADDONS: PricingAddon[] = [
     icon: "fa6-solid:puzzle-piece",
     name: "Connector",
     tagline: "Reference your Harvous study wherever you already work.",
+    soonLabel: "Coming later",
   },
 ];
