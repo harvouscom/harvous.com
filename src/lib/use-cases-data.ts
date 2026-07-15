@@ -106,7 +106,7 @@ const useCases: UseCase[] = [
     tagline: "Sunday thoughts have a habit of fading by Monday.",
     icon: "fa6-solid:church",
     ink: "var(--study-dock-accent-violet)",
-    image: "/images/auth-hero/ai_bg_060.webp",
+    image: "/images/auth-hero/ai_bg_072.webp",
     seoTitle: "Sermon notes app — Harvous",
     seoDescription:
       "Sunday thoughts fade by Monday. Harvous keeps sermon notes organized in series threads, searchable and scripture-linked — a notes app, not sermon transcription.",
@@ -229,7 +229,7 @@ const useCases: UseCase[] = [
     tagline: "Following a theme wherever it goes in Scripture.",
     icon: "fa6-solid:tags",
     ink: "var(--study-dock-accent-mintGreen)",
-    image: "/images/auth-hero/ai_bg_052.webp",
+    image: "/images/auth-hero/ai_bg_058.webp",
     seoTitle: "Topical Bible study notes — Harvous",
     seoDescription:
       "Following a theme wherever it goes in Scripture? Harvous keeps notes on grace, prayer, or any topic together — no matter where in the Bible they came from.",
@@ -345,7 +345,7 @@ const useCases: UseCase[] = [
     tagline: "Lead your group. Shared spaces keep what you build together.",
     icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
-    image: "/images/auth-hero/ai_bg_059.webp",
+    image: "/images/auth-hero/ai_bg_045.webp",
     comingSoon: true,
     comingSoonLine: "Coming soon",
     seoTitle: "Group study — Harvous",
