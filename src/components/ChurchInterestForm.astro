@@ -9,7 +9,7 @@ const { id = "interest" } = Astro.props;
 <section class="church-interest-form frame-divider" id={id} data-church-interest>
   <div class="church-interest-form__inner detail-content" data-reveal>
     <div class="church-interest-form__success" data-church-interest-success hidden role="status">
-      <h2 class="church-interest-form__heading">Thanks — we got your note.</h2>
+      <h2 class="church-interest-form__heading">Thanks for your interest.</h2>
       <p class="church-interest-form__lead">
         We’ll follow up at the email you shared. In the meantime, you can
         <a href="https://app.harvous.com/sign-up">sign up free</a> and start using Harvous for personal study.
@@ -549,6 +549,10 @@ const { id = "interest" } = Astro.props;
   }
 
   .church-interest-form__success {
-    text-align: left;
+    text-align: center;
+  }
+
+  .church-interest-form__success .church-interest-form__lead {
+    margin-inline: auto;
   }
 </style>
