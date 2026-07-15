@@ -359,7 +359,7 @@ const useCases: UseCase[] = [
         heading: "Shared spaces are coming soon",
         paragraphs: [
           "We're building shared spaces so a whole group can study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. It's not fully launched yet, but the foundation is the same Harvous you use for personal study today.",
-          "If you lead a group and want early access, sign up and reach out — we'd love to hear how you study together.",
+          "If you lead a group and want early access — or your church is interested in future organization features — [share your interest here](/for/churches/#interest). We'd love to hear how you study together.",
         ],
       },
       {

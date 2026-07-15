@@ -3,6 +3,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
 import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
 import ComparePreview from "./ComparePreview.astro";
+import ChurchInterestForm from "./ChurchInterestForm.astro";
+import ChurchOrgInterestBridge from "./ChurchOrgInterestBridge.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
@@ -13,6 +15,7 @@ import {
 import { getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import { buildSignupUrl } from "../lib/signup-url.ts";
+import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import "../styles/use-cases.css";
 
 interface Props {
@@ -20,6 +23,9 @@ interface Props {
 }
 
 const { audience } = Astro.props;
+
+const showChurchBridge =
+  audience.slug === "teachers" || audience.slug === "group-leaders";
 
 const allFeatures = await getCollection("features");
 const relatedFeatures = audience.featureIds
@@ -117,13 +123,22 @@ const jsonLd = {
             <div>
               <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
               {section.paragraphs.map((p) => (
-                <p class="mt-3 text-[var(--color-ink-soft)]">{p}</p>
+                <p class="mt-3 text-[var(--color-ink-soft)]" set:html={inlineMdLinksToHtml(p)} />
               ))}
+              {section.ctaHref && section.ctaLabel && (
+                <p class="mt-5">
+                  <a class="btn-accent px-5 py-3 text-base" href={section.ctaHref}>
+                    {section.ctaLabel}
+                  </a>
+                </p>
+              )}
             </div>
           ))
         }
       </div>
     </section>
+
+    {showChurchBridge && <ChurchOrgInterestBridge variant="audience" />}
 
     <section class="frame-divider">
       <div class="detail-content py-14 md:py-16">
@@ -215,15 +230,33 @@ const jsonLd = {
     }
   </article>
 
-  <PageClosingCTA
-    heading={audience.heroTitle}
-    lead={audience.tagline}
-    href={buildSignupUrl({
-      audience: audience.slug,
-      useCase: audience.useCaseSlugs[0],
-    })}
-    fathomTrack={fathomSignup.forDetail(audience.slug)}
-  />
+  {audience.interestForm && <ChurchInterestForm id="interest" />}
+
+  {
+    audience.interestForm ? (
+      <PageClosingCTA
+        heading="Give your study somewhere to live."
+        lead="Sign up free for personal Bible study — church features build on the same foundation."
+        href={buildSignupUrl({
+          audience: audience.slug,
+          useCase: audience.useCaseSlugs[0],
+        })}
+        fathomTrack={fathomSignup.forDetail(audience.slug)}
+        secondaryHref="/for/churches/#interest"
+        secondaryLabel="Share church interest"
+      />
+    ) : (
+      <PageClosingCTA
+        heading={audience.heroTitle}
+        lead={audience.tagline}
+        href={buildSignupUrl({
+          audience: audience.slug,
+          useCase: audience.useCaseSlugs[0],
+        })}
+        fathomTrack={fathomSignup.forDetail(audience.slug)}
+      />
+    )
+  }
 </BaseLayout>
 
 <style>
@@ -288,5 +321,22 @@ const jsonLd = {
     color: var(--color-accent);
     font-weight: 500;
     flex-shrink: 0;
+  }
+
+  .prose-letter :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose-letter :global(a.btn-accent) {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .prose-letter :global(a.btn-accent:hover) {
+    color: #fff;
+    text-decoration: none;
+    filter: brightness(1.05);
   }
 </style>

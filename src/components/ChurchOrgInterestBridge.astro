@@ -1,0 +1,64 @@
+---
+interface Props {
+  /** Slightly different lead when the surface is Shared Spaces vs audience pages. */
+  variant?: "shared-spaces" | "audience";
+}
+
+const { variant = "audience" } = Astro.props;
+
+const lead =
+  variant === "shared-spaces"
+    ? "Shared Spaces are the near-term group layer. Further out, we’re planning church organization accounts for curriculum — if that matters for your church, tell us."
+    : "Further out, we’re planning church organization accounts so churches can publish curriculum to people connected to them. If that matters for your church, tell us.";
+---
+
+<aside class="church-org-bridge" data-reveal>
+  <p class="church-org-bridge__eyebrow">For churches</p>
+  <p class="church-org-bridge__lead">{lead}</p>
+  <a class="church-org-bridge__link" href="/for/churches/#interest">
+    Share church interest →
+  </a>
+</aside>
+
+<style>
+  .church-org-bridge {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 40rem;
+    padding-block: 0 2rem;
+    padding-inline: var(--frame-content-pad, 1.25rem);
+    border-top: 1px solid var(--color-rule);
+    padding-top: 2rem;
+  }
+
+  .church-org-bridge__eyebrow {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .church-org-bridge__lead {
+    margin: 0.65rem 0 0;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .church-org-bridge__link {
+    display: inline-block;
+    margin-top: 0.85rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .church-org-bridge__link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

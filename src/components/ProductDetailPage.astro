@@ -4,6 +4,7 @@ import PageClosingCTA from "./PageClosingCTA.astro";
 import ProductMoments from "./ProductMoments.astro";
 import ProductRelatedStrip from "./ProductRelatedStrip.astro";
 import ComparePreview from "./ComparePreview.astro";
+import ChurchOrgInterestBridge from "./ChurchOrgInterestBridge.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
@@ -11,6 +12,7 @@ import type { ProductPage } from "../lib/product-page-data.ts";
 import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
 import { hasDetailContent, isLightFeatureInk } from "../lib/product-page-data.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
+import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import "../styles/use-cases.css";
 
 interface Props {
@@ -45,6 +47,7 @@ const fathomTrack =
 const defaultHeroImage =
   page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
 const lightAccent = page.kind === "feature" && isLightFeatureInk(page.ink);
+const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
 ---
 
 <BaseLayout title={page.seoTitle} description={page.seoDescription} jsonLd={jsonLd}>
@@ -109,12 +112,20 @@ const lightAccent = page.kind === "feature" && isLightFeatureInk(page.ink);
               <div>
                 <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
                 {section.paragraphs.map((p) => (
-                  <p class="mt-3 text-[var(--color-ink-soft)]">{p}</p>
+                  <p class="mt-3 text-[var(--color-ink-soft)]" set:html={inlineMdLinksToHtml(p)} />
                 ))}
               </div>
             ))}
           </div>
         </section>
+      )
+    }
+
+    {
+      showChurchBridge && (
+        <div class="pb-10">
+          <ChurchOrgInterestBridge variant="shared-spaces" />
+        </div>
       )
     }
 
@@ -154,3 +165,11 @@ const lightAccent = page.kind === "feature" && isLightFeatureInk(page.ink);
     secondaryLabel={page.kind === "addon" ? "See all pricing" : undefined}
   />
 </BaseLayout>
+
+<style>
+  .prose-letter :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

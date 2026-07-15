@@ -9,6 +9,9 @@ export type ForAudienceMoment = {
 export type ForAudienceSection = {
   heading: string;
   paragraphs: string[];
+  /** Optional gradient CTA under the section body (e.g. link to #interest). */
+  ctaHref?: string;
+  ctaLabel?: string;
 };
 
 export type ForAudience = {
@@ -34,6 +37,8 @@ export type ForAudience = {
   /** One or more use-case slugs this audience links to. */
   useCaseSlugs: string[];
   testimonialId?: string;
+  /** Show the church interest Netlify form instead of (or ahead of) the signup closing CTA. */
+  interestForm?: boolean;
 };
 
 const audiences: ForAudience[] = [
@@ -512,6 +517,77 @@ const audiences: ForAudience[] = [
     testimonialId: "teaella",
   },
   {
+    slug: "churches",
+    href: "/for/churches/",
+    title: "Churches",
+    tagline: "Education for the church — groups now, organization accounts later.",
+    icon: "fa6-solid:church",
+    ink: "var(--study-dock-accent-coralRose)",
+    image: "/images/auth-hero/ai_bg_045.webp",
+    comingSoon: true,
+    comingSoonLine: "On the roadmap",
+    interestForm: true,
+    seoTitle: "For churches — Harvous plans for group study and curriculum",
+    seoDescription:
+      "Harvous wants to serve how the church learns — Shared Spaces for groups soon, and future church organization accounts for curriculum. Tell us your church is interested.",
+    heroTitle: "Education for the church.",
+    heroLead:
+      "Long-term, Harvous wants to serve how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
+    sections: [
+      {
+        heading: "Near-term: Shared Spaces for groups",
+        paragraphs: [
+          "The first group layer is Shared Spaces — a room your church or small group can study in together, with threads, scripture, and notes that live beyond the hour you meet. Joining a space is free for members; the space owner adds the paid add-on when they're ready.",
+          "If your church needs a shared study space for a class or small group, start there: [Shared Spaces](/add-ons/shared-spaces/).",
+        ],
+      },
+      {
+        heading: "Further out: church organization accounts",
+        paragraphs: [
+          "Beyond personal and group spaces, we're planning church organization accounts for education and curriculum. Staff and volunteers publish threads and notes at the church level; people who connect their Harvous account to the church can receive that curriculum — without needing a personal invite link for every study.",
+          "Individual Shared Spaces stay the “I share my space with my group” story. Church org is “the church shares curriculum to everyone who’s connected.”",
+        ],
+        ctaHref: "#interest",
+        ctaLabel: "Our church is interested",
+      },
+      {
+        heading: "What Harvous is not",
+        paragraphs: [
+          "Harvous is a notes and study tool — not a full church management system. It complements tools churches already use for people, groups, and services. It is never a substitute for pastors, friends, or the gathered body.",
+          "Down the road, we plan integrations with church tools like Planning Center (and similar systems) so rosters and groups can sync into Harvous — keep your ChMS; use Harvous where Bible study lives.",
+        ],
+      },
+    ],
+    moments: [
+      {
+        icon: "fa6-solid:user-group",
+        heading: "Groups study together",
+        body: "Shared Spaces keep what a class or small group discovers — in the same threads, after you leave the room.",
+      },
+      {
+        icon: "fa6-solid:book-bible",
+        heading: "Curriculum from the church",
+        body: "Future org accounts let staff publish study content to people connected to the church.",
+      },
+      {
+        icon: "fa6-solid:link",
+        heading: "Connect, don’t clutter",
+        body: "Congregants link to their church to receive curriculum — without joining a staff org roster.",
+      },
+      {
+        icon: "fa6-solid:hands-praying",
+        heading: "A tool for education",
+        body: "Believers study, pastors teach, churches organize — Harvous helps the memory and the materials, not the ministry itself.",
+      },
+    ],
+    featureIds: ["sharing", "threads", "scripture-pills", "highlights"],
+    featuresHeading: "What church study builds on today",
+    featuresLead:
+      "Personal Harvous already supports prep and teaching. Shared Spaces and church org features build on the same notes, threads, and scripture tools.",
+    compareSlugs: ["church-notes", "pray-com", "youversion", "notion"],
+    useCaseSlugs: ["small-group", "sermon-notes"],
+  },
+  {
     slug: "group-leaders",
     href: "/for/group-leaders/",
     title: "Group leaders",
@@ -532,7 +608,7 @@ const audiences: ForAudience[] = [
         heading: "Shared spaces are coming soon",
         paragraphs: [
           "We're building shared spaces so a whole group can study in the same threads — questions, notes, and scripture that live beyond the hour you meet. It's not fully launched yet, but the foundation is the same Harvous you can use for personal prep today.",
-          "If you lead a group and want early access, sign up and reach out. We'd love to hear how you study together.",
+          "If you lead a group and want early access — or your church is interested in future organization features — [share your interest here](/for/churches/#interest). We'd love to hear how you study together.",
         ],
       },
       {
