@@ -227,7 +227,7 @@ const audiences: ForAudience[] = [
     tagline: "You write things down on Sunday. Monday shouldn't erase them.",
     icon: "fa6-solid:church",
     ink: "var(--study-dock-accent-violet)",
-    image: "/images/auth-hero/ai_bg_072.webp",
+    image: "/images/auth-hero/ai_bg_060.webp",
     seoTitle: "For Sunday sermon note-takers — Harvous",
     seoDescription:
       "You take notes at church. Harvous keeps them in series threads, scripture-linked and searchable — not sermon transcription.",
@@ -287,7 +287,7 @@ const audiences: ForAudience[] = [
     tagline: "You prepare, then you teach. Keep both sides of that work.",
     icon: "fa6-solid:chalkboard-user",
     ink: "var(--study-dock-accent-violet)",
-    image: "/images/auth-hero/ai_bg_045.webp",
+    image: "/images/auth-hero/ai_bg_046.webp",
     seoTitle: "For Bible teachers — Harvous",
     seoDescription:
       "Prepare lessons and remember what you taught — Harvous keeps prep notes, scripture, and follow-ups in one place. Shared group spaces coming soon.",
@@ -465,7 +465,7 @@ const audiences: ForAudience[] = [
     tagline: "Grace, prayer, hope — wherever Scripture takes the thread.",
     icon: "fa6-solid:tags",
     ink: "var(--study-dock-accent-mintGreen)",
-    image: "/images/auth-hero/ai_bg_058.webp",
+    image: "/images/auth-hero/ai_bg_052.webp",
     seoTitle: "For topical Bible study — Harvous",
     seoDescription:
       "Chasing a theme across Scripture? Harvous keeps notes on grace, prayer, or any topic together — no matter which book they came from.",
@@ -594,7 +594,7 @@ const audiences: ForAudience[] = [
     tagline: "You lead the discussion. Keep what the group builds.",
     icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
-    image: "/images/auth-hero/ai_bg_073.webp",
+    image: "/images/auth-hero/ai_bg_059.webp",
     comingSoon: true,
     comingSoonLine: "Coming soon",
     seoTitle: "For small group leaders — Harvous",
