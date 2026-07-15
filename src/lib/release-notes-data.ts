@@ -184,6 +184,33 @@ function compareVersions(a: string, b: string): number {
   return 0;
 }
 
+/** UTC YYYY-MM-DD — CSV dates are GMT so same calendar day groups cleanly. */
+function calendarDayKey(dateKey: number): string {
+  if (!dateKey) return "";
+  return new Date(dateKey).toISOString().slice(0, 10);
+}
+
+/** e.g. "2.0.6" → "2.0" so a major.minor cutover on the same day stays separate. */
+function majorMinor(version: string): string {
+  const [maj, min] = version.split(".");
+  return `${maj ?? "0"}.${min ?? "0"}`;
+}
+
+function recountRelease(release: ChangelogRelease): ChangelogRelease {
+  const featureCount = release.entries.filter((e) => e.category === "Feature").length;
+  const fixCount = release.entries.filter((e) => e.category === "Fix").length;
+  const improvementCount = release.entries.filter((e) => e.category === "Improvement").length;
+  const next: ChangelogRelease = {
+    ...release,
+    featureCount,
+    fixCount,
+    improvementCount,
+    excerpt: "",
+  };
+  next.excerpt = buildExcerpt(next);
+  return next;
+}
+
 /** Full release body — catches Webflow re-exporting the same notes under new version numbers. */
 function releaseFingerprint(release: ChangelogRelease): string {
   return release.entries
@@ -223,6 +250,83 @@ function dedupeReleases(releases: ChangelogRelease[]): {
   );
 
   return { releases: kept, slugRedirects };
+}
+
+/**
+ * Collapse multiple patch releases on the same UTC day (same major.minor) into one card
+ * under the highest version, pooling entries and redirecting older slugs.
+ */
+function mergeSameDayReleases(releases: ChangelogRelease[]): {
+  releases: ChangelogRelease[];
+  slugRedirects: Map<string, string>;
+} {
+  const groups = new Map<string, ChangelogRelease[]>();
+
+  for (const release of releases) {
+    const day = calendarDayKey(release.dateKey);
+    const key = day ? `${day}|${majorMinor(release.version)}` : `solo|${release.slug}`;
+    const list = groups.get(key) ?? [];
+    list.push(release);
+    groups.set(key, list);
+  }
+
+  const kept: ChangelogRelease[] = [];
+  const slugRedirects = new Map<string, string>();
+
+  for (const group of groups.values()) {
+    group.sort((a, b) => compareVersions(b.version, a.version) || b.dateKey - a.dateKey);
+    const canonical = group[0]!;
+
+    if (group.length === 1) {
+      kept.push(canonical);
+      continue;
+    }
+
+    const mergedEntries = dedupeEntries(group.flatMap((r) => r.entries)).sort(
+      (a, b) => b.dateKey - a.dateKey || a.title.localeCompare(b.title)
+    );
+
+    kept.push(
+      recountRelease({
+        ...canonical,
+        entries: mergedEntries,
+      })
+    );
+
+    for (const older of group.slice(1)) {
+      slugRedirects.set(older.slug, canonical.slug);
+    }
+  }
+
+  kept.sort(
+    (a, b) => b.dateKey - a.dateKey || compareVersions(b.version, a.version)
+  );
+
+  return { releases: kept, slugRedirects };
+}
+
+/** Chain redirects so A→B and B→C become A→C (and B→C). */
+function mergeSlugRedirects(
+  ...maps: Array<Map<string, string>>
+): Map<string, string> {
+  const merged = new Map<string, string>();
+  for (const map of maps) {
+    for (const [from, to] of map) {
+      merged.set(from, to);
+    }
+  }
+
+  for (const [from, to] of merged) {
+    let target = to;
+    const seen = new Set<string>([from]);
+    while (merged.has(target) && !seen.has(target)) {
+      seen.add(target);
+      target = merged.get(target)!;
+    }
+    merged.set(from, target);
+  }
+
+  return merged;
 }
 
 let cache: ChangelogRelease[] | null = null;
@@ -292,8 +396,9 @@ export function getReleaseNotes(): ChangelogRelease[] {
     .sort((a, b) => b.dateKey - a.dateKey || compareVersions(b.version, a.version));
 
   const deduped = dedupeReleases(built);
-  cache = deduped.releases;
-  slugRedirectCache = deduped.slugRedirects;
+  const sameDay = mergeSameDayReleases(deduped.releases);
+  cache = sameDay.releases;
+  slugRedirectCache = mergeSlugRedirects(deduped.slugRedirects, sameDay.slugRedirects);
 
   return cache;
 }
