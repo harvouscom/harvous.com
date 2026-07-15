@@ -3,6 +3,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageIntro from "../components/PageIntro.astro";
 import PageClosingCTA from "../components/PageClosingCTA.astro";
 import FounderLetter from "../components/FounderLetter.astro";
+import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
+import OptimizedImage from "../components/OptimizedImage.astro";
 import { fathomSignup } from "../lib/fathom-events.ts";
 
 const site = "https://harvous.com";
@@ -37,7 +39,7 @@ const jsonLd = {
       "@type": "AboutPage",
       name: "About Harvous",
       description:
-        "Why Derek Castelli made Harvous — a notes app for remembering Bible study. Humans help humans. Tools only help.",
+        "Harvous is a place for Bible study to live — a notes hub so what you learn from Scripture doesn't disappear. Humans help humans. Tools only help.",
       url: `${site}/about/`,
       isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
     },
@@ -65,29 +67,53 @@ const jsonLd = {
 
 <BaseLayout
   title="About — Harvous"
-  description="Why Derek Castelli made Harvous — a notes app for remembering Bible study. Humans help humans. Tools only help."
+  description="Harvous is a place for Bible study to live — a notes hub so what you learn from Scripture doesn't disappear. Humans help humans. Tools only help."
   jsonLd={jsonLd}
 >
-  <section class="border-b border-[var(--color-rule)]">
+  <section>
     <PageIntro>
-      <span class="eyebrow-pill">A letter from Derek</span>
-      <h1 class="section-title mt-4 text-pretty">
-        Why I made Harvous
+      <span class="eyebrow-pill">About</span>
+      <h1 class="section-title display-xl mt-4 text-pretty">
+        A place for Bible study to live.
       </h1>
+      <p class="about-hero__lead mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">
+        For believers who search Scripture, pastors who teach it, and churches that learn together.
+        A tool for education. Never a substitute for the body.
+      </p>
     </PageIntro>
   </section>
 
-  <!-- The letter -->
-  <section class="about-letter" data-reveal style="--reveal-delay: 80ms;">
-    <div class="about-letter__inner">
-      <FounderLetter variant="full" />
+  <!-- What Harvous is -->
+  <section class="about-mission frame-divider">
+    <div class="about-mission__inner">
+      <div class="about-mission__shotwrap" data-reveal="scale" style="--reveal-delay: 80ms;">
+        <div class="about-mission__shot-frame">
+          <OptimizedImage
+            class="about-mission__shot"
+            src="/app-full.png"
+            alt="The Harvous app: My Home on the left and an open note on the right — scripture shown as tap-able pills, a highlighted phrase, and today's passage."
+            width={2624}
+            height={1360}
+            loading="lazy"
+          />
+          <HeroVideoLightbox src="/touring-new-harvous-share.mp4" />
+        </div>
+      </div>
+      <div class="about-mission__copy" data-reveal style="--reveal-delay: 120ms;">
+        <div class="about-mission__prose">
+          <p>
+            Harvous is a notes app made for Bible study. Scripture-linked notes, highlights,
+            and threads live here so what you notice doesn't disappear.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- What we believe — thin philosophy coda -->
+  <!-- What we believe -->
   <section class="about-believe frame-divider" data-reveal style="--reveal-delay: 100ms;">
     <div class="about-believe__inner">
-      <h2 class="about-believe__heading font-display text-pretty">
+      <h2 class="section-title about-believe__heading text-pretty">
         What Harvous cares about
       </h2>
       <ul class="about-believe__list" role="list" data-reveal="stagger">
@@ -104,13 +130,27 @@ const jsonLd = {
     </div>
   </section>
 
+  <!-- Founder letter — personal proof after the mission -->
+  <section class="about-letter frame-divider" data-reveal style="--reveal-delay: 120ms;">
+    <div class="about-letter__head section-head" data-reveal>
+      <span class="eyebrow-pill">From the founder</span>
+      <h2 class="section-title text-pretty">A letter from Derek</h2>
+      <p class="about-letter__lead">
+        Why this exists, from the person building it.
+      </p>
+    </div>
+    <div class="about-letter__inner">
+      <FounderLetter variant="full" />
+    </div>
+  </section>
+
   <!-- Who's behind it -->
-  <section class="frame-divider" data-reveal style="--reveal-delay: 120ms;">
+  <section class="frame-divider" data-reveal style="--reveal-delay: 140ms;">
     <div class="about-who detail-content py-14 md:py-16 text-center">
-      <h2 class="font-display text-2xl leading-snug md:text-3xl">Who's behind it</h2>
+      <h2 class="section-title text-pretty">Who's behind it</h2>
       <p class="mt-4 text-[var(--color-ink-soft)] text-pretty">
-        I'm making Harvous solo under Testament Made LLC — designing and shipping in public,
-        one note at a time. Questions, bugs, or ideas: write me at
+        I'm making Harvous solo under Testament Made LLC — building the memory tool I needed,
+        designing and shipping in public, one note at a time. Questions, bugs, or ideas: write me at
         <a
           class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
           href="mailto:derek@harvous.com"
@@ -125,17 +165,120 @@ const jsonLd = {
   </section>
 
   <PageClosingCTA
-    heading="Maybe you needed this too."
-    lead="Sign up free and give your Bible study a place to live."
+    heading="Give your study somewhere to live."
+    lead="Sign up free and start writing notes that stay with Scripture."
     fathomTrack={fathomSignup.about}
   />
 </BaseLayout>
 
 <style>
+  .about-hero__lead {
+    max-width: 32rem;
+    margin-inline: auto;
+  }
+
   .detail-content {
     margin-inline: auto;
     max-width: 40rem;
     padding-inline: var(--frame-content-pad);
+  }
+
+  .about-mission {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    padding-inline: var(--frame-content-pad);
+    overflow: clip;
+  }
+
+  .about-mission__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 56rem;
+  }
+
+  /* Relative shot stage — same role as .hero__shotwrap / .hero__shot-frame. */
+  .about-mission__shotwrap {
+    width: 100%;
+  }
+
+  .about-mission__shot-frame {
+    position: relative;
+    width: 100%;
+    border-radius: clamp(16px, 2vw, 28px);
+    overflow: hidden;
+    box-shadow: var(--shadow-float);
+  }
+
+  .about-mission__shot,
+  .about-mission__shot-frame :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media (max-width: 639px) {
+    .about-mission__shot-frame {
+      aspect-ratio: unset;
+      width: 100%;
+      height: calc((min(100vw, 56rem) - 2 * var(--frame-content-pad)) * 1360 / 2624);
+    }
+    .about-mission__shot-frame :global(picture) {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .about-mission__shot,
+    .about-mission__shot-frame :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top left;
+    }
+  }
+
+  /* Darken bottom-left so the "Watch the tour" callout reads clearly. */
+  .about-mission__shot-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        ellipse 90% 75% at 6% 96%,
+        color-mix(in srgb, #0d0e12 52%, transparent) 0%,
+        color-mix(in srgb, #0d0e12 22%, transparent) 38%,
+        transparent 62%
+      ),
+      linear-gradient(
+        28deg,
+        color-mix(in srgb, #0d0e12 28%, transparent) 0%,
+        transparent 45%
+      );
+  }
+
+  .about-mission__copy {
+    margin: clamp(2rem, 4.5vw, 3rem) auto 0;
+    max-width: 40rem;
+    text-align: center;
+  }
+
+  .about-mission__prose {
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .about-mission__prose p {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
   }
 
   /* Full-bleed clip so the paper-stack fan can't force horizontal page scroll. */
@@ -143,16 +286,26 @@ const jsonLd = {
     overflow-x: clip;
   }
 
+  .about-letter__head {
+    margin-inline: auto;
+    max-width: 40rem;
+    padding: clamp(3rem, 7vw, 4.5rem) var(--frame-content-pad) 0;
+    text-align: center;
+  }
+
+  .about-letter__lead {
+    margin: 0.75rem auto 0;
+    max-width: 28rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
   .about-letter__inner {
     margin-inline: auto;
     max-width: 64rem;
-    padding: 3.5rem var(--frame-content-pad) 4rem;
-  }
-
-  @media (min-width: 768px) {
-    .about-letter__inner {
-      padding-block: 4rem;
-    }
+    padding: clamp(2rem, 5vw, 3rem) var(--frame-content-pad) clamp(3.5rem, 7vw, 5rem);
   }
 
   .about-believe__inner {
@@ -162,13 +315,8 @@ const jsonLd = {
   }
 
   .about-believe__heading {
-    margin: 0 auto;
+    margin-inline: auto;
     text-align: center;
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    color: var(--color-ink);
   }
 
   .about-believe__list {

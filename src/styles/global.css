@@ -97,11 +97,16 @@ h3, h4, h5, h6 {
 }
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(2rem, 4.5vw, 3rem);
   line-height: 1.05;
   letter-spacing: -0.02em;
   font-weight: 600;
   color: var(--color-ink);
+}
+/* Centered measure — pair with .section-title on hub/CTA titles. */
+.display-lg {
+  max-width: 580px;
+  margin-inline: auto;
 }
 /* Hero-scale modifier — pair with .section-title. */
 .display-xl {

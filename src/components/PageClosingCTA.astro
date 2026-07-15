@@ -26,7 +26,7 @@ const {
 
 <section class="page-closing-cta frame-divider">
   <div class="page-closing-cta__inner" data-reveal>
-    <h2 class="page-closing-cta__heading">{heading}</h2>
+    <h2 class="section-title display-lg page-closing-cta__heading">{heading}</h2>
     {lead && <p class="page-closing-cta__lead">{lead}</p>}
     <div class="page-closing-cta__action">
       <CTAButton href={href} variant="primary" size="lg" external fathomTrack={fathomTrack}>
@@ -51,12 +51,6 @@ const {
     text-align: center;
   }
   .page-closing-cta__heading {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 4.5vw, 3rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    color: var(--color-ink);
     text-wrap: pretty;
   }
   .page-closing-cta__lead {
