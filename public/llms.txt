@@ -16,8 +16,17 @@ Harvous is not a Bible reader. It is not built around sermon transcription or AI
 
 - Homepage: https://harvous.com/
 - Compare Harvous to other apps: https://harvous.com/compare/
+- Use cases: https://harvous.com/use-cases/
 - Release Notes: https://harvous.com/release-notes/
 - Sign up: https://app.harvous.com/
+
+## Compare guides
+
+- https://harvous.com/compare/best-bible-notes-apps/
+- https://harvous.com/compare/youversion-alternative/
+- https://harvous.com/compare/logos-alternative/
+- https://harvous.com/compare/obsidian-alternative/
+- https://harvous.com/compare/bible-note-alternative/
 
 ## Compare pages
 
@@ -27,5 +36,14 @@ Examples:
 - https://harvous.com/compare/youversion/
 - https://harvous.com/compare/logos/
 - https://harvous.com/compare/bible-note/
+- https://harvous.com/compare/church-notes/
+- https://harvous.com/compare/digible/
+- https://harvous.com/compare/moreh/
+- https://harvous.com/compare/biblenotes-ai/
 - https://harvous.com/compare/obsidian/
 - https://harvous.com/compare/apple-notes/
+
+## Use cases
+
+- https://harvous.com/use-cases/daily-journal/
+- https://harvous.com/use-cases/sermon-notes/

@@ -2,6 +2,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
 import CTAButton from "./CTAButton.astro";
+import { Icon } from "astro-icon/components";
+import CompareHonestBias from "./CompareHonestBias.astro";
 import type { CompareCategorySeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
 import { fathomSignup } from "../lib/fathom-events.ts";
 import "../styles/compare.css";
@@ -33,19 +35,8 @@ const decisionRows = [
     <header class="border-b border-[var(--color-rule)]">
       <div class="mx-auto max-w-3xl px-5 py-10 md:py-14">
         <div data-reveal>
-          <a href="/compare/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
-            <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path
-                fill-rule="evenodd"
-                d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-                clip-rule="evenodd"></path>
-            </svg>
-            Compare
-          </a>
-
-          <div class="mt-8 text-center">
-            <p class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">Category guide</p>
-            <h1 class="mt-3 font-display text-4xl leading-[1.05] md:text-5xl">{page.h1}</h1>
+          <div class="text-center">
+            <h1 class="font-display text-4xl leading-[1.05] md:text-5xl">{page.h1}</h1>
             <p class="compare-guide__lead mx-auto mt-5 text-lg leading-relaxed text-[var(--color-ink-soft)]">
               {page.lead}
             </p>
@@ -54,32 +45,32 @@ const decisionRows = [
       </div>
     </header>
 
-    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
-      <h2 class="font-display text-2xl leading-snug md:text-3xl">Top picks</h2>
-      <p class="mt-3 text-[var(--color-ink-soft)]">
-        Harvous is notes-first — not a Bible reader, not sermon transcription. The rest span dedicated Bible note apps, general notes tools, and study suites.
-      </p>
-      <ol class="compare-guide__list mt-8">
+    <section class="mx-auto max-w-5xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
+      <ol class="compare-guide__list">
         {
           picks.map((pick, index) => (
-            <li class="compare-guide__card">
+            <li class:list={["compare-guide__card", pick.isHarvous && "compare-guide__card--harvous"]}>
+              {
+                pick.isHarvous && (
+                  <CompareHonestBias id={`honest-bias-${page.slug}`} />
+                )
+              }
               <div class="compare-guide__card-head">
-                <span class="compare-guide__rank tabular-nums">{index + 1}</span>
-                <img
-                  class="compare-guide__icon"
-                  src={pick.competitorImage}
-                  alt=""
-                  width="48"
-                  height="48"
-                  loading={index === 0 ? "eager" : "lazy"}
-                />
-                <div class="min-w-0">
-                  <h3 class="text-lg font-semibold text-[var(--color-ink)]">{pick.name}</h3>
-                  <p class="text-xs text-[var(--color-ink-faint)]">{pick.competitorType}</p>
+                <div class="compare-guide__icon-wrap">
+                  <img
+                    class="compare-guide__icon"
+                    src={pick.competitorImage}
+                    alt=""
+                    width="44"
+                    height="44"
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                  <span class="compare-guide__rank tabular-nums">{index + 1}</span>
                 </div>
+                <h3 class="compare-guide__name">{pick.name}</h3>
               </div>
               <p class="compare-guide__card-intro">{pick.intro}</p>
-              <p class="text-sm text-[var(--color-ink-soft)]">
+              <p class="mt-3 text-sm text-[var(--color-ink-soft)]">
                 <span class="font-medium text-[var(--color-ink)]">Best for:</span> {pick.idealFor}
               </p>
               <div class="compare-guide__card-actions">
@@ -88,7 +79,7 @@ const decisionRows = [
                     <CTAButton
                       href="https://app.harvous.com/sign-up"
                       variant="primary"
-                      size="sm"
+                      size="md"
                       external
                       fathomTrack={fathomSignup.compareDetail(page.slug)}
                     >
@@ -104,43 +95,70 @@ const decisionRows = [
             </li>
           ))
         }
+        <li class="compare-guide__card compare-guide__card--more">
+          <div class="compare-guide__card-head">
+            <div class="compare-guide__icon-wrap">
+              <span class="compare-guide__icon compare-guide__icon--more" aria-hidden="true">
+                <Icon name="fa6-solid:table-cells" />
+              </span>
+            </div>
+            <h3 class="compare-guide__name">Compare all apps</h3>
+          </div>
+          <p class="compare-guide__card-intro">
+            This shortlist is a start. See how Harvous compares to Bible readers, notes apps, study suites, and more.
+          </p>
+          <div class="compare-guide__card-actions">
+            <a href="/compare/" class="btn-pill text-sm">
+              Browse all comparisons
+            </a>
+          </div>
+        </li>
       </ol>
     </section>
 
-    <section class="frame-divider mx-auto max-w-3xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 120ms;">
+    <section class="frame-divider mx-auto max-w-5xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 120ms;">
       <h2 class="font-display text-2xl leading-snug md:text-3xl">How to choose</h2>
-      <div class="compare-detail__table-wrap mt-8">
-        <table class="compare-detail__table">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">Harvous</th>
-              <th scope="col">Typical alternatives</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              decisionRows.map((row) => (
+
+      <div class="compare-guide__choose">
+        <div class="compare-guide__choose-glance">
+          <h3 class="compare-guide__choose-label">At a glance</h3>
+          <div class="compare-detail__table-wrap">
+            <table class="compare-detail__table">
+              <thead>
                 <tr>
-                  <th scope="row">{row.label}</th>
-                  <td>{row.harvous}</td>
-                  <td>{row.others}</td>
+                  <th scope="col"></th>
+                  <th scope="col">Harvous</th>
+                  <th scope="col">Typical alternatives</th>
                 </tr>
+              </thead>
+              <tbody>
+                {
+                  decisionRows.map((row) => (
+                    <tr>
+                      <th scope="row">{row.label}</th>
+                      <td>{row.harvous}</td>
+                      <td>{row.others}</td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="compare-guide__choose-paths">
+          <h3 class="compare-guide__choose-label">Pick a path</h3>
+          <ul class="compare-guide__choose-grid" role="list">
+            {
+              page.whenToChoose.map((block, i) => (
+                <li class:list={["compare-guide__choose-card", i === 0 && "compare-guide__choose-card--harvous"]}>
+                  <h4 class="compare-guide__choose-card-title">{block.heading}</h4>
+                  <p class="compare-guide__choose-card-body">{block.body}</p>
+                </li>
               ))
             }
-          </tbody>
-        </table>
-      </div>
-
-      <div class="prose-letter mt-12 space-y-8">
-        {
-          page.whenToChoose.map((block) => (
-            <div>
-              <h3 class="text-xl font-semibold text-[var(--color-ink)]">{block.heading}</h3>
-              <p class="mt-3 text-[var(--color-ink-soft)]">{block.body}</p>
-            </div>
-          ))
-        }
+          </ul>
+        </div>
       </div>
     </section>
   </article>

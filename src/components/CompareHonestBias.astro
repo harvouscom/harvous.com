@@ -1,0 +1,45 @@
+---
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<details class="compare-guide__bias">
+  <summary class="compare-guide__bias-chip">
+    A note from us
+    <svg class="compare-guide__bias-chevron" viewBox="0 0 12 12" aria-hidden="true">
+      <path
+        d="M3 4.5 6 7.5 9 4.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </summary>
+  <div class="compare-guide__bias-panel" id={id} role="note">
+    <p>
+      We built Harvous — so of course we care how this list reads. We put it first because we believe
+      notes-first Bible study deserves its own home: not a reader feature, not sermon transcription,
+      just a place to remember what you saved.
+    </p>
+  </div>
+</details>
+
+<script>
+  // Close other bias details when one opens; close on outside click.
+  document.addEventListener(
+    "click",
+    (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const open = document.querySelectorAll("details.compare-guide__bias[open]");
+      for (const details of open) {
+        if (!details.contains(target)) details.removeAttribute("open");
+      }
+    },
+    true
+  );
+</script>

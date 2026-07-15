@@ -153,7 +153,7 @@ const audiences: ForAudience[] = [
     featuresHeading: "What prayer-shaped notes need",
     featuresLead:
       "Private capture, scripture nearby, and a way back to what you wrote — without turning prayer into a productivity system.",
-    compareSlugs: ["youversion", "spirit-notes", "abide", "apple-notes"],
+    compareSlugs: ["youversion", "spirit-notes", "church-notes", "abide", "apple-notes"],
     useCaseSlugs: ["daily-journal"],
   },
   {
@@ -271,7 +271,7 @@ const audiences: ForAudience[] = [
     featuresHeading: "What Sunday notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you have — so Sunday doesn't disappear by Monday.",
-    compareSlugs: ["bible-note", "bible-notes", "pencil-bible", "spirit-notes", "goodnotes"],
+    compareSlugs: ["bible-note", "bible-notes", "church-notes", "pencil-bible", "spirit-notes", "goodnotes"],
     useCaseSlugs: ["sermon-notes"],
     testimonialId: "teaella",
   },
@@ -627,7 +627,7 @@ const audiences: ForAudience[] = [
     featuresHeading: "What dual-app study asks of your notes",
     featuresLead:
       "Scripture that stays linked, a way back to what you saved, and capture that works when you're offline in the pew or on a plane.",
-    compareSlugs: ["youversion", "dwell", "logos", "readscripture", "abide"],
+    compareSlugs: ["youversion", "dwell", "logos", "readscripture", "church-notes", "abide"],
     useCaseSlugs: [
       "daily-journal",
       "sermon-notes",

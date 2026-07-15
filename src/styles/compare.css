@@ -128,99 +128,6 @@
   scroll-margin-top: 7.5rem;
 }
 
-/* Compare hub — guide cards (category + alternative pages). */
-.compare-hub-guides {
-  padding-block: clamp(2.5rem, 5vw, 3.5rem);
-}
-
-.compare-hub-guides__head {
-  max-width: 34rem;
-  margin-inline: auto;
-  text-align: center;
-}
-
-.compare-hub-guides__lead {
-  margin-top: 0.75rem;
-  font-size: 1rem;
-  line-height: 1.55;
-  color: var(--color-ink-soft);
-}
-
-.compare-hub-guides__group {
-  margin-top: 2rem;
-}
-
-.compare-hub-guides__group + .compare-hub-guides__group {
-  margin-top: 2.5rem;
-}
-
-.compare-hub-guides__label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-ink-faint);
-  margin-bottom: 0.875rem;
-}
-
-.compare-hub-guides__grid {
-  display: grid;
-  gap: 0.875rem;
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 640px) {
-  .compare-hub-guides__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .compare-hub-guides__group:first-of-type .compare-hub-guides__grid {
-    grid-template-columns: 1fr;
-    max-width: 28rem;
-  }
-}
-
-.compare-hub-guides__card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-  padding: 1.125rem 1.25rem;
-  border: 1px solid var(--color-rule);
-  border-radius: 1rem;
-  background: var(--color-card);
-  box-shadow: var(--shadow-card);
-  transition:
-    box-shadow 150ms ease,
-    transform 150ms ease;
-}
-
-.compare-hub-guides__card:hover {
-  box-shadow: var(--shadow-float);
-  transform: translateY(-2px);
-}
-
-.compare-hub-guides__card-title {
-  font-weight: 600;
-  color: var(--color-ink);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.compare-hub-guides__draft {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.125rem 0.5rem;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--color-peach) 55%, var(--color-paper));
-  color: var(--color-peach-ink);
-}
-
 .compare-guide__draft-banner {
   margin: 0;
   padding: 0.625rem 1rem;
@@ -235,13 +142,46 @@
   font-size: 0.75rem;
 }
 
-.compare-hub-guides__card-desc {
+/* Related guides on individual compare detail pages. */
+.compare-detail__guides {
+  display: grid;
+  gap: 0.875rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compare-detail__guide-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 1rem;
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.compare-detail__guide-card:hover {
+  box-shadow: var(--shadow-float);
+  transform: translateY(-2px);
+}
+
+.compare-detail__guide-title {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.compare-detail__guide-desc {
   font-size: 0.875rem;
   line-height: 1.45;
   color: var(--color-ink-soft);
 }
 
-.compare-hub-guides__card-link {
+.compare-detail__guide-link {
   margin-top: 0.25rem;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -250,19 +190,28 @@
 
 /* Compare guide pages — category + alternative shortlists. */
 .compare-guide__lead {
-  max-width: 28rem;
+  max-width: 40rem;
 }
 
 .compare-guide__list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 1rem;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+@media (min-width: 768px) {
+  .compare-guide__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .compare-guide__card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: 1.25rem;
   border: 1px solid var(--color-rule);
   border-radius: 1rem;
@@ -276,26 +225,123 @@
   gap: 0.875rem;
 }
 
-.compare-guide__rank {
+.compare-guide__icon-wrap {
+  position: relative;
   flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--color-warm) 55%, var(--color-paper));
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-ink-soft);
 }
 
 .compare-guide__icon {
-  flex: none;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.7rem;
   object-fit: cover;
+}
+
+.compare-guide__icon--more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--color-warm) 70%, var(--color-paper));
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+}
+
+.compare-guide__rank {
+  position: absolute;
+  right: -0.3rem;
+  bottom: -0.3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  border: 2px solid var(--color-card);
+  background: var(--color-paper);
+  box-shadow: 0 0 0 1px var(--color-rule);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  line-height: 1;
+  color: var(--color-ink-soft);
+}
+
+.compare-guide__name {
+  min-width: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+
+.compare-guide__card--harvous {
+  position: relative;
+}
+
+.compare-guide__bias {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 3;
+}
+
+.compare-guide__bias-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-rule);
+  background: color-mix(in oklab, var(--color-warm) 40%, var(--color-paper));
+  font-size: 0.6875rem;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  color: var(--color-ink-faint);
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.compare-guide__bias-chip::-webkit-details-marker {
+  display: none;
+}
+
+.compare-guide__bias-chip:hover,
+.compare-guide__bias[open] .compare-guide__bias-chip {
+  color: var(--color-ink-soft);
+  border-color: color-mix(in oklab, var(--color-ink-faint) 35%, var(--color-rule));
+  background: color-mix(in oklab, var(--color-warm) 65%, var(--color-paper));
+}
+
+.compare-guide__bias-chevron {
+  width: 0.7rem;
+  height: 0.7rem;
+  opacity: 0.7;
+  transition: transform 0.15s ease;
+}
+
+.compare-guide__bias[open] .compare-guide__bias-chevron {
+  transform: rotate(180deg);
+}
+
+.compare-guide__bias-panel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  width: min(17.5rem, calc(100vw - 3rem));
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.75rem;
+  background: var(--color-card);
+  box-shadow: var(--shadow-card), 0 12px 28px -16px rgba(0, 0, 0, 0.18);
+}
+
+.compare-guide__bias-panel p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-ink-soft);
 }
 
 .compare-guide__card-intro {
@@ -328,5 +374,69 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem 1rem;
-  margin-top: 1.25rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+
+.compare-guide__card--more {
+  background: color-mix(in oklab, var(--color-warm) 35%, var(--color-paper));
+}
+
+.compare-guide__choose {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+.compare-guide__choose-label {
+  margin: 0 0 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.compare-guide__choose-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .compare-guide__choose-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.compare-guide__choose-card {
+  height: 100%;
+  padding: 1.15rem 1.2rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 1rem;
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+}
+
+.compare-guide__choose-card--harvous {
+  border-color: color-mix(in oklab, var(--color-accent) 28%, var(--color-rule));
+  background: color-mix(in oklab, var(--color-accent-soft) 70%, var(--color-paper));
+}
+
+.compare-guide__choose-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.compare-guide__choose-card-body {
+  margin: 0.55rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
 }

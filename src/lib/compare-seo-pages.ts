@@ -54,23 +54,23 @@ const SEO_PAGES: CompareSeoPage[] = [
   {
     kind: "category",
     slug: "best-bible-notes-apps",
-    draft: true,
     guideLabel: "Best Bible notes apps",
     guideDescription: "Curated shortlist for scripture-linked study notes",
     seoTitle: "Best Bible notes apps — Harvous",
     seoDescription:
-      "Compare the best Bible notes apps for scripture-linked study notes — Harvous, Bible Note, Obsidian, Notion, Logos, and more. Notes-first, not a Bible reader.",
+      "Compare the best Bible notes apps for scripture-linked study notes — Harvous, Church Notes, Digible, Bible Note, Obsidian, and more. Notes-first, not a Bible reader.",
     h1: "Best Bible notes apps",
-    lead: "Looking for a Bible notes app? These tools help you capture, organize, and find what you saved from Scripture — from dedicated Bible note apps to general notes tools people adapt for study.",
+    lead: "Scripture-linked study notes — dedicated apps and tools people adapt. Harvous is notes-first, not a reader.",
     pickSlugs: [
-      "bible-note",
-      "bible-notes",
-      "pencil-bible",
       "spirit-notes",
+      "bible-note",
+      "pencil-bible",
+      "church-notes",
+      "bible-notes",
+      "digible",
       "obsidian",
       "notion",
       "apple-notes",
-      "evernote",
       "logos",
     ],
     whenToChoose: [
@@ -80,11 +80,15 @@ const SEO_PAGES: CompareSeoPage[] = [
       },
       {
         heading: "Choose a Bible reader if…",
-        body: "You mainly need to read Scripture in many translations with reading plans and devotionals — YouVersion, Bible Gateway, or Olive Tree are built for that.",
+        body: "You mainly need to read Scripture in many translations with reading plans and devotionals — YouVersion, Bible Gateway, or Olive Tree are built for that. Pair one with Harvous when notes outgrow the reader.",
       },
       {
         heading: "Choose a general notes app if…",
         body: "You already live in Obsidian, Notion, or Apple Notes and want maximum flexibility — but you'll wire up scripture references yourself.",
+      },
+      {
+        heading: "Choose a journaling or all-in-one church app if…",
+        body: "You want Apple Pencil on the page (Digible), built-in SOAP templates plus a reader (Church Notes), or AI-generated study journeys — different jobs than remembering your own written reflections.",
       },
     ],
   },
@@ -92,15 +96,14 @@ const SEO_PAGES: CompareSeoPage[] = [
     kind: "alternative",
     slug: "logos-alternative",
     targetSlug: "logos",
-    draft: true,
     guideLabel: "Best Logos alternative",
     guideDescription: "Lighter, notes-first options for Bible study",
     seoTitle: "Best Logos alternative for Bible study notes — Harvous",
     seoDescription:
-      "Looking for a Logos alternative? Compare Harvous, Olive Tree, Accordance, Blue Letter Bible, and Obsidian for Bible study notes — lighter, notes-first options.",
+      "Looking for a Logos alternative? Compare Harvous, Olive Tree, Accordance, Blue Letter Bible, and Obsidian for Bible study notes — lighter, notes-first options that sit beside Logos when you mainly need to remember what you saved.",
     h1: "Best Logos alternative",
-    lead: "Logos is built for deep Bible study with original languages, commentaries, and a massive library. If you want something lighter and notes-first — or a place to remember what you saved from Logos — these are worth a look.",
-    pickSlugs: ["olive-tree", "accordance", "blue-letter-bible", "obsidian"],
+    lead: "Logos is the deep-study suite. These are lighter, notes-first options — or a place to remember what you saved from Logos without the full library.",
+    pickSlugs: ["olive-tree", "accordance", "blue-letter-bible", "obsidian", "moreh"],
     whenToChoose: [
       {
         heading: "Choose Harvous if…",
@@ -108,7 +111,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       },
       {
         heading: "Choose Logos if…",
-        body: "You need scholarly tools, original languages, commentaries, and a full digital library — Logos is still the standard for seminary-level study.",
+        body: "You need scholarly tools, original languages, commentaries, and a full digital library — Logos is still the standard for seminary-level study. Many people keep Logos for research and use Harvous for the notes they want to revisit.",
       },
     ],
   },
@@ -116,23 +119,26 @@ const SEO_PAGES: CompareSeoPage[] = [
     kind: "alternative",
     slug: "youversion-alternative",
     targetSlug: "youversion",
-    draft: true,
     guideLabel: "Best YouVersion alternative",
-    guideDescription: "Beyond reading plans — dedicated study notes",
+    guideDescription: "A notes home that complements your Bible reader",
     seoTitle: "Best YouVersion alternative for Bible study notes — Harvous",
     seoDescription:
-      "Looking for a YouVersion alternative? Compare Harvous, Bible Gateway, ESV Bible, Olive Tree, and Logos — options beyond reading plans and devotionals.",
-    h1: "Best YouVersion alternative",
-    lead: "YouVersion is the most popular Bible reader — reading plans, devotionals, and community. If you need a dedicated place for study notes that stay linked to Scripture, these alternatives serve a different job.",
-    pickSlugs: ["bible-gateway", "esv-bible", "olive-tree", "logos"],
+      "Looking for a YouVersion alternative for study notes? Harvous complements YouVersion — keep reading plans and community there; use a notes-first app to remember and reconnect with what you saved.",
+    h1: "Best YouVersion alternative for study notes",
+    lead: "YouVersion wins at reading plans and community. These options cover the notes job — keep reading where you already do.",
+    pickSlugs: ["bible-gateway", "esv-bible", "olive-tree", "logos", "church-notes"],
     whenToChoose: [
       {
         heading: "Choose Harvous if…",
-        body: HARVOUS_PITCH,
+        body: "You like YouVersion (or another Bible app) for reading, and you want a notes-first home for what you write — scripture pills, threads, and recall — without switching your whole reading habit.",
       },
       {
         heading: "Choose YouVersion if…",
-        body: "You want a free Bible reader with reading plans, audio, and social features — YouVersion excels at daily reading habits.",
+        body: "You want a free Bible reader with reading plans, audio, and social features — YouVersion excels at daily reading habits. Pair it with Harvous when notes start to scatter.",
+      },
+      {
+        heading: "Choose another reader if…",
+        body: "You want a different reading experience — Olive Tree, Bible Gateway, or ESV — and still need somewhere else for long-term study notes.",
       },
     ],
   },
@@ -140,15 +146,14 @@ const SEO_PAGES: CompareSeoPage[] = [
     kind: "alternative",
     slug: "obsidian-alternative",
     targetSlug: "obsidian",
-    draft: true,
     guideLabel: "Best Obsidian alternative",
     guideDescription: "Purpose-built scripture notes without a custom vault",
     seoTitle: "Best Obsidian alternative for Bible study notes — Harvous",
     seoDescription:
-      "Using Obsidian for Bible study? Compare Harvous, Notion, Evernote, Apple Notes, and Logos — apps built for scripture-linked notes without building your own system.",
+      "Using Obsidian for Bible study? Compare Harvous, Notion, Evernote, Apple Notes, and Logos — apps built for scripture-linked notes without maintaining a custom vault and plugin stack.",
     h1: "Best Obsidian alternative for Bible study",
-    lead: "Obsidian is powerful for linked notes — many people build elaborate Bible study vaults. If you want scripture references, highlights, and recall without maintaining a custom setup, these options are purpose-built.",
-    pickSlugs: ["notion", "evernote", "apple-notes", "logos"],
+    lead: "Obsidian is powerful if you build the vault yourself. These options ship scripture-linked notes without a custom setup.",
+    pickSlugs: ["notion", "evernote", "apple-notes", "logos", "spirit-notes"],
     whenToChoose: [
       {
         heading: "Choose Harvous if…",
@@ -164,15 +169,14 @@ const SEO_PAGES: CompareSeoPage[] = [
     kind: "alternative",
     slug: "bible-note-alternative",
     targetSlug: "bible-note",
-    draft: true,
     guideLabel: "Best Bible Note alternative",
     guideDescription: "Notes-first without sermon transcription",
     seoTitle: "Best Bible Note alternative — Harvous",
     seoDescription:
-      "Looking for a Bible Note alternative? Compare Harvous, Bible Notes, Spirit Notes, Pencil Bible, and Logos — notes-first options without sermon transcription.",
+      "Looking for a Bible Note alternative? Compare Harvous, Church Notes, Bible Notes, Spirit Notes, and Pencil Bible — notes-first options without AI sermon transcription.",
     h1: "Best Bible Note alternative",
-    lead: "Bible Note focuses on AI sermon transcription and flashcards. If you want a notes-first Bible study app — write your own reflections, link scripture, and find them later — these alternatives fit a different workflow.",
-    pickSlugs: ["bible-notes", "spirit-notes", "pencil-bible", "logos"],
+    lead: "Bible Note focuses on AI sermon transcription. These alternatives are notes-first — your reflections, linked to Scripture, findable later.",
+    pickSlugs: ["church-notes", "bible-notes", "spirit-notes", "pencil-bible", "moreh"],
     whenToChoose: [
       {
         heading: "Choose Harvous if…",
@@ -228,8 +232,17 @@ function drawbackFor(entry: CompareEntry): string {
   if (entry.competitorType === "Bible Study Suite") {
     return "Heavier and more expensive — built for scholars, not lightweight personal notes";
   }
+  if (entry.competitorType === "AI Guided Bible") {
+    return "AI and reading lead — less focused on threading your own written reflections";
+  }
   if (entry.name === "Bible Note" || entry.name === "Bible Notes") {
     return "Focused on live transcription — less on threading your own written reflections";
+  }
+  if (entry.name === "Church Notes") {
+    return "All-in-one reader + SOAP templates — not a notes-first home beside your Bible app";
+  }
+  if (entry.name === "Digible") {
+    return "Canvas journaling on iPad — not searchable, threaded study notes across devices";
   }
   return "Different primary job than notes-first Bible study";
 }
@@ -267,20 +280,33 @@ export type CompareGuideCard = {
   draft: boolean;
 };
 
-/** Guides for the compare hub — published pages only (drafts hidden until ready). */
-export function getCompareGuidesForHub(): { category: CompareGuideCard[]; alternatives: CompareGuideCard[] } {
-  const visible = SEO_PAGES.filter((page) => !isCompareSeoPageDraft(page));
-  const toCard = (page: CompareSeoPage): CompareGuideCard => ({
+function toGuideCard(page: CompareSeoPage): CompareGuideCard {
+  return {
     slug: page.slug,
     label: page.guideLabel,
     description: page.guideDescription,
-    draft: false,
-  });
-
-  return {
-    category: visible.filter((p) => p.kind === "category").map(toCard),
-    alternatives: visible.filter((p) => p.kind === "alternative").map(toCard),
+    draft: isCompareSeoPageDraft(page),
   };
+}
+
+/** Published guides that relate to a compare entry (by target or shortlist pick). */
+export function getGuidesForCompareSlug(compareSlug: string): CompareGuideCard[] {
+  const guides: CompareGuideCard[] = [];
+
+  for (const page of SEO_PAGES) {
+    if (isCompareSeoPageDraft(page)) continue;
+
+    if (page.kind === "alternative" && page.targetSlug === compareSlug) {
+      guides.push(toGuideCard(page));
+      continue;
+    }
+
+    if (page.kind === "category" && page.pickSlugs.includes(compareSlug)) {
+      guides.push(toGuideCard(page));
+    }
+  }
+
+  return guides;
 }
 
 export function getCompareSeoPageUrl(slug: string): string {

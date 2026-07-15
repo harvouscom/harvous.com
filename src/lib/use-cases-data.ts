@@ -33,6 +33,8 @@ export type UseCase = {
   featuresHeading: string;
   featuresLead: string;
   compareSlugs: string[];
+  /** Other use-case slugs to surface as related links on the detail page. */
+  relatedUseCaseSlugs?: string[];
   /** Slug in src/content/testimonials/ (e.g. "joschua"). */
   testimonialId?: string;
 };
@@ -94,7 +96,7 @@ const useCases: UseCase[] = [
     featuresHeading: "What daily study asks of your notes",
     featuresLead:
       "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
-    compareSlugs: ["youversion", "dwell", "readscripture", "spirit-notes", "abide"],
+    compareSlugs: ["youversion", "dwell", "readscripture", "spirit-notes", "church-notes", "abide"],
     testimonialId: "theo",
   },
   {
@@ -159,7 +161,7 @@ const useCases: UseCase[] = [
     featuresHeading: "What sermon notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
-    compareSlugs: ["bible-note", "bible-notes", "pencil-bible", "spirit-notes", "goodnotes"],
+    compareSlugs: ["bible-note", "bible-notes", "church-notes", "pencil-bible", "spirit-notes", "moreh"],
     testimonialId: "teaella",
   },
   {
