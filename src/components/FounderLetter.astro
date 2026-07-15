@@ -63,10 +63,7 @@ const isFull = variant === "full";
                 the Bible and wants to remember their study.
               </p>
               <p>
-                So I made one. Harvous is the app I've been wanting — a clean,
-                focused place for notes that knows what a Bible reference is, looks
-                up a word when I'm curious, and gets out of the way when I just want
-                to write.
+                So I made one. Harvous is the app I've been wanting.
               </p>
             </>
           ) : (
@@ -80,7 +77,7 @@ const isFull = variant === "full";
           )
         }
       </div>
-      <div class="prose-letter">
+      <div class="prose-letter letter-col letter-col--signoff">
         <p>
           It's named after Proverbs 25:2 — "It is the glory of God to conceal
           a matter; to search out a matter is the glory of kings." Studying
@@ -89,46 +86,32 @@ const isFull = variant === "full";
         </p>
         {
           isFull ? (
-            <>
-              <p>
-                It's on the web today. Mac, iPad, and iPhone apps are coming later.
-                Scripture across 11 translations, a built-in dictionary, highlights
-                that stay linked to passages — and a home for the thoughts that used to disappear.
-              </p>
-              <p>
-                If any of that sounds like what you've been looking for, I'd love
-                for you to try it. And if it isn't there yet — write me
-                at{" "}
-                <a
-                  class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-                  href="mailto:derek@harvous.com"
-                >
-                  derek@harvous.com
-                </a>{" "}
-                and tell me why.
-              </p>
-            </>
+            <p>
+              If any of that sounds like what you've been looking for, I'd love
+              for you to try it. And if it isn't there yet — write me
+              at{" "}
+              <a
+                class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+                href="mailto:derek@harvous.com"
+              >
+                derek@harvous.com
+              </a>{" "}
+              and tell me why.
+            </p>
           ) : (
-            <>
-              <p>
-                Right now it's available on web with Mac, iPad, and iPhone apps coming later. You can add
-                scripture in 11 English translations, see automatic built-in dictionary suggestions, and highlight what
-                stands out to you.
-              </p>
-              <p>
-                If you have any questions, write me at{" "}
-                <a
-                  class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-                  href="mailto:derek@harvous.com"
-                >
-                  derek@harvous.com
-                </a>
-                .
-              </p>
-            </>
+            <p>
+              If you have any questions, write me at{" "}
+              <a
+                class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+                href="mailto:derek@harvous.com"
+              >
+                derek@harvous.com
+              </a>
+              .
+            </p>
           )
         }
-        <div class="mt-6">
+        <div class="letter-signoff">
           <OptimizedImage
             src="/derek-signiture.png"
             alt="Derek's signature"
@@ -149,20 +132,39 @@ const isFull = variant === "full";
               <div class="text-sm italic" style="color: var(--color-ink-faint);">Founder of Harvous</div>
             </div>
           </div>
+          {
+            !isFull && (
+              <p class="mt-8 mb-0">
+                <a
+                  href="/about/"
+                  class="text-sm font-medium underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+                >
+                  More about Harvous →
+                </a>
+              </p>
+            )
+          }
         </div>
-        {
-          !isFull && (
-            <p class="mt-8 mb-0">
-              <a
-                href="/about/"
-                class="text-sm font-medium underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-              >
-                Read the full letter →
-              </a>
-            </p>
-          )
-        }
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  .letter-signoff {
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .letter-col--signoff {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .letter-signoff {
+      margin-top: auto;
+      padding-top: 1.5rem;
+    }
+  }
+</style>

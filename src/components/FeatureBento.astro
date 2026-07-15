@@ -77,6 +77,11 @@ const { eyebrow, title, lead, cards, id } = Astro.props;
     padding-block: clamp(3.5rem, 8vw, 6.5rem);
     overflow-x: hidden;
   }
+  /* Full-bleed top hairline — edge to edge of the section, not content-column inset. */
+  .bento::before {
+    left: 0;
+    right: 0;
+  }
   .bento__head {
     display: flex;
     flex-wrap: wrap;
