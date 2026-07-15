@@ -4,246 +4,300 @@ interface Props {
 }
 
 const { id = "interest" } = Astro.props;
-const submitted = Astro.url.searchParams.get("submitted") === "1";
 ---
 
-<section class="church-interest-form frame-divider" id={id}>
+<section class="church-interest-form frame-divider" id={id} data-church-interest>
   <div class="church-interest-form__inner detail-content" data-reveal>
-    {
-      submitted ? (
-        <div class="church-interest-form__success" role="status">
-          <h2 class="church-interest-form__heading">Thanks — we got your note.</h2>
-          <p class="church-interest-form__lead">
-            Derek will read it and follow up at the email you shared. In the meantime, you can
-            <a href="https://app.harvous.com/sign-up">sign up free</a> and start using Harvous for personal study.
-          </p>
-        </div>
-      ) : (
-        <>
-          <h2 class="church-interest-form__heading">Share your interest</h2>
-          <p class="church-interest-form__lead">
-            Shared Spaces are coming first. Church organization accounts for curriculum are further out.
-            Pick what matters most for your church below.
-          </p>
+    <div class="church-interest-form__success" data-church-interest-success hidden role="status">
+      <h2 class="church-interest-form__heading">Thanks — we got your note.</h2>
+      <p class="church-interest-form__lead">
+        We’ll follow up at the email you shared. In the meantime, you can
+        <a href="https://app.harvous.com/sign-up">sign up free</a> and start using Harvous for personal study.
+      </p>
+    </div>
 
-          <form
-            class="church-interest-form__form"
-            name="church-interest"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-            action="/for/churches/?submitted=1#interest"
+    <div data-church-interest-form-panel>
+      <h2 class="church-interest-form__heading">Share your interest</h2>
+      <p class="church-interest-form__lead">
+        Shared Spaces are coming first. Church organization accounts for curriculum are further out.
+        Pick what matters most for your church below.
+      </p>
+
+      <form
+        class="church-interest-form__form"
+        name="church-interest"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        action="/for/churches/"
+        data-church-interest-form
+      >
+        <input type="hidden" name="form-name" value="church-interest" />
+        <p class="church-interest-form__honeypot" aria-hidden="true">
+          <label>
+            Don’t fill this out if you’re human
+            <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+          </label>
+        </p>
+
+        <div class="church-interest-form__grid">
+          <div class="church-interest-form__field-wrap">
+            <label class="church-interest-form__label" for="church-interest-name">Name</label>
+            <input
+              class="church-interest-form__field"
+              id="church-interest-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+            />
+          </div>
+
+          <div class="church-interest-form__field-wrap">
+            <label class="church-interest-form__label" for="church-interest-email">Email</label>
+            <input
+              class="church-interest-form__field"
+              id="church-interest-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+            />
+          </div>
+
+          <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full">
+            <label class="church-interest-form__label" for="church-interest-churchName">Church name</label>
+            <input
+              class="church-interest-form__field"
+              id="church-interest-churchName"
+              name="churchName"
+              type="text"
+              autocomplete="organization"
+              placeholder="e.g. Grace Community Church"
+              required
+            />
+          </div>
+
+          <div class="church-interest-form__field-wrap">
+            <label class="church-interest-form__label" for="church-interest-churchCity">City</label>
+            <input
+              class="church-interest-form__field"
+              id="church-interest-churchCity"
+              name="churchCity"
+              type="text"
+              autocomplete="address-level2"
+              placeholder="City"
+              required
+            />
+          </div>
+
+          <div class="church-interest-form__field-wrap">
+            <label class="church-interest-form__label" for="church-interest-churchState">State / region</label>
+            <input
+              class="church-interest-form__field"
+              id="church-interest-churchState"
+              name="churchState"
+              type="text"
+              autocomplete="address-level1"
+              placeholder="State or region"
+              required
+            />
+          </div>
+
+          <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full">
+            <label class="church-interest-form__label" for="church-interest-role">Your role</label>
+            <select class="church-interest-form__field" id="church-interest-role" name="role" required>
+              <option value="" disabled selected>Select one</option>
+              <option value="pastor">Pastor</option>
+              <option value="staff">Church staff</option>
+              <option value="group-leader">Group leader</option>
+              <option value="teacher">Teacher</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div
+            class="church-interest-form__field-wrap church-interest-form__field-wrap--full church-interest-form__role-other"
+            id="church-interest-role-other-wrap"
+            data-role-other
+            hidden
           >
-            <input type="hidden" name="form-name" value="church-interest" />
-            <p class="church-interest-form__honeypot" aria-hidden="true">
-              <label>
-                Don’t fill this out if you’re human
-                <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
-              </label>
-            </p>
+            <label class="church-interest-form__label" for="church-interest-roleOther">
+              Please describe your role
+            </label>
+            <input
+              class="church-interest-form__field"
+              id="church-interest-roleOther"
+              name="roleOther"
+              type="text"
+              autocomplete="organization-title"
+              placeholder="e.g. elder, volunteer coordinator"
+            />
+          </div>
 
-            <div class="church-interest-form__grid">
-              <div class="church-interest-form__field-wrap">
-                <label class="church-interest-form__label" for="church-interest-name">Name</label>
-                <input
-                  class="church-interest-form__field"
-                  id="church-interest-name"
-                  name="name"
-                  type="text"
-                  autocomplete="name"
-                  required
-                />
-              </div>
+          <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full">
+            <fieldset class="church-interest-form__fieldset" id="church-interest-interests">
+              <legend class="church-interest-form__label">
+                What are you most interested in?
+              </legend>
+              <p class="church-interest-form__hint" id="church-interest-interests-hint">
+                Select at least one.
+              </p>
+              <ul class="church-interest-form__checklist" role="list">
+                <li>
+                  <label class="church-interest-form__check">
+                    <input type="checkbox" name="interests" value="shared-spaces" />
+                    <span>Shared Spaces for groups and classes</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="church-interest-form__check">
+                    <input type="checkbox" name="interests" value="church-org-curriculum" />
+                    <span>Church org accounts &amp; curriculum</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="church-interest-form__check">
+                    <input type="checkbox" name="interests" value="chms-integrations" />
+                    <span>Integrations (Planning Center &amp; similar)</span>
+                  </label>
+                </li>
+                <li>
+                  <label class="church-interest-form__check">
+                    <input type="checkbox" name="interests" value="early-access" />
+                    <span>Early access when these ship</span>
+                  </label>
+                </li>
+              </ul>
+            </fieldset>
+          </div>
+        </div>
 
-              <div class="church-interest-form__field-wrap">
-                <label class="church-interest-form__label" for="church-interest-email">Email</label>
-                <input
-                  class="church-interest-form__field"
-                  id="church-interest-email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
-                />
-              </div>
+        <p class="church-interest-form__error" data-church-interest-error hidden role="alert"></p>
 
-              <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full">
-                <label class="church-interest-form__label" for="church-interest-churchName">Church name</label>
-                <input
-                  class="church-interest-form__field"
-                  id="church-interest-churchName"
-                  name="churchName"
-                  type="text"
-                  autocomplete="organization"
-                  placeholder="e.g. Grace Community Church"
-                  required
-                />
-              </div>
-
-              <div class="church-interest-form__field-wrap">
-                <label class="church-interest-form__label" for="church-interest-churchCity">City</label>
-                <input
-                  class="church-interest-form__field"
-                  id="church-interest-churchCity"
-                  name="churchCity"
-                  type="text"
-                  autocomplete="address-level2"
-                  placeholder="City"
-                  required
-                />
-              </div>
-
-              <div class="church-interest-form__field-wrap">
-                <label class="church-interest-form__label" for="church-interest-churchState">State / region</label>
-                <input
-                  class="church-interest-form__field"
-                  id="church-interest-churchState"
-                  name="churchState"
-                  type="text"
-                  autocomplete="address-level1"
-                  placeholder="State or region"
-                  required
-                />
-              </div>
-
-              <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full">
-                <label class="church-interest-form__label" for="church-interest-role">Your role</label>
-                <select class="church-interest-form__field" id="church-interest-role" name="role" required>
-                  <option value="" disabled selected>Select one</option>
-                  <option value="pastor">Pastor</option>
-                  <option value="staff">Church staff</option>
-                  <option value="group-leader">Group leader</option>
-                  <option value="teacher">Teacher</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div
-                class="church-interest-form__field-wrap church-interest-form__field-wrap--full church-interest-form__role-other"
-                id="church-interest-role-other-wrap"
-                data-role-other
-                hidden
-              >
-                <label class="church-interest-form__label" for="church-interest-roleOther">
-                  Please describe your role
-                </label>
-                <input
-                  class="church-interest-form__field"
-                  id="church-interest-roleOther"
-                  name="roleOther"
-                  type="text"
-                  autocomplete="organization-title"
-                  placeholder="e.g. elder, volunteer coordinator"
-                />
-              </div>
-
-              <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full">
-                <fieldset class="church-interest-form__fieldset" id="church-interest-interests">
-                  <legend class="church-interest-form__label">
-                    What are you most interested in?
-                  </legend>
-                  <p class="church-interest-form__hint" id="church-interest-interests-hint">
-                    Select at least one.
-                  </p>
-                  <ul class="church-interest-form__checklist" role="list">
-                    <li>
-                      <label class="church-interest-form__check">
-                        <input type="checkbox" name="interests" value="shared-spaces" />
-                        <span>Shared Spaces for groups and classes</span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="church-interest-form__check">
-                        <input type="checkbox" name="interests" value="church-org-curriculum" />
-                        <span>Church org accounts &amp; curriculum</span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="church-interest-form__check">
-                        <input type="checkbox" name="interests" value="chms-integrations" />
-                        <span>Integrations (Planning Center &amp; similar)</span>
-                      </label>
-                    </li>
-                    <li>
-                      <label class="church-interest-form__check">
-                        <input type="checkbox" name="interests" value="early-access" />
-                        <span>Early access when these ship</span>
-                      </label>
-                    </li>
-                  </ul>
-                </fieldset>
-              </div>
-            </div>
-
-            <div class="church-interest-form__actions">
-              <button type="submit" class="btn-accent church-interest-form__submit">
-                Share interest
-              </button>
-            </div>
-          </form>
-        </>
-      )
-    }
+        <div class="church-interest-form__actions">
+          <button type="submit" class="btn-accent church-interest-form__submit" data-church-interest-submit>
+            Share interest
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </section>
 
-{
-  !submitted && (
-    <script is:inline>
-      (function () {
-        var form = document.querySelector(".church-interest-form__form");
-        if (!form || form.dataset.bound === "true") return;
-        form.dataset.bound = "true";
+<script is:inline>
+  (function () {
+    var root = document.querySelector("[data-church-interest]");
+    if (!root || root.dataset.bound === "true") return;
+    root.dataset.bound = "true";
 
-        var fieldset = document.getElementById("church-interest-interests");
-        var hint = document.getElementById("church-interest-interests-hint");
-        var roleSelect = document.getElementById("church-interest-role");
-        var roleOtherWrap = document.getElementById("church-interest-role-other-wrap");
-        var roleOtherInput = document.getElementById("church-interest-roleOther");
+    var form = root.querySelector("[data-church-interest-form]");
+    var formPanel = root.querySelector("[data-church-interest-form-panel]");
+    var success = root.querySelector("[data-church-interest-success]");
+    var errorEl = root.querySelector("[data-church-interest-error]");
+    var submitBtn = root.querySelector("[data-church-interest-submit]");
+    var fieldset = document.getElementById("church-interest-interests");
+    var hint = document.getElementById("church-interest-interests-hint");
+    var roleSelect = document.getElementById("church-interest-role");
+    var roleOtherWrap = document.getElementById("church-interest-role-other-wrap");
+    var roleOtherInput = document.getElementById("church-interest-roleOther");
 
-        function syncRoleOther() {
-          if (!roleSelect || !roleOtherWrap || !roleOtherInput) return;
-          var isOther = roleSelect.value === "other";
-          if (isOther) {
-            roleOtherWrap.removeAttribute("hidden");
-            roleOtherInput.setAttribute("required", "required");
-          } else {
-            roleOtherWrap.setAttribute("hidden", "");
-            roleOtherInput.removeAttribute("required");
-            roleOtherInput.value = "";
-          }
-        }
+    function showSuccess() {
+      if (formPanel) formPanel.hidden = true;
+      if (success) {
+        success.hidden = false;
+        success.focus?.();
+      }
+      try {
+        history.replaceState(null, "", "/for/churches/?submitted=1#interest");
+      } catch (e) {}
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 
-        roleSelect.addEventListener("change", syncRoleOther);
-        syncRoleOther();
+    function syncRoleOther() {
+      if (!roleSelect || !roleOtherWrap || !roleOtherInput) return;
+      var isOther = roleSelect.value === "other";
+      if (isOther) {
+        roleOtherWrap.removeAttribute("hidden");
+        roleOtherInput.setAttribute("required", "required");
+      } else {
+        roleOtherWrap.setAttribute("hidden", "");
+        roleOtherInput.removeAttribute("required");
+        roleOtherInput.value = "";
+      }
+    }
 
+    // Static pages can't read ?submitted=1 at build time — check on the client.
+    if (new URLSearchParams(window.location.search).get("submitted") === "1") {
+      showSuccess();
+      return;
+    }
+
+    if (!form) return;
+
+    roleSelect?.addEventListener("change", syncRoleOther);
+    syncRoleOther();
+
+    fieldset?.addEventListener("change", function () {
+      var checked = form.querySelectorAll('input[name="interests"]:checked');
+      if (checked.length > 0 && fieldset && hint) {
+        fieldset.classList.remove("is-invalid");
+        hint.textContent = "Select at least one.";
+      }
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var checked = form.querySelectorAll('input[name="interests"]:checked');
+      if (checked.length === 0) {
         if (fieldset && hint) {
-          form.addEventListener("submit", function (event) {
-            var checked = form.querySelectorAll('input[name="interests"]:checked');
-            if (checked.length === 0) {
-              event.preventDefault();
-              fieldset.classList.add("is-invalid");
-              hint.textContent = "Select at least one option.";
-              var first = fieldset.querySelector('input[name="interests"]');
-              if (first) first.focus();
-            } else {
-              fieldset.classList.remove("is-invalid");
-              hint.textContent = "Select at least one.";
-            }
-          });
-
-          fieldset.addEventListener("change", function () {
-            var checked = form.querySelectorAll('input[name="interests"]:checked');
-            if (checked.length > 0) {
-              fieldset.classList.remove("is-invalid");
-              hint.textContent = "Select at least one.";
-            }
-          });
+          fieldset.classList.add("is-invalid");
+          hint.textContent = "Select at least one option.";
+          var first = fieldset.querySelector('input[name="interests"]');
+          if (first) first.focus();
         }
-      })();
-    </script>
-  )
-}
+        return;
+      }
+      if (fieldset && hint) {
+        fieldset.classList.remove("is-invalid");
+        hint.textContent = "Select at least one.";
+      }
+
+      if (errorEl) {
+        errorEl.hidden = true;
+        errorEl.textContent = "";
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending…";
+      }
+
+      var body = new URLSearchParams(new FormData(form)).toString();
+
+      fetch("/for/churches/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body,
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("Submit failed");
+          showSuccess();
+        })
+        .catch(function () {
+          if (errorEl) {
+            errorEl.hidden = false;
+            errorEl.textContent = "Something went wrong. Please try again.";
+          }
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Share interest";
+          }
+        });
+    });
+  })();
+</script>
 
 <style>
   .church-interest-form__inner {
@@ -307,7 +361,10 @@ const submitted = Astro.url.searchParams.get("submitted") === "1";
     min-width: 0;
   }
 
-  .church-interest-form__field-wrap[hidden] {
+  .church-interest-form__field-wrap[hidden],
+  .church-interest-form__success[hidden],
+  [data-church-interest-form-panel][hidden],
+  .church-interest-form__error[hidden] {
     display: none !important;
   }
 
@@ -465,6 +522,12 @@ const submitted = Astro.url.searchParams.get("submitted") === "1";
     padding-right: 2.25rem;
   }
 
+  .church-interest-form__error {
+    margin: 1rem 0 0;
+    font-size: 0.875rem;
+    color: #b42318;
+  }
+
   .church-interest-form__actions {
     margin-top: 1.5rem;
     display: flex;
@@ -480,26 +543,12 @@ const submitted = Astro.url.searchParams.get("submitted") === "1";
     border: none;
   }
 
-  .church-interest-form__note {
-    font-size: 0.875rem;
-    color: var(--color-ink-soft);
-  }
-
-  .church-interest-form__note a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .church-interest-form__submit:disabled {
+    opacity: 0.7;
+    cursor: wait;
   }
 
   .church-interest-form__success {
     text-align: left;
   }
 </style>
-
-{
-  submitted && (
-    <script is:inline>
-      document.getElementById("interest")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    </script>
-  )
-}
