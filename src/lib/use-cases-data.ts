@@ -28,6 +28,7 @@ export type UseCase = {
   heroLead: string;
   sections: UseCaseSection[];
   moments: UseCaseMoment[];
+  /** Feature MDX ids, or coming-soon-grid ids (e.g. shared-spaces). */
   featureIds: string[];
   /** Detail page: related-tools section (no "features" label). */
   featuresHeading: string;
@@ -215,7 +216,7 @@ const useCases: UseCase[] = [
         body: "Easton's Bible Dictionary is right there. You won't have to leave the note to look up a word — the definition comes to you.",
       },
     ],
-    featureIds: ["scripture-pills", "dictionary", "sidebar-modes", "highlights"],
+    featureIds: ["scripture-pills", "dictionary", "threads", "highlights"],
     featuresHeading: "What book study asks of your notes",
     featuresLead:
       "Chapter by chapter, cross-reference by cross-reference — the Harvous pieces that help one book compound instead of scatter.",
@@ -272,7 +273,7 @@ const useCases: UseCase[] = [
         body: 'You wrote about "unmerited favor" at some point. Even if you didn\'t tag it that way, searching for it finds it. Your words, your language — Harvous doesn\'t require you to organize perfectly.',
       },
     ],
-    featureIds: ["scripture-pills", "sidebar-modes", "highlights", "dictionary"],
+    featureIds: ["scripture-pills", "threads", "highlights", "dictionary"],
     featuresHeading: "What topical study needs to hold a thread",
     featuresLead:
       "Notes from everywhere, organized by what they're about — the pieces that let a theme run across the whole Bible.",
@@ -391,10 +392,10 @@ const useCases: UseCase[] = [
         body: "Your own notes on the passage — the prep, the things you wanted to say, the questions you almost asked — stay in your personal space. The group only sees what you add to the shared one.",
       },
     ],
-    featureIds: ["sharing", "sidebar-modes", "scripture-pills", "highlights"],
+    featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
     featuresHeading: "What group study will need from Harvous",
     featuresLead:
-      "Shared spaces are on the way — until then, these are the personal-study pieces leaders reach for when prepping and following up.",
+      "Shared Spaces are on the way — until then, threads, scripture pills, and highlights are the personal-study pieces leaders reach for when prepping and following up.",
     compareSlugs: ["pray-com", "youversion", "notion"],
     testimonialId: "joschua",
   },

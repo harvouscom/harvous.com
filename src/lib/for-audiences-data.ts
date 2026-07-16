@@ -332,7 +332,7 @@ const audiences: ForAudience[] = [
         body: "Soon your group can add to the same threads. You're building on personal study habits that already work.",
       },
     ],
-    featureIds: ["scripture-pills", "sidebar-modes", "highlights", "sharing"],
+    featureIds: ["scripture-pills", "threads", "highlights", "sharing"],
     featuresHeading: "What teaching asks of your notes",
     featuresLead:
       "Series threads, scripture nearby, and private prep — plus sharing when your group is ready for it.",
@@ -392,7 +392,7 @@ const audiences: ForAudience[] = [
         body: "Look up a word without leaving the note. The definition comes to you.",
       },
     ],
-    featureIds: ["scripture-pills", "dictionary", "sidebar-modes", "highlights"],
+    featureIds: ["scripture-pills", "dictionary", "threads", "highlights"],
     featuresHeading: "What book study asks of your notes",
     featuresLead:
       "Chapter by chapter, reference by reference — the pieces that help one book compound instead of scatter.",
@@ -508,7 +508,7 @@ const audiences: ForAudience[] = [
         body: "Half-remember a phrase from months ago. Search finds it without a perfect filing system.",
       },
     ],
-    featureIds: ["scripture-pills", "sidebar-modes", "highlights", "dictionary"],
+    featureIds: ["scripture-pills", "threads", "highlights", "dictionary"],
     featuresHeading: "What a theme needs to stay together",
     featuresLead:
       "Notes from everywhere, organized by what they're about — so a thread can run across the whole Bible.",
@@ -580,7 +580,7 @@ const audiences: ForAudience[] = [
         body: "Believers study, pastors teach, churches organize — Harvous helps the memory and the materials, not the ministry itself.",
       },
     ],
-    featureIds: ["sharing", "threads", "scripture-pills", "highlights"],
+    featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
     featuresHeading: "What church study builds on today",
     featuresLead:
       "Personal Harvous already supports prep and teaching. Shared Spaces and church org features build on the same notes, threads, and scripture tools.",
@@ -640,10 +640,10 @@ const audiences: ForAudience[] = [
         body: "The notes you need to lead stay in your space. Share into the group thread when you're ready.",
       },
     ],
-    featureIds: ["sharing", "sidebar-modes", "scripture-pills", "highlights"],
+    featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
     featuresHeading: "What group leadership will need from Harvous",
     featuresLead:
-      "Shared spaces are on the way — until then, these are the personal-study pieces leaders use for prep and follow-up.",
+      "Shared Spaces are on the way — until then, threads, scripture pills, and highlights are the personal-study pieces leaders use for prep and follow-up.",
     compareSlugs: ["pray-com", "youversion", "notion"],
     useCaseSlugs: ["small-group"],
     testimonialId: "joschua",

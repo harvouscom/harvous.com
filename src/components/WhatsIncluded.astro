@@ -10,6 +10,7 @@ import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
 import { hasDetailContent } from "../lib/product-page-data.ts";
+import { COMING_SOON_GRID_ITEMS } from "../lib/coming-soon-grid.ts";
 
 const items = [
   // Core writing / organizing
@@ -91,29 +92,7 @@ function featureHref(slug?: string) {
   return slug && publishedFeatureSlugs.has(slug) ? `/features/${slug}/` : undefined;
 }
 
-const comingSoon = [
-  {
-    icon: "fa6-solid:user-group",
-    title: "Shared spaces",
-    desc: "An optional paid add-on will add shared spaces your whole group can study in.",
-    href: "/add-ons/shared-spaces/",
-  },
-  {
-    icon: "fa6-solid:puzzle-piece",
-    title: "Connector",
-    desc: "An optional paid add-on will let you reference your study in Claude and ChatGPT.",
-  },
-  {
-    icons: ["fa6-solid:clock-rotate-left", "fa6-solid:trophy"] as const,
-    title: "Review & Challenges",
-    desc: "Optional paid add-ons for spaced review from your notes and themed study seasons.",
-  },
-  {
-    icon: "fa6-solid:mobile-screen",
-    title: "Mac, iPad & iPhone",
-    desc: "Native apps for Apple platforms. Harvous is on the web today.",
-  },
-] as const;
+const comingSoon = COMING_SOON_GRID_ITEMS;
 ---
 
 <section class="included frame-divider" id="included">

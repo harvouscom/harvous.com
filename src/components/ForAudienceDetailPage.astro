@@ -13,6 +13,8 @@ import {
   type ForAudience,
 } from "../lib/for-audiences-data.ts";
 import { getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
+import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
+import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import { buildSignupUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
@@ -28,9 +30,14 @@ const showChurchBridge =
   audience.slug === "teachers" || audience.slug === "group-leaders";
 
 const allFeatures = await getCollection("features");
-const relatedFeatures = audience.featureIds
-  .map((id) => allFeatures.find((f) => f.id === id))
-  .filter((f): f is NonNullable<typeof f> => f !== undefined);
+const relatedFeatureCards: RelatedFeatureCard[] = audience.featureIds
+  .map((id) => {
+    const soon = getComingSoonGridItem(id);
+    if (soon) return { kind: "comingSoon" as const, item: soon };
+    const feature = allFeatures.find((f) => f.id === id);
+    return feature ? { kind: "feature" as const, feature } : undefined;
+  })
+  .filter((c): c is RelatedFeatureCard => c !== undefined);
 
 const relatedCompare = audience.compareSlugs
   .map((slug) => getCompareBySlug(slug))
@@ -196,7 +203,7 @@ const jsonLd = {
     <UseCaseRelatedFeatures
       featuresHeading={audience.featuresHeading}
       featuresLead={audience.featuresLead}
-      features={relatedFeatures}
+      cards={relatedFeatureCards}
     />
 
     {

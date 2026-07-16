@@ -1,20 +1,23 @@
 ---
 /**
  * Use-case feature list — same content as featureIds → MDX, styled like WhatsIncluded grid.
+ * featureIds may also reference coming-soon-grid ids (e.g. shared-spaces), rendered inline
+ * with a Coming soon chip.
  */
-import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
 import { FEATURE_ICONS } from "../lib/feature-icons.ts";
 import { hasDetailContent } from "../lib/product-page-data.ts";
+import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
+
 interface Props {
   featuresHeading: string;
   featuresLead: string;
-  features: CollectionEntry<"features">[];
+  cards: RelatedFeatureCard[];
 }
 
-const { featuresHeading, featuresLead, features } = Astro.props;
+const { featuresHeading, featuresLead, cards } = Astro.props;
 
 const allFeatures = await getCollection("features");
 const publishedSlugs = new Set(
@@ -23,7 +26,7 @@ const publishedSlugs = new Set(
 ---
 
 {
-  features.length > 0 && (
+  cards.length > 0 && (
     <section class="use-case-features frame-divider">
       <Container size="xl">
         <div class="use-case-features__head section-head" data-reveal>
@@ -33,7 +36,34 @@ const publishedSlugs = new Set(
         </div>
 
         <ul class="use-case-features__grid" data-reveal="stagger" style="--reveal-delay: 100ms;" role="list">
-          {features.map((f) => {
+          {cards.map((card) => {
+            if (card.kind === "comingSoon") {
+              const { item } = card;
+              const Tag = item.href ? "a" : "div";
+              return (
+                <li>
+                  <Tag
+                    class:list={[
+                      "use-case-features__card",
+                      item.href && "use-case-features__card--link",
+                    ]}
+                    href={item.href}
+                  >
+                    <span class="use-case-features__icon">
+                      <Icon name={item.icon ?? item.icons?.[0] ?? "fa6-solid:note-sticky"} />
+                    </span>
+                    <span class="use-case-features__title use-case-features__title--with-chip">
+                      <span>{item.title}</span>
+                      <span class="use-case-features__soon-chip">Coming soon</span>
+                    </span>
+                    <p class="use-case-features__desc">{item.desc}</p>
+                    {item.href && <span class="use-case-features__more">Learn more →</span>}
+                  </Tag>
+                </li>
+              );
+            }
+
+            const f = card.feature;
             const href = publishedSlugs.has(f.id) ? `/features/${f.id}/` : undefined;
             const Tag = href ? "a" : "div";
             return (
@@ -105,6 +135,20 @@ const publishedSlugs = new Set(
   .use-case-features__card--link:hover .use-case-features__title {
     color: var(--color-accent);
   }
+  .use-case-features__soon-chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.16rem 0.42rem;
+    border-radius: 999px;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    background: color-mix(in oklab, var(--color-card) 88%, transparent);
+    border: 1px solid var(--color-rule);
+  }
   .use-case-features__icon {
     display: inline-flex;
     align-items: center;
@@ -126,6 +170,12 @@ const publishedSlugs = new Set(
     font-size: 0.98rem;
     color: var(--color-ink);
     transition: color 200ms ease;
+  }
+  .use-case-features__title--with-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
   }
   .use-case-features__desc {
     margin-top: 0.3rem;

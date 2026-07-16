@@ -8,6 +8,8 @@ import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { UseCase } from "../lib/use-cases-data.ts";
 import { getUseCaseBySlug, getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
+import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
+import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
 import { getAudiencesForUseCase } from "../lib/for-audiences-data.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import { buildSignupUrl } from "../lib/signup-url.ts";
@@ -21,9 +23,14 @@ interface Props {
 const { useCase } = Astro.props;
 
 const allFeatures = await getCollection("features");
-const relatedFeatures = useCase.featureIds
-  .map((id) => allFeatures.find((f) => f.id === id))
-  .filter((f): f is NonNullable<typeof f> => f !== undefined);
+const relatedFeatureCards: RelatedFeatureCard[] = useCase.featureIds
+  .map((id) => {
+    const soon = getComingSoonGridItem(id);
+    if (soon) return { kind: "comingSoon" as const, item: soon };
+    const feature = allFeatures.find((f) => f.id === id);
+    return feature ? { kind: "feature" as const, feature } : undefined;
+  })
+  .filter((c): c is RelatedFeatureCard => c !== undefined);
 
 const relatedCompare = useCase.compareSlugs
   .map((slug) => getCompareBySlug(slug))
@@ -209,7 +216,7 @@ const jsonLd = {
     <UseCaseRelatedFeatures
       featuresHeading={useCase.featuresHeading}
       featuresLead={useCase.featuresLead}
-      features={relatedFeatures}
+      cards={relatedFeatureCards}
     />
 
     {
