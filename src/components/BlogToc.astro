@@ -1,0 +1,387 @@
+---
+/**
+ * Bright Enough TOC — expanded “What’s covered” panel at rest;
+ * sticky select dropdown while scrolling (same pin idea as HubSectionNav).
+ *
+ * When pinned, the float is moved to document.body so parent transforms /
+ * will-change can’t break position:fixed (esp. mobile).
+ *
+ * Page should mark the reading track with [data-blog-toc-main].
+ */
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+  maxDepth?: number;
+}
+
+const { headings, maxDepth = 2 } = Astro.props;
+const items = headings.filter((h) => h.depth >= 2 && h.depth <= maxDepth);
+const defaultId = items[0]?.slug ?? "";
+---
+
+{
+  items.length >= 2 && (
+    <div class="blog-toc__slot" data-blog-toc-slot>
+      <div class="blog-toc__float" data-blog-toc-float>
+        <nav class="blog-toc__panel" aria-labelledby="blog-toc-title">
+          <div class="blog-toc__head">
+            <span id="blog-toc-title" class="blog-toc__eyebrow">
+              What's covered
+            </span>
+            <span class="blog-toc__count">{items.length} sections</span>
+          </div>
+          <ol class="blog-toc__list">
+            {items.map((h, i) => (
+              <li class="blog-toc__item">
+                <a
+                  class="blog-toc__link"
+                  href={`#${h.slug}`}
+                  data-blog-toc-section={h.slug}
+                >
+                  <span class="blog-toc__num" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span class="blog-toc__text">{h.text}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <div class="blog-toc__select-wrap">
+          <label class="blog-toc__select-label" for="blog-toc-select">
+            What's covered
+          </label>
+          <select
+            id="blog-toc-select"
+            class="blog-toc__select"
+            data-blog-toc-select
+          >
+            {items.map((h) => (
+              <option value={h.slug} selected={h.slug === defaultId}>
+                {h.text}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  .blog-toc__slot {
+    margin-top: 1.75rem;
+  }
+
+  .blog-toc__float {
+    position: relative;
+    z-index: 34;
+    width: 100%;
+    border: 1px solid var(--color-rule);
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--color-warm) 45%, white);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  .blog-toc__float.is-fixed {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(22rem, calc(100% - 2 * var(--frame-content-pad, 1.25rem)));
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--color-card) 94%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.06),
+      0 10px 28px -10px rgba(15, 23, 42, 0.16);
+    z-index: 40;
+  }
+
+  .blog-toc__panel {
+    padding: 0.9rem 1rem 1rem;
+  }
+
+  .blog-toc__select-wrap {
+    display: none;
+    position: relative;
+    width: 100%;
+    padding: 0.2rem;
+  }
+
+  .blog-toc__float.is-fixed .blog-toc__panel {
+    display: none;
+  }
+
+  .blog-toc__float.is-fixed .blog-toc__select-wrap {
+    display: block;
+  }
+
+  .blog-toc__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .blog-toc__eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .blog-toc__count {
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+  }
+
+  .blog-toc__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  @media (min-width: 640px) {
+    .blog-toc__list {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 0.75rem;
+    }
+  }
+
+  .blog-toc__item {
+    margin: 0;
+  }
+
+  .blog-toc__link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    padding: 0.4rem 0.45rem;
+    border-radius: 0.55rem;
+    text-decoration: none;
+    color: var(--color-ink);
+    transition: background-color 140ms ease, color 140ms ease;
+  }
+
+  .blog-toc__link:hover,
+  .blog-toc__link.is-active {
+    background: color-mix(in oklab, var(--color-card) 80%, transparent);
+    color: var(--color-accent);
+  }
+
+  .blog-toc__num {
+    flex: none;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    opacity: 0.85;
+  }
+
+  .blog-toc__text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.35;
+    text-wrap: pretty;
+  }
+
+  .blog-toc__select-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .blog-toc__select {
+    width: 100%;
+    appearance: none;
+    padding: 0.55rem 2.25rem 0.55rem 1rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23585c66' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      no-repeat right 0.85rem center;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  .blog-toc__select:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-toc__float {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const navSlot = document.querySelector<HTMLElement>("[data-blog-toc-slot]");
+  const navFloat = document.querySelector<HTMLElement>("[data-blog-toc-float]");
+  const trackMain = document.querySelector<HTMLElement>("[data-blog-toc-main]");
+  const header = document.getElementById("site-header");
+
+  if (navSlot && navFloat) {
+    const links = navFloat.querySelectorAll<HTMLAnchorElement>("[data-blog-toc-section]");
+    const select = navFloat.querySelector<HTMLSelectElement>("[data-blog-toc-select]");
+    const PIN_GAP = 10;
+    let restHeight = 0;
+    let pinnedToBody = false;
+
+    const sections = [...links]
+      .map((link) => {
+        const id = link.dataset.blogTocSection;
+        const el = id ? document.getElementById(id) : null;
+        return el && id ? { id, el } : null;
+      })
+      .filter((entry): entry is { id: string; el: HTMLElement } => entry !== null);
+
+    const pinTop = () => (header?.getBoundingClientRect().bottom ?? 0) + PIN_GAP;
+
+    const mountPinned = () => {
+      if (pinnedToBody) return;
+      document.body.appendChild(navFloat);
+      pinnedToBody = true;
+    };
+
+    const unmountPinned = () => {
+      if (!pinnedToBody) return;
+      navSlot.appendChild(navFloat);
+      pinnedToBody = false;
+    };
+
+    const syncPin = () => {
+      if (!navFloat.classList.contains("is-fixed")) {
+        restHeight = navFloat.offsetHeight;
+      }
+
+      const top = pinTop();
+      const slotTop = navSlot.getBoundingClientRect().top;
+      const mainBottom = trackMain?.getBoundingClientRect().bottom ?? Infinity;
+      const wantsPin = slotTop <= top;
+      const shouldPin = wantsPin && mainBottom > top + 72;
+
+      if (shouldPin) {
+        mountPinned();
+        navFloat.classList.add("is-fixed");
+        navFloat.style.top = `${top}px`;
+        navSlot.style.minHeight = `${restHeight || 48}px`;
+      } else {
+        navFloat.classList.remove("is-fixed");
+        navFloat.style.top = "";
+        navSlot.style.minHeight = "";
+        unmountPinned();
+      }
+    };
+
+    const setActive = (id: string | null) => {
+      links.forEach((link) => {
+        const active = Boolean(id) && link.dataset.blogTocSection === id;
+        link.classList.toggle("is-active", active);
+        if (active) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      });
+      if (select && id && select.value !== id) {
+        select.value = id;
+      }
+    };
+
+    const scrollToSection = (id: string) => {
+      const target = document.getElementById(id);
+      if (!target) return;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const navHeight = navFloat.classList.contains("is-fixed") ? navFloat.offsetHeight : 0;
+      const offset = pinTop() + navHeight + 8;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+      history.replaceState(null, "", `#${id}`);
+      setActive(id);
+    };
+
+    const updateActive = () => {
+      syncPin();
+      if (sections.length === 0) return;
+
+      // Reading line: just below sticky chrome (or the pinned select when fixed).
+      const marker = navFloat.classList.contains("is-fixed")
+        ? navFloat.getBoundingClientRect().bottom + 12
+        : pinTop() + 12;
+
+      // No default to the first item — stay inactive until a heading has
+      // actually crossed the marker (avoids a permanent “01” highlight at rest).
+      let current: string | null = null;
+
+      for (const section of sections) {
+        if (section.el.getBoundingClientRect().top <= marker) {
+          current = section.id;
+        }
+      }
+
+      const scrollRoot = document.documentElement;
+      const atBottom =
+        scrollRoot.scrollHeight - scrollRoot.scrollTop - window.innerHeight < 2;
+      if (atBottom) {
+        current = sections[sections.length - 1]!.id;
+      }
+
+      setActive(current);
+    };
+
+    syncPin();
+
+    select?.addEventListener("change", () => {
+      if (select.value) scrollToSection(select.value);
+    });
+
+    links.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const id = link.dataset.blogTocSection;
+        if (!id) return;
+        event.preventDefault();
+        scrollToSection(id);
+      });
+    });
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateActive();
+        ticking = false;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateActive, { passive: true });
+
+    const hashId = decodeURIComponent(window.location.hash.replace(/^#/, ""));
+    if (hashId && sections.some((s) => s.id === hashId)) {
+      setActive(hashId);
+    } else {
+      setActive(null);
+    }
+    updateActive();
+  }
+</script>

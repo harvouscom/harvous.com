@@ -75,9 +75,34 @@ const blog = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    /** Optional overrides for <title> / og:title (defaults to “{title} — Bright Enough”). */
+    seoTitle: z.string().optional(),
+    /** Optional override for meta / og description (defaults to description). */
+    seoDescription: z.string().optional(),
     publishDate: z.coerce.date(),
-    category: z.enum(["study-habits", "behind-the-build", "scripture-study", "product"]),
+    category: z.enum([
+      "study-habits",
+      "how-we-think",
+      "scripture-study",
+      "using-harvous",
+      "teaching",
+      "retention",
+      "equipping",
+    ]),
     readingTime: z.number().optional(),
+    /**
+     * Author registry id (`bright-enough`, `derek`, or a guest/team id).
+     * Defaults: how-we-think + using-harvous → derek; otherwise Bright Enough.
+     */
+    authorId: z.string().optional(),
+    /** Extra /for/ audience slugs beyond category affinity (or sole homes for how-we-think). */
+    forSlugs: z.array(z.string()).optional(),
+    /** Extra use-case slugs beyond category affinity. */
+    useCaseSlugs: z.array(z.string()).optional(),
+    /** Override the category default feature set on the post closing bridge. */
+    featureIds: z.array(z.string()).optional(),
+    /** Keep this post out of product-page “From Bright Enough” strips. */
+    hideFromRelated: z.boolean().optional(),
     draft: z.boolean().default(false),
   }),
 });

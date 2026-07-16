@@ -1,0 +1,546 @@
+{
+  "generatedAt": "2026-07-16T17:53:54.801Z",
+  "version": "shader-v14",
+  "pool": "public/images/auth-hero only",
+  "policy": "category tone packs + light/dark mood; content-shaped forms",
+  "sourceBrightness": [
+    {
+      "name": "ai_bg_053.webp",
+      "mean": 234
+    },
+    {
+      "name": "ai_bg_051.webp",
+      "mean": 229
+    },
+    {
+      "name": "ai_bg_045.webp",
+      "mean": 211
+    },
+    {
+      "name": "ai_bg_072.webp",
+      "mean": 199
+    },
+    {
+      "name": "ai_bg_050.webp",
+      "mean": 199
+    },
+    {
+      "name": "ai_bg_058.webp",
+      "mean": 187
+    },
+    {
+      "name": "ai_bg_044.webp",
+      "mean": 184
+    },
+    {
+      "name": "ai_bg_047.webp",
+      "mean": 182
+    },
+    {
+      "name": "ai_bg_061.webp",
+      "mean": 160
+    },
+    {
+      "name": "ai_bg_059.webp",
+      "mean": 157
+    },
+    {
+      "name": "ai_bg_073.webp",
+      "mean": 145
+    },
+    {
+      "name": "ai_bg_046.webp",
+      "mean": 128
+    },
+    {
+      "name": "ai_bg_060.webp",
+      "mean": 118
+    },
+    {
+      "name": "ai_bg_074.webp",
+      "mean": 98
+    },
+    {
+      "name": "ai_bg_052.webp",
+      "mean": 78
+    }
+  ],
+  "categoryPacks": {
+    "how-we-think": [
+      "ai_bg_053.webp",
+      "ai_bg_051.webp",
+      "ai_bg_058.webp",
+      "ai_bg_044.webp",
+      "ai_bg_045.webp"
+    ],
+    "teaching": [
+      "ai_bg_053.webp",
+      "ai_bg_051.webp",
+      "ai_bg_058.webp",
+      "ai_bg_044.webp",
+      "ai_bg_045.webp"
+    ],
+    "retention": [
+      "ai_bg_052.webp",
+      "ai_bg_058.webp",
+      "ai_bg_046.webp",
+      "ai_bg_074.webp",
+      "ai_bg_060.webp",
+      "ai_bg_061.webp"
+    ],
+    "equipping": [
+      "ai_bg_045.webp",
+      "ai_bg_047.webp",
+      "ai_bg_059.webp",
+      "ai_bg_072.webp",
+      "ai_bg_050.webp",
+      "ai_bg_073.webp"
+    ],
+    "study-habits": [
+      "ai_bg_058.webp",
+      "ai_bg_052.webp",
+      "ai_bg_044.webp",
+      "ai_bg_053.webp",
+      "ai_bg_061.webp"
+    ],
+    "using-harvous": [
+      "ai_bg_053.webp",
+      "ai_bg_051.webp",
+      "ai_bg_045.webp",
+      "ai_bg_072.webp",
+      "ai_bg_050.webp"
+    ],
+    "scripture-study": [
+      "ai_bg_053.webp",
+      "ai_bg_051.webp",
+      "ai_bg_058.webp",
+      "ai_bg_044.webp",
+      "ai_bg_045.webp"
+    ]
+  },
+  "posts": {
+    "asking-better-questions-in-class-and-group": {
+      "category": "teaching",
+      "mood": "light",
+      "shape": "wedge",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#5a3a8e",
+        "b": "#d4c2f8",
+        "c": "#f0eaf8"
+      },
+      "spot": "/blog-thumbs/asking-better-questions-in-class-and-group-spot.webp",
+      "feat": "/blog-thumbs/asking-better-questions-in-class-and-group-feat.webp",
+      "skipped": false
+    },
+    "handoff-without-amnesia": {
+      "category": "equipping",
+      "mood": "light",
+      "shape": "arc",
+      "source": "ai_bg_072.webp",
+      "sourceMean": 199,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#a84528",
+        "b": "#fbc8ad",
+        "c": "#dec5ed"
+      },
+      "spot": "/blog-thumbs/handoff-without-amnesia-spot.webp",
+      "feat": "/blog-thumbs/handoff-without-amnesia-feat.webp",
+      "skipped": false
+    },
+    "highlights-you-can-find": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "bars",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3a4a6e",
+        "b": "#c2dcf8",
+        "c": "#e8e9ed"
+      },
+      "spot": "/blog-thumbs/highlights-you-can-find-spot.webp",
+      "feat": "/blog-thumbs/highlights-you-can-find-feat.webp",
+      "skipped": false
+    },
+    "notes-first-vs-ai-that-studies-for-you": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "slash",
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#2a5a9e",
+        "b": "#c2dcf8",
+        "c": "#ffffff"
+      },
+      "spot": "/blog-thumbs/notes-first-vs-ai-that-studies-for-you-spot.webp",
+      "feat": "/blog-thumbs/notes-first-vs-ai-that-studies-for-you-feat.webp",
+      "skipped": false
+    },
+    "one-place-for-the-trail": {
+      "category": "study-habits",
+      "mood": "light",
+      "shape": "streak",
+      "source": "ai_bg_061.webp",
+      "sourceMean": 160,
+      "pack": [
+        "ai_bg_058.webp",
+        "ai_bg_052.webp",
+        "ai_bg_044.webp",
+        "ai_bg_053.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#3d6b38",
+        "b": "#c9e3b8",
+        "c": "#f6ecd6"
+      },
+      "spot": "/blog-thumbs/one-place-for-the-trail-spot.webp",
+      "feat": "/blog-thumbs/one-place-for-the-trail-feat.webp",
+      "skipped": false
+    },
+    "prep-a-lesson-that-leaves-a-trail": {
+      "category": "teaching",
+      "mood": "light",
+      "shape": "streak",
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#5a3a8e",
+        "b": "#d4c2f8",
+        "c": "#f0eaf8"
+      },
+      "spot": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-spot.webp",
+      "feat": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-feat.webp",
+      "skipped": false
+    },
+    "sermon-series-to-small-group-follow-up": {
+      "category": "teaching",
+      "mood": "light",
+      "shape": "plume",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#5a3a8e",
+        "b": "#d4c2f8",
+        "c": "#f0eaf8"
+      },
+      "spot": "/blog-thumbs/sermon-series-to-small-group-follow-up-spot.webp",
+      "feat": "/blog-thumbs/sermon-series-to-small-group-follow-up-feat.webp",
+      "skipped": false
+    },
+    "start-with-scripture-pills": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "rings",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3a4a6e",
+        "b": "#c2dcf8",
+        "c": "#e8e9ed"
+      },
+      "spot": "/blog-thumbs/start-with-scripture-pills-spot.webp",
+      "feat": "/blog-thumbs/start-with-scripture-pills-feat.webp",
+      "skipped": false
+    },
+    "start-with-threads": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "streak",
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3a4a6e",
+        "b": "#c2dcf8",
+        "c": "#e8e9ed"
+      },
+      "spot": "/blog-thumbs/start-with-threads-spot.webp",
+      "feat": "/blog-thumbs/start-with-threads-feat.webp",
+      "skipped": false
+    },
+    "teaching-through-a-book": {
+      "category": "teaching",
+      "mood": "light",
+      "shape": "arc",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#5a3a8e",
+        "b": "#d4c2f8",
+        "c": "#f0eaf8"
+      },
+      "spot": "/blog-thumbs/teaching-through-a-book-spot.webp",
+      "feat": "/blog-thumbs/teaching-through-a-book-feat.webp",
+      "skipped": false
+    },
+    "the-five-minute-capture": {
+      "category": "study-habits",
+      "mood": "light",
+      "shape": "bars",
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
+      "pack": [
+        "ai_bg_058.webp",
+        "ai_bg_052.webp",
+        "ai_bg_044.webp",
+        "ai_bg_053.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#3d6b38",
+        "b": "#c9e3b8",
+        "c": "#f6ecd6"
+      },
+      "spot": "/blog-thumbs/the-five-minute-capture-spot.webp",
+      "feat": "/blog-thumbs/the-five-minute-capture-feat.webp",
+      "skipped": false
+    },
+    "the-lesson-prep-stack": {
+      "category": "teaching",
+      "mood": "light",
+      "shape": "corner",
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#5a3a8e",
+        "b": "#d4c2f8",
+        "c": "#f0eaf8"
+      },
+      "spot": "/blog-thumbs/the-lesson-prep-stack-spot.webp",
+      "feat": "/blog-thumbs/the-lesson-prep-stack-feat.webp",
+      "skipped": false
+    },
+    "the-monday-retention-loop": {
+      "category": "retention",
+      "mood": "dark",
+      "shape": "rings",
+      "source": "ai_bg_046.webp",
+      "sourceMean": 128,
+      "pack": [
+        "ai_bg_052.webp",
+        "ai_bg_058.webp",
+        "ai_bg_046.webp",
+        "ai_bg_074.webp",
+        "ai_bg_060.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#3d6b38",
+        "b": "#c9e3b8",
+        "c": "#c2dcf8"
+      },
+      "spot": "/blog-thumbs/the-monday-retention-loop-spot.webp",
+      "feat": "/blog-thumbs/the-monday-retention-loop-feat.webp",
+      "skipped": false
+    },
+    "tools-help-humans-teach": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "wedge",
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#2a5a9e",
+        "b": "#c2dcf8",
+        "c": "#ffffff"
+      },
+      "spot": "/blog-thumbs/tools-help-humans-teach-spot.webp",
+      "feat": "/blog-thumbs/tools-help-humans-teach-feat.webp",
+      "skipped": false
+    },
+    "what-church-education-systems-need": {
+      "category": "equipping",
+      "mood": "light",
+      "shape": "split",
+      "source": "ai_bg_047.webp",
+      "sourceMean": 182,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#a84528",
+        "b": "#fbc8ad",
+        "c": "#dec5ed"
+      },
+      "spot": "/blog-thumbs/what-church-education-systems-need-spot.webp",
+      "feat": "/blog-thumbs/what-church-education-systems-need-feat.webp",
+      "skipped": false
+    },
+    "what-proverbs-25-2-taught-me": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "arc",
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#2a5a9e",
+        "b": "#c2dcf8",
+        "c": "#ffffff"
+      },
+      "spot": "/blog-thumbs/what-proverbs-25-2-taught-me-spot.webp",
+      "feat": "/blog-thumbs/what-proverbs-25-2-taught-me-feat.webp",
+      "skipped": false
+    },
+    "when-pdfs-arent-a-trail": {
+      "category": "equipping",
+      "mood": "light",
+      "shape": "split",
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#a84528",
+        "b": "#fbc8ad",
+        "c": "#dec5ed"
+      },
+      "spot": "/blog-thumbs/when-pdfs-arent-a-trail-spot.webp",
+      "feat": "/blog-thumbs/when-pdfs-arent-a-trail-feat.webp",
+      "skipped": false
+    },
+    "why-bible-study-thoughts-disappear": {
+      "category": "study-habits",
+      "mood": "dark",
+      "shape": "plume",
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
+      "pack": [
+        "ai_bg_058.webp",
+        "ai_bg_052.webp",
+        "ai_bg_044.webp",
+        "ai_bg_053.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#3d6b38",
+        "b": "#c9e3b8",
+        "c": "#f6ecd6"
+      },
+      "spot": "/blog-thumbs/why-bible-study-thoughts-disappear-spot.webp",
+      "feat": "/blog-thumbs/why-bible-study-thoughts-disappear-feat.webp",
+      "skipped": false
+    },
+    "why-church-education-evaporates-by-monday": {
+      "category": "retention",
+      "mood": "dark",
+      "shape": "plume",
+      "source": "ai_bg_074.webp",
+      "sourceMean": 98,
+      "pack": [
+        "ai_bg_052.webp",
+        "ai_bg_058.webp",
+        "ai_bg_046.webp",
+        "ai_bg_074.webp",
+        "ai_bg_060.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#3d6b38",
+        "b": "#c9e3b8",
+        "c": "#c2dcf8"
+      },
+      "spot": "/blog-thumbs/why-church-education-evaporates-by-monday-spot.webp",
+      "feat": "/blog-thumbs/why-church-education-evaporates-by-monday-feat.webp",
+      "skipped": false
+    }
+  }
+}

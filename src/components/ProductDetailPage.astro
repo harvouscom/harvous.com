@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
 import ProductMoments from "./ProductMoments.astro";
 import ProductRelatedStrip from "./ProductRelatedStrip.astro";
+import RelatedBlogPosts from "./RelatedBlogPosts.astro";
 import ComparePreview from "./ComparePreview.astro";
 import ChurchOrgInterestBridge from "./ChurchOrgInterestBridge.astro";
 import { Icon } from "astro-icon/components";
@@ -11,6 +12,11 @@ import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { ProductPage } from "../lib/product-page-data.ts";
 import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
 import { hasDetailContent, isLightFeatureInk } from "../lib/product-page-data.ts";
+import {
+  getRelatedBlogPosts,
+  includeBlogDrafts,
+  isBlogPostListed,
+} from "../lib/blog.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import "../styles/use-cases.css";
@@ -36,6 +42,15 @@ const relatedFeatures =
 const relatedCompare = (page.compareSlugs ?? [])
   .map((slug) => getCompareBySlug(slug))
   .filter((e): e is NonNullable<typeof e> => e !== undefined);
+
+const showDrafts = includeBlogDrafts();
+const relatedBlogPosts =
+  page.kind === "feature"
+    ? getRelatedBlogPosts(
+        (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+        { feature: page.slug },
+      )
+    : [];
 
 const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJsonLd(page);
 const backHref = page.kind === "feature" ? "/#features" : "/pricing/";
@@ -140,6 +155,8 @@ const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
         />
       )
     }
+
+    {page.kind === "feature" && <RelatedBlogPosts posts={relatedBlogPosts} />}
 
     {
       relatedCompare.length > 0 && (

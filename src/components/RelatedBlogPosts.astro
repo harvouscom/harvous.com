@@ -1,0 +1,56 @@
+---
+/**
+ * “From Bright Enough” strip for product pages — curated via category affinity.
+ */
+import type { CollectionEntry } from "astro:content";
+import BlogCard from "./BlogCard.astro";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+  lead?: string;
+}
+
+const {
+  posts,
+  lead = "Notes and practices that pair with this page.",
+} = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="frame-divider" aria-labelledby="related-blog-title">
+      <div class="detail-content py-14 md:py-16">
+        <p class="eyebrow">From Bright Enough</p>
+        <h2
+          id="related-blog-title"
+          class="mt-3 font-display text-2xl leading-snug md:text-3xl"
+        >
+          Keep reading
+        </h2>
+        <p class="mt-3 max-w-2xl text-[var(--color-ink-soft)]">{lead}</p>
+        <div class="mt-8" data-reveal style="--reveal-delay: 40ms;">
+          {posts.map((p) => (
+            <BlogCard
+              title={p.data.title}
+              description={p.data.description}
+              publishDate={p.data.publishDate}
+              category={p.data.category}
+              slug={p.id}
+              readingTime={p.data.readingTime}
+              draft={p.data.draft}
+              variant="story"
+            />
+          ))}
+        </div>
+        <div class="mt-8">
+          <a
+            href="/blog/"
+            class="text-sm font-medium text-[var(--color-accent)] hover:underline"
+          >
+            More in Bright Enough →
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}

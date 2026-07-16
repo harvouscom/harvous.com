@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "images:compress": "bash scripts/compress-images.sh"
+    "images:compress": "bash scripts/compress-images.sh",
+    "blog:thumbs": "node scripts/generate-blog-thumbs.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -24,5 +25,8 @@
     "astro-icon": "^1.1.5",
     "tailwindcss": "^4.1.5",
     "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3"
   }
 }

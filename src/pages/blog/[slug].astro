@@ -1,35 +1,42 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import OptimizedImage from "../../components/OptimizedImage.astro";
+import BlogAuthorClose from "../../components/BlogAuthorClose.astro";
+import BlogTryHarvous from "../../components/BlogTryHarvous.astro";
+import BlogToc from "../../components/BlogToc.astro";
 import { getCollection, render } from "astro:content";
+import { Icon } from "astro-icon/components";
 import BlogCard from "../../components/BlogCard.astro";
+import {
+  blogAuthorJsonLd,
+  blogCategoryColor,
+  blogCategoryIcon,
+  blogCategoryLabel,
+  blogHeadingsFromBody,
+  blogThumbUrl,
+  includeBlogDrafts,
+  isBlogPostListed,
+  resolveBlogAuthor,
+} from "../../lib/blog";
+import "../../styles/use-cases.css";
 
 export async function getStaticPaths() {
+  const showDrafts = includeBlogDrafts();
   const posts = await getCollection("blog");
   return posts
-    .filter((p) => !p.data.draft)
+    .filter((p) => isBlogPostListed(p, showDrafts))
     .map((p) => ({ params: { slug: p.id }, props: { post: p } }));
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const renderedToc = headings.filter((h) => h.depth === 2);
+const tocHeadings =
+  renderedToc.length >= 2 ? renderedToc : blogHeadingsFromBody(post.body ?? "", 2);
 
-const categoryLabels: Record<string, string> = {
-  "study-habits": "Study habits",
-  "behind-the-build": "Behind the build",
-  "scripture-study": "Scripture study",
-  "product": "Product",
-};
-
-const categoryColors: Record<string, { bg: string; ink: string }> = {
-  "study-habits": { bg: "var(--color-mint)", ink: "var(--color-mint-ink)" },
-  "behind-the-build": { bg: "var(--color-sky)", ink: "var(--color-sky-ink)" },
-  "scripture-study": { bg: "var(--color-lilac)", ink: "var(--color-lilac-ink)" },
-  "product": { bg: "var(--color-peach)", ink: "var(--color-peach-ink)" },
-};
-
-const label = categoryLabels[post.data.category] ?? post.data.category;
-const color = categoryColors[post.data.category] ?? { bg: "var(--color-warm)", ink: "var(--color-ink-soft)" };
+const label = blogCategoryLabel(post.data.category);
+const icon = blogCategoryIcon(post.data.category);
+const color = blogCategoryColor(post.data.category);
+const featThumb = blogThumbUrl(post.id, "feat");
 
 const formattedDate = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -37,76 +44,163 @@ const formattedDate = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 }).format(new Date(post.data.publishDate));
 
-// Related posts: same category, excluding current
-const allPosts = await getCollection("blog");
-const related = allPosts
-  .filter((p) => !p.data.draft && p.id !== post.id && p.data.category === post.data.category)
-  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime())
-  .slice(0, 2);
+const showDrafts = includeBlogDrafts();
+const allPosts = (await getCollection("blog"))
+  .filter((p) => isBlogPostListed(p, showDrafts))
+  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
+
+const RELATED_MAX = 2;
+const RELATED_MIN = 2;
+
+const sameCategory = allPosts.filter(
+  (p) => p.id !== post.id && p.data.category === post.data.category,
+);
+let related = sameCategory.slice(0, RELATED_MAX);
+if (related.length < RELATED_MIN) {
+  const taken = new Set([post.id, ...related.map((p) => p.id)]);
+  const fillers = allPosts
+    .filter((p) => !taken.has(p.id))
+    .slice(0, RELATED_MIN - related.length);
+  related = [...related, ...fillers];
+}
+
+const siteOrigin = Astro.site ?? "https://harvous.com";
+const pageUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const pageTitle = post.data.seoTitle ?? `${post.data.title} — Bright Enough`;
+const pageDescription = post.data.seoDescription ?? post.data.description;
+const publishedTime = post.data.publishDate.toISOString();
+const ogImageAbsolute = new URL(featThumb, siteOrigin).toString();
+const author = resolveBlogAuthor(post.data);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: pageDescription,
+  datePublished: publishedTime,
+  image: [ogImageAbsolute],
+  url: pageUrl,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": pageUrl,
+  },
+  author: blogAuthorJsonLd(author, siteOrigin),
+  publisher: {
+    "@type": "Organization",
+    name: "Harvous",
+    url: siteOrigin.toString(),
+    logo: {
+      "@type": "ImageObject",
+      url: new URL("/images/harvous-2-icon.png", siteOrigin).toString(),
+    },
+  },
+  isPartOf: {
+    "@type": "Blog",
+    name: "Bright Enough",
+    url: new URL("/blog/", siteOrigin).toString(),
+  },
+};
 ---
 
 <BaseLayout
-  title={`${post.data.title} — Harvous`}
-  description={post.data.description}
-  robots="noindex, nofollow"
+  title={pageTitle}
+  description={pageDescription}
+  ogImage={featThumb}
+  ogImageWidth={1400}
+  ogImageHeight={780}
+  ogType="article"
+  articlePublishedTime={publishedTime}
+  jsonLd={jsonLd}
 >
-  <!-- Post header -->
-  <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-2xl px-5 py-14 md:py-20" data-reveal>
-      <div class="flex flex-wrap items-center gap-3">
-        <span
-          class="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider"
-          style={`background: ${color.bg}; color: ${color.ink};`}
-        >
-          {label}
-        </span>
-        <span class="text-sm text-[var(--color-ink-faint)]">{formattedDate}</span>
-        {post.data.readingTime && (
-          <span class="text-sm text-[var(--color-ink-faint)]">{post.data.readingTime} min read</span>
-        )}
-      </div>
-      <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-6xl">
-        {post.data.title}
-      </h1>
-      <p class="mt-4 text-lg text-[var(--color-ink-soft)]">{post.data.description}</p>
-    </div>
-  </section>
-
-  <!-- Post body -->
-  <section class="mx-auto max-w-2xl px-5 py-12 md:py-16" data-reveal style="--reveal-delay: 80ms;">
-    <div class="prose-post">
-      <Content />
-    </div>
-
-    <!-- Author close -->
-    <div class="mt-16 flex items-center gap-4 border-t border-[var(--color-rule)] pt-10">
-      <OptimizedImage
-        src="/derek-avatar.jpeg"
-        alt="Derek Castelli"
-        class="h-12 w-12 rounded-full object-cover"
-        width={1680}
-        height={1680}
-      />
-      <div>
-        <div class="font-semibold text-[var(--color-ink)]">Derek Castelli</div>
-        <a
-          href="mailto:derek@harvous.com"
-          class="text-sm text-[var(--color-ink-soft)] underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-        >
-          derek@harvous.com
+  <article data-blog-toc-main>
+    <header class="border-b border-[var(--color-rule)]">
+      <div class="detail-content py-10 md:py-14" data-reveal>
+        <a href="/blog/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
+          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path
+              fill-rule="evenodd"
+              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+              clip-rule="evenodd"></path>
+          </svg>
+          Bright Enough
         </a>
-      </div>
-    </div>
-  </section>
 
-  <!-- Related posts -->
+        <div
+          class="blog-post-hero__art mt-8"
+          style={`background: radial-gradient(80% 70% at 18% 20%, color-mix(in oklab, ${color.bg} 85%, white) 0%, transparent 55%), linear-gradient(145deg, color-mix(in oklab, ${color.bg} 40%, var(--color-warm)), var(--color-warm));`}
+        >
+          <img
+            src={featThumb}
+            alt=""
+            width={1400}
+            height={780}
+            class="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+
+        <div class="blog-post-meta mt-8 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[var(--color-ink-faint)]">
+          <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em]">
+            <Icon name={icon} class="h-3.5 w-3.5" aria-hidden="true" />
+            {label}
+          </span>
+          {post.data.draft && (
+            <span class="rounded-full bg-[var(--color-ink)] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
+              Draft
+            </span>
+          )}
+          <span class="blog-post-meta__sep" aria-hidden="true">·</span>
+          <span>By {author.name}</span>
+          <span class="blog-post-meta__sep" aria-hidden="true">·</span>
+          <time datetime={post.data.publishDate.toISOString()}>{formattedDate}</time>
+          {post.data.readingTime && (
+            <>
+              <span class="blog-post-meta__sep" aria-hidden="true">·</span>
+              <span>{post.data.readingTime} min read</span>
+            </>
+          )}
+        </div>
+
+        <h1 class="section-title mt-5 text-pretty">
+          {post.data.title}
+        </h1>
+        <p class="mt-4 text-lg leading-relaxed text-[var(--color-ink-soft)]">
+          {post.data.description}
+        </p>
+      </div>
+
+      {/* Outside data-reveal so will-change:transform can’t trap position:fixed */}
+      <div class="detail-content pb-10 md:pb-14">
+        <BlogToc headings={tocHeadings} />
+      </div>
+    </header>
+
+    <section class="detail-content py-12 md:py-16" data-reveal style="--reveal-delay: 80ms;">
+      <div class="prose-post">
+        <Content />
+      </div>
+      <BlogAuthorClose
+        author={author}
+        title={post.data.title}
+        description={pageDescription}
+        url={pageUrl}
+      />
+    </section>
+  </article>
+
+  <BlogTryHarvous category={post.data.category} featureIds={post.data.featureIds} />
+
   {related.length > 0 && (
-    <section class="fade-rule-t">
-      <div class="mx-auto max-w-5xl px-5 py-14 md:py-16">
-        <h2 class="mb-8 text-sm font-semibold uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">
-          More from the journal
-        </h2>
-        <div class="grid gap-5 sm:grid-cols-2">
+    <section class="frame-divider" aria-labelledby="blog-related-title">
+      <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-14 md:py-16">
+        <h3
+          id="blog-related-title"
+          class="text-center font-display text-2xl tracking-tight text-[var(--color-ink)] md:text-3xl"
+        >
+          Keep reading in Bright Enough
+        </h3>
+        <div class="mt-6" data-reveal style="--reveal-delay: 40ms;">
           {related.map((p) => (
             <BlogCard
               title={p.data.title}
@@ -115,12 +209,21 @@ const related = allPosts
               category={p.data.category}
               slug={p.id}
               readingTime={p.data.readingTime}
+              draft={p.data.draft}
+              variant="story"
             />
           ))}
         </div>
-        <div class="mt-8">
-          <a href="/blog" class="text-sm font-medium text-[var(--color-accent)] hover:underline">
-            All posts &rarr;
+        <div class="mt-8 flex justify-center">
+          <a href="/blog/" class="btn-pill inline-flex items-center gap-1.5">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path
+                fill-rule="evenodd"
+                d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            Back to Bright Enough
           </a>
         </div>
       </div>
@@ -129,44 +232,242 @@ const related = allPosts
 </BaseLayout>
 
 <style>
+  .blog-post-hero__art {
+    position: relative;
+    aspect-ratio: 2.1 / 1;
+    border-radius: 1.25rem;
+    overflow: hidden;
+  }
+
+  .blog-post-meta__sep {
+    opacity: 0.55;
+  }
+
   .prose-post {
     font-size: 1.0625rem;
-    line-height: 1.7;
-    color: var(--color-ink);
+    line-height: 1.75;
+    color: var(--color-ink-soft);
   }
-  .prose-post p {
+
+  .prose-post :global(p) {
     margin-bottom: 1.35em;
   }
-  .prose-post p:last-child {
+
+  .prose-post :global(p:last-child) {
     margin-bottom: 0;
   }
-  .prose-post h2, .prose-post h3 {
-    margin-top: 2em;
-    margin-bottom: 0.6em;
+
+  .prose-post :global(h2),
+  .prose-post :global(h3),
+  .prose-post :global(h4) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    margin-top: 2.1em;
+    margin-bottom: 0.55em;
+    line-height: 1.2;
+    scroll-margin-top: 5.5rem;
   }
-  .prose-post hr {
+
+  .prose-post :global(h2) {
+    font-size: 1.55rem;
+  }
+
+  .prose-post :global(h3) {
+    font-size: 1.25rem;
+  }
+
+  .prose-post :global(h4) {
+    font-size: 1.1rem;
+  }
+
+  .prose-post :global(hr) {
     border: none;
     border-top: 1px solid var(--color-rule);
-    margin: 2em 0;
+    margin: 2.25em 0;
   }
-  .prose-post strong {
+
+  .prose-post :global(strong) {
     font-weight: 600;
     color: var(--color-ink);
   }
-  .prose-post ul, .prose-post ol {
-    padding-left: 1.4em;
-    margin-bottom: 1.35em;
+
+  /* Inherit site marker highlight (testimonials / What’s Included) */
+  .prose-post :global(mark) {
+    background: linear-gradient(180deg, transparent 55%, var(--color-highlight) 55%);
+    color: inherit;
+    padding: 0 0.1em;
+    border-radius: 2px;
   }
-  .prose-post li {
+
+  /* Bare markdown lists only — skip component lists (e.g. BlogRoleCards) */
+  .prose-post :global(p:has(+ ul:not([class]))),
+  .prose-post :global(p:has(+ ol:not([class]))) {
     margin-bottom: 0.4em;
   }
-  .prose-post a {
+
+  .prose-post :global(ul:not([class])) {
+    list-style: none;
+    margin: 0 0 1.5em;
+    padding: 0;
+    border: 1px solid var(--color-rule);
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--color-warm) 50%, white);
+    overflow: hidden;
+  }
+
+  .prose-post :global(ul:not([class]) > li) {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.9rem 1.2rem;
+    border-top: 1px solid var(--color-rule);
+    color: var(--color-ink);
+    line-height: 1.5;
+  }
+
+  .prose-post :global(ul:not([class]) > li:first-child) {
+    border-top: none;
+  }
+
+  .prose-post :global(ul:not([class]) > li::before) {
+    content: "";
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.45em;
+    border-radius: 999px;
+    background: var(--color-accent);
+    box-shadow: 0 0 0 2.5px color-mix(in oklab, var(--color-accent) 18%, transparent);
+  }
+
+  .prose-post :global(ol:not([class])) {
+    list-style: none;
+    counter-reset: prose-ol;
+    margin: 0 0 1.5em;
+    padding: 0;
+    border: 1px solid var(--color-rule);
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--color-warm) 50%, white);
+    overflow: hidden;
+  }
+
+  .prose-post :global(ol:not([class]) > li) {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    counter-increment: prose-ol;
+    margin: 0;
+    padding: 0.9rem 1.2rem;
+    border-top: 1px solid var(--color-rule);
+    color: var(--color-ink);
+    line-height: 1.5;
+  }
+
+  .prose-post :global(ol:not([class]) > li:first-child) {
+    border-top: none;
+  }
+
+  .prose-post :global(ol:not([class]) > li::before) {
+    content: counter(prose-ol, decimal-leading-zero);
+    flex: none;
+    min-width: 1.35rem;
+    margin-top: 0.2em;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+    color: var(--color-accent);
+  }
+
+  .prose-post :global(ul:not([class]) ul),
+  .prose-post :global(ol:not([class]) ol),
+  .prose-post :global(ul:not([class]) ol),
+  .prose-post :global(ol:not([class]) ul) {
+    margin: 0.65rem 0 0.25rem;
+    border: none;
+    border-radius: 0.65rem;
+    background: color-mix(in oklab, var(--color-card) 70%, transparent);
+  }
+
+  .prose-post :global(li > ul:not([class])),
+  .prose-post :global(li > ol:not([class])) {
+    margin-top: 0.55rem;
+  }
+
+  .prose-post :global(blockquote) {
+    margin: 1.75em 0;
+    padding: 0.15em 0 0.15em 1.15em;
+    border-left: 3px solid color-mix(in oklab, var(--color-accent) 45%, var(--color-rule));
+    color: var(--color-ink);
+    font-style: italic;
+  }
+
+  .prose-post :global(blockquote p) {
+    margin-bottom: 0.75em;
+  }
+
+  .prose-post :global(blockquote p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .prose-post :global(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.75em 0;
+    border-radius: 0.85rem;
+  }
+
+  .prose-post :global(code) {
+    font-size: 0.9em;
+    padding: 0.12em 0.4em;
+    border-radius: 0.35rem;
+    background: color-mix(in oklab, var(--color-warm) 70%, white);
+    color: var(--color-ink);
+  }
+
+  /* Note-plate style — overrides Shiki github-dark inline colors on fences. */
+  .prose-post :global(pre),
+  .prose-post :global(pre.astro-code) {
+    margin: 1.75em 0;
+    padding: 1.15rem 1.25rem;
+    overflow-x: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--color-rule);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-cream) 50%, white) 0%,
+        color-mix(in oklab, var(--color-warm) 45%, white) 100%
+      ) !important;
+    color: var(--color-ink) !important;
+    box-shadow: var(--shadow-card);
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", "Segoe UI Mono", Menlo, monospace;
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  .prose-post :global(pre code),
+  .prose-post :global(pre.astro-code span) {
+    padding: 0;
+    background: transparent !important;
+    color: inherit !important;
+    font-style: inherit !important;
+    font-weight: inherit !important;
+    text-decoration: none !important;
+  }
+
+  .prose-post :global(a) {
     color: var(--color-accent);
     text-decoration: underline;
     text-decoration-color: var(--color-accent-soft);
     text-underline-offset: 3px;
   }
-  .prose-post a:hover {
+
+  .prose-post :global(a:hover) {
     text-decoration-color: var(--color-accent);
   }
 </style>

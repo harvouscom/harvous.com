@@ -1,0 +1,203 @@
+---
+/**
+ * Role/audience callouts for Bright Enough essays.
+ * One plate, icon rows — each role gets a site pastel that fits the audience.
+ */
+import { Icon } from "astro-icon/components";
+
+interface Item {
+  label: string;
+  /** Plain text or light HTML (em, a). */
+  body: string;
+  icon?: string;
+  /** Optional pastel tone override: sky | mint | peach | lilac | cream */
+  tone?: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+
+type Tone = "sky" | "mint" | "peach" | "lilac" | "cream";
+
+function iconFor(label: string, explicit?: string): string {
+  if (explicit) return explicit;
+  const l = label.toLowerCase();
+  if (l.includes("teacher")) return "fa6-solid:chalkboard-user";
+  if (l.includes("group")) return "fa6-solid:user-group";
+  if (l.includes("church") || l.includes("staff")) return "fa6-solid:church";
+  if (l.includes("listener") || l.includes("personal")) return "fa6-solid:headphones";
+  return "fa6-solid:circle-user";
+}
+
+/** Pastels that read as “audience” without rainbow noise. */
+function toneFor(label: string, explicit?: string): Tone {
+  if (explicit === "sky" || explicit === "mint" || explicit === "peach" || explicit === "lilac" || explicit === "cream") {
+    return explicit;
+  }
+  const l = label.toLowerCase();
+  if (l.includes("teacher")) return "peach"; // warm classroom energy
+  if (l.includes("group")) return "mint"; // shared growth
+  if (l.includes("church") || l.includes("staff")) return "sky"; // org / calendar clarity
+  if (l.includes("listener") || l.includes("personal")) return "lilac"; // quiet personal study
+  return "cream";
+}
+
+function displayLabel(label: string): string {
+  const stripped = label.replace(/^for an?\s+/i, "").replace(/^for\s+/i, "").trim();
+  if (!stripped) return label;
+  return stripped.charAt(0).toUpperCase() + stripped.slice(1);
+}
+---
+
+<ul class="blog-role-cards" role="list">
+  {
+    items.map((item) => (
+      <li class="blog-role-card" data-tone={toneFor(item.label, item.tone)}>
+        <span class="blog-role-card__icon" aria-hidden="true">
+          <Icon name={iconFor(item.label, item.icon)} />
+        </span>
+        <div class="blog-role-card__copy">
+          <span class="blog-role-card__label">{displayLabel(item.label)}</span>
+          <div class="blog-role-card__body" set:html={item.body} />
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .blog-role-cards {
+    list-style: none;
+    margin: 1.5em 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--color-rule);
+    border-radius: 1.25rem;
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  @media (min-width: 640px) {
+    .blog-role-cards {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .blog-role-card {
+    --role-tint: var(--color-sky);
+    --role-ink: var(--color-sky-ink);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    margin: 0;
+    padding: 1.15rem 1.2rem 1.25rem;
+    border-top: 1px solid var(--color-rule);
+    background:
+      radial-gradient(
+        120% 90% at 0% 0%,
+        color-mix(in oklab, var(--role-tint) 42%, transparent) 0%,
+        transparent 58%
+      );
+  }
+
+  .blog-role-card[data-tone="sky"] {
+    --role-tint: var(--color-sky);
+    --role-ink: var(--color-sky-ink);
+  }
+  .blog-role-card[data-tone="mint"] {
+    --role-tint: var(--color-mint);
+    --role-ink: var(--color-mint-ink);
+  }
+  .blog-role-card[data-tone="peach"] {
+    --role-tint: var(--color-peach);
+    --role-ink: var(--color-peach-ink);
+  }
+  .blog-role-card[data-tone="lilac"] {
+    --role-tint: var(--color-lilac);
+    --role-ink: var(--color-lilac-ink);
+  }
+  .blog-role-card[data-tone="cream"] {
+    --role-tint: var(--color-cream);
+    --role-ink: var(--color-cream-ink);
+  }
+
+  .blog-role-card:first-child {
+    border-top: none;
+  }
+
+  @media (min-width: 640px) {
+    .blog-role-card {
+      border-top: none;
+      border-left: 1px solid var(--color-rule);
+    }
+
+    .blog-role-card:nth-child(2n + 1) {
+      border-left: none;
+    }
+
+    .blog-role-card:nth-child(n + 3) {
+      border-top: 1px solid var(--color-rule);
+    }
+  }
+
+  .blog-role-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 0.75rem;
+    background: color-mix(in oklab, var(--role-tint) 62%, white);
+    color: var(--role-ink);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--role-ink) 12%, var(--color-rule));
+  }
+
+  .blog-role-card__icon :global(svg) {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .blog-role-card__copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .blog-role-card__label {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--color-ink);
+    text-transform: none;
+  }
+
+  .blog-role-card__body {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  .blog-role-card__body :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent-soft);
+    text-underline-offset: 3px;
+  }
+
+  .blog-role-card__body :global(a:hover) {
+    text-decoration-color: var(--color-accent);
+  }
+
+  .blog-role-card__body :global(em) {
+    font-style: italic;
+  }
+</style>

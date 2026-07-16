@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
+import RelatedBlogPosts from "./RelatedBlogPosts.astro";
 import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
 import ComparePreview from "./ComparePreview.astro";
 import { Icon } from "astro-icon/components";
@@ -11,6 +12,11 @@ import { getUseCaseBySlug, getUseCaseDisplayTitle } from "../lib/use-cases-data.
 import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
 import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
 import { getAudiencesForUseCase } from "../lib/for-audiences-data.ts";
+import {
+  getRelatedBlogPosts,
+  includeBlogDrafts,
+  isBlogPostListed,
+} from "../lib/blog.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import { buildSignupUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
@@ -41,6 +47,12 @@ const relatedAudiences = getAudiencesForUseCase(useCase.slug);
 const relatedUseCases = (useCase.relatedUseCaseSlugs ?? [])
   .map((slug) => getUseCaseBySlug(slug))
   .filter((uc): uc is UseCase => uc !== undefined);
+
+const showDrafts = includeBlogDrafts();
+const relatedBlogPosts = getRelatedBlogPosts(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+  { useCase: useCase.slug },
+);
 
 const testimonialEntry = useCase.testimonialId
   ? await getEntry("testimonials", useCase.testimonialId)
@@ -218,6 +230,8 @@ const jsonLd = {
       featuresLead={useCase.featuresLead}
       cards={relatedFeatureCards}
     />
+
+    <RelatedBlogPosts posts={relatedBlogPosts} />
 
     {
       relatedCompare.length > 0 && (

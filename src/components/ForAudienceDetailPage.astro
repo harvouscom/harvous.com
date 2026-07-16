@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
+import RelatedBlogPosts from "./RelatedBlogPosts.astro";
 import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
 import ComparePreview from "./ComparePreview.astro";
 import ChurchInterestForm from "./ChurchInterestForm.astro";
@@ -15,6 +16,11 @@ import {
 import { getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
 import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
 import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
+import {
+  getRelatedBlogPosts,
+  includeBlogDrafts,
+  isBlogPostListed,
+} from "../lib/blog.ts";
 import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
 import { buildSignupUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
@@ -44,6 +50,12 @@ const relatedCompare = audience.compareSlugs
   .filter((e): e is NonNullable<typeof e> => e !== undefined);
 
 const relatedUseCases = getUseCasesForAudience(audience);
+
+const showDrafts = includeBlogDrafts();
+const relatedBlogPosts = getRelatedBlogPosts(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+  { for: audience.slug },
+);
 
 const testimonialEntry = audience.testimonialId
   ? await getEntry("testimonials", audience.testimonialId)
@@ -205,6 +217,8 @@ const jsonLd = {
       featuresLead={audience.featuresLead}
       cards={relatedFeatureCards}
     />
+
+    <RelatedBlogPosts posts={relatedBlogPosts} />
 
     {
       relatedCompare.length > 0 && (

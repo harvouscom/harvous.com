@@ -1,0 +1,322 @@
+---
+/**
+ * Blog closing bridge — replaces the homepage DownloadCTA on Bright Enough posts.
+ * One section: product shot + tour lightbox, features tied to the essay topic, soft CTAs.
+ */
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import Container from "./layout/Container.astro";
+import CTAButton from "./CTAButton.astro";
+import HeroVideoLightbox from "./HeroVideoLightbox.astro";
+import OptimizedImage from "./OptimizedImage.astro";
+import { FEATURE_ICONS } from "../lib/feature-icons.ts";
+import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
+import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
+import { hasDetailContent } from "../lib/product-page-data.ts";
+import {
+  blogFeatureIds,
+  blogProductBridgeCopy,
+  type BlogCategory,
+} from "../lib/blog";
+import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
+
+interface Props {
+  category: BlogCategory;
+  featureIds?: string[];
+}
+
+const { category, featureIds: featureIdsProp } = Astro.props;
+const copy = blogProductBridgeCopy(category);
+const ids = blogFeatureIds(category, featureIdsProp);
+
+const allFeatures = await getCollection("features");
+const publishedSlugs = new Set(
+  allFeatures.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id),
+);
+
+const cards: RelatedFeatureCard[] = ids
+  .map((id) => {
+    const soon = getComingSoonGridItem(id);
+    if (soon) return { kind: "comingSoon" as const, item: soon };
+    const feature = allFeatures.find((f) => f.id === id);
+    return feature ? { kind: "feature" as const, feature } : undefined;
+  })
+  .filter((c): c is RelatedFeatureCard => c !== undefined);
+---
+
+<section class="blog-bridge frame-divider" aria-labelledby="blog-bridge-title">
+  <Container size="xl">
+    <div class="blog-bridge__head section-head" data-reveal>
+      <span class="eyebrow-pill">{copy.eyebrow}</span>
+      <h2 id="blog-bridge-title" class="section-title">{copy.heading}</h2>
+      <p class="lead blog-bridge__lead">{copy.lead}</p>
+    </div>
+
+    <div class="blog-bridge__shotwrap" data-reveal="scale" style="--reveal-delay: 60ms;">
+      <div class="blog-bridge__shot-frame">
+        <OptimizedImage
+          class="blog-bridge__shot"
+          src="/app-full.png"
+          alt="The Harvous app: My Home on the left and an open note on the right — scripture pills, a highlight, and today’s passage."
+          width={2624}
+          height={1360}
+          loading="lazy"
+        />
+        <HeroVideoLightbox src="/touring-new-harvous-share.mp4" label="Watch the full tour" />
+      </div>
+    </div>
+
+    {
+      cards.length > 0 && (
+        <ul class="blog-bridge__grid" data-reveal="stagger" style="--reveal-delay: 100ms;" role="list">
+          {cards.map((card) => {
+            if (card.kind === "comingSoon") {
+              const { item } = card;
+              const Tag = item.href ? "a" : "div";
+              return (
+                <li>
+                  <Tag
+                    class:list={["blog-bridge__card", item.href && "blog-bridge__card--link"]}
+                    href={item.href}
+                  >
+                    <span class="blog-bridge__icon">
+                      <Icon name={item.icon ?? item.icons?.[0] ?? "fa6-solid:note-sticky"} />
+                    </span>
+                    <span class="blog-bridge__card-title blog-bridge__card-title--with-chip">
+                      <span>{item.title}</span>
+                      <span class="blog-bridge__soon-chip">Coming soon</span>
+                    </span>
+                    <p class="blog-bridge__desc">{item.desc}</p>
+                    {item.href && <span class="blog-bridge__more">Learn more →</span>}
+                  </Tag>
+                </li>
+              );
+            }
+
+            const f = card.feature;
+            const href = publishedSlugs.has(f.id) ? `/features/${f.id}/` : undefined;
+            const Tag = href ? "a" : "div";
+            return (
+              <li>
+                <Tag class:list={["blog-bridge__card", href && "blog-bridge__card--link"]} href={href}>
+                  <span class="blog-bridge__icon">
+                    <Icon name={FEATURE_ICONS[f.id] ?? "fa6-solid:note-sticky"} />
+                  </span>
+                  <span class="blog-bridge__card-title">{f.data.tagline}</span>
+                  <p class="blog-bridge__desc">{f.data.title}</p>
+                  {href && <span class="blog-bridge__more">Learn more →</span>}
+                </Tag>
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+
+    <div class="blog-bridge__cta" data-reveal style="--reveal-delay: 140ms;">
+      <CTAButton
+        href="https://app.harvous.com/sign-up"
+        variant="primary"
+        size="lg"
+        external
+        fathomTrack={fathomSignup.last}
+      >
+        Sign up free
+      </CTAButton>
+      <CTAButton
+        href="/features/"
+        variant="secondary"
+        size="lg"
+        fathomTrack={fathomCta.featuresAnchor}
+      >
+        Explore all features
+      </CTAButton>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .blog-bridge {
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  }
+
+  .blog-bridge__head .section-title {
+    max-width: 20ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+
+  .blog-bridge__lead {
+    max-width: 28rem;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+
+  .blog-bridge__shotwrap {
+    margin-top: clamp(2.25rem, 5vw, 3.25rem);
+    margin-inline: auto;
+    width: 100%;
+    max-width: 56rem;
+  }
+
+  .blog-bridge__shot-frame {
+    position: relative;
+    width: 100%;
+    border-radius: clamp(16px, 2vw, 28px);
+    overflow: hidden;
+    box-shadow: var(--shadow-float);
+  }
+
+  .blog-bridge__shot,
+  .blog-bridge__shot-frame :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media (max-width: 639px) {
+    .blog-bridge__shot-frame {
+      aspect-ratio: unset;
+      width: 100%;
+      height: calc((min(100vw, 56rem) - 2 * var(--frame-content-pad)) * 1360 / 2624);
+    }
+    .blog-bridge__shot-frame :global(picture) {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .blog-bridge__shot,
+    .blog-bridge__shot-frame :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top left;
+    }
+  }
+
+  /* Darken bottom-left so the tour callout reads clearly. */
+  .blog-bridge__shot-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        ellipse 90% 75% at 6% 96%,
+        color-mix(in srgb, #0d0e12 52%, transparent) 0%,
+        color-mix(in srgb, #0d0e12 22%, transparent) 38%,
+        transparent 62%
+      ),
+      linear-gradient(
+        28deg,
+        color-mix(in srgb, #0d0e12 28%, transparent) 0%,
+        transparent 45%
+      );
+  }
+
+  .blog-bridge__grid {
+    margin-top: clamp(2.5rem, 6vw, 3.75rem);
+    margin-inline: auto;
+    width: 100%;
+    max-width: 48rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+  @media (min-width: 560px) {
+    .blog-bridge__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .blog-bridge__card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .blog-bridge__card--link {
+    transition: transform 200ms ease;
+  }
+  .blog-bridge__card--link:hover {
+    transform: translateY(-2px);
+  }
+  .blog-bridge__card--link:hover .blog-bridge__card-title {
+    color: var(--color-accent);
+  }
+
+  .blog-bridge__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .blog-bridge__icon :global(svg) {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .blog-bridge__card-title {
+    display: block;
+    margin-top: 0.85rem;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--color-ink);
+    transition: color 200ms ease;
+  }
+  .blog-bridge__card-title--with-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  .blog-bridge__soon-chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.16rem 0.42rem;
+    border-radius: 999px;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    background: color-mix(in oklab, var(--color-card) 88%, transparent);
+    border: 1px solid var(--color-rule);
+  }
+
+  .blog-bridge__desc {
+    margin-top: 0.3rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  .blog-bridge__more {
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+
+  .blog-bridge__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: clamp(2.25rem, 5vw, 3rem);
+  }
+</style>
