@@ -1,8 +1,9 @@
 ---
 /**
- * Playful arc of Bright Enough topic icon blocks.
- * Entrance bounce on scroll into view (replays when leaving and re-entering).
- * Hovering `[data-blog-topic-blocks-trigger]` in the same section also replays.
+ * Playful Bright Enough topic icon blocks.
+ * - smile: hub arc (default) — bounce in on scroll / hover replay
+ * - pyramid: strip stack — WAAPI gravity fall (y ∝ t²) when scrolled into view;
+ *   random height / spin / delay per block each pass
  */
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
@@ -15,46 +16,108 @@ import {
   type BlogCategory,
 } from "../lib/blog";
 
+interface TopicIcon {
+  icon: string;
+  color: { bg: string; ink: string };
+  current: boolean;
+}
+
 interface Props {
   /** Highlight this topic (category archive). */
   current?: BlogCategory;
+  shape?: "smile" | "pyramid";
   class?: string;
 }
 
-const { current, class: className } = Astro.props;
+const { current, shape = "smile", class: className } = Astro.props;
 
 const showDrafts = includeBlogDrafts();
 const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts));
-const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
+const topicIcons: TopicIcon[] = blogCategoriesInUse(listed).map((cat) => ({
   icon: blogCategoryIcon(cat),
   color: blogCategoryColor(cat),
   current: current ? cat === current : false,
 }));
+
+/** Top → bottom rows: 1 / 2 / rest (pyramid in progress). */
+function toPyramidRows(items: TopicIcon[]): TopicIcon[][] {
+  if (items.length === 0) return [];
+  if (items.length === 1) return [items];
+  if (items.length === 2) return [[items[0]], [items[1]]];
+  if (items.length === 3) return [[items[0]], [items[1], items[2]]];
+  return [items.slice(0, 1), items.slice(1, 3), items.slice(3)];
+}
+
+/**
+ * Slight tilts: top still tumbling, middle settling, bottom nearly placed.
+ * Alternating signs read as blocks falling onto the stack.
+ */
+function fallingRotate(rowIndex: number, colIndex: number): number {
+  const tips = [
+    [9],
+    [-6, 5],
+    [-1.5, 0.75, 1.25],
+  ];
+  const row = tips[Math.min(rowIndex, tips.length - 1)] ?? [0];
+  return row[colIndex] ?? row[row.length - 1] ?? 0;
+}
+
+const pyramidRows = shape === "pyramid" ? toPyramidRows(topicIcons) : [];
+
+let pyramidStagger = 0;
 ---
 
 {
-  topicIcons.length > 0 && (
+  topicIcons.length > 0 && shape === "pyramid" ? (
     <div
-      class:list={["blog-topic-icons", className]}
+      class:list={["blog-topic-icons", "blog-topic-icons--pyramid", className]}
       data-blog-topic-blocks
+      data-blog-topic-blocks-fall
       aria-hidden="true"
     >
-      {topicIcons.map((topic, index) => {
-        const center = (topicIcons.length - 1) / 2;
-        const offset = index - center;
-        const rotate = offset * -9;
-        const rise = Math.pow(offset, 2) * 3.25;
-        return (
-          <span
-            class:list={["blog-topic-icon", topic.current && "blog-topic-icon--current"]}
-            style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: ${rise}px; --stagger-index: ${index};`}
-            aria-hidden="true"
-          >
-            <Icon name={topic.icon} class="h-5 w-5" />
-          </span>
-        );
-      })}
+      {pyramidRows.map((row, rowIndex) => (
+        <div class="blog-topic-icons__row" data-pyramid-row={rowIndex}>
+          {row.map((topic, colIndex) => {
+            const stagger = pyramidStagger++;
+            const rotate = fallingRotate(rowIndex, colIndex);
+            return (
+              <span
+                class:list={["blog-topic-icon", topic.current && "blog-topic-icon--current"]}
+                data-pyramid-row={rowIndex}
+                style={`background: color-mix(in oklab, ${topic.color.bg} 72%, white); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: 0px; --stagger-index: ${stagger};`}
+                aria-hidden="true"
+              >
+                <Icon name={topic.icon} class="h-5 w-5" />
+              </span>
+            );
+          })}
+        </div>
+      ))}
     </div>
+  ) : (
+    topicIcons.length > 0 && (
+      <div
+        class:list={["blog-topic-icons", className]}
+        data-blog-topic-blocks
+        aria-hidden="true"
+      >
+        {topicIcons.map((topic, index) => {
+          const center = (topicIcons.length - 1) / 2;
+          const offset = index - center;
+          const rotate = offset * -9;
+          const rise = Math.pow(offset, 2) * 3.25;
+          return (
+            <span
+              class:list={["blog-topic-icon", topic.current && "blog-topic-icon--current"]}
+              style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: ${rise}px; --stagger-index: ${index};`}
+              aria-hidden="true"
+            >
+              <Icon name={topic.icon} class="h-5 w-5" />
+            </span>
+          );
+        })}
+      </div>
+    )
   )
 }
 
@@ -73,6 +136,53 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
     pointer-events: none;
   }
 
+  .blog-topic-icons--pyramid {
+    --pyramid-gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0;
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .blog-topic-icons__row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+  }
+
+  .blog-topic-icons--pyramid .blog-topic-icon {
+    /* Bottom row is 3 wide — each block is 1/3 of the column */
+    flex: none;
+    width: calc(100% / 3);
+    max-width: 7.5rem;
+    aspect-ratio: 1;
+    height: auto;
+    border-radius: 1.15rem;
+    opacity: 1;
+    box-shadow: none;
+    transform-origin: 50% 100%;
+    will-change: transform;
+  }
+
+  .blog-topic-icons--pyramid .blog-topic-icon :global(svg) {
+    width: 38%;
+    height: 38%;
+  }
+
+  @media (min-width: 768px) {
+    .blog-topic-icons--pyramid .blog-topic-icon {
+      max-width: none;
+      border-radius: 1.45rem;
+    }
+  }
+
   .blog-topic-icon {
     display: inline-flex;
     align-items: center;
@@ -89,8 +199,8 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
     opacity: 1;
   }
 
-  /* Pre-entrance / reset state */
-  :global(html.js) .blog-topic-icons .blog-topic-icon {
+  /* Smile / hub — keep bounce entrance */
+  :global(html.js) .blog-topic-icons:not(.blog-topic-icons--pyramid) .blog-topic-icon {
     opacity: 0;
     transform: translateY(calc(var(--topic-rise, 0px) + 36px))
       rotate(calc(var(--topic-rotate, 0deg) - 14deg)) scale(0.55);
@@ -100,27 +210,32 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
     transition-delay: calc(40ms + (var(--stagger-index, 0) * 70ms));
   }
 
-  :global(html.js) .blog-topic-icons.is-in .blog-topic-icon {
+  :global(html.js) .blog-topic-icons:not(.blog-topic-icons--pyramid).is-in .blog-topic-icon {
     opacity: 0.72;
     transform: translateY(var(--topic-rise, 0)) rotate(var(--topic-rotate, 0deg)) scale(1);
   }
 
-  :global(html.js) .blog-topic-icons.is-in .blog-topic-icon--current {
+  :global(html.js) .blog-topic-icons:not(.blog-topic-icons--pyramid).is-in .blog-topic-icon--current {
     opacity: 1;
   }
 
-  /* Instant reset (no reverse animation) before a replay */
-  :global(html.js) .blog-topic-icons.is-resetting .blog-topic-icon {
+  :global(html.js) .blog-topic-icons:not(.blog-topic-icons--pyramid).is-resetting .blog-topic-icon {
     transition: none !important;
     opacity: 0;
     transform: translateY(calc(var(--topic-rise, 0px) + 36px))
       rotate(calc(var(--topic-rotate, 0deg) - 14deg)) scale(0.55);
   }
 
+  /* Pyramid motion is driven by WAAPI gravity keyframes (see script). */
+  :global(html.js) .blog-topic-icons--pyramid .blog-topic-icon {
+    opacity: 1;
+    transition: none !important;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    :global(html.js) .blog-topic-icons .blog-topic-icon,
-    :global(html.js) .blog-topic-icons.is-in .blog-topic-icon,
-    :global(html.js) .blog-topic-icons.is-resetting .blog-topic-icon {
+    :global(html.js) .blog-topic-icons:not(.blog-topic-icons--pyramid) .blog-topic-icon,
+    :global(html.js) .blog-topic-icons:not(.blog-topic-icons--pyramid).is-in .blog-topic-icon,
+    :global(html.js) .blog-topic-icons:not(.blog-topic-icons--pyramid).is-resetting .blog-topic-icon {
       transition: none !important;
       opacity: 0.72;
       transform: translateY(var(--topic-rise, 0)) rotate(var(--topic-rotate, 0deg));
@@ -130,10 +245,58 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
     :global(html.js) .blog-topic-icons.is-in .blog-topic-icon--current {
       opacity: 1;
     }
+
+    :global(html.js) .blog-topic-icons--pyramid .blog-topic-icon {
+      transition: none !important;
+      opacity: 1;
+      transform: translateY(0) rotate(var(--topic-rotate, 0deg));
+    }
   }
 </style>
 
 <script>
+  function rand(min: number, max: number) {
+    return min + Math.random() * (max - min);
+  }
+
+  function restRotateDeg(icon: HTMLElement) {
+    return parseFloat(icon.style.getPropertyValue("--topic-rotate") || "0") || 0;
+  }
+
+  /**
+   * Sampled free-fall under constant g (y ∝ t²), then a short hard land.
+   * Linear timeline easing — gravity is baked into the keyframe offsets.
+   */
+  function gravityFallKeyframes(distancePx: number, spinDeg: number, restDeg: number): Keyframe[] {
+    const frames: Keyframe[] = [];
+    const fallShare = 0.86;
+    const samples = 14;
+
+    for (let i = 0; i <= samples; i++) {
+      const u = i / samples;
+      const p = u * u; // accelerate like gravity
+      const y = -distancePx * (1 - p);
+      const rot = restDeg + spinDeg * (1 - p);
+      frames.push({
+        transform: `translateY(${y.toFixed(2)}px) rotate(${rot.toFixed(2)}deg)`,
+        offset: u * fallShare,
+      });
+    }
+
+    // Heavy tile impact: tiny compression, then settle (not a spring bounce)
+    const thud = Math.min(5, distancePx * 0.018);
+    frames.push({
+      transform: `translateY(${thud.toFixed(2)}px) rotate(${restDeg.toFixed(2)}deg)`,
+      offset: 0.93,
+    });
+    frames.push({
+      transform: `translateY(0px) rotate(${restDeg.toFixed(2)}deg)`,
+      offset: 1,
+    });
+
+    return frames;
+  }
+
   function initTopicBlocks(root: ParentNode = document) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -141,7 +304,84 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
       if (group.dataset.blocksReady) return;
       group.dataset.blocksReady = "1";
 
+      const isFall = group.hasAttribute("data-blog-topic-blocks-fall");
+      const icons = Array.from(group.querySelectorAll<HTMLElement>(".blog-topic-icon"));
+      const scope = group.closest("section") ?? group.parentElement ?? document;
+      const fallAnims = new Map<HTMLElement, Animation>();
+
       let replayTimer = 0;
+
+      const cancelFalls = () => {
+        fallAnims.forEach((anim) => anim.cancel());
+        fallAnims.clear();
+      };
+
+      const parkFallsAbove = () => {
+        cancelFalls();
+        icons.forEach((icon) => {
+          const rest = restRotateDeg(icon);
+          icon.style.transform = `translateY(-280px) rotate(${(rest + rand(-24, 24)).toFixed(1)}deg)`;
+        });
+      };
+
+      const settleFallsInstant = () => {
+        cancelFalls();
+        icons.forEach((icon) => {
+          icon.style.transform = `translateY(0px) rotate(${restRotateDeg(icon)}deg)`;
+        });
+      };
+
+      /** Physics drop: duration from √(2s/g); random height, spin, delay per block. */
+      const playGravityFall = () => {
+        cancelFalls();
+        // px/s² — lower = slower fall (still eases like gravity)
+        const g = 2400;
+        const rowCount =
+          icons.reduce((max, icon) => Math.max(max, Number(icon.dataset.pyramidRow || 0) + 1), 1) ||
+          1;
+        let maxEnd = 0;
+
+        // Bottom row first, then middle, then top — with enough jitter that
+        // a block can occasionally slip ahead of another (even across rows).
+        const baseGap = 140;
+        const jitter = 160;
+        // ~20% of the time, shuffle drop order so one tile "falls early"
+        const wild = Math.random() < 0.22;
+
+        icons.forEach((icon) => {
+          const row = Number(icon.dataset.pyramidRow || 0);
+          const rowOrder = rowCount - 1 - row; // 0 = bottom (priority)
+          let delay = rowOrder * baseGap + rand(0, jitter);
+
+          if (wild && Math.random() < 0.35) {
+            // Swap this tile into a neighboring wave
+            delay += rand(-baseGap * 0.85, baseGap * 0.55);
+          }
+
+          delay = Math.max(0, Math.round(delay));
+
+          const distancePx = rand(220, 420);
+          const spinDeg = rand(-48, 48);
+          const restDeg = restRotateDeg(icon);
+          const fallMs = Math.sqrt((2 * distancePx) / g) * 1000;
+          const duration = Math.max(560, (fallMs / 0.86) * 1.15);
+
+          icon.style.transform = `translateY(${(-distancePx).toFixed(1)}px) rotate(${(
+            restDeg + spinDeg
+          ).toFixed(1)}deg)`;
+
+          const anim = icon.animate(gravityFallKeyframes(distancePx, spinDeg, restDeg), {
+            duration,
+            delay,
+            easing: "linear",
+            fill: "forwards",
+          });
+          fallAnims.set(icon, anim);
+          maxEnd = Math.max(maxEnd, delay + duration);
+        });
+
+        return maxEnd;
+      };
 
       const playIn = () => {
         group.classList.remove("is-resetting");
@@ -151,17 +391,26 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
       const resetOut = () => {
         group.classList.remove("is-in");
         group.classList.remove("is-resetting");
+        if (isFall) parkFallsAbove();
       };
 
-      /** Snap to pre-entrance, then bounce in again. */
       const replay = () => {
         if (reduced) {
-          playIn();
+          if (isFall) settleFallsInstant();
+          else playIn();
           return;
         }
         if (group.dataset.replaying === "1") return;
         group.dataset.replaying = "1";
         window.clearTimeout(replayTimer);
+
+        if (isFall) {
+          const end = playGravityFall();
+          replayTimer = window.setTimeout(() => {
+            delete group.dataset.replaying;
+          }, end + 40);
+          return;
+        }
 
         group.classList.remove("is-in");
         group.classList.add("is-resetting");
@@ -173,12 +422,11 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
             group.classList.add("is-in");
             replayTimer = window.setTimeout(() => {
               delete group.dataset.replaying;
-            }, 1000);
+            }, 1100);
           });
         });
       };
 
-      const scope = group.closest("section") ?? group.parentElement ?? document;
       scope.querySelectorAll<HTMLElement>("[data-blog-topic-blocks-trigger]").forEach((trigger) => {
         if (trigger.dataset.blocksTriggerReady) return;
         trigger.dataset.blocksTriggerReady = "1";
@@ -187,13 +435,26 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
         });
       });
 
-      if (reduced) {
-        playIn();
+      if (isFall) {
+        if (reduced) {
+          settleFallsInstant();
+          return;
+        }
+        parkFallsAbove();
+      }
+
+      if (reduced || group.hasAttribute("data-blog-topic-blocks-eager")) {
+        if (isFall) settleFallsInstant();
+        else playIn();
         return;
       }
 
       if (!("IntersectionObserver" in window)) {
-        playIn();
+        if (isFall) {
+          playGravityFall();
+        } else {
+          playIn();
+        }
         return;
       }
 
@@ -202,7 +463,6 @@ const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
           for (const entry of entries) {
             if (entry.target !== group) continue;
             if (entry.isIntersecting) {
-              // Fresh enter from off-screen — always play from the start.
               replay();
             } else {
               window.clearTimeout(replayTimer);

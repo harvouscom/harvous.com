@@ -1,9 +1,9 @@
 ---
 /**
- * Compact “From Bright Enough” strip for product pages — intro + two posts.
+ * Compact “From Bright Enough” strip — intro + topic blocks + blog link.
  */
 import type { CollectionEntry } from "astro:content";
-import BlogCard from "./BlogCard.astro";
+import BlogTopicBlocks from "./BlogTopicBlocks.astro";
 
 interface Props {
   posts: CollectionEntry<"blog">[];
@@ -12,85 +12,159 @@ interface Props {
 
 const {
   posts,
-  lead = "Bright Enough — teaching craft, retention, and habits that show up after Sunday.",
+  lead = "Teaching craft, retention, and habits that show up after Sunday.",
 } = Astro.props;
 
-const shown = posts.slice(0, 2);
+const show = posts.length > 0;
 ---
 
 {
-  shown.length > 0 && (
+  show && (
     <section class="related-blog frame-divider" aria-labelledby="related-blog-title">
-      <div class="related-blog__inner detail-content py-10 md:py-12">
-        <div class="related-blog__intro">
-          <h2
-            id="related-blog-title"
-            class="font-display text-xl leading-snug tracking-tight md:text-2xl"
-          >
-            From the blog
-          </h2>
-          <p class="mt-2 text-sm leading-relaxed text-[var(--color-ink-soft)]">{lead}</p>
+      <div class="related-blog__inner">
+        <div class="related-blog__content">
+          <div class="related-blog__intro">
+            <p class="eyebrow">From the blog</p>
+            <h2
+              id="related-blog-title"
+              class="mt-2 font-display text-3xl leading-[1.05] tracking-tight md:text-4xl"
+              data-blog-topic-blocks-trigger
+            >
+              Bright Enough
+            </h2>
+            <p class="related-blog__lead mt-3 text-sm leading-relaxed text-[var(--color-ink-soft)] md:text-[0.95rem]">
+              {lead}
+            </p>
+          </div>
+
           <a
             href="/blog/"
-            class="related-blog__more mt-4 inline-flex text-sm font-medium text-[var(--color-accent)] hover:underline"
+            class="btn-accent related-blog__more mt-5 inline-flex items-center px-5 py-3 text-sm"
+            data-blog-topic-blocks-trigger
           >
-            More in Bright Enough →
+            Go to the blog
           </a>
         </div>
-        <ul class="related-blog__grid" data-reveal="stagger" role="list">
-          {shown.map((p) => (
-            <li>
-              <BlogCard
-                title={p.data.title}
-                description={p.data.description}
-                publishDate={p.data.publishDate}
-                category={p.data.category}
-                slug={p.id}
-                readingTime={p.data.readingTime}
-                draft={p.data.draft}
-                variant="spotlight"
-              />
-            </li>
-          ))}
-        </ul>
+
+        <div class="related-blog__pyramid" aria-hidden="true">
+          <BlogTopicBlocks shape="pyramid" />
+        </div>
       </div>
     </section>
   )
 }
 
 <style>
+  .related-blog {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Clip to section bounds. Two-column band is centered with a tighter max-width.
+     No vertical padding here — left content owns that so icons can span edge-to-edge. */
   .related-blog__inner {
+    --related-blog-max: 42rem;
     display: grid;
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    width: min(calc(100% - 2 * var(--frame-inset)), var(--related-blog-max));
+    margin-inline: auto;
+    padding: 0;
+    /* Clip top/bottom only — side bleed so rotated tiles aren’t shaved */
+    overflow: visible;
+    clip-path: inset(0 -4rem 0 -4rem);
+  }
+
+  .related-blog__content {
+    min-width: 0;
+    padding: 2.75rem var(--frame-content-pad);
+  }
+
+  .related-blog__pyramid {
+    min-width: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .related-blog__intro {
+    max-width: 22rem;
+  }
+
+  .related-blog__lead {
+    max-width: 20rem;
   }
 
   @media (min-width: 768px) {
     .related-blog__inner {
-      grid-template-columns: minmax(12rem, 0.85fr) minmax(0, 1.4fr);
-      gap: 2rem 2.5rem;
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 0;
+      align-items: stretch;
+      padding: 0;
+      overflow: visible;
+      clip-path: inset(0 -5rem 0 -5rem);
     }
-  }
 
-  .related-blog__grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.75rem;
-  }
+    .related-blog__content {
+      position: relative;
+      z-index: 1;
+      grid-column: 1;
+      grid-row: 1;
+      /* Content alone sets the row height; icons match that full column */
+      align-self: start;
+      padding: 3rem 1.25rem 3rem var(--frame-content-pad);
+    }
 
-  .related-blog__grid :global(.blog-spotlight) {
-    height: 100%;
-    box-shadow: none;
-    border: 1px solid var(--color-rule);
-    background: color-mix(in oklab, var(--color-paper) 88%, white);
-  }
+    .related-blog__pyramid {
+      /* Drop the stack so bottom clips out; same amount reads as top spacing */
+      --pyramid-drop: clamp(1.75rem, 4.5vh, 3.25rem);
+      --pyramid-inset-x: clamp(1.25rem, 2.5vw, 2rem);
+      grid-column: 2;
+      grid-row: 1;
+      position: relative;
+      align-self: stretch;
+      width: auto;
+      min-height: 0;
+      /* Absolute children don't grow the row past the left column */
+      container-type: size;
+      overflow: visible;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  .related-blog__grid :global(.blog-spotlight:hover) {
-    box-shadow: none;
-    transform: none;
-    border-color: color-mix(in oklab, var(--color-ink) 18%, var(--color-rule));
-    background: white;
+    .related-blog__pyramid :global(.blog-topic-icons--pyramid) {
+      --topic-size: min(
+        calc(100cqh / 3),
+        calc((100cqw - 2 * var(--pyramid-inset-x)) / 3)
+      );
+      position: absolute;
+      left: 50%;
+      right: auto;
+      top: var(--pyramid-drop);
+      bottom: auto;
+      width: calc(3 * var(--topic-size));
+      height: calc(3 * var(--topic-size));
+      max-width: none;
+      margin: 0;
+      translate: -50% 0;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0;
+      overflow: visible;
+    }
+
+    .related-blog__pyramid :global(.blog-topic-icons__row) {
+      flex: 0 0 var(--topic-size);
+      height: var(--topic-size);
+      width: 100%;
+      justify-content: center;
+      gap: 0;
+      overflow: visible;
+    }
+
+    .related-blog__pyramid :global(.blog-topic-icon) {
+      width: var(--topic-size);
+      height: var(--topic-size);
+      max-width: none;
+    }
   }
 </style>
