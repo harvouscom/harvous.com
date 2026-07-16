@@ -1,6 +1,10 @@
 ---
 /**
  * Compact “From Bright Enough” strip — intro + topic blocks + blog link.
+ *
+ * Mobile: blocks fall across the full framed section (between horizontal
+ * lines + inside vertical rails), then rest below the copy.
+ * Desktop: two-column band with pyramid in the right column.
  */
 import type { CollectionEntry } from "astro:content";
 import BlogTopicBlocks from "./BlogTopicBlocks.astro";
@@ -21,33 +25,35 @@ const show = posts.length > 0;
 {
   show && (
     <section class="related-blog frame-divider" aria-labelledby="related-blog-title">
-      <div class="related-blog__inner">
-        <div class="related-blog__content">
-          <div class="related-blog__intro">
-            <p class="eyebrow">From the blog</p>
-            <h2
-              id="related-blog-title"
-              class="mt-2 font-display text-3xl leading-[1.05] tracking-tight md:text-4xl"
-              data-blog-topic-blocks-trigger
-            >
-              Bright Enough
-            </h2>
-            <p class="related-blog__lead mt-3 text-sm leading-relaxed text-[var(--color-ink-soft)] md:text-[0.95rem]">
-              {lead}
-            </p>
-          </div>
-
-          <a
-            href="/blog/"
-            class="btn-accent related-blog__more mt-5 inline-flex items-center px-5 py-3 text-sm"
-            data-blog-topic-blocks-trigger
-          >
-            Go to the blog
-          </a>
-        </div>
-
+      <div class="related-blog__clip">
         <div class="related-blog__pyramid" aria-hidden="true">
           <BlogTopicBlocks shape="pyramid" />
+        </div>
+
+        <div class="related-blog__inner">
+          <div class="related-blog__content">
+            <div class="related-blog__intro">
+              <p class="eyebrow">From the blog</p>
+              <h2
+                id="related-blog-title"
+                class="mt-2 font-display text-3xl leading-[1.05] tracking-tight md:text-4xl"
+                data-blog-topic-blocks-trigger
+              >
+                Bright Enough
+              </h2>
+              <p class="related-blog__lead mt-3 text-sm leading-relaxed text-[var(--color-ink-soft)] md:text-[0.95rem]">
+                {lead}
+              </p>
+            </div>
+
+            <a
+              href="/blog/"
+              class="btn-accent related-blog__more mt-5 inline-flex items-center px-5 py-3 text-sm"
+              data-blog-topic-blocks-trigger
+            >
+              Go to the blog
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -56,34 +62,78 @@ const show = posts.length > 0;
 
 <style>
   .related-blog {
+    --related-blog-max: 42rem;
+    --topic-size-mobile: clamp(4.5rem, 28vw, 6rem);
+    --pyramid-bottom-pad: 0;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
 
-  /* Clip to section bounds. Two-column band is centered with a tighter max-width.
-     No vertical padding here — left content owns that so icons can span edge-to-edge. */
+  /*
+   * Crop stage = between vertical rails × a tall framed section (not
+   * shrink-wrapped to the copy). +1px so we don’t paint over the hairline.
+   */
+  .related-blog__clip {
+    position: relative;
+    margin-inline: calc(var(--frame-inset) + 1px);
+    overflow: hidden;
+    /* Tall enough that blocks rest below the copy with room to fall */
+    min-height: max(36rem, calc(3 * var(--topic-size-mobile) + 16rem));
+  }
+
   .related-blog__inner {
-    --related-blog-max: 42rem;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
-    width: min(calc(100% - 2 * var(--frame-inset)), var(--related-blog-max));
+    position: relative;
+    z-index: 1;
+    width: min(100%, var(--related-blog-max));
     margin-inline: auto;
-    padding: 0;
-    /* Clip top/bottom only — side bleed so rotated tiles aren’t shaved */
-    overflow: visible;
-    clip-path: inset(0 -4rem 0 -4rem);
   }
 
   .related-blog__content {
+    position: relative;
+    z-index: 1;
     min-width: 0;
-    padding: 2.75rem var(--frame-content-pad);
+    padding: 2.5rem var(--frame-content-pad) 1.5rem;
+    /* Transparent so falling blocks stay visible through the whole section */
+    background: transparent;
   }
 
+  /* Full clip stage — fall from the top line; settle flush to the bottom */
   .related-blog__pyramid {
-    min-width: 0;
-    width: 100%;
+    --topic-size: var(--topic-size-mobile);
+    position: absolute;
+    inset: 0;
+    z-index: 0;
     pointer-events: none;
+    container-type: size;
+  }
+
+  .related-blog__pyramid :global(.blog-topic-icons--pyramid) {
+    position: absolute;
+    left: 50%;
+    top: auto;
+    bottom: 0;
+    width: calc(3 * var(--topic-size));
+    height: calc(3 * var(--topic-size));
+    margin: 0;
+    translate: -50% 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0;
+  }
+
+  .related-blog__pyramid :global(.blog-topic-icons__row) {
+    flex: 0 0 var(--topic-size);
+    height: var(--topic-size);
+    width: 100%;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .related-blog__pyramid :global(.blog-topic-icon) {
+    width: var(--topic-size) !important;
+    height: var(--topic-size) !important;
+    max-width: none !important;
+    border-radius: 1.1rem;
   }
 
   .related-blog__intro {
@@ -95,76 +145,57 @@ const show = posts.length > 0;
   }
 
   @media (min-width: 768px) {
+    .related-blog__clip {
+      padding-bottom: 0;
+    }
+
     .related-blog__inner {
+      display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       column-gap: 0;
       align-items: stretch;
-      padding: 0;
-      overflow: visible;
-      clip-path: inset(0 -5rem 0 -5rem);
+      width: min(100%, var(--related-blog-max));
+      min-height: 22rem;
     }
 
     .related-blog__content {
-      position: relative;
-      z-index: 1;
       grid-column: 1;
-      grid-row: 1;
-      /* Content alone sets the row height; icons match that full column */
       align-self: start;
       padding: 3rem 1.25rem 3rem var(--frame-content-pad);
     }
 
     .related-blog__pyramid {
-      /* Drop the stack so bottom clips out; same amount reads as top spacing */
       --pyramid-drop: clamp(1.75rem, 4.5vh, 3.25rem);
       --pyramid-inset-x: clamp(1.25rem, 2.5vw, 2rem);
-      grid-column: 2;
-      grid-row: 1;
-      position: relative;
-      align-self: stretch;
-      width: auto;
-      min-height: 0;
-      /* Absolute children don't grow the row past the left column */
-      container-type: size;
-      overflow: visible;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .related-blog__pyramid :global(.blog-topic-icons--pyramid) {
       --topic-size: min(
         calc(100cqh / 3),
         calc((100cqw - 2 * var(--pyramid-inset-x)) / 3)
       );
-      position: absolute;
+      top: 0;
+      bottom: 0;
       left: 50%;
-      right: auto;
+      right: calc((100% - min(100%, var(--related-blog-max))) / 2);
+      overflow: visible;
+    }
+
+    .related-blog__pyramid :global(.blog-topic-icons--pyramid) {
       top: var(--pyramid-drop);
       bottom: auto;
       width: calc(3 * var(--topic-size));
       height: calc(3 * var(--topic-size));
       max-width: none;
-      margin: 0;
-      translate: -50% 0;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0;
-      overflow: visible;
     }
 
     .related-blog__pyramid :global(.blog-topic-icons__row) {
       flex: 0 0 var(--topic-size);
       height: var(--topic-size);
-      width: 100%;
-      justify-content: center;
-      gap: 0;
-      overflow: visible;
     }
 
     .related-blog__pyramid :global(.blog-topic-icon) {
-      width: var(--topic-size);
-      height: var(--topic-size);
-      max-width: none;
+      width: var(--topic-size) !important;
+      height: var(--topic-size) !important;
+      max-width: none !important;
+      border-radius: 1.45rem;
     }
   }
 </style>

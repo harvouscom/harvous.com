@@ -316,11 +316,29 @@ let pyramidStagger = 0;
         fallAnims.clear();
       };
 
+      const isNarrow = () => window.matchMedia("(max-width: 767px)").matches;
+
+      /** Fall travel: on mobile, from the top of the framed clip stage. */
+      const fallDistanceRange = () => {
+        if (!isNarrow()) return { min: 220, max: 420, park: 280 };
+        const stage =
+          group.closest(".related-blog__clip")?.clientHeight ||
+          group.closest(".related-blog")?.clientHeight ||
+          group.parentElement?.clientHeight ||
+          360;
+        return {
+          min: Math.max(220, stage * 0.85),
+          max: Math.max(280, stage * 1.15),
+          park: Math.max(240, stage * 0.95),
+        };
+      };
+
       const parkFallsAbove = () => {
         cancelFalls();
+        const { park } = fallDistanceRange();
         icons.forEach((icon) => {
           const rest = restRotateDeg(icon);
-          icon.style.transform = `translateY(-280px) rotate(${(rest + rand(-24, 24)).toFixed(1)}deg)`;
+          icon.style.transform = `translateY(${-park}px) rotate(${(rest + rand(-24, 24)).toFixed(1)}deg)`;
         });
       };
 
@@ -360,8 +378,9 @@ let pyramidStagger = 0;
 
           delay = Math.max(0, Math.round(delay));
 
-          const distancePx = rand(220, 420);
-          const spinDeg = rand(-48, 48);
+          const range = fallDistanceRange();
+          const distancePx = rand(range.min, range.max);
+          const spinDeg = isNarrow() ? rand(-34, 34) : rand(-48, 48);
           const restDeg = restRotateDeg(icon);
           const fallMs = Math.sqrt((2 * distancePx) / g) * 1000;
           const duration = Math.max(560, (fallMs / 0.86) * 1.15);
