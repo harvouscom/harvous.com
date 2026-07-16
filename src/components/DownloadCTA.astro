@@ -1,34 +1,36 @@
 ---
 /**
- * DownloadCTA — the homepage's final closing moment, just above the footer.
- * A single rounded card split into two panels on a soft sage/cream wash
- * (built from the site's existing pastel tokens, not a new color): a fuller
- * personal sign-off on the left (the founder letter earlier on the page
- * carries the origin story; this is the closing case for trying it, in a
- * few more short paragraphs than before, plus an email + signature) and a
- * faded product screenshot on the right with "Sign up free" + "Explore features"
- * floating above it. Primary pill matches HeroCentered's `.hero__cta`.
+ * DownloadCTA — closing card above the footer: personal sign-off + product shot.
+ * Defaults match the homepage; pages can override heading / copy via props + slot.
  */
 import OptimizedImage from "./OptimizedImage.astro";
 import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
+
+interface Props {
+  heading?: string;
+}
+
+const { heading = "One last thing" } = Astro.props;
 ---
 
 <section class="cta frame-divider">
   <div class="cta-card" data-reveal="scale">
     <div class="cta-panel cta-panel--text">
-      <h2 class="cta-heading">One last thing</h2>
+      <h2 class="cta-heading">{heading}</h2>
       <div class="cta-copy">
-        <p>Harvous only helps if you actually use it — so consider this your nudge.</p>
-        <p>
-          I'm not trying to build the biggest Bible app out there. Just one I'd actually want to
-          open every morning, that remembers what I've studied so I'm not starting from scratch
-          each time.
-        </p>
-        <p>If it helps even one of your study sessions stick a little longer, it'll have done its job.</p>
-        <p>
-          Try it free, and if you ever want to talk shop or scripture, email me at
-          <a class="cta-mail" href="mailto:derek@harvous.com">derek@harvous.com</a>.
-        </p>
+        <slot name="copy">
+          <p>Harvous only helps if you actually use it — so consider this your nudge.</p>
+          <p>
+            I'm not trying to build the biggest Bible app out there. Just one I'd actually want to
+            open every morning, that remembers what I've studied so I'm not starting from scratch
+            each time.
+          </p>
+          <p>If it helps even one of your study sessions stick a little longer, it'll have done its job.</p>
+          <p>
+            Try it free, and if you ever want to talk shop or scripture, email me at
+            <a class="cta-mail" href="mailto:derek@harvous.com">derek@harvous.com</a>.
+          </p>
+        </slot>
       </div>
       <div class="cta-sign">
         <OptimizedImage
@@ -134,20 +136,21 @@ import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
     flex-direction: column;
     gap: 0.9rem;
   }
-  .cta-copy p {
+  /* :global so page-supplied slot copy keeps the same type + mail link styles */
+  .cta-copy :global(p) {
     margin: 0;
     font-size: 1.0625rem;
     line-height: 1.6;
     color: var(--color-ink-soft);
   }
-  .cta-mail {
+  .cta-copy :global(.cta-mail) {
     color: var(--color-ink);
     text-decoration: underline;
     text-decoration-color: var(--color-rule);
     text-underline-offset: 3px;
     transition: text-decoration-color 150ms ease;
   }
-  .cta-mail:hover {
+  .cta-copy :global(.cta-mail:hover) {
     text-decoration-color: var(--color-ink);
   }
   .cta-sign {

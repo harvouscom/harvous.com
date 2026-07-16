@@ -49,7 +49,8 @@ const href = `/blog/${slug}`;
   variant === "featured" ? (
     <a
       href={href}
-      class="blog-featured group block overflow-hidden rounded-[1.75rem] bg-white transition hover:bg-[color-mix(in_oklab,white_88%,var(--color-sky))]"
+      class="blog-featured group block overflow-hidden rounded-[1.75rem] bg-white transition hover:bg-[color-mix(in_oklab,white_88%,var(--blog-cat))]"
+      style={`--blog-cat: ${color.bg};`}
       data-blog-category={category}
     >
       <div

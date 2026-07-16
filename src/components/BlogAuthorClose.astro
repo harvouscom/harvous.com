@@ -13,6 +13,7 @@ interface Props {
 }
 
 const { author, title, url, description = "" } = Astro.props;
+const showAuthor = author.kind !== "house";
 const initials = author.name
   .split(/\s+/)
   .filter(Boolean)
@@ -26,50 +27,48 @@ const mailtoHref = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeUR
 ---
 
 <footer
-  class="blog-author-close"
+  class:list={["blog-author-close", !showAuthor && "blog-author-close--share-only"]}
   data-blog-share
   data-share-title={title}
   data-share-text={description}
   data-share-url={url}
 >
-  <div class="blog-author-close__who">
-    {
-      author.avatar ? (
-        <img
-          src={author.avatar}
-          alt=""
-          width={36}
-          height={36}
-          class="blog-author-close__avatar"
-          loading="lazy"
-          decoding="async"
-        />
-      ) : (
-        <span class="blog-author-close__initials" aria-hidden="true">
-          {initials || "BE"}
-        </span>
-      )
-    }
-    <div class="blog-author-close__text">
-      {
-        author.href ? (
-          <a href={author.href} class="blog-author-close__name">
-            {author.name}
-          </a>
+  {
+    showAuthor && (
+      <div class="blog-author-close__who">
+        {author.avatar ? (
+          <img
+            src={author.avatar}
+            alt=""
+            width={36}
+            height={36}
+            class="blog-author-close__avatar"
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
-          <span class="blog-author-close__name">{author.name}</span>
-        )
-      }
-      <p class="blog-author-close__role">{author.role}</p>
-      {
-        author.email && author.kind === "team" && (
-          <a href={`mailto:${author.email}`} class="blog-author-close__email">
-            {author.email}
-          </a>
-        )
-      }
-    </div>
-  </div>
+          <span class="blog-author-close__initials" aria-hidden="true">
+            {initials || "BE"}
+          </span>
+        )}
+        <div class="blog-author-close__text">
+          {author.href ? (
+            <a href={author.href} class="blog-author-close__name">
+              {author.name}
+            </a>
+          ) : (
+            <span class="blog-author-close__name">{author.name}</span>
+          )}
+          <p class="blog-author-close__role">{author.role}</p>
+          {author.email && author.kind === "team" && (
+            <a href={`mailto:${author.email}`} class="blog-author-close__email">
+              {author.email}
+            </a>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   <div class="blog-author-close__share" role="group" aria-label="Share this article">
     <button type="button" class="blog-share-btn" data-blog-share-copy>
@@ -99,6 +98,10 @@ const mailtoHref = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeUR
     margin-top: 2.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--color-rule);
+  }
+
+  .blog-author-close--share-only {
+    justify-content: flex-end;
   }
 
   .blog-author-close__who {
@@ -172,6 +175,7 @@ const mailtoHref = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeUR
     flex-wrap: wrap;
     align-items: center;
     gap: 0.35rem;
+    margin-inline-start: auto;
   }
 
   .blog-share-btn {

@@ -249,10 +249,14 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
     left: 0;
     right: 0;
     z-index: 50;
+    /* Stack when a column can't fit a full label; 2-up only with room.
+       Width is locked to the float above (positioned ancestor). */
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* ~11rem fits two cols inside the 396px float without truncating labels */
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
     gap: 0.4rem;
     width: 100%;
+    max-width: 100%;
     padding: 0.5rem;
     border: 1px solid var(--color-rule);
     border-radius: 1.25rem;
@@ -260,6 +264,7 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
     box-shadow:
       0 1px 2px rgba(15, 23, 42, 0.05),
       0 18px 40px -16px rgba(15, 23, 42, 0.22);
+    box-sizing: border-box;
   }
 
   .blog-library-nav__item {

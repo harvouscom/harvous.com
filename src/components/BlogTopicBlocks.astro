@@ -446,13 +446,17 @@ let pyramidStagger = 0;
         });
       };
 
-      scope.querySelectorAll<HTMLElement>("[data-blog-topic-blocks-trigger]").forEach((trigger) => {
-        if (trigger.dataset.blocksTriggerReady) return;
-        trigger.dataset.blocksTriggerReady = "1";
-        trigger.addEventListener("mouseenter", () => {
-          replay();
+      // Hover replay is cursor-only — skip on touch (no sticky mouseenter on tap).
+      const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      if (canHover) {
+        scope.querySelectorAll<HTMLElement>("[data-blog-topic-blocks-trigger]").forEach((trigger) => {
+          if (trigger.dataset.blocksTriggerReady) return;
+          trigger.dataset.blocksTriggerReady = "1";
+          trigger.addEventListener("mouseenter", () => {
+            replay();
+          });
         });
-      });
+      }
 
       if (isFall) {
         if (reduced) {
