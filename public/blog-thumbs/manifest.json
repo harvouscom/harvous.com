@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-16T17:53:54.801Z",
-  "version": "shader-v14",
+  "generatedAt": "2026-07-16T19:41:57.128Z",
+  "version": "shader-v16",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
   "sourceBrightness": [
@@ -67,11 +67,12 @@
   ],
   "categoryPacks": {
     "how-we-think": [
-      "ai_bg_053.webp",
-      "ai_bg_051.webp",
-      "ai_bg_058.webp",
-      "ai_bg_044.webp",
-      "ai_bg_045.webp"
+      "ai_bg_045.webp",
+      "ai_bg_047.webp",
+      "ai_bg_059.webp",
+      "ai_bg_072.webp",
+      "ai_bg_050.webp",
+      "ai_bg_073.webp"
     ],
     "teaching": [
       "ai_bg_053.webp",
@@ -81,27 +82,26 @@
       "ai_bg_045.webp"
     ],
     "retention": [
-      "ai_bg_052.webp",
-      "ai_bg_058.webp",
-      "ai_bg_046.webp",
-      "ai_bg_074.webp",
-      "ai_bg_060.webp",
-      "ai_bg_061.webp"
-    ],
-    "equipping": [
       "ai_bg_045.webp",
       "ai_bg_047.webp",
       "ai_bg_059.webp",
       "ai_bg_072.webp",
       "ai_bg_050.webp",
-      "ai_bg_073.webp"
+      "ai_bg_074.webp"
     ],
-    "study-habits": [
+    "equipping": [
       "ai_bg_058.webp",
       "ai_bg_052.webp",
       "ai_bg_044.webp",
       "ai_bg_053.webp",
       "ai_bg_061.webp"
+    ],
+    "study-habits": [
+      "ai_bg_053.webp",
+      "ai_bg_051.webp",
+      "ai_bg_058.webp",
+      "ai_bg_044.webp",
+      "ai_bg_045.webp"
     ],
     "using-harvous": [
       "ai_bg_053.webp",
@@ -123,8 +123,8 @@
       "category": "teaching",
       "mood": "light",
       "shape": "wedge",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
       "pack": [
         "ai_bg_053.webp",
         "ai_bg_051.webp",
@@ -133,8 +133,8 @@
         "ai_bg_045.webp"
       ],
       "grade": {
-        "a": "#5a3a8e",
-        "b": "#d4c2f8",
+        "a": "#4a1a70",
+        "b": "#dec5ed",
         "c": "#f0eaf8"
       },
       "spot": "/blog-thumbs/asking-better-questions-in-class-and-group-spot.webp",
@@ -145,6 +145,50 @@
       "category": "equipping",
       "mood": "light",
       "shape": "arc",
+      "source": "ai_bg_044.webp",
+      "sourceMean": 184,
+      "pack": [
+        "ai_bg_058.webp",
+        "ai_bg_052.webp",
+        "ai_bg_044.webp",
+        "ai_bg_053.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#2a5a25",
+        "b": "#c9e3b8",
+        "c": "#eef6e6"
+      },
+      "spot": "/blog-thumbs/handoff-without-amnesia-spot.webp",
+      "feat": "/blog-thumbs/handoff-without-amnesia-feat.webp",
+      "skipped": false
+    },
+    "highlights-you-can-find": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "bars",
+      "source": "ai_bg_072.webp",
+      "sourceMean": 199,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
+      },
+      "spot": "/blog-thumbs/highlights-you-can-find-spot.webp",
+      "feat": "/blog-thumbs/highlights-you-can-find-feat.webp",
+      "skipped": false
+    },
+    "notes-first-vs-ai-that-studies-for-you": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "slash",
       "source": "ai_bg_072.webp",
       "sourceMean": 199,
       "pack": [
@@ -156,53 +200,9 @@
         "ai_bg_073.webp"
       ],
       "grade": {
-        "a": "#a84528",
-        "b": "#fbc8ad",
-        "c": "#dec5ed"
-      },
-      "spot": "/blog-thumbs/handoff-without-amnesia-spot.webp",
-      "feat": "/blog-thumbs/handoff-without-amnesia-feat.webp",
-      "skipped": false
-    },
-    "highlights-you-can-find": {
-      "category": "using-harvous",
-      "mood": "light",
-      "shape": "bars",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
-      "pack": [
-        "ai_bg_053.webp",
-        "ai_bg_051.webp",
-        "ai_bg_045.webp",
-        "ai_bg_072.webp",
-        "ai_bg_050.webp"
-      ],
-      "grade": {
-        "a": "#3a4a6e",
-        "b": "#c2dcf8",
-        "c": "#e8e9ed"
-      },
-      "spot": "/blog-thumbs/highlights-you-can-find-spot.webp",
-      "feat": "/blog-thumbs/highlights-you-can-find-feat.webp",
-      "skipped": false
-    },
-    "notes-first-vs-ai-that-studies-for-you": {
-      "category": "how-we-think",
-      "mood": "light",
-      "shape": "slash",
-      "source": "ai_bg_045.webp",
-      "sourceMean": 211,
-      "pack": [
-        "ai_bg_053.webp",
-        "ai_bg_051.webp",
-        "ai_bg_058.webp",
-        "ai_bg_044.webp",
-        "ai_bg_045.webp"
-      ],
-      "grade": {
-        "a": "#2a5a9e",
-        "b": "#c2dcf8",
-        "c": "#ffffff"
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
       },
       "spot": "/blog-thumbs/notes-first-vs-ai-that-studies-for-you-spot.webp",
       "feat": "/blog-thumbs/notes-first-vs-ai-that-studies-for-you-feat.webp",
@@ -212,19 +212,19 @@
       "category": "study-habits",
       "mood": "light",
       "shape": "streak",
-      "source": "ai_bg_061.webp",
-      "sourceMean": 160,
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
       "pack": [
-        "ai_bg_058.webp",
-        "ai_bg_052.webp",
-        "ai_bg_044.webp",
         "ai_bg_053.webp",
-        "ai_bg_061.webp"
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
       ],
       "grade": {
-        "a": "#3d6b38",
-        "b": "#c9e3b8",
-        "c": "#f6ecd6"
+        "a": "#143a6e",
+        "b": "#c2dcf8",
+        "c": "#ffffff"
       },
       "spot": "/blog-thumbs/one-place-for-the-trail-spot.webp",
       "feat": "/blog-thumbs/one-place-for-the-trail-feat.webp",
@@ -244,8 +244,8 @@
         "ai_bg_045.webp"
       ],
       "grade": {
-        "a": "#5a3a8e",
-        "b": "#d4c2f8",
+        "a": "#4a1a70",
+        "b": "#dec5ed",
         "c": "#f0eaf8"
       },
       "spot": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-spot.webp",
@@ -256,8 +256,8 @@
       "category": "teaching",
       "mood": "light",
       "shape": "plume",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
       "pack": [
         "ai_bg_053.webp",
         "ai_bg_051.webp",
@@ -266,8 +266,8 @@
         "ai_bg_045.webp"
       ],
       "grade": {
-        "a": "#5a3a8e",
-        "b": "#d4c2f8",
+        "a": "#4a1a70",
+        "b": "#dec5ed",
         "c": "#f0eaf8"
       },
       "spot": "/blog-thumbs/sermon-series-to-small-group-follow-up-spot.webp",
@@ -278,8 +278,8 @@
       "category": "using-harvous",
       "mood": "light",
       "shape": "rings",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
+      "source": "ai_bg_072.webp",
+      "sourceMean": 199,
       "pack": [
         "ai_bg_053.webp",
         "ai_bg_051.webp",
@@ -288,9 +288,9 @@
         "ai_bg_050.webp"
       ],
       "grade": {
-        "a": "#3a4a6e",
-        "b": "#c2dcf8",
-        "c": "#e8e9ed"
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
       },
       "spot": "/blog-thumbs/start-with-scripture-pills-spot.webp",
       "feat": "/blog-thumbs/start-with-scripture-pills-feat.webp",
@@ -300,8 +300,8 @@
       "category": "using-harvous",
       "mood": "light",
       "shape": "streak",
-      "source": "ai_bg_053.webp",
-      "sourceMean": 234,
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
       "pack": [
         "ai_bg_053.webp",
         "ai_bg_051.webp",
@@ -310,9 +310,9 @@
         "ai_bg_050.webp"
       ],
       "grade": {
-        "a": "#3a4a6e",
-        "b": "#c2dcf8",
-        "c": "#e8e9ed"
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
       },
       "spot": "/blog-thumbs/start-with-threads-spot.webp",
       "feat": "/blog-thumbs/start-with-threads-feat.webp",
@@ -332,8 +332,8 @@
         "ai_bg_045.webp"
       ],
       "grade": {
-        "a": "#5a3a8e",
-        "b": "#d4c2f8",
+        "a": "#4a1a70",
+        "b": "#dec5ed",
         "c": "#f0eaf8"
       },
       "spot": "/blog-thumbs/teaching-through-a-book-spot.webp",
@@ -344,19 +344,19 @@
       "category": "study-habits",
       "mood": "light",
       "shape": "bars",
-      "source": "ai_bg_058.webp",
-      "sourceMean": 187,
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
       "pack": [
-        "ai_bg_058.webp",
-        "ai_bg_052.webp",
-        "ai_bg_044.webp",
         "ai_bg_053.webp",
-        "ai_bg_061.webp"
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
       ],
       "grade": {
-        "a": "#3d6b38",
-        "b": "#c9e3b8",
-        "c": "#f6ecd6"
+        "a": "#143a6e",
+        "b": "#c2dcf8",
+        "c": "#ffffff"
       },
       "spot": "/blog-thumbs/the-five-minute-capture-spot.webp",
       "feat": "/blog-thumbs/the-five-minute-capture-feat.webp",
@@ -366,8 +366,8 @@
       "category": "teaching",
       "mood": "light",
       "shape": "corner",
-      "source": "ai_bg_053.webp",
-      "sourceMean": 234,
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
       "pack": [
         "ai_bg_053.webp",
         "ai_bg_051.webp",
@@ -376,8 +376,8 @@
         "ai_bg_045.webp"
       ],
       "grade": {
-        "a": "#5a3a8e",
-        "b": "#d4c2f8",
+        "a": "#4a1a70",
+        "b": "#dec5ed",
         "c": "#f0eaf8"
       },
       "spot": "/blog-thumbs/the-lesson-prep-stack-spot.webp",
@@ -388,20 +388,20 @@
       "category": "retention",
       "mood": "dark",
       "shape": "rings",
-      "source": "ai_bg_046.webp",
-      "sourceMean": 128,
+      "source": "ai_bg_047.webp",
+      "sourceMean": 182,
       "pack": [
-        "ai_bg_052.webp",
-        "ai_bg_058.webp",
-        "ai_bg_046.webp",
-        "ai_bg_074.webp",
-        "ai_bg_060.webp",
-        "ai_bg_061.webp"
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_074.webp"
       ],
       "grade": {
-        "a": "#3d6b38",
-        "b": "#c9e3b8",
-        "c": "#c2dcf8"
+        "a": "#7a2810",
+        "b": "#fbc8ad",
+        "c": "#fff1e8"
       },
       "spot": "/blog-thumbs/the-monday-retention-loop-spot.webp",
       "feat": "/blog-thumbs/the-monday-retention-loop-feat.webp",
@@ -411,30 +411,8 @@
       "category": "how-we-think",
       "mood": "light",
       "shape": "wedge",
-      "source": "ai_bg_058.webp",
-      "sourceMean": 187,
-      "pack": [
-        "ai_bg_053.webp",
-        "ai_bg_051.webp",
-        "ai_bg_058.webp",
-        "ai_bg_044.webp",
-        "ai_bg_045.webp"
-      ],
-      "grade": {
-        "a": "#2a5a9e",
-        "b": "#c2dcf8",
-        "c": "#ffffff"
-      },
-      "spot": "/blog-thumbs/tools-help-humans-teach-spot.webp",
-      "feat": "/blog-thumbs/tools-help-humans-teach-feat.webp",
-      "skipped": false
-    },
-    "what-church-education-systems-need": {
-      "category": "equipping",
-      "mood": "light",
-      "shape": "split",
-      "source": "ai_bg_047.webp",
-      "sourceMean": 182,
+      "source": "ai_bg_050.webp",
+      "sourceMean": 199,
       "pack": [
         "ai_bg_045.webp",
         "ai_bg_047.webp",
@@ -444,9 +422,31 @@
         "ai_bg_073.webp"
       ],
       "grade": {
-        "a": "#a84528",
-        "b": "#fbc8ad",
-        "c": "#dec5ed"
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
+      },
+      "spot": "/blog-thumbs/tools-help-humans-teach-spot.webp",
+      "feat": "/blog-thumbs/tools-help-humans-teach-feat.webp",
+      "skipped": false
+    },
+    "what-church-education-systems-need": {
+      "category": "equipping",
+      "mood": "light",
+      "shape": "split",
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
+      "pack": [
+        "ai_bg_058.webp",
+        "ai_bg_052.webp",
+        "ai_bg_044.webp",
+        "ai_bg_053.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#2a5a25",
+        "b": "#c9e3b8",
+        "c": "#eef6e6"
       },
       "spot": "/blog-thumbs/what-church-education-systems-need-spot.webp",
       "feat": "/blog-thumbs/what-church-education-systems-need-feat.webp",
@@ -456,28 +456,6 @@
       "category": "how-we-think",
       "mood": "light",
       "shape": "arc",
-      "source": "ai_bg_053.webp",
-      "sourceMean": 234,
-      "pack": [
-        "ai_bg_053.webp",
-        "ai_bg_051.webp",
-        "ai_bg_058.webp",
-        "ai_bg_044.webp",
-        "ai_bg_045.webp"
-      ],
-      "grade": {
-        "a": "#2a5a9e",
-        "b": "#c2dcf8",
-        "c": "#ffffff"
-      },
-      "spot": "/blog-thumbs/what-proverbs-25-2-taught-me-spot.webp",
-      "feat": "/blog-thumbs/what-proverbs-25-2-taught-me-feat.webp",
-      "skipped": false
-    },
-    "when-pdfs-arent-a-trail": {
-      "category": "equipping",
-      "mood": "light",
-      "shape": "split",
       "source": "ai_bg_045.webp",
       "sourceMean": 211,
       "pack": [
@@ -489,20 +467,20 @@
         "ai_bg_073.webp"
       ],
       "grade": {
-        "a": "#a84528",
-        "b": "#fbc8ad",
-        "c": "#dec5ed"
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
       },
-      "spot": "/blog-thumbs/when-pdfs-arent-a-trail-spot.webp",
-      "feat": "/blog-thumbs/when-pdfs-arent-a-trail-feat.webp",
+      "spot": "/blog-thumbs/what-proverbs-25-2-taught-me-spot.webp",
+      "feat": "/blog-thumbs/what-proverbs-25-2-taught-me-feat.webp",
       "skipped": false
     },
-    "why-bible-study-thoughts-disappear": {
-      "category": "study-habits",
-      "mood": "dark",
-      "shape": "plume",
-      "source": "ai_bg_058.webp",
-      "sourceMean": 187,
+    "when-pdfs-arent-a-trail": {
+      "category": "equipping",
+      "mood": "light",
+      "shape": "split",
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
       "pack": [
         "ai_bg_058.webp",
         "ai_bg_052.webp",
@@ -511,9 +489,53 @@
         "ai_bg_061.webp"
       ],
       "grade": {
-        "a": "#3d6b38",
+        "a": "#2a5a25",
         "b": "#c9e3b8",
-        "c": "#f6ecd6"
+        "c": "#eef6e6"
+      },
+      "spot": "/blog-thumbs/when-pdfs-arent-a-trail-spot.webp",
+      "feat": "/blog-thumbs/when-pdfs-arent-a-trail-feat.webp",
+      "skipped": false
+    },
+    "when-youve-taught-it-before": {
+      "category": "teaching",
+      "mood": "light",
+      "shape": "corner",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#4a1a70",
+        "b": "#dec5ed",
+        "c": "#f0eaf8"
+      },
+      "spot": "/blog-thumbs/when-youve-taught-it-before-spot.webp",
+      "feat": "/blog-thumbs/when-youve-taught-it-before-feat.webp",
+      "skipped": false
+    },
+    "why-bible-study-thoughts-disappear": {
+      "category": "study-habits",
+      "mood": "dark",
+      "shape": "plume",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#143a6e",
+        "b": "#c2dcf8",
+        "c": "#ffffff"
       },
       "spot": "/blog-thumbs/why-bible-study-thoughts-disappear-spot.webp",
       "feat": "/blog-thumbs/why-bible-study-thoughts-disappear-feat.webp",
@@ -523,20 +545,20 @@
       "category": "retention",
       "mood": "dark",
       "shape": "plume",
-      "source": "ai_bg_074.webp",
-      "sourceMean": 98,
+      "source": "ai_bg_050.webp",
+      "sourceMean": 199,
       "pack": [
-        "ai_bg_052.webp",
-        "ai_bg_058.webp",
-        "ai_bg_046.webp",
-        "ai_bg_074.webp",
-        "ai_bg_060.webp",
-        "ai_bg_061.webp"
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_074.webp"
       ],
       "grade": {
-        "a": "#3d6b38",
-        "b": "#c9e3b8",
-        "c": "#c2dcf8"
+        "a": "#7a2810",
+        "b": "#fbc8ad",
+        "c": "#fff1e8"
       },
       "spot": "/blog-thumbs/why-church-education-evaporates-by-monday-spot.webp",
       "feat": "/blog-thumbs/why-church-education-evaporates-by-monday-feat.webp",

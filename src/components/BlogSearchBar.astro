@@ -1,0 +1,266 @@
+---
+/**
+ * Compact Bright Enough search form — submits to /blog/search/.
+ */
+import type { BlogCategory } from "../lib/blog";
+
+interface Props {
+  /** Prefill / scope search to one category (archives). */
+  category?: BlogCategory;
+  placeholder?: string;
+  /** Visual size: nav float, page refine, or library bar. */
+  variant?: "nav" | "page" | "library";
+  class?: string;
+  /** Initial query (search results page). */
+  value?: string;
+  /** Form id for label association. */
+  inputId?: string;
+}
+
+const {
+  category,
+  placeholder = category ? "Search this topic…" : "Search Bright Enough…",
+  variant = "nav",
+  class: className,
+  value = "",
+  inputId = "blog-search-input",
+} = Astro.props;
+---
+
+<form
+  class:list={["blog-search-bar", `blog-search-bar--${variant}`, className]}
+  action="/blog/search/"
+  method="get"
+  role="search"
+  data-blog-search-bar
+>
+  {
+    category && (
+      <input type="hidden" name="category" value={category} data-blog-search-category />
+    )
+  }
+  <label class="blog-search-bar__label" for={inputId}>Search posts</label>
+  {
+    variant !== "library" && (
+      <span class="blog-search-bar__icon" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+          <circle cx="7" cy="7" r="4.25"></circle>
+          <path d="M10.25 10.25 13.5 13.5"></path>
+        </svg>
+      </span>
+    )
+  }
+  <input
+    id={inputId}
+    class="blog-search-bar__input"
+    type="search"
+    name="q"
+    value={value}
+    placeholder={placeholder}
+    autocomplete="off"
+    enterkeyhint="search"
+    data-blog-search-q
+  />
+  {
+    variant === "library" ? (
+      <>
+        <span class="blog-search-bar__icon blog-search-bar__icon--trailing" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="7" cy="7" r="4.25"></circle>
+            <path d="M10.25 10.25 13.5 13.5"></path>
+          </svg>
+        </span>
+        <button type="submit" class="blog-search-bar__submit blog-search-bar__submit--sr">
+          Search
+        </button>
+      </>
+    ) : (
+      <button type="submit" class="blog-search-bar__submit">Search</button>
+    )
+  }
+</form>
+
+<style>
+  .blog-search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    transition: box-shadow 150ms ease, border-color 150ms ease;
+  }
+
+  .blog-search-bar:focus-within {
+    border-color: color-mix(in oklab, var(--color-accent) 55%, var(--color-rule));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-accent) 28%, transparent),
+      var(--shadow-card);
+  }
+
+  .blog-search-bar__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .blog-search-bar__icon {
+    display: inline-flex;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-ink-faint);
+    pointer-events: none;
+  }
+
+  .blog-search-bar__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .blog-search-bar__input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0.35rem 0.15rem;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    outline: none;
+  }
+
+  .blog-search-bar__input::placeholder {
+    color: var(--color-ink-faint);
+  }
+
+  /* Replace WebKit’s glossy clear control with a flat mark */
+  .blog-search-bar__input::-webkit-search-decoration,
+  .blog-search-bar__input::-webkit-search-results-button,
+  .blog-search-bar__input::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  .blog-search-bar__input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-left: 0.2rem;
+    background: center / 0.9rem 0.9rem no-repeat
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6' stroke='%23888c96' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+    cursor: pointer;
+  }
+
+  .blog-search-bar__submit {
+    flex: none;
+    padding: 0.32rem 0.7rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--accent-btn-bg);
+    box-shadow: var(--accent-btn-shadow-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .blog-search-bar__submit:hover {
+    box-shadow: var(--accent-btn-shadow);
+  }
+
+  .blog-search-bar__input:focus,
+  .blog-search-bar__input:focus-visible,
+  .blog-search-bar__submit:focus,
+  .blog-search-bar__submit:focus-visible {
+    outline: none;
+  }
+
+  /* Nav: compact strip inside hub float */
+  .blog-search-bar--nav {
+    padding: 0.15rem 0.2rem 0.15rem 0.55rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--color-warm) 55%, var(--color-card));
+  }
+
+  .blog-search-bar--nav .blog-search-bar__input {
+    width: 8.5rem;
+  }
+
+  @media (min-width: 920px) {
+    .blog-search-bar--nav .blog-search-bar__input {
+      width: 11rem;
+    }
+  }
+
+  /* Page: larger refine field on search results */
+  .blog-search-bar--page {
+    width: 100%;
+    max-width: 28rem;
+    margin-inline: auto;
+    padding: 0.45rem 0.4rem 0.45rem 0.85rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .blog-search-bar--page .blog-search-bar__input {
+    font-size: 0.9375rem;
+    padding: 0.35rem 0.35rem;
+  }
+
+  .blog-search-bar--page .blog-search-bar__icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .blog-search-bar--page .blog-search-bar__submit {
+    padding: 0.45rem 0.95rem;
+    font-size: 0.8125rem;
+  }
+
+  /* Library sticky bar — match Topics trigger height */
+  .blog-search-bar--library {
+    width: 100%;
+    height: 2.5rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    box-sizing: border-box;
+  }
+
+  .blog-search-bar--library .blog-search-bar__input {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    padding: 0;
+  }
+
+  .blog-search-bar--library .blog-search-bar__icon--trailing {
+    width: 0.95rem;
+    height: 0.95rem;
+    margin-left: 0.15rem;
+  }
+
+  .blog-search-bar__submit--sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

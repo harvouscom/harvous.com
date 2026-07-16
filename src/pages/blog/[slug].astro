@@ -1,107 +1,170 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BlogAuthorClose from "../../components/BlogAuthorClose.astro";
+import BlogCategoryIndexPage from "../../components/BlogCategoryIndexPage.astro";
 import BlogTryHarvous from "../../components/BlogTryHarvous.astro";
 import BlogToc from "../../components/BlogToc.astro";
-import { getCollection, render } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 import BlogCard from "../../components/BlogCard.astro";
 import {
   blogAuthorJsonLd,
+  blogBreadcrumbJsonLd,
+  blogCategoriesInUse,
   blogCategoryColor,
+  blogCategoryHref,
   blogCategoryIcon,
   blogCategoryLabel,
   blogHeadingsFromBody,
   blogThumbUrl,
   includeBlogDrafts,
+  isBlogCategory,
   isBlogPostListed,
   resolveBlogAuthor,
+  type BlogCategory,
 } from "../../lib/blog";
 import "../../styles/use-cases.css";
 
+type Props =
+  | { kind: "category"; category: BlogCategory; currentPage: number }
+  | { kind: "post"; post: CollectionEntry<"blog"> };
+
 export async function getStaticPaths() {
   const showDrafts = includeBlogDrafts();
-  const posts = await getCollection("blog");
-  return posts
+  const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts));
+
+  for (const p of listed) {
+    if (isBlogCategory(p.id)) {
+      throw new Error(`Blog post id "${p.id}" collides with a category archive slug`);
+    }
+  }
+
+  const postPaths = listed.map((p) => ({
+    params: { slug: p.id },
+    props: { kind: "post" as const, post: p },
+  }));
+
+  const categoryPaths = blogCategoriesInUse(listed).map((category) => ({
+    params: { slug: category },
+    props: { kind: "category" as const, category, currentPage: 1 },
+  }));
+
+  return [...postPaths, ...categoryPaths];
+}
+
+const props = Astro.props as Props;
+const isCategoryArchive = props.kind === "category";
+
+let post: CollectionEntry<"blog"> | undefined;
+let Content: Awaited<ReturnType<typeof render>>["Content"] | undefined;
+let tocHeadings: { depth: number; slug: string; text: string }[] = [];
+let label = "";
+let icon = "";
+let color = { bg: "", ink: "" };
+let featThumb = "";
+let formattedDate = "";
+let related: CollectionEntry<"blog">[] = [];
+let pageUrl = "";
+let pageTitle = "";
+let pageDescription = "";
+let publishedTime = "";
+let author: ReturnType<typeof resolveBlogAuthor> | undefined;
+let jsonLd: Record<string, unknown>[] | undefined;
+let categoryHref = "";
+
+if (props.kind === "post") {
+  post = props.post;
+  const rendered = await render(post);
+  Content = rendered.Content;
+  const renderedToc = rendered.headings.filter((h) => h.depth === 2);
+  tocHeadings =
+    renderedToc.length >= 2 ? renderedToc : blogHeadingsFromBody(post.body ?? "", 2);
+
+  label = blogCategoryLabel(post.data.category);
+  icon = blogCategoryIcon(post.data.category);
+  color = blogCategoryColor(post.data.category);
+  categoryHref = blogCategoryHref(post.data.category);
+  featThumb = blogThumbUrl(post.id, "feat");
+
+  formattedDate = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(post.data.publishDate));
+
+  const showDrafts = includeBlogDrafts();
+  const allPosts = (await getCollection("blog"))
     .filter((p) => isBlogPostListed(p, showDrafts))
-    .map((p) => ({ params: { slug: p.id }, props: { post: p } }));
-}
+    .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
 
-const { post } = Astro.props;
-const { Content, headings } = await render(post);
-const renderedToc = headings.filter((h) => h.depth === 2);
-const tocHeadings =
-  renderedToc.length >= 2 ? renderedToc : blogHeadingsFromBody(post.body ?? "", 2);
+  const RELATED_MAX = 2;
+  const RELATED_MIN = 2;
 
-const label = blogCategoryLabel(post.data.category);
-const icon = blogCategoryIcon(post.data.category);
-const color = blogCategoryColor(post.data.category);
-const featThumb = blogThumbUrl(post.id, "feat");
+  const sameCategory = allPosts.filter(
+    (p) => p.id !== post!.id && p.data.category === post!.data.category,
+  );
+  related = sameCategory.slice(0, RELATED_MAX);
+  if (related.length < RELATED_MIN) {
+    const taken = new Set([post.id, ...related.map((p) => p.id)]);
+    const fillers = allPosts
+      .filter((p) => !taken.has(p.id))
+      .slice(0, RELATED_MIN - related.length);
+    related = [...related, ...fillers];
+  }
 
-const formattedDate = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-}).format(new Date(post.data.publishDate));
+  const siteOrigin = Astro.site ?? "https://harvous.com";
+  pageUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+  pageTitle = post.data.seoTitle ?? `${post.data.title} — Bright Enough`;
+  pageDescription = post.data.seoDescription ?? post.data.description;
+  publishedTime = post.data.publishDate.toISOString();
+  const ogImageAbsolute = new URL(featThumb, siteOrigin).toString();
+  author = resolveBlogAuthor(post.data);
 
-const showDrafts = includeBlogDrafts();
-const allPosts = (await getCollection("blog"))
-  .filter((p) => isBlogPostListed(p, showDrafts))
-  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
-
-const RELATED_MAX = 2;
-const RELATED_MIN = 2;
-
-const sameCategory = allPosts.filter(
-  (p) => p.id !== post.id && p.data.category === post.data.category,
-);
-let related = sameCategory.slice(0, RELATED_MAX);
-if (related.length < RELATED_MIN) {
-  const taken = new Set([post.id, ...related.map((p) => p.id)]);
-  const fillers = allPosts
-    .filter((p) => !taken.has(p.id))
-    .slice(0, RELATED_MIN - related.length);
-  related = [...related, ...fillers];
-}
-
-const siteOrigin = Astro.site ?? "https://harvous.com";
-const pageUrl = new URL(Astro.url.pathname, siteOrigin).toString();
-const pageTitle = post.data.seoTitle ?? `${post.data.title} — Bright Enough`;
-const pageDescription = post.data.seoDescription ?? post.data.description;
-const publishedTime = post.data.publishDate.toISOString();
-const ogImageAbsolute = new URL(featThumb, siteOrigin).toString();
-const author = resolveBlogAuthor(post.data);
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  headline: post.data.title,
-  description: pageDescription,
-  datePublished: publishedTime,
-  image: [ogImageAbsolute],
-  url: pageUrl,
-  mainEntityOfPage: {
-    "@type": "WebPage",
-    "@id": pageUrl,
-  },
-  author: blogAuthorJsonLd(author, siteOrigin),
-  publisher: {
-    "@type": "Organization",
-    name: "Harvous",
-    url: siteOrigin.toString(),
-    logo: {
-      "@type": "ImageObject",
-      url: new URL("/images/harvous-2-icon.png", siteOrigin).toString(),
+  jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.data.title,
+      description: pageDescription,
+      datePublished: publishedTime,
+      image: [ogImageAbsolute],
+      url: pageUrl,
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": pageUrl,
+      },
+      author: blogAuthorJsonLd(author, siteOrigin),
+      publisher: {
+        "@type": "Organization",
+        name: "Harvous",
+        url: siteOrigin.toString(),
+        logo: {
+          "@type": "ImageObject",
+          url: new URL("/images/harvous-2-icon.png", siteOrigin).toString(),
+        },
+      },
+      isPartOf: {
+        "@type": "Blog",
+        name: "Bright Enough",
+        url: new URL("/blog/", siteOrigin).toString(),
+      },
     },
-  },
-  isPartOf: {
-    "@type": "Blog",
-    name: "Bright Enough",
-    url: new URL("/blog/", siteOrigin).toString(),
-  },
-};
+    blogBreadcrumbJsonLd(
+      [
+        { name: "Harvous", path: "/" },
+        { name: "Bright Enough", path: "/blog/" },
+        { name: label, path: categoryHref },
+        { name: post.data.title, path: `/blog/${post.id}/` },
+      ],
+      siteOrigin,
+    ),
+  ];
+}
 ---
 
+{isCategoryArchive && props.kind === "category" ? (
+  <BlogCategoryIndexPage category={props.category} currentPage={props.currentPage} />
+) : post && Content && author && jsonLd ? (
 <BaseLayout
   title={pageTitle}
   description={pageDescription}
@@ -141,10 +204,13 @@ const jsonLd = {
         </div>
 
         <div class="blog-post-meta mt-8 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[var(--color-ink-faint)]">
-          <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em]">
+          <a
+            href={categoryHref}
+            class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-ink-faint)] transition-colors hover:text-[var(--color-accent)]"
+          >
             <Icon name={icon} class="h-3.5 w-3.5" aria-hidden="true" />
             {label}
-          </span>
+          </a>
           {post.data.draft && (
             <span class="rounded-full bg-[var(--color-ink)] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
               Draft
@@ -230,6 +296,7 @@ const jsonLd = {
     </section>
   )}
 </BaseLayout>
+) : null}
 
 <style>
   .blog-post-hero__art {

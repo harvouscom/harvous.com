@@ -82,6 +82,12 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="description" content={description} />
     {robotsContent && <meta name="robots" content={robotsContent} />}
     <link rel="canonical" href={canonical} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Bright Enough — Harvous Blog"
+      href="/blog/rss.xml"
+    />
     {preloadImage && (
       <link rel="preload" as="image" href={preloadImage} type="image/webp" fetchpriority="high" />
     )}

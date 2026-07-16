@@ -1,0 +1,172 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BlogCard from "./BlogCard.astro";
+import BlogCategoryPagination from "./BlogCategoryPagination.astro";
+import BlogSearchBar from "./BlogSearchBar.astro";
+import BlogTopicBlocks from "./BlogTopicBlocks.astro";
+import DownloadCTA from "./DownloadCTA.astro";
+import IntroChip from "./IntroChip.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+import {
+  blogBreadcrumbJsonLd,
+  blogCategoryColor,
+  blogCategoryHref,
+  blogCategoryIcon,
+  blogCategoryLabel,
+  blogCategoryLead,
+  getBlogCategoryPage,
+  includeBlogDrafts,
+  isBlogPostListed,
+  type BlogCategory,
+} from "../lib/blog";
+
+interface Props {
+  category: BlogCategory;
+  currentPage: number;
+}
+
+const { category, currentPage } = Astro.props;
+
+const showDrafts = includeBlogDrafts();
+const allPosts = (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts));
+const page = getBlogCategoryPage(category, currentPage, allPosts);
+
+const label = blogCategoryLabel(category);
+const lead = blogCategoryLead(category);
+const icon = blogCategoryIcon(category);
+const color = blogCategoryColor(category);
+const postWord = page.totalCount === 1 ? "post" : "posts";
+
+const title =
+  page.currentPage === 1
+    ? `${label} — Bright Enough`
+    : `${label} (Page ${page.currentPage}) — Bright Enough`;
+
+const leadSentence = /[.!?]$/.test(lead.trim()) ? lead.trim() : `${lead.trim()}.`;
+const description = `${leadSentence} Explore ${page.totalCount} ${postWord}. From Bright Enough, the Harvous blog.`;
+
+const siteOrigin = Astro.site ?? "https://harvous.com";
+const pagePath = blogCategoryHref(category, page.currentPage);
+const pageUrl = new URL(pagePath, siteOrigin).toString();
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: page.currentPage === 1 ? label : `${label} — Page ${page.currentPage}`,
+    description,
+    url: pageUrl,
+    isPartOf: {
+      "@type": "Blog",
+      name: "Bright Enough",
+      url: new URL("/blog/", siteOrigin).toString(),
+    },
+  },
+  blogBreadcrumbJsonLd(
+    [
+      { name: "Harvous", path: "/" },
+      { name: "Bright Enough", path: "/blog/" },
+      { name: label, path: blogCategoryHref(category) },
+    ],
+    siteOrigin,
+  ),
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={jsonLd}
+  noindex={page.currentPage > 1}
+>
+  <section class="border-b border-[var(--color-rule)]">
+    <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-10 text-center md:py-14" data-reveal>
+      <p class="eyebrow">Bright Enough</p>
+      <h1 class="mt-3 flex flex-wrap items-center justify-center gap-3 font-display text-4xl tracking-tight md:text-5xl">
+        <span
+          class="inline-flex size-10 items-center justify-center rounded-xl md:size-11"
+          style={`background: color-mix(in oklab, ${color.bg} 55%, white); color: ${color.ink};`}
+          aria-hidden="true"
+        >
+          <Icon name={icon} class="h-5 w-5" />
+        </span>
+        {label}
+      </h1>
+      <p class="mx-auto mt-4 max-w-sm text-lg leading-relaxed text-pretty text-[var(--color-ink-soft)] md:max-w-md">
+        {leadSentence} Explore{" "}
+        <IntroChip>
+          <span class="tabular-nums">{page.totalCount}</span> {postWord}
+        </IntroChip>.
+      </p>
+      <div class="mx-auto mt-8 max-w-md">
+        <BlogSearchBar
+          variant="page"
+          category={category}
+          inputId={`blog-search-${category}`}
+          placeholder={`Search ${label}…`}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-12 md:py-16" aria-label={label}>
+    {
+      page.posts.length > 0 ? (
+        <>
+          <div data-reveal>
+            {page.posts.map((post) => (
+              <BlogCard
+                title={post.data.title}
+                description={post.data.description}
+                publishDate={post.data.publishDate}
+                category={post.data.category}
+                slug={post.id}
+                readingTime={post.data.readingTime}
+                draft={post.data.draft}
+                variant="story"
+              />
+            ))}
+          </div>
+          <BlogCategoryPagination page={page} />
+        </>
+      ) : (
+        <p class="text-center text-[var(--color-ink-soft)]">Nothing in this topic yet.</p>
+      )
+    }
+  </section>
+
+  <section class="frame-divider" aria-labelledby="blog-category-hub-title">
+    <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-14 text-center md:py-16">
+      <BlogTopicBlocks current={category} />
+
+      <h2
+        id="blog-category-hub-title"
+        class="mt-8 font-display text-2xl tracking-tight text-[var(--color-ink)] md:text-3xl"
+      >
+        Bright Enough
+      </h2>
+      <p class="mx-auto mt-3 max-w-md text-[var(--color-ink-soft)]">
+        Bright Enough is the Harvous blog — notes, habits, and teaching that show up after Sunday.
+      </p>
+      <div class="mt-8 flex justify-center">
+        <a
+          href="/blog/"
+          class="btn-pill inline-flex items-center gap-1.5"
+          data-blog-topic-blocks-trigger
+        >
+          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path
+              fill-rule="evenodd"
+              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          Back to Bright Enough
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <DownloadCTA />
+</BaseLayout>

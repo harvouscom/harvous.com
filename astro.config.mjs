@@ -41,7 +41,10 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => {
-        if (page.includes("/blog")) return false;
+        // Blog hub, categories, and posts are indexed; search, index JSON, RSS, and pagination stay out.
+        if (page.includes("/blog/search")) return false;
+        if (page.includes("/blog/rss")) return false;
+        if (/\/blog\/[^/]+\/page\//.test(page)) return false;
         // Features hub only — detail pages under /features/{slug}/ are indexed.
         if (page.endsWith("/features/") || page.endsWith("/features")) return false;
         // Individual changelog pages are noindex — keep crawl budget on compare/use-cases.

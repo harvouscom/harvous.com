@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /blog/
+Disallow: /blog/search/
+Disallow: /blog/search-index.json
 
 Sitemap: https://harvous.com/sitemap-index.xml

@@ -6,15 +6,23 @@ import WhatsIncluded from "../components/WhatsIncluded.astro";
 import PageClosingCTA from "../components/PageClosingCTA.astro";
 import UseCasesPreview from "../components/UseCasesPreview.astro";
 import ComparePreview from "../components/ComparePreview.astro";
+import RelatedBlogPosts from "../components/RelatedBlogPosts.astro";
 import TestimonialsSection from "../components/TestimonialsSection.astro";
 import FaqSection from "../components/FaqSection.astro";
 import FounderLetterSection from "../components/FounderLetterSection.astro";
 import DownloadCTA from "../components/DownloadCTA.astro";
+import { getCollection } from "astro:content";
 import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
 import { HOME_FEATURE_CARDS } from "../lib/home-feature-cards.ts";
 import { fathomSignup, fathomCta } from "../lib/fathom-events.ts";
+import { includeBlogDrafts, isBlogPostListed } from "../lib/blog";
 
 const homeJsonLd = await buildHomeJsonLd();
+const showDrafts = includeBlogDrafts();
+const homeBlogPosts = (await getCollection("blog"))
+  .filter((p) => isBlogPostListed(p, showDrafts))
+  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime())
+  .slice(0, 2);
 ---
 
 <BaseLayout
@@ -48,6 +56,11 @@ const homeJsonLd = await buildHomeJsonLd();
   <TestimonialsSection />
 
   <ComparePreview />
+
+  <RelatedBlogPosts
+    posts={homeBlogPosts}
+    lead="Bright Enough — notes, habits, and teaching that show up after Sunday."
+  />
 
   <!-- Founder letter — a contrast "card" that breaks the grid frame on purpose. -->
   <FounderLetterSection />

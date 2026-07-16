@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BlogLibraryNav from "./BlogLibraryNav.astro";
+import BlogTopicBlocks from "./BlogTopicBlocks.astro";
+import { getCollection } from "astro:content";
+import {
+  BLOG_CATEGORY_LABELS,
+  blogCategoriesInUse,
+  blogCategoryColor,
+  blogCategoryIcon,
+  includeBlogDrafts,
+  isBlogPostListed,
+  postsInBlogCategory,
+  type BlogCategory,
+} from "../lib/blog";
+
+const showDrafts = includeBlogDrafts();
+const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts));
+const topics = blogCategoriesInUse(listed).map((cat: BlogCategory) => ({
+  category: cat,
+  label: BLOG_CATEGORY_LABELS[cat],
+  icon: blogCategoryIcon(cat),
+  color: blogCategoryColor(cat),
+  count: postsInBlogCategory(listed, cat).length,
+}));
+---
+
+<BaseLayout
+  title="Search — Bright Enough"
+  description="Search Bright Enough — notes, habits, and teaching from the Harvous blog."
+  noindex
+>
+  <section class="border-b border-[var(--color-rule)]">
+    <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-10 text-center md:py-14" data-reveal>
+      <BlogTopicBlocks />
+      <p class="eyebrow mt-2">Bright Enough</p>
+      <h1 class="mt-3 font-display text-4xl tracking-tight md:text-5xl">Search</h1>
+      <p class="mx-auto mt-4 max-w-md text-lg text-[var(--color-ink-soft)]">
+        Find posts by title or topic across Bright Enough.
+      </p>
+    </div>
+  </section>
+
+  <div data-blog-search-page>
+    <BlogLibraryNav mode="filter" topics={topics} />
+
+    <section
+      class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-10 md:py-14"
+      aria-label="Search results"
+    >
+      <p class="text-center text-sm text-[var(--color-ink-faint)]" data-blog-search-status>
+        Loading search…
+      </p>
+
+      <div class="mt-4" data-blog-search-results hidden></div>
+      <p
+        class="mt-8 text-center text-[var(--color-ink-soft)]"
+        data-blog-search-empty
+        hidden
+      ></p>
+
+      <div class="mt-12 flex justify-center">
+        <a href="/blog/" class="btn-pill inline-flex items-center gap-1.5">
+          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path
+              fill-rule="evenodd"
+              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          Back to Bright Enough
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import "../scripts/blog-search.ts";
+</script>

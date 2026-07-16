@@ -24,15 +24,26 @@ export const BLOG_CATEGORY_LABELS: Record<BlogCategory, string> = {
   equipping: "Equipping",
 };
 
+/** Short archive leads — what this topic is about (used on category pages). */
+export const BLOG_CATEGORY_LEADS: Record<BlogCategory, string> = {
+  "study-habits": "Small practices that help Scripture stick after the hour is over.",
+  "how-we-think": "Notes-first ideas about memory, tools, and church education.",
+  "scripture-study": "Reading with the text close — references, words, and trails you can reopen.",
+  "using-harvous": "Practical ways to start in the app without learning everything at once.",
+  teaching: "Lesson prep, questions, and classroom habits that leave a trail.",
+  retention: "What helps Monday remember what Sunday taught.",
+  equipping: "Building libraries and handoffs so teachers don’t start from zero.",
+};
+
 /** Soft fallback tints for art plates (not category pills). */
 export const BLOG_CATEGORY_COLORS: Record<BlogCategory, { bg: string; ink: string }> = {
-  "study-habits": { bg: "var(--color-mint)", ink: "var(--color-mint-ink)" },
-  "how-we-think": { bg: "var(--color-sky)", ink: "var(--color-sky-ink)" },
+  "study-habits": { bg: "var(--color-sky)", ink: "var(--color-sky-ink)" },
+  "how-we-think": { bg: "var(--color-cream)", ink: "var(--color-cream-ink)" },
   "scripture-study": { bg: "var(--color-lilac)", ink: "var(--color-lilac-ink)" },
-  "using-harvous": { bg: "var(--color-sky)", ink: "var(--color-sky-ink)" },
+  "using-harvous": { bg: "var(--color-warm)", ink: "var(--color-ink)" },
   teaching: { bg: "var(--color-lilac)", ink: "var(--color-lilac-ink)" },
-  retention: { bg: "var(--color-mint)", ink: "var(--color-mint-ink)" },
-  equipping: { bg: "var(--color-peach)", ink: "var(--color-peach-ink)" },
+  retention: { bg: "var(--color-peach)", ink: "var(--color-peach-ink)" },
+  equipping: { bg: "var(--color-mint)", ink: "var(--color-mint-ink)" },
 };
 
 export const BLOG_CATEGORY_ICONS: Record<BlogCategory, string> = {
@@ -49,6 +60,13 @@ export function blogCategoryLabel(category: string): string {
   return BLOG_CATEGORY_LABELS[category as BlogCategory] ?? category;
 }
 
+export function blogCategoryLead(category: string): string {
+  return (
+    BLOG_CATEGORY_LEADS[category as BlogCategory] ??
+    "Essays from Bright Enough on remembering what you study."
+  );
+}
+
 export function blogCategoryColor(category: string): { bg: string; ink: string } {
   return (
     BLOG_CATEGORY_COLORS[category as BlogCategory] ?? {
@@ -60,6 +78,117 @@ export function blogCategoryColor(category: string): { bg: string; ink: string }
 
 export function blogCategoryIcon(category: string): string {
   return BLOG_CATEGORY_ICONS[category as BlogCategory] ?? "fa6-solid:bookmark";
+}
+
+export const BLOG_CATEGORY_PAGE_SIZE = 5;
+export const BLOG_CATEGORY_HUB_PREVIEW = 3;
+
+export const BLOG_CATEGORIES = Object.keys(BLOG_CATEGORY_LABELS) as BlogCategory[];
+
+export function isBlogCategory(value: string): value is BlogCategory {
+  return value in BLOG_CATEGORY_LABELS;
+}
+
+export function blogCategoryHref(category: BlogCategory, page = 1): string {
+  if (page <= 1) return `/blog/${category}/`;
+  return `/blog/${category}/page/${page}/`;
+}
+
+/** BreadcrumbList JSON-LD for Bright Enough surfaces. */
+export function blogBreadcrumbJsonLd(
+  crumbs: { name: string; path: string }[],
+  siteOrigin: string | URL,
+): Record<string, unknown> {
+  const origin = typeof siteOrigin === "string" ? siteOrigin : siteOrigin.toString();
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: new URL(crumb.path, origin).toString(),
+    })),
+  };
+}
+
+/** Shared Blog entity for hub / archives / posts. */
+export function brightEnoughBlogJsonLd(
+  siteOrigin: string | URL,
+  extras: Record<string, unknown> = {},
+): Record<string, unknown> {
+  const origin = typeof siteOrigin === "string" ? siteOrigin : siteOrigin.toString();
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Bright Enough",
+    description:
+      "Notes, habits, and teaching that show up after Sunday. The Harvous blog for teachers, group leaders, and anyone who keeps what they learn.",
+    url: new URL("/blog/", origin).toString(),
+    publisher: {
+      "@type": "Organization",
+      name: "Harvous",
+      url: origin,
+      logo: {
+        "@type": "ImageObject",
+        url: new URL("/images/harvous-2-icon.png", origin).toString(),
+      },
+    },
+    ...extras,
+  };
+}
+
+export type BlogCategoryPage = {
+  category: BlogCategory;
+  posts: CollectionEntry<"blog">[];
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+};
+
+export function sortBlogPostsByDate(
+  posts: CollectionEntry<"blog">[],
+): CollectionEntry<"blog">[] {
+  return [...posts].sort(
+    (a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime(),
+  );
+}
+
+export function postsInBlogCategory(
+  posts: CollectionEntry<"blog">[],
+  category: BlogCategory,
+): CollectionEntry<"blog">[] {
+  return sortBlogPostsByDate(posts.filter((p) => p.data.category === category));
+}
+
+export function blogCategoriesInUse(posts: CollectionEntry<"blog">[]): BlogCategory[] {
+  return [
+    ...new Set(posts.map((p) => p.data.category as BlogCategory)),
+  ].sort((a, b) => BLOG_CATEGORY_LABELS[a].localeCompare(BLOG_CATEGORY_LABELS[b]));
+}
+
+export function getBlogCategoryPageCount(totalCount: number): number {
+  return Math.max(1, Math.ceil(totalCount / BLOG_CATEGORY_PAGE_SIZE));
+}
+
+export function getBlogCategoryPage(
+  category: BlogCategory,
+  page: number,
+  allListedPosts: CollectionEntry<"blog">[],
+): BlogCategoryPage {
+  const categoryPosts = postsInBlogCategory(allListedPosts, category);
+  const totalCount = categoryPosts.length;
+  const totalPages = getBlogCategoryPageCount(totalCount);
+  const currentPage = Math.min(Math.max(1, Math.floor(page) || 1), totalPages);
+  const start = (currentPage - 1) * BLOG_CATEGORY_PAGE_SIZE;
+
+  return {
+    category,
+    posts: categoryPosts.slice(start, start + BLOG_CATEGORY_PAGE_SIZE),
+    currentPage,
+    totalPages,
+    totalCount,
+  };
 }
 
 /** Feature MDX ids (or coming-soon-grid ids) shown on the post closing bridge — keep to 3. */

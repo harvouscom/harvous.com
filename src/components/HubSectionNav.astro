@@ -7,6 +7,9 @@
  * Parent page must wrap nav + sections in an element with [data-hub-section-nav-main]
  * so pin/unpin stays within the tracked content.
  */
+import BlogSearchBar from "./BlogSearchBar.astro";
+import type { BlogCategory } from "../lib/blog";
+
 interface NavItem {
   id: string;
   label: string;
@@ -17,6 +20,10 @@ interface Props {
   ariaLabel?: string;
   selectLabel?: string;
   selectId?: string;
+  /** Show Bright Enough search control leading the pill row. */
+  showSearch?: boolean;
+  /** Optional category scope for search submits. */
+  searchCategory?: BlogCategory;
 }
 
 const {
@@ -24,6 +31,8 @@ const {
   ariaLabel = "Sections",
   selectLabel = "Jump to section",
   selectId = "hub-section-select",
+  showSearch = false,
+  searchCategory,
 } = Astro.props;
 const defaultId = items[0]?.id ?? "";
 ---
@@ -32,6 +41,18 @@ const defaultId = items[0]?.id ?? "";
   items.length > 0 && (
     <div class="hub-section-nav__slot" data-hub-section-nav-slot>
       <div class="hub-section-nav__float" data-hub-section-nav-float>
+        {
+          showSearch && (
+            <div class="hub-section-nav__search" data-hub-section-nav-search>
+              <BlogSearchBar
+                variant="nav"
+                category={searchCategory}
+                inputId={`${selectId}-search`}
+              />
+            </div>
+          )
+        }
+
         <nav class="hub-section-nav__pills" aria-label={ariaLabel}>
           {
             items.map((item) => (
@@ -79,16 +100,26 @@ const defaultId = items[0]?.id ?? "";
   .hub-section-nav__float {
     position: relative;
     z-index: 35;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem 0.55rem;
     width: fit-content;
     max-width: calc(100% - 2 * var(--frame-content-pad));
     padding: 0.4rem 0.55rem;
     border: 1px solid var(--color-rule);
-    border-radius: 1.125rem;
+    border-radius: 999px;
     background: color-mix(in oklab, var(--color-card) 90%, transparent);
     backdrop-filter: blur(8px);
     box-shadow:
       0 1px 2px rgba(15, 23, 42, 0.04),
       0 8px 24px -12px rgba(15, 23, 42, 0.1);
+  }
+
+  .hub-section-nav__search {
+    flex: none;
+    min-width: 0;
   }
 
   .hub-section-nav__float.is-fixed {
@@ -122,6 +153,23 @@ const defaultId = items[0]?.id ?? "";
 
   .hub-section-nav__float:not(.is-compact):not(.is-pinned) .hub-section-nav__select-wrap {
     display: none;
+  }
+
+  /* Compact: keep search + select; hide topic pills */
+  .hub-section-nav__float.is-compact .hub-section-nav__search,
+  .hub-section-nav__float.is-pinned .hub-section-nav__search {
+    width: 100%;
+    max-width: 18rem;
+  }
+
+  .hub-section-nav__float.is-compact .hub-section-nav__search :global(.blog-search-bar--nav),
+  .hub-section-nav__float.is-pinned .hub-section-nav__search :global(.blog-search-bar--nav) {
+    width: 100%;
+  }
+
+  .hub-section-nav__float.is-compact .hub-section-nav__search :global(.blog-search-bar__input),
+  .hub-section-nav__float.is-pinned .hub-section-nav__search :global(.blog-search-bar__input) {
+    width: 100%;
   }
 
   .hub-section-nav__float.is-measuring .hub-section-nav__pills {
@@ -266,12 +314,16 @@ const defaultId = items[0]?.id ?? "";
       const pillsWidth = pillEls.reduce((sum, el, i) => {
         return sum + el.getBoundingClientRect().width + (i > 0 ? gap : 0);
       }, 0);
+      const searchEl = navFloat.querySelector<HTMLElement>("[data-hub-section-nav-search]");
+      const searchWidth = searchEl ? searchEl.getBoundingClientRect().width : 0;
+      const rowGap = parseFloat(floatStyle.columnGap || floatStyle.gap) || 0;
       const chromeX =
         parseFloat(floatStyle.paddingLeft) +
         parseFloat(floatStyle.paddingRight) +
         parseFloat(floatStyle.borderLeftWidth) +
         parseFloat(floatStyle.borderRightWidth);
-      const needed = pillsWidth + chromeX;
+      const needed =
+        pillsWidth + chromeX + (searchWidth > 0 ? searchWidth + rowGap : 0);
 
       navFloat.classList.remove("is-measuring");
 

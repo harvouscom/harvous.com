@@ -15,10 +15,39 @@ Harvous is not a Bible reader. It is not built around sermon transcription or AI
 ## Links
 
 - Homepage: https://harvous.com/
+- Bright Enough (blog): https://harvous.com/blog/
+- Blog RSS: https://harvous.com/blog/rss.xml
 - Compare Harvous to other apps: https://harvous.com/compare/
 - Use cases: https://harvous.com/use-cases/
 - Release Notes: https://harvous.com/release-notes/
 - Sign up: https://app.harvous.com/
+
+## Bright Enough — the Harvous blog
+
+Bright Enough is editorial content about teaching craft, retention after Sunday, study habits, and notes-first Bible study — for teachers, group leaders, churches, and anyone who wants learning to last.
+
+Hub: https://harvous.com/blog/
+
+### Topics
+
+- Equipping: https://harvous.com/blog/equipping/
+- How we think: https://harvous.com/blog/how-we-think/
+- Retention: https://harvous.com/blog/retention/
+- Study habits: https://harvous.com/blog/study-habits/
+- Teaching: https://harvous.com/blog/teaching/
+- Using Harvous: https://harvous.com/blog/using-harvous/
+
+### Cornerstone essays
+
+- Why church education evaporates by Monday: https://harvous.com/blog/why-church-education-evaporates-by-monday/
+- Why your Bible study thoughts keep disappearing: https://harvous.com/blog/why-bible-study-thoughts-disappear/
+- Notes-first vs AI that studies for you: https://harvous.com/blog/notes-first-vs-ai-that-studies-for-you/
+- The Monday retention loop: https://harvous.com/blog/the-monday-retention-loop/
+- The lesson-prep stack: https://harvous.com/blog/the-lesson-prep-stack/
+- Threads: start here in Harvous: https://harvous.com/blog/start-with-threads/
+- Handoff without amnesia: https://harvous.com/blog/handoff-without-amnesia/
+- What church education systems need: https://harvous.com/blog/what-church-education-systems-need/
+- When you've taught it before: https://harvous.com/blog/when-youve-taught-it-before/
 
 ## Compare guides
 

@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
 import OptimizedImage from "./OptimizedImage.astro";
 
@@ -79,10 +80,17 @@ const groups = [
                   <li>
                     <a
                       href={l.href}
-                      class="text-sm whitespace-nowrap text-[var(--color-ink-soft)] no-underline transition-colors duration-150 hover:text-[var(--color-ink)]"
+                      class="inline-flex items-center gap-1.5 text-sm whitespace-nowrap text-[var(--color-ink-soft)] no-underline transition-colors duration-150 hover:text-[var(--color-ink)]"
                       {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     >
                       {l.label}
+                      {l.external ? (
+                        <Icon
+                          name="fa6-solid:arrow-up-right-from-square"
+                          class="size-3 opacity-70"
+                          aria-hidden="true"
+                        />
+                      ) : null}
                     </a>
                   </li>
                 ))}

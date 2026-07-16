@@ -1,0 +1,416 @@
+---
+/**
+ * Bright Enough library bar — Topics dropdown + search (Lattice-style).
+ * - navigate: category archives (blog hub)
+ * - filter: topic filter + live search (search page)
+ */
+import BlogSearchBar from "./BlogSearchBar.astro";
+import { Icon } from "astro-icon/components";
+import type { BlogCategory } from "../lib/blog";
+
+interface Topic {
+  category: BlogCategory;
+  label: string;
+  href?: string;
+  icon: string;
+  color: { bg: string; ink: string };
+  count?: number;
+}
+
+interface Props {
+  topics: Topic[];
+  mode?: "navigate" | "filter";
+  /** Prefill the search field (filter mode / URL). */
+  searchValue?: string;
+}
+
+const { topics, mode = "navigate", searchValue = "" } = Astro.props;
+const sticky = mode === "navigate";
+const menuId = mode === "filter" ? "blog-search-topics-menu" : "blog-library-topics-menu";
+const triggerId = mode === "filter" ? "blog-search-topics-trigger" : "blog-library-topics-trigger";
+const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-search";
+---
+
+<div
+  class:list={["blog-library-nav__slot", mode === "filter" && "blog-library-nav__slot--filter"]}
+  data-blog-library-nav-slot
+  data-blog-library-nav-mode={mode}
+>
+  <div
+    class="blog-library-nav__float"
+    data-blog-library-nav-float
+    data-blog-library-nav-sticky={sticky ? "1" : "0"}
+  >
+    <div class="blog-library-nav__row">
+      <div class="blog-library-nav__topics" data-blog-library-topics>
+        <button
+          type="button"
+          class="blog-library-nav__trigger"
+          data-blog-library-topics-trigger
+          aria-expanded="false"
+          aria-controls={menuId}
+          id={triggerId}
+        >
+          <span data-blog-library-topics-label>Topics</span>
+          <svg class="blog-library-nav__chevron" viewBox="0 0 12 12" aria-hidden="true">
+            <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+
+        <div
+          class="blog-library-nav__menu"
+          id={menuId}
+          data-blog-library-topics-menu
+          hidden
+          role="menu"
+          aria-labelledby={triggerId}
+        >
+          {
+            mode === "filter" && (
+              <button
+                type="button"
+                class="blog-library-nav__item blog-library-nav__item--all"
+                role="menuitem"
+                data-blog-search-filter=""
+              >
+                <span
+                  class="blog-library-nav__item-icon"
+                  style="background: color-mix(in oklab, var(--color-warm) 70%, white); color: var(--color-ink);"
+                  aria-hidden="true"
+                >
+                  <Icon name="fa6-solid:layer-group" class="h-3.5 w-3.5" />
+                </span>
+                <span class="blog-library-nav__item-label">All topics</span>
+                <span class="blog-library-nav__item-go" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 3.5 10.5 8 6 12.5"></path>
+                  </svg>
+                </span>
+              </button>
+            )
+          }
+          {
+            topics.map((topic) =>
+              mode === "filter" ? (
+                <button
+                  type="button"
+                  class="blog-library-nav__item"
+                  role="menuitem"
+                  data-blog-search-filter={topic.category}
+                >
+                  <span
+                    class="blog-library-nav__item-icon"
+                    style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink};`}
+                    aria-hidden="true"
+                  >
+                    <Icon name={topic.icon} class="h-3.5 w-3.5" />
+                  </span>
+                  <span class="blog-library-nav__item-label">{topic.label}</span>
+                  <span class="blog-library-nav__item-go" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 3.5 10.5 8 6 12.5"></path>
+                    </svg>
+                  </span>
+                </button>
+              ) : (
+                <a href={topic.href} class="blog-library-nav__item" role="menuitem">
+                  <span
+                    class="blog-library-nav__item-icon"
+                    style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink};`}
+                    aria-hidden="true"
+                  >
+                    <Icon name={topic.icon} class="h-3.5 w-3.5" />
+                  </span>
+                  <span class="blog-library-nav__item-label">{topic.label}</span>
+                  <span class="blog-library-nav__item-go" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 3.5 10.5 8 6 12.5"></path>
+                    </svg>
+                  </span>
+                </a>
+              ),
+            )
+          }
+        </div>
+      </div>
+
+      <div class="blog-library-nav__search">
+        <BlogSearchBar
+          variant="library"
+          inputId={searchInputId}
+          placeholder="Search"
+          value={searchValue}
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .blog-library-nav__slot {
+    --blog-library-nav-height: calc(2.5rem + 1.1rem);
+    display: flex;
+    justify-content: center;
+    /* Center the bar on the hero section border */
+    margin-top: calc(var(--blog-library-nav-height) / -2);
+    padding-inline: var(--frame-content-pad);
+    position: relative;
+    z-index: 41;
+  }
+
+  .blog-library-nav__float {
+    position: relative;
+    z-index: 40;
+    width: min(100%, 396px);
+    padding: 0.55rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--color-card) 96%, transparent);
+    backdrop-filter: blur(10px);
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.04),
+      0 10px 28px -12px rgba(15, 23, 42, 0.12);
+  }
+
+  .blog-library-nav__float:has(.blog-library-nav__topics.is-open) {
+    overflow: visible;
+  }
+
+  .blog-library-nav__float.is-fixed {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100% - 2 * var(--frame-content-pad)), 396px);
+  }
+
+  .blog-library-nav__float.is-pinned {
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.06),
+      0 14px 36px -12px rgba(15, 23, 42, 0.18);
+  }
+
+  .blog-library-nav__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .blog-library-nav__topics {
+    flex: none;
+  }
+
+  .blog-library-nav__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 2.5rem;
+    max-width: 9.5rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-ink);
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color 150ms ease, background 150ms ease;
+  }
+
+  .blog-library-nav__trigger [data-blog-library-topics-label] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .blog-library-nav__trigger:hover,
+  .blog-library-nav__topics.is-open .blog-library-nav__trigger {
+    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
+    background: color-mix(in oklab, var(--color-warm) 45%, var(--color-card));
+  }
+
+  .blog-library-nav__trigger:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .blog-library-nav__chevron {
+    width: 0.7rem;
+    height: 0.7rem;
+    flex: none;
+  }
+
+  .blog-library-nav__menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 1.25rem;
+    background: var(--color-card);
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.05),
+      0 18px 40px -16px rgba(15, 23, 42, 0.22);
+  }
+
+  .blog-library-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    padding: 0.45rem 0.45rem 0.45rem 0.5rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 0.85rem;
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .blog-library-nav__item--all {
+    grid-column: 1 / -1;
+  }
+
+  .blog-library-nav__item:hover,
+  .blog-library-nav__item.is-active {
+    background: color-mix(in oklab, var(--color-warm) 55%, var(--color-card));
+    border-color: color-mix(in oklab, var(--color-ink) 14%, var(--color-rule));
+  }
+
+  .blog-library-nav__item-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 1.85rem;
+    height: 1.85rem;
+    border-radius: 0.55rem;
+  }
+
+  .blog-library-nav__item-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .blog-library-nav__item-go {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 1.35rem;
+    height: 1.35rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    color: var(--color-ink-faint);
+    background: var(--color-card);
+  }
+
+  .blog-library-nav__item-go svg {
+    width: 0.7rem;
+    height: 0.7rem;
+  }
+
+  .blog-library-nav__item:hover .blog-library-nav__item-go,
+  .blog-library-nav__item.is-active .blog-library-nav__item-go {
+    border-color: color-mix(in oklab, var(--color-ink) 18%, var(--color-rule));
+    color: var(--color-ink-soft);
+  }
+
+  .blog-library-nav__search {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+</style>
+
+<script>
+  function initBlogLibraryNav() {
+    document.querySelectorAll<HTMLElement>("[data-blog-library-nav-float]").forEach((float) => {
+      if (float.dataset.ready === "1") return;
+      float.dataset.ready = "1";
+
+      const slot = float.closest<HTMLElement>("[data-blog-library-nav-slot]");
+      const topics = float.querySelector<HTMLElement>("[data-blog-library-topics]");
+      const trigger = float.querySelector<HTMLButtonElement>("[data-blog-library-topics-trigger]");
+      const menu = float.querySelector<HTMLElement>("[data-blog-library-topics-menu]");
+      if (!slot || !topics || !trigger || !menu) return;
+
+      const sticky = float.dataset.blogLibraryNavSticky === "1";
+      const main = document.querySelector<HTMLElement>("[data-blog-library-main]");
+      const header = document.getElementById("site-header");
+      const PIN_GAP = 10;
+      const pinTop = () => (header?.getBoundingClientRect().bottom ?? 0) + PIN_GAP;
+
+      const setOpen = (open: boolean) => {
+        topics.classList.toggle("is-open", open);
+        trigger.setAttribute("aria-expanded", open ? "true" : "false");
+        menu.hidden = !open;
+      };
+
+      trigger.addEventListener("click", () => {
+        setOpen(menu.hidden);
+      });
+
+      document.addEventListener("pointerdown", (event) => {
+        const target = event.target as Node | null;
+        if (!target || topics.contains(target)) return;
+        setOpen(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setOpen(false);
+      });
+
+      menu.querySelectorAll<HTMLElement>("[role='menuitem']").forEach((item) => {
+        item.addEventListener("click", () => setOpen(false));
+      });
+
+      if (!sticky) return;
+
+      const syncPin = () => {
+        const top = pinTop();
+        const slotTop = slot.getBoundingClientRect().top;
+        const mainBottom = main?.getBoundingClientRect().bottom ?? Infinity;
+        const wantsPin = slotTop <= top;
+        const floatHeight = float.offsetHeight;
+        const shouldPin = wantsPin && mainBottom > top + floatHeight;
+
+        float.classList.toggle("is-fixed", shouldPin);
+        float.classList.toggle("is-pinned", shouldPin);
+
+        if (shouldPin) {
+          float.style.top = `${top}px`;
+          slot.style.minHeight = `${floatHeight}px`;
+        } else {
+          float.style.top = "";
+          slot.style.minHeight = "";
+        }
+      };
+
+      window.addEventListener("scroll", syncPin, { passive: true });
+      window.addEventListener("resize", syncPin, { passive: true });
+      syncPin();
+    });
+  }
+
+  initBlogLibraryNav();
+  document.addEventListener("astro:page-load", initBlogLibraryNav);
+</script>

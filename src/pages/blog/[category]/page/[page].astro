@@ -1,0 +1,37 @@
+---
+import BlogCategoryIndexPage from "../../../../components/BlogCategoryIndexPage.astro";
+import { getCollection } from "astro:content";
+import {
+  blogCategoriesInUse,
+  getBlogCategoryPageCount,
+  includeBlogDrafts,
+  isBlogPostListed,
+  postsInBlogCategory,
+  type BlogCategory,
+} from "../../../../lib/blog";
+
+export async function getStaticPaths() {
+  const showDrafts = includeBlogDrafts();
+  const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts));
+  const paths: {
+    params: { category: string; page: string };
+    props: { category: BlogCategory; currentPage: number };
+  }[] = [];
+
+  for (const category of blogCategoriesInUse(listed)) {
+    const totalPages = getBlogCategoryPageCount(postsInBlogCategory(listed, category).length);
+    for (let page = 2; page <= totalPages; page++) {
+      paths.push({
+        params: { category, page: String(page) },
+        props: { category, currentPage: page },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { category, currentPage } = Astro.props;
+---
+
+<BlogCategoryIndexPage category={category} currentPage={currentPage} />

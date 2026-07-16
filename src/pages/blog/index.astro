@@ -1,14 +1,23 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BlogCard from "../../components/BlogCard.astro";
-import HubSectionNav from "../../components/HubSectionNav.astro";
+import BlogLibraryNav from "../../components/BlogLibraryNav.astro";
+import BlogTopicBlocks from "../../components/BlogTopicBlocks.astro";
 import DownloadCTA from "../../components/DownloadCTA.astro";
+import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import {
+  BLOG_CATEGORY_HUB_PREVIEW,
   BLOG_CATEGORY_LABELS,
+  blogBreadcrumbJsonLd,
+  blogCategoriesInUse,
+  blogCategoryColor,
+  blogCategoryHref,
+  blogCategoryIcon,
+  brightEnoughBlogJsonLd,
   includeBlogDrafts,
   isBlogPostListed,
-  type BlogCategory,
+  postsInBlogCategory,
 } from "../../lib/blog";
 
 const showDrafts = includeBlogDrafts();
@@ -20,34 +29,73 @@ const posts = allPosts
 const featured = posts[0];
 const spotlight = posts.slice(1, 5);
 
-const categoriesInUse = [
-  ...new Set(posts.map((p) => p.data.category as BlogCategory)),
-].sort((a, b) => BLOG_CATEGORY_LABELS[a].localeCompare(BLOG_CATEGORY_LABELS[b]));
+const topicSections = blogCategoriesInUse(posts).map((cat) => {
+  const categoryPosts = postsInBlogCategory(posts, cat);
+  return {
+    id: `topic-${cat}`,
+    category: cat,
+    label: BLOG_CATEGORY_LABELS[cat],
+    icon: blogCategoryIcon(cat),
+    color: blogCategoryColor(cat),
+    posts: categoryPosts,
+    previewPosts: categoryPosts.slice(0, BLOG_CATEGORY_HUB_PREVIEW),
+    href: blogCategoryHref(cat),
+  };
+});
 
-const topicSections = categoriesInUse.map((cat) => ({
-  id: `topic-${cat}`,
-  category: cat,
-  label: BLOG_CATEGORY_LABELS[cat],
-  posts: posts.filter((p) => p.data.category === cat),
+const libraryTopics = topicSections.map((section) => ({
+  category: section.category,
+  label: section.label,
+  href: section.href,
+  icon: section.icon,
+  color: section.color,
+  count: section.posts.length,
 }));
 
-const navItems = [
-  { id: "library-featured", label: "Featured" },
-  ...topicSections.map((section) => ({ id: section.id, label: section.label })),
+const siteOrigin = Astro.site ?? "https://harvous.com";
+const hubDescription =
+  "Bright Enough — notes, habits, and teaching that show up after Sunday. For teachers, group leaders, and anyone who keeps what they learn.";
+const hubJsonLd = [
+  brightEnoughBlogJsonLd(siteOrigin, {
+    blogPost: posts.slice(0, 10).map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.data.title,
+      url: new URL(`/blog/${p.id}/`, siteOrigin).toString(),
+      datePublished: p.data.publishDate.toISOString(),
+      description: p.data.description,
+    })),
+  }),
+  blogBreadcrumbJsonLd(
+    [
+      { name: "Harvous", path: "/" },
+      { name: "Bright Enough", path: "/blog/" },
+    ],
+    siteOrigin,
+  ),
 ];
 ---
 
 <BaseLayout
   title="Bright Enough — Harvous Blog"
-  description="Bright Enough — notes, habits, and teaching that show up after Sunday. For teachers, group leaders, and anyone who keeps what they learn."
+  description={hubDescription}
+  jsonLd={hubJsonLd}
 >
   <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-10 text-center md:py-12" data-reveal>
-      <p class="eyebrow">The Harvous Blog</p>
-      <h1 class="mt-4 font-display text-5xl leading-[1.0] tracking-tight md:text-7xl">
+    <div class="mx-auto max-w-3xl px-5 py-10 text-center md:py-12">
+      <BlogTopicBlocks />
+      <p class="eyebrow mt-2" data-reveal>The Harvous Blog</p>
+      <h1
+        class="mt-4 font-display text-5xl leading-[1.0] tracking-tight md:text-7xl"
+        data-reveal
+        style="--reveal-delay: 40ms;"
+      >
         Bright Enough
       </h1>
-      <p class="mx-auto mt-5 max-w-xl text-lg text-[var(--color-ink-soft)]">
+      <p
+        class="mx-auto mt-5 max-w-xl text-lg text-[var(--color-ink-soft)]"
+        data-reveal
+        style="--reveal-delay: 80ms;"
+      >
         Notes, habits, and teaching that show up after Sunday.
       </p>
     </div>
@@ -58,13 +106,8 @@ const navItems = [
       <p class="text-center text-[var(--color-ink-soft)]">Nothing here yet. Check back soon.</p>
     </section>
   ) : (
-    <div class="blog-library-main" data-hub-section-nav-main>
-      <HubSectionNav
-        items={navItems}
-        ariaLabel="Blog topics"
-        selectLabel="Jump to topic"
-        selectId="blog-topic-select"
-      />
+    <div class="blog-library-main" data-blog-library-main>
+      <BlogLibraryNav topics={libraryTopics} />
 
       <section
         id="library-featured"
@@ -101,7 +144,7 @@ const navItems = [
                 Spotlight
               </p>
               <div class="rounded-[2rem] bg-[var(--color-warm)] p-2 md:p-3">
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-2">
                   {spotlight.map((post) => (
                     <BlogCard
                       title={post.data.title}
@@ -130,13 +173,20 @@ const navItems = [
           <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-14 md:py-16">
             <h2
               id={`${section.id}-title`}
-              class="font-display text-3xl tracking-tight md:text-4xl"
+              class="flex flex-wrap items-center gap-3 font-display text-3xl tracking-tight md:text-4xl"
               data-reveal
             >
+              <span
+                class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl md:size-11"
+                style={`background: color-mix(in oklab, ${section.color.bg} 55%, white); color: ${section.color.ink};`}
+                aria-hidden="true"
+              >
+                <Icon name={section.icon} class="h-5 w-5" />
+              </span>
               {section.label}
             </h2>
             <div class="mt-8" data-reveal style="--reveal-delay: 40ms;">
-              {section.posts.map((post) => (
+              {section.previewPosts.map((post) => (
                 <BlogCard
                   title={post.data.title}
                   description={post.data.description}
@@ -149,6 +199,23 @@ const navItems = [
                 />
               ))}
             </div>
+            {section.posts.length > BLOG_CATEGORY_HUB_PREVIEW && (
+              <div class="mt-8" data-reveal style="--reveal-delay: 80ms;">
+                <a
+                  href={section.href}
+                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-accent)] no-underline transition-colors duration-150 hover:text-[var(--color-ink)]"
+                >
+                  View all {section.posts.length} in {section.label}
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path
+                      fill-rule="evenodd"
+                      d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </a>
+              </div>
+            )}
           </div>
         </section>
       ))}

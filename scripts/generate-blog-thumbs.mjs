@@ -23,7 +23,7 @@ const BLOG_DIR = join(ROOT, "src/content/blog");
 const AUTH_HERO_DIR = join(ROOT, "public/images/auth-hero");
 const OUT_DIR = join(ROOT, "public/blog-thumbs");
 const MANIFEST_PATH = join(OUT_DIR, "manifest.json");
-const RECIPE_VERSION = "shader-v14";
+const RECIPE_VERSION = "shader-v16";
 
 /** Form motifs — bold enough to read at 360×360 spots; all directional / geometric. */
 const SHAPE_KINDS = [
@@ -62,6 +62,7 @@ const SHAPE_BY_SLUG = {
   "sermon-series-to-small-group-follow-up": "plume",
   "what-proverbs-25-2-taught-me": "arc",
   "tools-help-humans-teach": "wedge",
+  "when-youve-taught-it-before": "corner",
 };
 
 /** Category fallback pools when no slug/keyword rule hits. */
@@ -77,15 +78,20 @@ const SHAPE_BY_CATEGORY = {
 
 const FORCE = process.argv.includes("--force");
 
-/** Category duotone pairs (deep → mid → highlight). Keep deep tones rich, never near-black. */
+/**
+ * Category duotone pairs (deep → mid → highlight).
+ * Keep in lockstep with BLOG_CATEGORY_COLORS / site pastel tokens in global.css:
+ * study-habits = sky, how-we-think = cream, using-harvous = warm/gray,
+ * retention = peach, equipping = mint, teaching + scripture-study = lilac.
+ */
 const CATEGORY_GRADE = {
-  "study-habits": { a: "#3d6b38", b: "#c9e3b8", c: "#f6ecd6" },
-  "how-we-think": { a: "#2a5a9e", b: "#c2dcf8", c: "#ffffff" },
-  "scripture-study": { a: "#6b3a8e", b: "#dec5ed", c: "#f3c8e0" },
-  "using-harvous": { a: "#3a4a6e", b: "#c2dcf8", c: "#e8e9ed" },
-  teaching: { a: "#5a3a8e", b: "#d4c2f8", c: "#f0eaf8" },
-  retention: { a: "#3d6b38", b: "#c9e3b8", c: "#c2dcf8" },
-  equipping: { a: "#a84528", b: "#fbc8ad", c: "#dec5ed" },
+  "study-habits": { a: "#143a6e", b: "#c2dcf8", c: "#ffffff" }, // sky
+  "how-we-think": { a: "#5a4116", b: "#f6ecd6", c: "#fff8e8" }, // cream / yellow
+  "scripture-study": { a: "#4a1a70", b: "#dec5ed", c: "#f3c8e0" }, // lilac
+  "using-harvous": { a: "#3d4454", b: "#c8ccd4", c: "#f4f5f7" }, // warm / gray
+  teaching: { a: "#4a1a70", b: "#dec5ed", c: "#f0eaf8" }, // lilac
+  retention: { a: "#7a2810", b: "#fbc8ad", c: "#fff1e8" }, // peach / red
+  equipping: { a: "#2a5a25", b: "#c9e3b8", c: "#eef6e6" }, // mint / green
 };
 
 /**
@@ -95,12 +101,13 @@ const CATEGORY_GRADE = {
  */
 const CATEGORY_SOURCE_PACK = {
   "how-we-think": [
-    // cool / airy — blue grade reads clean
-    "ai_bg_053.webp",
-    "ai_bg_051.webp",
-    "ai_bg_058.webp",
-    "ai_bg_044.webp",
+    // warm cream / yellow-friendly
     "ai_bg_045.webp",
+    "ai_bg_047.webp",
+    "ai_bg_059.webp",
+    "ai_bg_072.webp",
+    "ai_bg_050.webp",
+    "ai_bg_073.webp",
   ],
   teaching: [
     // lilac / purple-friendly lights
@@ -111,33 +118,32 @@ const CATEGORY_SOURCE_PACK = {
     "ai_bg_045.webp",
   ],
   retention: [
-    // deeper + green-leaning for fade / return
-    "ai_bg_052.webp",
-    "ai_bg_058.webp",
-    "ai_bg_046.webp",
-    "ai_bg_074.webp",
-    "ai_bg_060.webp",
-    "ai_bg_061.webp",
-  ],
-  equipping: [
-    // warm peach / clay
+    // warm peach / red clay for return loops
     "ai_bg_045.webp",
     "ai_bg_047.webp",
     "ai_bg_059.webp",
     "ai_bg_072.webp",
     "ai_bg_050.webp",
-    "ai_bg_073.webp",
+    "ai_bg_074.webp",
   ],
-  "study-habits": [
-    // mint / soft green
+  equipping: [
+    // mint / soft green (discipleship growth)
     "ai_bg_058.webp",
     "ai_bg_052.webp",
     "ai_bg_044.webp",
     "ai_bg_053.webp",
     "ai_bg_061.webp",
   ],
+  "study-habits": [
+    // cool / airy — blue grade
+    "ai_bg_053.webp",
+    "ai_bg_051.webp",
+    "ai_bg_058.webp",
+    "ai_bg_044.webp",
+    "ai_bg_045.webp",
+  ],
   "using-harvous": [
-    // soft slate-sky companions
+    // soft slate / gray companions
     "ai_bg_053.webp",
     "ai_bg_051.webp",
     "ai_bg_045.webp",
@@ -629,7 +635,14 @@ async function renderVariant(slug, kind, recipe) {
 
   const base = await preparedBase(recipe.source, width, height, recipe);
   const layers = shaderSvg(width, height, recipe);
-  const grade = await fadeSvg(layers.grade, width, height, recipe.mood === "light" ? 0.62 : 0.68);
+  // Stronger category wash so thumbs read the same pastel family as topic icons.
+  const grade = await fadeSvg(layers.grade, width, height, recipe.mood === "light" ? 0.82 : 0.86);
+  const gradeBoost = await fadeSvg(
+    layers.grade,
+    width,
+    height,
+    recipe.mood === "light" ? 0.34 : 0.4,
+  );
   const light = await fadeSvg(
     layers.light,
     width,
@@ -641,10 +654,11 @@ async function renderVariant(slug, kind, recipe) {
   await sharp(base)
     .composite([
       { input: grade, blend: "soft-light" },
+      { input: gradeBoost, blend: "overlay" },
       { input: light, blend: "over" },
       { input: shade, blend: "multiply" },
     ])
-    .modulate({ saturation: 1.12, brightness: recipe.mood === "light" ? 1.02 : 1.0 })
+    .modulate({ saturation: 1.08, brightness: recipe.mood === "light" ? 1.02 : 1.0 })
     .webp({ quality: 86, effort: 4 })
     .toFile(outPath);
 

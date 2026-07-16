@@ -1,0 +1,160 @@
+---
+import { blogCategoryHref, type BlogCategoryPage } from "../lib/blog";
+
+interface Props {
+  page: BlogCategoryPage;
+}
+
+const { page } = Astro.props;
+
+if (page.totalPages <= 1) return null;
+
+const { category, currentPage, totalPages } = page;
+const prevHref = currentPage > 1 ? blogCategoryHref(category, currentPage - 1) : null;
+const nextHref = currentPage < totalPages ? blogCategoryHref(category, currentPage + 1) : null;
+
+const windowStart = Math.max(1, currentPage - 2);
+const windowEnd = Math.min(totalPages, currentPage + 2);
+const pageNumbers: number[] = [];
+for (let n = windowStart; n <= windowEnd; n++) pageNumbers.push(n);
+
+const label = `Pages for ${category}`;
+---
+
+<nav class="blog-category-pagination" aria-label={label}>
+  {
+    prevHref ? (
+      <a href={prevHref} class="btn-pill blog-category-pagination__control" rel="prev">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 3L5 8l5 5"/>
+        </svg>
+        Previous
+      </a>
+    ) : (
+      <span class="btn-pill blog-category-pagination__control blog-category-pagination__control--disabled" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 3L5 8l5 5"/>
+        </svg>
+        Previous
+      </span>
+    )
+  }
+
+  <ol class="blog-category-pagination__pages">
+    {
+      windowStart > 1 && (
+        <>
+          <li>
+            <a href={blogCategoryHref(category, 1)} class="blog-category-pagination__page">1</a>
+          </li>
+          {windowStart > 2 && <li class="blog-category-pagination__ellipsis" aria-hidden="true">…</li>}
+        </>
+      )
+    }
+    {
+      pageNumbers.map((n) => (
+        <li>
+          {
+            n === currentPage ? (
+              <span class="blog-category-pagination__page blog-category-pagination__page--current" aria-current="page">
+                {n}
+              </span>
+            ) : (
+              <a href={blogCategoryHref(category, n)} class="blog-category-pagination__page">{n}</a>
+            )
+          }
+        </li>
+      ))
+    }
+    {
+      windowEnd < totalPages && (
+        <>
+          {windowEnd < totalPages - 1 && <li class="blog-category-pagination__ellipsis" aria-hidden="true">…</li>}
+          <li>
+            <a href={blogCategoryHref(category, totalPages)} class="blog-category-pagination__page">{totalPages}</a>
+          </li>
+        </>
+      )
+    }
+  </ol>
+
+  {
+    nextHref ? (
+      <a href={nextHref} class="btn-pill blog-category-pagination__control" rel="next">
+        Next
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 3l5 5-5 5"/>
+        </svg>
+      </a>
+    ) : (
+      <span class="btn-pill blog-category-pagination__control blog-category-pagination__control--disabled" aria-hidden="true">
+        Next
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 3l5 5-5 5"/>
+        </svg>
+      </span>
+    )
+  }
+</nav>
+
+<style>
+  .blog-category-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem 1rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .blog-category-pagination__control svg {
+    width: 0.8rem;
+    height: 0.8rem;
+    flex: none;
+  }
+  .blog-category-pagination__control--disabled {
+    opacity: 0.38;
+    pointer-events: none;
+  }
+
+  .blog-category-pagination__pages {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-category-pagination__page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.45rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .blog-category-pagination__page:hover {
+    background: color-mix(in oklab, var(--color-rule) 55%, transparent);
+    color: var(--color-ink);
+  }
+  .blog-category-pagination__page--current {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .blog-category-pagination__ellipsis {
+    padding-inline: 0.15rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-faint);
+    user-select: none;
+  }
+</style>

@@ -1,0 +1,223 @@
+---
+/**
+ * Playful arc of Bright Enough topic icon blocks.
+ * Entrance bounce on scroll into view (replays when leaving and re-entering).
+ * Hovering `[data-blog-topic-blocks-trigger]` in the same section also replays.
+ */
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+import {
+  blogCategoriesInUse,
+  blogCategoryColor,
+  blogCategoryIcon,
+  includeBlogDrafts,
+  isBlogPostListed,
+  type BlogCategory,
+} from "../lib/blog";
+
+interface Props {
+  /** Highlight this topic (category archive). */
+  current?: BlogCategory;
+  class?: string;
+}
+
+const { current, class: className } = Astro.props;
+
+const showDrafts = includeBlogDrafts();
+const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts));
+const topicIcons = blogCategoriesInUse(listed).map((cat) => ({
+  icon: blogCategoryIcon(cat),
+  color: blogCategoryColor(cat),
+  current: current ? cat === current : false,
+}));
+---
+
+{
+  topicIcons.length > 0 && (
+    <div
+      class:list={["blog-topic-icons", className]}
+      data-blog-topic-blocks
+      aria-hidden="true"
+    >
+      {topicIcons.map((topic, index) => {
+        const center = (topicIcons.length - 1) / 2;
+        const offset = index - center;
+        const rotate = offset * -9;
+        const rise = Math.pow(offset, 2) * 3.25;
+        return (
+          <span
+            class:list={["blog-topic-icon", topic.current && "blog-topic-icon--current"]}
+            style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: ${rise}px; --stagger-index: ${index};`}
+            aria-hidden="true"
+          >
+            <Icon name={topic.icon} class="h-5 w-5" />
+          </span>
+        );
+      })}
+    </div>
+  )
+}
+
+<style>
+  .blog-topic-icons {
+    --topic-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.85rem;
+    min-height: 4.25rem;
+    padding-block: 0.85rem 0.35rem;
+    margin-inline: auto;
+    pointer-events: none;
+  }
+
+  .blog-topic-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.85rem;
+    opacity: 0.72;
+    transform: translateY(var(--topic-rise, 0)) rotate(var(--topic-rotate, 0deg));
+    transform-origin: 50% 80%;
+  }
+
+  .blog-topic-icon--current {
+    opacity: 1;
+  }
+
+  /* Pre-entrance / reset state */
+  :global(html.js) .blog-topic-icons .blog-topic-icon {
+    opacity: 0;
+    transform: translateY(calc(var(--topic-rise, 0px) + 36px))
+      rotate(calc(var(--topic-rotate, 0deg) - 14deg)) scale(0.55);
+    transition:
+      opacity 520ms ease,
+      transform 720ms var(--topic-ease);
+    transition-delay: calc(40ms + (var(--stagger-index, 0) * 70ms));
+  }
+
+  :global(html.js) .blog-topic-icons.is-in .blog-topic-icon {
+    opacity: 0.72;
+    transform: translateY(var(--topic-rise, 0)) rotate(var(--topic-rotate, 0deg)) scale(1);
+  }
+
+  :global(html.js) .blog-topic-icons.is-in .blog-topic-icon--current {
+    opacity: 1;
+  }
+
+  /* Instant reset (no reverse animation) before a replay */
+  :global(html.js) .blog-topic-icons.is-resetting .blog-topic-icon {
+    transition: none !important;
+    opacity: 0;
+    transform: translateY(calc(var(--topic-rise, 0px) + 36px))
+      rotate(calc(var(--topic-rotate, 0deg) - 14deg)) scale(0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .blog-topic-icons .blog-topic-icon,
+    :global(html.js) .blog-topic-icons.is-in .blog-topic-icon,
+    :global(html.js) .blog-topic-icons.is-resetting .blog-topic-icon {
+      transition: none !important;
+      opacity: 0.72;
+      transform: translateY(var(--topic-rise, 0)) rotate(var(--topic-rotate, 0deg));
+    }
+
+    :global(html.js) .blog-topic-icons .blog-topic-icon--current,
+    :global(html.js) .blog-topic-icons.is-in .blog-topic-icon--current {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  function initTopicBlocks(root: ParentNode = document) {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    root.querySelectorAll<HTMLElement>("[data-blog-topic-blocks]").forEach((group) => {
+      if (group.dataset.blocksReady) return;
+      group.dataset.blocksReady = "1";
+
+      let replayTimer = 0;
+
+      const playIn = () => {
+        group.classList.remove("is-resetting");
+        group.classList.add("is-in");
+      };
+
+      const resetOut = () => {
+        group.classList.remove("is-in");
+        group.classList.remove("is-resetting");
+      };
+
+      /** Snap to pre-entrance, then bounce in again. */
+      const replay = () => {
+        if (reduced) {
+          playIn();
+          return;
+        }
+        if (group.dataset.replaying === "1") return;
+        group.dataset.replaying = "1";
+        window.clearTimeout(replayTimer);
+
+        group.classList.remove("is-in");
+        group.classList.add("is-resetting");
+        void group.offsetWidth;
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            group.classList.remove("is-resetting");
+            group.classList.add("is-in");
+            replayTimer = window.setTimeout(() => {
+              delete group.dataset.replaying;
+            }, 1000);
+          });
+        });
+      };
+
+      const scope = group.closest("section") ?? group.parentElement ?? document;
+      scope.querySelectorAll<HTMLElement>("[data-blog-topic-blocks-trigger]").forEach((trigger) => {
+        if (trigger.dataset.blocksTriggerReady) return;
+        trigger.dataset.blocksTriggerReady = "1";
+        trigger.addEventListener("mouseenter", () => {
+          replay();
+        });
+      });
+
+      if (reduced) {
+        playIn();
+        return;
+      }
+
+      if (!("IntersectionObserver" in window)) {
+        playIn();
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.target !== group) continue;
+            if (entry.isIntersecting) {
+              // Fresh enter from off-screen — always play from the start.
+              replay();
+            } else {
+              window.clearTimeout(replayTimer);
+              delete group.dataset.replaying;
+              resetOut();
+            }
+          }
+        },
+        { threshold: 0.35, rootMargin: "0px 0px -8% 0px" },
+      );
+
+      observer.observe(group);
+    });
+  }
+
+  initTopicBlocks();
+  document.addEventListener("astro:page-load", () => initTopicBlocks());
+</script>
