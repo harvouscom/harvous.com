@@ -64,7 +64,8 @@ const show = posts.length > 0;
   .related-blog {
     --related-blog-max: 42rem;
     --topic-size-mobile: clamp(4.5rem, 28vw, 6rem);
-    --pyramid-bottom-pad: 0;
+    /* Shift stack down so the bottom clips off the framed stage (like desktop) */
+    --pyramid-drop-mobile: clamp(1.25rem, 4vh, 2.25rem);
     position: relative;
     overflow: visible;
   }
@@ -111,7 +112,7 @@ const show = posts.length > 0;
     position: absolute;
     left: 50%;
     top: auto;
-    bottom: 0;
+    bottom: calc(-1 * var(--pyramid-drop-mobile));
     width: calc(3 * var(--topic-size));
     height: calc(3 * var(--topic-size));
     margin: 0;

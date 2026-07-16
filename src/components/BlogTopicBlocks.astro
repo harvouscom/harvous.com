@@ -318,18 +318,18 @@ let pyramidStagger = 0;
 
       const isNarrow = () => window.matchMedia("(max-width: 767px)").matches;
 
-      /** Fall travel: on mobile, from the top of the framed clip stage. */
+      /** Fall travel: park well above the clip so blocks enter from off-page. */
       const fallDistanceRange = () => {
-        if (!isNarrow()) return { min: 220, max: 420, park: 280 };
+        if (!isNarrow()) return { min: 420, max: 720, park: 560 };
         const stage =
           group.closest(".related-blog__clip")?.clientHeight ||
           group.closest(".related-blog")?.clientHeight ||
           group.parentElement?.clientHeight ||
           360;
         return {
-          min: Math.max(220, stage * 0.85),
-          max: Math.max(280, stage * 1.15),
-          park: Math.max(240, stage * 0.95),
+          min: Math.max(380, stage * 1.15),
+          max: Math.max(520, stage * 1.55),
+          park: Math.max(440, stage * 1.35),
         };
       };
 
@@ -477,10 +477,16 @@ let pyramidStagger = 0;
         return;
       }
 
+      // Fall: fire as the Bright Enough section starts entering view.
+      // Smile: wait until the icon group is more clearly on screen.
+      const observeTarget =
+        isFall
+          ? group.closest(".related-blog") || group.closest(".related-blog__clip") || group
+          : group;
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (entry.target !== group) continue;
+            if (entry.target !== observeTarget) continue;
             if (entry.isIntersecting) {
               replay();
             } else {
@@ -490,10 +496,12 @@ let pyramidStagger = 0;
             }
           }
         },
-        { threshold: 0.35, rootMargin: "0px 0px -8% 0px" },
+        isFall
+          ? { threshold: 0, rootMargin: "0px 0px 18% 0px" }
+          : { threshold: 0.35, rootMargin: "0px 0px -8% 0px" },
       );
 
-      observer.observe(group);
+      observer.observe(observeTarget);
     });
   }
 
