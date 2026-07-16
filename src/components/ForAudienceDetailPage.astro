@@ -218,8 +218,6 @@ const jsonLd = {
       cards={relatedFeatureCards}
     />
 
-    <RelatedBlogPosts posts={relatedBlogPosts} />
-
     {
       relatedCompare.length > 0 && (
         <ComparePreview
@@ -278,6 +276,8 @@ const jsonLd = {
       />
     )
   }
+
+  <RelatedBlogPosts posts={relatedBlogPosts} />
 </BaseLayout>
 
 <style>

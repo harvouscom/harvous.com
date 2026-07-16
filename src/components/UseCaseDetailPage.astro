@@ -231,8 +231,6 @@ const jsonLd = {
       cards={relatedFeatureCards}
     />
 
-    <RelatedBlogPosts posts={relatedBlogPosts} />
-
     {
       relatedCompare.length > 0 && (
         <ComparePreview
@@ -271,6 +269,8 @@ const jsonLd = {
     href={buildSignupUrl({ useCase: useCase.slug })}
     fathomTrack={fathomSignup.useCaseDetail(useCase.slug)}
   />
+
+  <RelatedBlogPosts posts={relatedBlogPosts} />
 </BaseLayout>
 
 <style>

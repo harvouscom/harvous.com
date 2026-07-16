@@ -156,8 +156,6 @@ const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
       )
     }
 
-    {page.kind === "feature" && <RelatedBlogPosts posts={relatedBlogPosts} />}
-
     {
       relatedCompare.length > 0 && (
         <ComparePreview
@@ -181,6 +179,8 @@ const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
     secondaryHref={page.kind === "addon" ? "/pricing/" : undefined}
     secondaryLabel={page.kind === "addon" ? "See all pricing" : undefined}
   />
+
+  {page.kind === "feature" && <RelatedBlogPosts posts={relatedBlogPosts} />}
 </BaseLayout>
 
 <style>

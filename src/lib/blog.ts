@@ -212,25 +212,31 @@ export function blogAuthorJsonLd(
 /* Category → product affinity (auto related posts on marketing pages)        */
 /* -------------------------------------------------------------------------- */
 
-/** /for/{slug} pages that should surface posts in this category. */
+/**
+ * Soft category → /for/{slug} fallback (used only when a post has no forSlugs).
+ * Prefer explicit `forSlugs` on posts for precision.
+ */
 export const BLOG_CATEGORY_AUDIENCES: Record<BlogCategory, string[]> = {
-  teaching: ["teachers", "group-leaders", "seminary-students"],
-  retention: ["teachers", "churches", "daily-readers"],
-  equipping: ["churches", "group-leaders", "teachers"],
-  "study-habits": ["daily-readers", "sunday-note-takers", "prayer-journaling"],
-  "using-harvous": ["daily-readers", "teachers"],
-  "scripture-study": ["going-through-a-book", "following-a-theme", "seminary-students"],
+  teaching: ["teachers", "group-leaders"],
+  retention: ["teachers", "churches"],
+  equipping: ["churches"],
+  "study-habits": ["daily-readers", "sunday-note-takers"],
+  "using-harvous": ["daily-readers", "bible-app-users"],
+  "scripture-study": ["going-through-a-book", "following-a-theme"],
   "how-we-think": [],
 };
 
-/** /use-cases/{slug} pages that should surface posts in this category. */
+/**
+ * Soft category → /use-cases/{slug} fallback (used only when a post has no useCaseSlugs).
+ * Prefer explicit `useCaseSlugs` on posts for precision.
+ */
 export const BLOG_CATEGORY_USE_CASES: Record<BlogCategory, string[]> = {
-  teaching: ["small-group", "sermon-notes", "book-study"],
+  teaching: ["small-group"],
   retention: ["daily-journal"],
   equipping: ["small-group"],
-  "study-habits": ["daily-journal", "sermon-notes"],
+  "study-habits": ["daily-journal"],
   "using-harvous": ["daily-journal"],
-  "scripture-study": ["book-study", "topical-study", "deep-study"],
+  "scripture-study": ["book-study", "topical-study"],
   "how-we-think": [],
 };
 
@@ -238,6 +244,30 @@ export type RelatedBlogFilter = {
   for?: string;
   useCase?: string;
   feature?: string;
+};
+
+/** Prefer home-category essays over adjacent mentions for the same page. */
+const AUDIENCE_HOME_CATEGORIES: Record<string, BlogCategory[]> = {
+  teachers: ["teaching", "retention"],
+  "group-leaders": ["teaching", "retention", "equipping"],
+  churches: ["equipping", "retention"],
+  "daily-readers": ["study-habits", "using-harvous", "retention"],
+  "sunday-note-takers": ["study-habits", "teaching"],
+  "prayer-journaling": ["study-habits"],
+  "new-to-the-bible": ["study-habits", "using-harvous"],
+  "bible-app-users": ["using-harvous", "study-habits"],
+  "going-through-a-book": ["teaching", "using-harvous", "scripture-study"],
+  "following-a-theme": ["using-harvous", "scripture-study"],
+  "seminary-students": ["teaching", "how-we-think", "scripture-study"],
+};
+
+const USE_CASE_HOME_CATEGORIES: Record<string, BlogCategory[]> = {
+  "small-group": ["teaching", "retention", "equipping"],
+  "sermon-notes": ["teaching", "study-habits"],
+  "book-study": ["teaching", "using-harvous", "scripture-study"],
+  "topical-study": ["using-harvous", "scripture-study"],
+  "deep-study": ["using-harvous", "how-we-think", "scripture-study"],
+  "daily-journal": ["study-habits", "using-harvous", "retention"],
 };
 
 /**
@@ -253,44 +283,79 @@ function relatedFeatureIdsForPost(post: CollectionEntry<"blog">): string[] {
   return [...new Set([...fromCategory, ...fromPost])];
 }
 
-function postMatchesRelatedFilter(
+function homeCategoryBoost(
+  category: BlogCategory,
+  homes: BlogCategory[] | undefined,
+): number {
+  if (!homes?.length) return 0;
+  return homes.includes(category) ? 3 : 0;
+}
+
+/**
+ * Score how well a post fits a product page.
+ * Explicit frontmatter surfaces beat soft category affinity; home-category gets a boost.
+ */
+function relatedScoreForPost(
   post: CollectionEntry<"blog">,
   filter: RelatedBlogFilter,
-): boolean {
-  if (post.data.hideFromRelated) return false;
+): number {
+  if (post.data.hideFromRelated) return 0;
 
   if (filter.for) {
-    const fromCategory = BLOG_CATEGORY_AUDIENCES[post.data.category] ?? [];
-    const fromPost = post.data.forSlugs ?? [];
-    return fromCategory.includes(filter.for) || fromPost.includes(filter.for);
+    const explicit = post.data.forSlugs ?? [];
+    let score = 0;
+    if (explicit.includes(filter.for)) {
+      score = 10;
+    } else if (explicit.length === 0) {
+      const fromCategory = BLOG_CATEGORY_AUDIENCES[post.data.category] ?? [];
+      if (fromCategory.includes(filter.for)) score = 1;
+    }
+    if (score > 0) {
+      score += homeCategoryBoost(post.data.category, AUDIENCE_HOME_CATEGORIES[filter.for]);
+    }
+    return score;
   }
 
   if (filter.useCase) {
-    const fromCategory = BLOG_CATEGORY_USE_CASES[post.data.category] ?? [];
-    const fromPost = post.data.useCaseSlugs ?? [];
-    return fromCategory.includes(filter.useCase) || fromPost.includes(filter.useCase);
+    const explicit = post.data.useCaseSlugs ?? [];
+    let score = 0;
+    if (explicit.includes(filter.useCase)) {
+      score = 10;
+    } else if (explicit.length === 0) {
+      const fromCategory = BLOG_CATEGORY_USE_CASES[post.data.category] ?? [];
+      if (fromCategory.includes(filter.useCase)) score = 1;
+    }
+    if (score > 0) {
+      score += homeCategoryBoost(post.data.category, USE_CASE_HOME_CATEGORIES[filter.useCase]);
+    }
+    return score;
   }
 
   if (filter.feature) {
-    return relatedFeatureIdsForPost(post).includes(filter.feature);
+    return relatedFeatureIdsForPost(post).includes(filter.feature) ? 5 : 0;
   }
 
-  return false;
+  return 0;
 }
 
-/** Newest matching published posts for a product page surface. */
+/** Best-matching published posts for a product page surface. */
 export function getRelatedBlogPosts(
   posts: CollectionEntry<"blog">[],
   filter: RelatedBlogFilter,
-  limit = 3,
+  limit = 2,
 ): CollectionEntry<"blog">[] {
   return posts
-    .filter((p) => postMatchesRelatedFilter(p, filter))
-    .sort(
-      (a, b) =>
-        new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime(),
-    )
-    .slice(0, limit);
+    .map((p) => ({ post: p, score: relatedScoreForPost(p, filter) }))
+    .filter((row) => row.score > 0)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return (
+        new Date(b.post.data.publishDate).getTime() -
+        new Date(a.post.data.publishDate).getTime()
+      );
+    })
+    .slice(0, limit)
+    .map((row) => row.post);
 }
 
 export type BlogHeading = { depth: number; slug: string; text: string };
