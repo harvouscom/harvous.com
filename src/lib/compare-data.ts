@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 export type CompareEntry = {
@@ -97,19 +97,24 @@ function rowToEntry(headers: string[], values: string[]): CompareEntry | null {
 }
 
 let cache: CompareEntry[] | null = null;
+let cacheMtimeMs = 0;
 
 export function getCompareEntries(): CompareEntry[] {
-  if (cache) return cache;
+  const mtimeMs = existsSync(CSV_PATH) ? statSync(CSV_PATH).mtimeMs : 0;
+  if (cache && cacheMtimeMs === mtimeMs) return cache;
+
   const raw = readFileSync(CSV_PATH, "utf-8");
   const rows = parseCsvRows(raw);
   if (rows.length < 2) {
     cache = [];
+    cacheMtimeMs = mtimeMs;
     return cache;
   }
   const [headerRow, ...dataRows] = rows;
   cache = dataRows
     .map((row) => rowToEntry(headerRow, row))
     .filter((e): e is CompareEntry => e !== null);
+  cacheMtimeMs = mtimeMs;
   return cache;
 }
 

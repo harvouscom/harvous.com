@@ -62,6 +62,8 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  /* Avoid one-word orphans on the last line of wrapped text (site-wide). */
+  text-wrap: pretty;
 }
 
 h1, h2 {

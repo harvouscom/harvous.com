@@ -128,12 +128,25 @@ const defaultId = items[0]?.id ?? "";
     display: flex !important;
     visibility: hidden;
     position: absolute;
-    inset: 0 auto auto 0;
+    left: 0;
+    top: 0;
+    /* Must not shrink to the float — otherwise scrollWidth under-reports and overflow never triggers compact. */
+    width: max-content;
     pointer-events: none;
   }
 
   .hub-section-nav__float.is-measuring .hub-section-nav__select-wrap {
     visibility: hidden;
+  }
+
+  /* Hard viewport fallback — matches COMPACT_MAX_WIDTH in the script. */
+  @media (max-width: 920px) {
+    .hub-section-nav__float:not(.is-pinned) .hub-section-nav__pills {
+      display: none !important;
+    }
+    .hub-section-nav__float:not(.is-pinned) .hub-section-nav__select-wrap {
+      display: block !important;
+    }
   }
 
   .hub-section-nav__pill {
@@ -239,19 +252,40 @@ const defaultId = items[0]?.id ?? "";
 
     const pillsNav = navFloat.querySelector<HTMLElement>(".hub-section-nav__pills");
 
+    const COMPACT_MAX_WIDTH = 920;
+    const compactMq = window.matchMedia(`(max-width: ${COMPACT_MAX_WIDTH}px)`);
+
     const syncCompact = () => {
       if (!pillsNav) return;
       navFloat.classList.add("is-measuring");
+
       const floatStyle = getComputedStyle(navFloat);
+      const gap = parseFloat(getComputedStyle(pillsNav).gap) || 0;
+      const pillEls = [...pillsNav.children] as HTMLElement[];
+      // Sum pill boxes — don't trust container scrollWidth while absolutely positioned.
+      const pillsWidth = pillEls.reduce((sum, el, i) => {
+        return sum + el.getBoundingClientRect().width + (i > 0 ? gap : 0);
+      }, 0);
       const chromeX =
         parseFloat(floatStyle.paddingLeft) +
         parseFloat(floatStyle.paddingRight) +
         parseFloat(floatStyle.borderLeftWidth) +
         parseFloat(floatStyle.borderRightWidth);
-      const needed = pillsNav.scrollWidth + chromeX;
+      const needed = pillsWidth + chromeX;
+
       navFloat.classList.remove("is-measuring");
-      const available = navSlot.getBoundingClientRect().width;
-      navFloat.classList.toggle("is-compact", needed > available);
+
+      const slotWidth = navSlot.getBoundingClientRect().width;
+      const maxWidthPx = parseFloat(floatStyle.maxWidth);
+      const available =
+        Number.isFinite(maxWidthPx) && maxWidthPx > 0
+          ? Math.min(slotWidth, maxWidthPx)
+          : slotWidth;
+
+      navFloat.classList.toggle(
+        "is-compact",
+        compactMq.matches || needed > available
+      );
     };
 
     const syncPin = () => {
@@ -352,6 +386,7 @@ const defaultId = items[0]?.id ?? "";
 
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", updateActive, { passive: true });
+      compactMq.addEventListener("change", syncCompact);
       if (typeof ResizeObserver !== "undefined") {
         const ro = new ResizeObserver(() => syncCompact());
         ro.observe(navSlot);
@@ -360,6 +395,7 @@ const defaultId = items[0]?.id ?? "";
     } else {
       syncCompact();
       syncPin();
+      compactMq.addEventListener("change", syncCompact);
       window.addEventListener("resize", () => {
         syncCompact();
         syncPin();

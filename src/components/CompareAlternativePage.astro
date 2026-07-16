@@ -5,6 +5,7 @@ import CTAButton from "./CTAButton.astro";
 import CompareHonestBias from "./CompareHonestBias.astro";
 import type { CompareEntry } from "../lib/compare-data.ts";
 import type { CompareAlternativeSeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
+import { getHonestNoteForPage } from "../lib/compare-seo-pages.ts";
 import { fathomSignup } from "../lib/fathom-events.ts";
 import "../styles/compare.css";
 
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const { page, target, picks, jsonLd, noindex = false } = Astro.props;
+const honestNote = getHonestNoteForPage(page, picks);
 ---
 
 <BaseLayout title={page.seoTitle} description={page.seoDescription} jsonLd={jsonLd} noindex={noindex}>
@@ -51,7 +53,7 @@ const { page, target, picks, jsonLd, noindex = false } = Astro.props;
             <li class:list={["compare-guide__card", pick.isHarvous && "compare-guide__card--harvous"]}>
               {
                 pick.isHarvous && (
-                  <CompareHonestBias id={`honest-bias-${page.slug}`} />
+                  <CompareHonestBias id={`honest-bias-${page.slug}`} note={honestNote} />
                 )
               }
               <div class="compare-guide__card-head">

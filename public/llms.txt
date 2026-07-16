@@ -23,10 +23,19 @@ Harvous is not a Bible reader. It is not built around sermon transcription or AI
 ## Compare guides
 
 - https://harvous.com/compare/best-bible-notes-apps/
+- https://harvous.com/compare/best-sermon-notes-apps/
+- https://harvous.com/compare/best-free-bible-notes-apps/
+- https://harvous.com/compare/best-bible-study-notes-apps/
+- https://harvous.com/compare/best-notion-bible-study-apps/
 - https://harvous.com/compare/youversion-alternative/
 - https://harvous.com/compare/logos-alternative/
 - https://harvous.com/compare/obsidian-alternative/
+- https://harvous.com/compare/notion-alternative/
+- https://harvous.com/compare/apple-notes-alternative/
 - https://harvous.com/compare/bible-note-alternative/
+- https://harvous.com/compare/bible-notes-alternative/
+- https://harvous.com/compare/church-notes-alternative/
+- https://harvous.com/compare/spirit-notes-alternative/
 
 ## Compare pages
 
@@ -35,11 +44,14 @@ Individual comparisons (Harvous vs alternatives): https://harvous.com/compare/
 Examples:
 - https://harvous.com/compare/youversion/
 - https://harvous.com/compare/logos/
+- https://harvous.com/compare/e-sword/
+- https://harvous.com/compare/pocketbible/
+- https://harvous.com/compare/olive-tree/
 - https://harvous.com/compare/bible-note/
+- https://harvous.com/compare/bible-notes/
 - https://harvous.com/compare/church-notes/
-- https://harvous.com/compare/digible/
-- https://harvous.com/compare/moreh/
-- https://harvous.com/compare/biblenotes-ai/
+- https://harvous.com/compare/spirit-notes/
+- https://harvous.com/compare/notion/
 - https://harvous.com/compare/obsidian/
 - https://harvous.com/compare/apple-notes/
 

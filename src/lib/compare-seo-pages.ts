@@ -5,6 +5,14 @@ const SITE = "https://harvous.com";
 export const HARVOUS_PITCH =
   "You want a notes-first Bible study app — no built-in Bible reader, no sermon transcription — focused on remembering and reconnecting with what you saved.";
 
+/** Default “Side note” copy when Harvous leads the shortlist. */
+export const DEFAULT_HONEST_NOTE_FIRST =
+  "We built Harvous — so of course we care how this list reads. We put it first because we believe notes-first Bible study deserves its own home: not a reader feature, not sermon transcription, just a place to remember what you saved.";
+
+/** Default when Harvous is on the list but not #1. */
+export const DEFAULT_HONEST_NOTE_NOT_FIRST =
+  "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: this guide ranks for the job in the headline. Harvous is here for notes-first Bible study — remembering what you saved — not as a catch-all #1.";
+
 export type ComparePick = {
   slug: string;
   name: string;
@@ -35,16 +43,26 @@ type CompareSeoPageBase = {
   draft?: boolean;
   guideLabel: string;
   guideDescription: string;
+  /**
+   * Optional “Side note” copy on the Harvous card.
+   * Defaults depend on whether Harvous is ranked #1.
+   */
+  honestNote?: string;
 };
 
 export type CompareCategorySeoPage = CompareSeoPageBase & {
   kind: "category";
+  /**
+   * Shortlist order. Include `"harvous"` to set our rank explicitly.
+   * If omitted, Harvous is prepended as #1 (Bible-notes guides).
+   */
   pickSlugs: string[];
 };
 
 export type CompareAlternativeSeoPage = CompareSeoPageBase & {
   kind: "alternative";
   targetSlug: string;
+  /** Same as category: include `"harvous"` for an explicit rank; otherwise prepended. */
   pickSlugs: string[];
 };
 
@@ -58,7 +76,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Curated shortlist for scripture-linked study notes",
     seoTitle: "Best Bible notes apps — Harvous",
     seoDescription:
-      "Compare the best Bible notes apps for scripture-linked study notes — Harvous, Church Notes, Digible, Bible Note, Obsidian, and more. Notes-first, not a Bible reader.",
+      "Compare the best Bible notes apps for scripture-linked study notes — Harvous, Church Notes, Bible Note, Obsidian, and more. Notes-first, not a Bible reader.",
     h1: "Best Bible notes apps",
     lead: "Scripture-linked study notes — dedicated apps and tools people adapt. Harvous is notes-first, not a reader.",
     pickSlugs: [
@@ -67,7 +85,6 @@ const SEO_PAGES: CompareSeoPage[] = [
       "pencil-bible",
       "church-notes",
       "bible-notes",
-      "digible",
       "obsidian",
       "notion",
       "apple-notes",
@@ -88,7 +105,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       },
       {
         heading: "Choose a journaling or all-in-one church app if…",
-        body: "You want Apple Pencil on the page (Digible), built-in SOAP templates plus a reader (Church Notes), or AI-generated study journeys — different jobs than remembering your own written reflections.",
+        body: "You want handwriting on an iPad (GoodNotes), built-in SOAP templates plus a reader (Church Notes), or AI-generated study journeys — different jobs than remembering your own written reflections.",
       },
     ],
   },
@@ -100,10 +117,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Lighter, notes-first options for Bible study",
     seoTitle: "Best Logos alternative for Bible study notes — Harvous",
     seoDescription:
-      "Looking for a Logos alternative? Compare Harvous, Olive Tree, Accordance, Blue Letter Bible, and Obsidian for Bible study notes — lighter, notes-first options that sit beside Logos when you mainly need to remember what you saved.",
+      "Looking for a Logos alternative? Compare Harvous, Olive Tree, Accordance, e-Sword, PocketBible, and Obsidian for Bible study notes — lighter, notes-first options that sit beside Logos when you mainly need to remember what you saved.",
     h1: "Best Logos alternative",
     lead: "Logos is the deep-study suite. These are lighter, notes-first options — or a place to remember what you saved from Logos without the full library.",
-    pickSlugs: ["olive-tree", "accordance", "blue-letter-bible", "obsidian", "moreh"],
+    pickSlugs: ["olive-tree", "accordance", "e-sword", "pocketbible", "obsidian"],
     whenToChoose: [
       {
         heading: "Choose Harvous if…",
@@ -176,7 +193,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "Looking for a Bible Note alternative? Compare Harvous, Church Notes, Bible Notes, Spirit Notes, and Pencil Bible — notes-first options without AI sermon transcription.",
     h1: "Best Bible Note alternative",
     lead: "Bible Note focuses on AI sermon transcription. These alternatives are notes-first — your reflections, linked to Scripture, findable later.",
-    pickSlugs: ["church-notes", "bible-notes", "spirit-notes", "pencil-bible", "moreh"],
+    pickSlugs: ["church-notes", "bible-notes", "spirit-notes", "pencil-bible"],
     whenToChoose: [
       {
         heading: "Choose Harvous if…",
@@ -185,6 +202,265 @@ const SEO_PAGES: CompareSeoPage[] = [
       {
         heading: "Choose Bible Note if…",
         body: "You want automatic sermon transcription with scripture tagging and AI-generated flashcards from what you hear.",
+      },
+    ],
+  },
+  {
+    kind: "category",
+    slug: "best-sermon-notes-apps",
+    guideLabel: "Best sermon notes apps",
+    guideDescription: "Written sermon notes you’ll find later — not AI transcription",
+    seoTitle: "Best sermon notes apps — Harvous",
+    seoDescription:
+      "Compare the best sermon notes apps for written notes you’ll find later — Church Notes, Harvous, Bible Note, Spirit Notes, and GoodNotes. Notes-first, not AI transcription.",
+    h1: "Best sermon notes apps",
+    lead: "Written sermon notes you’ll find later — dedicated apps and tools people adapt. Harvous is notes-first, not AI transcription.",
+    // Church Notes owns the Sunday/SOAP+reader job; we stay on the list for notes you’ll revisit.
+    pickSlugs: [
+      "church-notes",
+      "harvous",
+      "bible-note",
+      "bible-notes",
+      "spirit-notes",
+      "goodnotes",
+    ],
+    honestNote:
+      "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: Church Notes (and transcription apps) own Sunday capture. Harvous is here if you want the notes you write to stay findable later — not a reader, not AI transcription.",
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose a transcription app if…",
+        body: "You want live sermon recording and AI transcripts — Bible Note and similar tools are built for capture. Pair one with Harvous when you care more about remembering what you wrote.",
+      },
+      {
+        heading: "Choose Church Notes if…",
+        body: "You want sermon notes, SOAP templates, and a Bible reader in one church-focused app.",
+      },
+      {
+        heading: "Choose GoodNotes if…",
+        body: "You prefer handwriting on an iPad and don’t need scripture linking or search across devices.",
+      },
+    ],
+  },
+  {
+    kind: "category",
+    slug: "best-free-bible-notes-apps",
+    guideLabel: "Best free Bible notes apps",
+    guideDescription: "Free and freemium options for scripture-linked notes",
+    seoTitle: "Best free Bible notes apps — Harvous",
+    seoDescription:
+      "Compare the best free Bible notes apps for scripture-linked study notes — Harvous, Church Notes, Bible Note, Obsidian, and more. Start free; upgrade when notes matter.",
+    h1: "Best free Bible notes apps",
+    lead: "Free and freemium apps for scripture-linked study notes. Harvous is notes-first — start free, keep what you save findable later.",
+    pickSlugs: [
+      "spirit-notes",
+      "bible-note",
+      "church-notes",
+      "bible-notes",
+      "obsidian",
+      "notion",
+      "apple-notes",
+      "pencil-bible",
+    ],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose a free reader-plus-notes app if…",
+        body: "You want sermon notes or SOAP templates with a Bible built in (Church Notes) — or a free general notes app (Apple Notes, Obsidian) you’ll customize yourself.",
+      },
+      {
+        heading: "Choose a freemium transcription app if…",
+        body: "You want AI sermon capture on a free tier — Bible Note and similar tools — knowing the product is built around transcription, not long-term written recall.",
+      },
+    ],
+  },
+  {
+    kind: "category",
+    slug: "best-bible-study-notes-apps",
+    guideLabel: "Best Bible study notes apps",
+    guideDescription: "Apps built for study notes linked to Scripture",
+    seoTitle: "Best Bible study notes apps — Harvous",
+    seoDescription:
+      "Compare the best Bible study notes apps for scripture-linked reflections — Harvous, Church Notes, Bible Note, Obsidian, Logos, and more. Notes-first study, not a Bible reader.",
+    h1: "Best Bible study notes apps",
+    lead: "Apps for study notes linked to Scripture — dedicated tools and ones people adapt. Harvous is notes-first, not a reader.",
+    pickSlugs: [
+      "spirit-notes",
+      "bible-note",
+      "pencil-bible",
+      "church-notes",
+      "bible-notes",
+      "obsidian",
+      "notion",
+      "logos",
+    ],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose a study suite if…",
+        body: "You need commentaries, original languages, and a full library — Logos is built for that. Keep research there; use a notes-first app for what you want to revisit.",
+      },
+      {
+        heading: "Choose a general notes app if…",
+        body: "You already live in Obsidian or Notion and want maximum flexibility — you’ll wire up scripture references yourself.",
+      },
+      {
+        heading: "Choose journaling or SOAP if…",
+        body: "You want handwriting on an iPad (GoodNotes) or built-in SOAP templates plus a reader (Church Notes) — different jobs than threading your own study reflections.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "church-notes-alternative",
+    targetSlug: "church-notes",
+    guideLabel: "Best Church Notes alternative",
+    guideDescription: "Notes-first options beside your Bible app",
+    seoTitle: "Best Church Notes alternative — Harvous",
+    seoDescription:
+      "Looking for a Church Notes alternative? Compare Harvous, Bible Note, Spirit Notes, and Pencil Bible — notes-first options that sit beside the Bible app you already use.",
+    h1: "Best Church Notes alternative",
+    lead: "Church Notes combines sermon notes, SOAP, and a Bible reader. These alternatives are notes-first — or lighter tools for the same jobs.",
+    pickSlugs: ["bible-note", "spirit-notes", "pencil-bible", "bible-notes", "goodnotes"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose Church Notes if…",
+        body: "You want sermon notes, SOAP templates, and a Bible reader in one church-focused app — without juggling a separate notes home.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "spirit-notes-alternative",
+    targetSlug: "spirit-notes",
+    guideLabel: "Best Spirit Notes alternative",
+    guideDescription: "Notes-first peers for scripture-linked study",
+    seoTitle: "Best Spirit Notes alternative — Harvous",
+    seoDescription:
+      "Looking for a Spirit Notes alternative? Compare Harvous, Church Notes, Bible Note, and Pencil Bible — notes-first options for scripture-linked study notes.",
+    h1: "Best Spirit Notes alternative",
+    lead: "Spirit Notes is a dedicated Bible notes peer. These alternatives cover the same notes-first job — or adjacent tools for sermon and journaling.",
+    pickSlugs: ["church-notes", "bible-note", "pencil-bible", "bible-notes", "goodnotes"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose Spirit Notes if…",
+        body: "You already like its dedicated Bible notes workflow and don’t need a different notes-first home.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "bible-notes-alternative",
+    targetSlug: "bible-notes",
+    guideLabel: "Best Bible Notes alternative",
+    guideDescription: "Notes-first without live transcription focus",
+    seoTitle: "Best Bible Notes alternative — Harvous",
+    seoDescription:
+      "Looking for a Bible Notes alternative? Compare Harvous, Church Notes, Bible Note, Spirit Notes, and Pencil Bible — notes-first options focused on what you write, not live transcription.",
+    h1: "Best Bible Notes alternative",
+    lead: "Bible Notes leans toward live capture and transcription. These alternatives are notes-first — your reflections, linked to Scripture, findable later.",
+    pickSlugs: ["church-notes", "bible-note", "spirit-notes", "pencil-bible", "goodnotes"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose Bible Notes if…",
+        body: "You want live sermon capture and transcription-style workflows more than a long-term written study journal.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "notion-alternative",
+    targetSlug: "notion",
+    guideLabel: "Best Notion alternative for Bible study",
+    guideDescription: "Scripture-linked notes without building a Notion system",
+    seoTitle: "Best Notion alternative for Bible study notes — Harvous",
+    seoDescription:
+      "Using Notion for Bible study? Compare Harvous, Obsidian, Apple Notes, Evernote, and Spirit Notes — scripture-linked notes without building and maintaining a custom Notion system.",
+    h1: "Best Notion alternative for Bible study",
+    lead: "Notion can hold anything if you build the system. These options ship scripture-linked study notes without a custom workspace.",
+    pickSlugs: ["obsidian", "apple-notes", "evernote", "spirit-notes", "church-notes"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose Notion if…",
+        body: "You already live in Notion databases and templates — and you’re willing to wire up scripture references and study structure yourself.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "apple-notes-alternative",
+    targetSlug: "apple-notes",
+    guideLabel: "Best Apple Notes alternative for Bible study",
+    guideDescription: "Purpose-built scripture notes beyond default capture",
+    seoTitle: "Best Apple Notes alternative for Bible study notes — Harvous",
+    seoDescription:
+      "Using Apple Notes for Bible study? Compare Harvous, Notion, Obsidian, Evernote, and Spirit Notes — purpose-built scripture-linked notes beyond a general capture inbox.",
+    h1: "Best Apple Notes alternative for Bible study",
+    lead: "Apple Notes is great for quick capture. These options are built for scripture-linked study notes you’ll find again later.",
+    pickSlugs: ["notion", "obsidian", "evernote", "spirit-notes", "church-notes"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose Apple Notes if…",
+        body: "You want frictionless capture on Apple devices and don’t need native scripture linking or study-specific recall.",
+      },
+    ],
+  },
+  {
+    kind: "category",
+    slug: "best-notion-bible-study-apps",
+    guideLabel: "Best Notion Bible study apps",
+    guideDescription: "Notion vs purpose-built scripture notes for study",
+    seoTitle: "Best Notion Bible study apps — Harvous",
+    seoDescription:
+      "Compare the best apps for Bible study notes if you’re coming from Notion — Harvous, Obsidian, Notion, Apple Notes, Church Notes, and Evernote. Purpose-built scripture notes vs building your own system.",
+    h1: "Best Notion Bible study apps",
+    lead: "Bible study in Notion vs purpose-built scripture notes. Harvous is notes-first — without building and maintaining a custom workspace.",
+    pickSlugs: ["obsidian", "notion", "apple-notes", "church-notes", "evernote"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: HARVOUS_PITCH,
+      },
+      {
+        heading: "Choose Notion if…",
+        body: "You want one flexible workspace for life and study — and you’re fine designing databases, templates, and scripture linking yourself.",
+      },
+      {
+        heading: "Choose Obsidian if…",
+        body: "You want local markdown, backlinks, and plugins — and you’re willing to configure a Bible study vault.",
+      },
+      {
+        heading: "Choose Church Notes if…",
+        body: "You want sermon notes, SOAP templates, and a Bible reader in one church-focused app.",
       },
     ],
   },
@@ -241,19 +517,39 @@ function drawbackFor(entry: CompareEntry): string {
   if (entry.name === "Church Notes") {
     return "All-in-one reader + SOAP templates — not a notes-first home beside your Bible app";
   }
-  if (entry.name === "Digible") {
-    return "Canvas journaling on iPad — not searchable, threaded study notes across devices";
+  if (entry.name === "GoodNotes") {
+    return "Handwriting-first on iPad — no native scripture linking or cross-device study threads";
   }
   return "Different primary job than notes-first Bible study";
 }
 
+/**
+ * Resolve shortlist picks. Include `"harvous"` in `slugs` to set our rank;
+ * if omitted, Harvous is prepended as #1.
+ */
 export function resolvePickSlugs(slugs: string[]): ComparePick[] {
-  const picks: ComparePick[] = [harvousPick()];
-  for (const slug of slugs) {
+  const hasExplicitHarvous = slugs.includes("harvous");
+  const ordered = hasExplicitHarvous ? slugs : ["harvous", ...slugs];
+  const picks: ComparePick[] = [];
+
+  for (const slug of ordered) {
+    if (slug === "harvous") {
+      if (!picks.some((p) => p.isHarvous)) picks.push(harvousPick());
+      continue;
+    }
     const entry = getCompareBySlug(slug);
     if (entry) picks.push(entryToPick(entry));
   }
+
   return picks;
+}
+
+/** “Side note” copy for a guide, based on rank + optional override. */
+export function getHonestNoteForPage(page: CompareSeoPage, picks: ComparePick[]): string {
+  if (page.honestNote) return page.honestNote;
+  const harvousIndex = picks.findIndex((p) => p.isHarvous);
+  if (harvousIndex <= 0) return DEFAULT_HONEST_NOTE_FIRST;
+  return DEFAULT_HONEST_NOTE_NOT_FIRST;
 }
 
 export function isCompareSeoPageDraft(page: CompareSeoPage): boolean {
@@ -301,7 +597,10 @@ export function getGuidesForCompareSlug(compareSlug: string): CompareGuideCard[]
       continue;
     }
 
-    if (page.kind === "category" && page.pickSlugs.includes(compareSlug)) {
+    if (
+      page.kind === "category" &&
+      page.pickSlugs.filter((s) => s !== "harvous").includes(compareSlug)
+    ) {
       guides.push(toGuideCard(page));
     }
   }

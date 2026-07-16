@@ -5,6 +5,7 @@ import CTAButton from "./CTAButton.astro";
 import { Icon } from "astro-icon/components";
 import CompareHonestBias from "./CompareHonestBias.astro";
 import type { CompareCategorySeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
+import { getHonestNoteForPage } from "../lib/compare-seo-pages.ts";
 import { fathomSignup } from "../lib/fathom-events.ts";
 import "../styles/compare.css";
 
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const { page, picks, jsonLd, noindex = false } = Astro.props;
+const honestNote = getHonestNoteForPage(page, picks);
 
 const decisionRows = [
   { label: "Built-in Bible reader", harvous: "No — type a reference, open inline text", others: "Varies — readers yes, notes apps no" },
@@ -52,7 +54,7 @@ const decisionRows = [
             <li class:list={["compare-guide__card", pick.isHarvous && "compare-guide__card--harvous"]}>
               {
                 pick.isHarvous && (
-                  <CompareHonestBias id={`honest-bias-${page.slug}`} />
+                  <CompareHonestBias id={`honest-bias-${page.slug}`} note={honestNote} />
                 )
               }
               <div class="compare-guide__card-head">

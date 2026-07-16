@@ -28,9 +28,11 @@ const beliefs = [
   },
   {
     title: "Education for the church.",
-    body: "Long-term, Harvous wants to serve how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
+    bodyBefore:
+      "Long-term, Harvous wants to serve how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education, never a substitute for the body — ",
     linkHref: "/for/churches/",
-    linkLabel: "Read our plans for churches →",
+    linkLabel: "read the plan for churches",
+    bodyAfter: ".",
   },
 ] as const;
 
@@ -124,12 +126,17 @@ const jsonLd = {
             <li class="about-believe__item">
               <span class="about-believe__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
               <h3 class="about-believe__title">{belief.title}</h3>
-              <p class="about-believe__body">{belief.body}</p>
-              {"linkHref" in belief && belief.linkHref && (
-                <p class="about-believe__link">
-                  <a href={belief.linkHref}>{belief.linkLabel}</a>
-                </p>
-              )}
+              <p class="about-believe__body">
+                {"bodyBefore" in belief ? (
+                  <>
+                    {belief.bodyBefore}
+                    <a href={belief.linkHref}>{belief.linkLabel}</a>
+                    {belief.bodyAfter}
+                  </>
+                ) : (
+                  belief.body
+                )}
+              </p>
             </li>
           ))
         }
@@ -371,20 +378,15 @@ const jsonLd = {
     text-wrap: pretty;
   }
 
-  .about-believe__link {
-    margin: 0.75rem 0 0;
-    font-size: 0.9375rem;
-    font-weight: 500;
-  }
-
-  .about-believe__link a {
+  .about-believe__body a {
     color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .about-believe__link a:hover {
     text-decoration: underline;
     text-underline-offset: 3px;
+    text-decoration-color: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+
+  .about-believe__body a:hover {
+    text-decoration-color: var(--color-accent);
   }
 
   .about-who > p:not(.about-who__note) {

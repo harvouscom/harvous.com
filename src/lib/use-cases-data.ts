@@ -161,7 +161,7 @@ const useCases: UseCase[] = [
     featuresHeading: "What sermon notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
-    compareSlugs: ["bible-note", "bible-notes", "church-notes", "pencil-bible", "spirit-notes", "moreh"],
+    compareSlugs: ["bible-note", "bible-notes", "church-notes", "pencil-bible", "spirit-notes"],
     testimonialId: "teaella",
   },
   {
@@ -342,7 +342,7 @@ const useCases: UseCase[] = [
     href: "/use-cases/small-group/",
     title: "Group study",
     carouselTitle: "Group study",
-    tagline: "Lead your group. Shared spaces keep what you build together.",
+    tagline: "Shared spaces are coming soon — so next week can pick up where this discussion left off.",
     icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
@@ -351,7 +351,7 @@ const useCases: UseCase[] = [
     seoTitle: "Group study — Harvous",
     seoDescription:
       "Lead your group. Harvous shared spaces let your whole group add notes to the same threads — so what you discover together doesn't disappear.",
-    heroTitle: "For the person who leads the discussion and wants to keep what the group builds.",
+    heroTitle: "Keep what the group builds.",
     heroLead:
       "You prep questions, you facilitate, you watch people have realizations out loud. And then next week you start from scratch. The things your group discovered together — they're in someone's head, maybe, but not anywhere you can all come back to.",
     sections: [
