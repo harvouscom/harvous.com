@@ -5,6 +5,7 @@ import PageClosingCTA from "../components/PageClosingCTA.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
+import WordCycle from "../components/WordCycle.astro";
 import { fathomSignup } from "../lib/fathom-events.ts";
 
 const site = "https://harvous.com";
@@ -77,8 +78,11 @@ const jsonLd = {
   <section>
     <PageIntro>
       <span class="eyebrow-pill">About</span>
-      <h1 class="section-title display-xl mt-4 text-pretty">
-        A place for Bible study to live.
+      <h1 class="about-hero__title section-title display-xl mt-4 text-pretty">
+        <span class="about-hero__line">A place for Bible</span>
+        <span class="about-hero__line about-hero__line--tail">
+          study to <WordCycle words={["live", "stick", "grow", "return", "deepen"]} />.
+        </span>
       </h1>
       <p class="about-hero__lead mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">
         For believers who search Scripture, pastors who teach it, and churches that learn together.
@@ -186,6 +190,20 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
+  /* Small screens: one flowing sentence (natural wrap).
+     md+: two lines — “A place for Bible” / “study to [word].” */
+  .about-hero__line + .about-hero__line::before {
+    content: " ";
+  }
+  @media (min-width: 768px) {
+    .about-hero__line {
+      display: block;
+    }
+    .about-hero__line + .about-hero__line::before {
+      content: none;
+    }
+  }
+
   .about-hero__lead {
     max-width: 32rem;
     margin-inline: auto;

@@ -1,0 +1,91 @@
+---
+/**
+ * WordCycle — hero-style crossfade word rotator for headlines.
+ * Active word is in-flow (sizes the slot); others fade/stack on top.
+ * Honors prefers-reduced-motion (stays on the first word).
+ */
+interface Props {
+  words: string[];
+  /** ms between swaps */
+  interval?: number;
+  class?: string;
+}
+
+const { words, interval = 2200, class: className = "" } = Astro.props;
+const list = words.filter(Boolean);
+---
+
+{
+  list.length > 0 && (
+    <span
+      class:list={["wordcycle", className]}
+      data-wordcycle
+      data-wordcycle-interval={interval}
+    >
+      {list.map((word, i) => (
+        <span class:list={["wordcycle__item", i === 0 && "is-active"]} data-wordcycle-item>
+          {word}
+        </span>
+      ))}
+    </span>
+  )
+}
+
+<style>
+  .wordcycle {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+  .wordcycle__item {
+    opacity: 0;
+    transform: translateY(0.22em) scale(0.94);
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease;
+    will-change: opacity, transform;
+  }
+  .wordcycle__item:not(.is-active) {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: max-content;
+    height: max-content;
+    pointer-events: none;
+  }
+  .wordcycle__item.is-active {
+    position: relative;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition:
+      opacity 220ms cubic-bezier(0.16, 1, 0.3, 1) 90ms,
+      transform 280ms cubic-bezier(0.16, 1, 0.3, 1) 90ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wordcycle__item {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-wordcycle]").forEach((root) => {
+    if (root.dataset.wordcycleReady === "1") return;
+    root.dataset.wordcycleReady = "1";
+
+    const items = Array.from(root.querySelectorAll<HTMLElement>("[data-wordcycle-item]"));
+    if (items.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const interval = Math.max(1200, Number(root.dataset.wordcycleInterval) || 2200);
+    let i = 0;
+    window.setInterval(() => {
+      items[i]?.classList.remove("is-active");
+      i = (i + 1) % items.length;
+      items[i]?.classList.add("is-active");
+    }, interval);
+  });
+</script>

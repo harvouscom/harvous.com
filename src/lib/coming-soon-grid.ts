@@ -20,16 +20,16 @@ export const COMING_SOON_GRID_ITEMS: ComingSoonGridItem[] = [
     href: "/add-ons/shared-spaces/",
   },
   {
-    id: "connector",
-    icon: "fa6-solid:puzzle-piece",
-    title: "Connector",
-    desc: "An optional paid add-on will let you reference your study in Claude and ChatGPT.",
-  },
-  {
     id: "review-challenges",
     icons: ["fa6-solid:clock-rotate-left", "fa6-solid:trophy"],
     title: "Review & Challenges",
     desc: "Optional paid add-ons for spaced review from your notes and themed study seasons.",
+  },
+  {
+    id: "connector",
+    icon: "fa6-solid:puzzle-piece",
+    title: "Connector",
+    desc: "An optional paid add-on will let you reference your study in Claude and ChatGPT.",
   },
   {
     id: "apple-apps",
