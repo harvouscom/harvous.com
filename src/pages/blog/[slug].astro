@@ -587,15 +587,29 @@ if (props.kind === "post") {
     color: var(--color-ink-faint);
   }
 
+  /* Keep the 01 numbering; drop the card chrome from prose ol styles */
   .prose-post :global(section[data-footnotes] ol),
   .prose-post :global(.footnotes ol) {
     margin: 0;
-    padding-left: 1.25rem;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
   }
 
-  .prose-post :global(section[data-footnotes] li),
-  .prose-post :global(.footnotes li) {
-    margin: 0.45rem 0;
+  .prose-post :global(section[data-footnotes] ol > li),
+  .prose-post :global(.footnotes ol > li) {
+    margin: 0;
+    padding: 0.55rem 0;
+    border-top: none;
+    color: var(--color-ink-soft);
+    line-height: 1.55;
+  }
+
+  .prose-post :global(section[data-footnotes] ol > li + li),
+  .prose-post :global(.footnotes ol > li + li) {
+    margin-top: 0.15rem;
   }
 
   .prose-post :global(section[data-footnotes] a[data-footnote-backref]),

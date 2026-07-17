@@ -5,7 +5,6 @@ import BlogCategoryPagination from "./BlogCategoryPagination.astro";
 import BlogSearchBar from "./BlogSearchBar.astro";
 import BlogTopicBlocks from "./BlogTopicBlocks.astro";
 import DownloadCTA from "./DownloadCTA.astro";
-import IntroChip from "./IntroChip.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import {
@@ -36,15 +35,13 @@ const label = blogCategoryLabel(category);
 const lead = blogCategoryLead(category);
 const icon = blogCategoryIcon(category);
 const color = blogCategoryColor(category);
-const postWord = page.totalCount === 1 ? "post" : "posts";
-
 const title =
   page.currentPage === 1
     ? `${label} — Bright Enough`
     : `${label} (Page ${page.currentPage}) — Bright Enough`;
 
 const leadSentence = /[.!?]$/.test(lead.trim()) ? lead.trim() : `${lead.trim()}.`;
-const description = `${leadSentence} Explore ${page.totalCount} ${postWord}. From Bright Enough, the Harvous blog.`;
+const description = `${leadSentence} From Bright Enough, the Harvous blog.`;
 
 const siteOrigin = Astro.site ?? "https://harvous.com";
 const pagePath = blogCategoryHref(category, page.currentPage);
@@ -94,10 +91,7 @@ const jsonLd = [
         {label}
       </h1>
       <p class="mx-auto mt-4 max-w-sm text-lg leading-relaxed text-pretty text-[var(--color-ink-soft)] md:max-w-md">
-        {leadSentence} Explore{" "}
-        <IntroChip>
-          <span class="tabular-nums">{page.totalCount}</span> {postWord}
-        </IntroChip>.
+        {leadSentence}
       </p>
       <div class="mx-auto mt-8 max-w-md">
         <BlogSearchBar
