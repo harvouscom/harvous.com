@@ -76,9 +76,13 @@ if (props.kind === "post") {
   post = props.post;
   const rendered = await render(post);
   Content = rendered.Content;
-  const renderedToc = rendered.headings.filter((h) => h.depth === 2);
+  const isEssayTocHeading = (h: { slug: string; text: string }) =>
+    h.slug !== "footnote-label" && h.text.trim().toLowerCase() !== "footnotes";
+  const renderedToc = rendered.headings.filter((h) => h.depth === 2 && isEssayTocHeading(h));
   tocHeadings =
-    renderedToc.length >= 2 ? renderedToc : blogHeadingsFromBody(post.body ?? "", 2);
+    renderedToc.length >= 2
+      ? renderedToc
+      : blogHeadingsFromBody(post.body ?? "", 2).filter(isEssayTocHeading);
 
   label = blogCategoryLabel(post.data.category);
   icon = blogCategoryIcon(post.data.category);
@@ -216,8 +220,14 @@ if (props.kind === "post") {
               Draft
             </span>
           )}
-          <span class="blog-post-meta__sep" aria-hidden="true">·</span>
-          <span>By {author.name}</span>
+          {
+            author.kind !== "house" && (
+              <>
+                <span class="blog-post-meta__sep" aria-hidden="true">·</span>
+                <span>By {author.name}</span>
+              </>
+            )
+          }
           <span class="blog-post-meta__sep" aria-hidden="true">·</span>
           <time datetime={post.data.publishDate.toISOString()}>{formattedDate}</time>
           {post.data.readingTime && (
@@ -536,5 +546,61 @@ if (props.kind === "post") {
 
   .prose-post :global(a:hover) {
     text-decoration-color: var(--color-accent);
+  }
+
+  /* GFM footnotes — quiet authority trail at the end of the essay */
+  .prose-post :global(a[data-footnote-ref]),
+  .prose-post :global(sup a) {
+    font-family: var(--font-sans);
+    font-size: 0.75em;
+    font-weight: 600;
+    text-decoration: none;
+    margin-inline: 0.1em;
+  }
+
+  /* Native hash jumps (fn → note, ↩ → ref) must clear sticky header + TOC select */
+  .prose-post :global([id^="user-content-fn"]),
+  .prose-post :global([id^="user-content-fnref"]),
+  .prose-post :global(#footnote-label) {
+    scroll-margin-top: 12rem;
+  }
+
+  .prose-post :global(section[data-footnotes]),
+  .prose-post :global(.footnotes) {
+    margin-top: 2.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  /* Label is sr-only from GFM; keep section quiet if a visible h2 ever appears */
+  .prose-post :global(section[data-footnotes] > h2:not(.sr-only)),
+  .prose-post :global(.footnotes > h2:not(.sr-only)) {
+    margin: 0 0 0.85rem;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .prose-post :global(section[data-footnotes] ol),
+  .prose-post :global(.footnotes ol) {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .prose-post :global(section[data-footnotes] li),
+  .prose-post :global(.footnotes li) {
+    margin: 0.45rem 0;
+  }
+
+  .prose-post :global(section[data-footnotes] a[data-footnote-backref]),
+  .prose-post :global(.footnotes a.data-footnote-backref) {
+    text-decoration: none;
+    margin-left: 0.25rem;
   }
 </style>

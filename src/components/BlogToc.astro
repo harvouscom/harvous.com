@@ -259,6 +259,47 @@ const defaultId = items[0]?.slug ?? "";
 
     const pinTop = () => (header?.getBoundingClientRect().bottom ?? 0) + PIN_GAP;
 
+    const visibleRatioInViewport = (topY: number, bottomY: number) => {
+      const height = Math.max(1, bottomY - topY);
+      const viewTop = window.scrollY;
+      const viewBottom = window.scrollY + window.innerHeight;
+      const visible = Math.max(0, Math.min(viewBottom, bottomY) - Math.max(viewTop, topY));
+      return visible / height;
+    };
+
+    /** Unpin when footnotes (or the last essay section) are ≥75% off-screen / entered. */
+    const endMatterHidesPin = (chromeTop: number) => {
+      const footnotes = trackMain?.querySelector<HTMLElement>(
+        "section[data-footnotes], .footnotes",
+      );
+      if (footnotes) {
+        const rect = footnotes.getBoundingClientRect();
+        // Still below the fold — keep the sticky TOC
+        if (rect.top > window.innerHeight) return false;
+        const ratio = visibleRatioInViewport(
+          rect.top + window.scrollY,
+          rect.bottom + window.scrollY,
+        );
+        // Reached the footnotes, or they've scrolled mostly out of view (>75% not viewable)
+        if (rect.top <= chromeTop + 40) return true;
+        if (ratio < 0.25) return true;
+        return false;
+      }
+
+      const last = sections[sections.length - 1];
+      if (!last || !trackMain) return false;
+      // Last section ≈ last H2 through start of author close (or article end)
+      const endEl =
+        trackMain.querySelector<HTMLElement>("footer.blog-author-close, .blog-author-close") ??
+        trackMain;
+      const startY = last.el.getBoundingClientRect().top + window.scrollY;
+      const endY = endEl.getBoundingClientRect().top + window.scrollY;
+      if (endY <= startY) return false;
+      // Only once we've entered the last section
+      if (last.el.getBoundingClientRect().top > chromeTop + 40) return false;
+      return visibleRatioInViewport(startY, endY) < 0.25;
+    };
+
     const mountPinned = () => {
       if (pinnedToBody) return;
       document.body.appendChild(navFloat);
@@ -280,7 +321,8 @@ const defaultId = items[0]?.slug ?? "";
       const slotTop = navSlot.getBoundingClientRect().top;
       const mainBottom = trackMain?.getBoundingClientRect().bottom ?? Infinity;
       const wantsPin = slotTop <= top;
-      const shouldPin = wantsPin && mainBottom > top + 72;
+      const shouldPin =
+        wantsPin && mainBottom > top + 72 && !endMatterHidesPin(top);
 
       if (shouldPin) {
         mountPinned();

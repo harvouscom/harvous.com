@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 import icon from "astro-icon";
+import remarkGfm from "remark-gfm";
 import tailwindcss from "@tailwindcss/vite";
 import { getReleaseNoteSlugRedirects } from "./src/lib/release-notes-data.ts";
 import { DRAFT_PAGE_SLUGS } from "./src/lib/draft-pages.ts";
@@ -37,8 +38,15 @@ function stripDraftPages() {
 
 export default defineConfig({
   site: "https://harvous.com",
+  // GFM footnotes (and tables/strikethrough) for Bright Enough MDX essays.
+  markdown: {
+    remarkPlugins: [remarkGfm],
+  },
   integrations: [
-    mdx(),
+    mdx({
+      // Ensure MDX essays get the same GFM footnote support as markdown.
+      remarkPlugins: [remarkGfm],
+    }),
     sitemap({
       filter: (page) => {
         // Blog hub, categories, and posts are indexed; search, index JSON, RSS, and pagination stay out.
