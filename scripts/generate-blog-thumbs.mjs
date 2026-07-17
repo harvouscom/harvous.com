@@ -23,7 +23,7 @@ const BLOG_DIR = join(ROOT, "src/content/blog");
 const AUTH_HERO_DIR = join(ROOT, "public/images/auth-hero");
 const OUT_DIR = join(ROOT, "public/blog-thumbs");
 const MANIFEST_PATH = join(OUT_DIR, "manifest.json");
-const RECIPE_VERSION = "shader-v16";
+const RECIPE_VERSION = "shader-v17";
 
 /** Form motifs — bold enough to read at 360×360 spots; all directional / geometric. */
 const SHAPE_KINDS = [
@@ -337,8 +337,8 @@ function recipeFor(post, ranked) {
     grade,
     grain: mood === "light" ? 0.1 + ((h >> 10) % 8) / 100 : 0.14 + ((h >> 10) % 10) / 100,
     glowOpacity: mood === "light" ? 0.55 + ((h2 >> 8) % 28) / 100 : 0.4 + ((h2 >> 8) % 24) / 100,
-    shadeOpacity: mood === "light" ? 0.62 : 0.88,
-    lift: mood === "light" ? 1.05 : 1.0,
+    shadeOpacity: mood === "light" ? 0.42 : 0.68,
+    lift: mood === "light" ? 1.12 : 1.0,
   };
 }
 
@@ -579,17 +579,17 @@ async function preparedBase(source, width, height, recipe) {
   // Atmosphere from the auth image — heavy blur so it reads as light/form, not photo
   const soft = await sharp(cover)
     .blur(recipe.blurSoft)
-    .modulate({ brightness: recipe.lift, saturation: 0.35 })
+    .modulate({ brightness: recipe.lift, saturation: 0.65 })
     .toBuffer();
 
   const mid = await sharp(cover)
     .blur(recipe.blurMid)
     .greyscale()
-    .modulate({ brightness: recipe.mood === "light" ? 1.1 : 1.02 })
+    .modulate({ brightness: recipe.mood === "light" ? 1.14 : 1.02 })
     .toBuffer();
 
   const structure = await sharp(cover)
-    .modulate({ saturation: 0.1, brightness: 1.0 })
+    .modulate({ saturation: 0.4, brightness: 1.0 })
     .blur(2)
     .toBuffer();
 
@@ -636,12 +636,12 @@ async function renderVariant(slug, kind, recipe) {
   const base = await preparedBase(recipe.source, width, height, recipe);
   const layers = shaderSvg(width, height, recipe);
   // Stronger category wash so thumbs read the same pastel family as topic icons.
-  const grade = await fadeSvg(layers.grade, width, height, recipe.mood === "light" ? 0.82 : 0.86);
+  const grade = await fadeSvg(layers.grade, width, height, recipe.mood === "light" ? 0.68 : 0.74);
   const gradeBoost = await fadeSvg(
     layers.grade,
     width,
     height,
-    recipe.mood === "light" ? 0.34 : 0.4,
+    recipe.mood === "light" ? 0.28 : 0.32,
   );
   const light = await fadeSvg(
     layers.light,
@@ -658,7 +658,7 @@ async function renderVariant(slug, kind, recipe) {
       { input: light, blend: "over" },
       { input: shade, blend: "multiply" },
     ])
-    .modulate({ saturation: 1.08, brightness: recipe.mood === "light" ? 1.02 : 1.0 })
+    .modulate({ saturation: 1.22, brightness: recipe.mood === "light" ? 1.06 : 1.0 })
     .webp({ quality: 86, effort: 4 })
     .toFile(outPath);
 
