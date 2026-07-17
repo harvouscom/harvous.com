@@ -353,27 +353,29 @@ let pyramidStagger = 0;
       const playGravityFall = () => {
         cancelFalls();
         // px/s² — lower = slower fall (still eases like gravity)
-        const g = 2400;
+        const g = 1700;
         const rowCount =
           icons.reduce((max, icon) => Math.max(max, Number(icon.dataset.pyramidRow || 0) + 1), 1) ||
           1;
         let maxEnd = 0;
 
-        // Bottom row first, then middle, then top — with enough jitter that
-        // a block can occasionally slip ahead of another (even across rows).
-        const baseGap = 140;
-        const jitter = 160;
-        // ~20% of the time, shuffle drop order so one tile "falls early"
-        const wild = Math.random() < 0.22;
+        // Level-aware cascade: bottom row → middle → top stays the rule.
+        // Variation lives mostly *inside* each level so siblings don’t drop
+        // in lockstep; rare soft slips can nudge one tile toward a neighbor
+        // wave without letting the top land before the bottom clears.
+        const baseGap = 340;
+        // Keep within-row mix under ~55% of the gap so levels don’t overlap much
+        const withinRowJitter = Math.round(baseGap * 0.5);
+        const allowSlip = Math.random() < 0.45;
 
         icons.forEach((icon) => {
           const row = Number(icon.dataset.pyramidRow || 0);
           const rowOrder = rowCount - 1 - row; // 0 = bottom (priority)
-          let delay = rowOrder * baseGap + rand(0, jitter);
+          let delay = rowOrder * baseGap + rand(0, withinRowJitter);
 
-          if (wild && Math.random() < 0.35) {
-            // Swap this tile into a neighboring wave
-            delay += rand(-baseGap * 0.85, baseGap * 0.55);
+          if (allowSlip && Math.random() < 0.22) {
+            // Soft cross-level nudge only — stay inside ±35% of one gap
+            delay += rand(-baseGap * 0.35, baseGap * 0.28);
           }
 
           delay = Math.max(0, Math.round(delay));
@@ -383,7 +385,7 @@ let pyramidStagger = 0;
           const spinDeg = isNarrow() ? rand(-34, 34) : rand(-48, 48);
           const restDeg = restRotateDeg(icon);
           const fallMs = Math.sqrt((2 * distancePx) / g) * 1000;
-          const duration = Math.max(560, (fallMs / 0.86) * 1.15);
+          const duration = Math.max(720, (fallMs / 0.86) * 1.2);
 
           icon.style.transform = `translateY(${(-distancePx).toFixed(1)}px) rotate(${(
             restDeg + spinDeg
