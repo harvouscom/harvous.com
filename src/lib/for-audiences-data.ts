@@ -252,7 +252,7 @@ const audiences: ForAudience[] = [
     ],
     moments: [
       {
-        icon: "fa6-solid:folder",
+        icon: "fa6-solid:arrow-right-arrow-left",
         heading: "Series stay together",
         body: "One thread per sermon series. The whole run in one place when you want to look back.",
       },
@@ -351,13 +351,13 @@ const audiences: ForAudience[] = [
     image: "/images/auth-hero/ai_bg_076.webp",
     seoTitle: "For pastors — sermon prep notes that last — Harvous",
     seoDescription:
-      "Sermon prep that compounds across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, alongside Logos and dedicated prep tools.",
+      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, alongside Logos and dedicated prep tools.",
     heroTitle: "For people who prepare, then preach.",
     heroLead:
       "Sunday keeps coming. You’re digging into a text, shaping an outline, landing a line — then somehow next week starts from a blank page. The prep for a preaching calendar deserves a home that lasts years, not a folder of untitled docs.",
     sections: [
       {
-        heading: "Prep that compounds across the year",
+        heading: "Prep that leaves a trail across the year",
         paragraphs: [
           "Harvous is where your personal sermon prep lives — passages as scripture pills, notes per message, threads for a series you’re walking the church through. You’re not looking for podium mode or an illustration marketplace. You’re looking for a place that remembers what you already studied when week 40 needs week 3.",
           "Sketch the moves of the message. Save the cross-references. Highlight the sentence that has to land. When you’re back on a familiar text next year, the trail is still there.",
@@ -373,7 +373,7 @@ const audiences: ForAudience[] = [
     ],
     moments: [
       {
-        icon: "fa6-solid:folder",
+        icon: "fa6-solid:arrow-right-arrow-left",
         heading: "A thread per series",
         body: "Romans, Advent, a topical run — keep every week’s prep together so the arc stays visible.",
       },
@@ -396,7 +396,7 @@ const audiences: ForAudience[] = [
     featureIds: ["scripture-pills", "threads", "highlights", "recall"],
     featuresHeading: "What preaching asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, and Recall across the calendar year — so prep compounds instead of resetting every Monday.",
+      "Series threads, scripture nearby, and Recall across the calendar year — so prep builds on itself instead of resetting every Monday.",
     compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion", "obsidian"],
     useCaseSlugs: ["sermon-prep", "deep-study", "book-study"],
   },

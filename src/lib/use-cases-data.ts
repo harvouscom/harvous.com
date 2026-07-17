@@ -138,7 +138,7 @@ const useCases: UseCase[] = [
     ],
     moments: [
       {
-        icon: "fa6-solid:folder",
+        icon: "fa6-solid:arrow-right-arrow-left",
         heading: "One thread per sermon series",
         body: 'A thread called "Romans — Sunday series" collects every week of notes. Scroll back and see the whole arc. Week one connects to week eight because they\'re in the same place.',
       },
@@ -170,14 +170,14 @@ const useCases: UseCase[] = [
     slug: "sermon-prep",
     href: "/use-cases/sermon-prep/",
     title: "Sermon prep",
-    tagline: "Sunday keeps coming. Prep should compound — not restart from a blank doc.",
+    tagline: "Sunday keeps coming. Prep should leave a trail — not a blank page.",
     icon: "fa6-solid:pen-to-square",
     ink: "var(--study-dock-accent-violet)",
     image: "/images/auth-hero/ai_bg_076.webp",
     seoTitle: "Sermon prep notes app — Harvous",
     seoDescription:
-      "Sermon prep that compounds across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, not a sermon-writing suite.",
-    heroTitle: "Sunday keeps coming. Prep should compound.",
+      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, not a sermon-writing suite.",
+    heroTitle: "Sunday keeps coming. Prep should leave a trail.",
     heroLead:
       "You’re not taking notes on someone else’s sermon. You’re preparing the one you’ll preach — outlines, exegesis, cross-references, the line you want to land — and next week’s blank page shouldn’t erase what you already built.",
     sections: [
@@ -198,13 +198,13 @@ const useCases: UseCase[] = [
       {
         heading: "Works alongside the tools you already use",
         paragraphs: [
-          "Keep Logos (or another suite) for commentaries and languages. Keep a dedicated prep app if you want templates and podium view. Keep Docs or Word for the final manuscript polish. Harvous sits in the middle: the notes-first home for prep that has to compound across years of preaching.",
+          "Keep Logos (or another suite) for commentaries and languages. Keep a dedicated prep app if you want templates and podium view. Keep Docs or Word for the final manuscript polish. Harvous sits in the middle: the notes-first home for prep that has to last across years of preaching.",
         ],
       },
     ],
     moments: [
       {
-        icon: "fa6-solid:folder",
+        icon: "fa6-solid:arrow-right-arrow-left",
         heading: "One thread per series",
         body: "Give Romans, Advent, or a topical run its own thread so every week’s prep builds on the last — not a pile of one-off files.",
       },
@@ -227,7 +227,7 @@ const useCases: UseCase[] = [
     featureIds: ["scripture-pills", "threads", "highlights", "recall"],
     featuresHeading: "What sermon prep asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, and Recall across the preaching year — so prep compounds instead of resetting every Monday.",
+      "Series threads, scripture nearby, and Recall across the preaching year — so prep builds on itself instead of resetting every Monday.",
     compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion"],
     relatedUseCaseSlugs: ["deep-study", "book-study", "sermon-notes"],
   },
