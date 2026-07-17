@@ -346,12 +346,12 @@ export function blogAuthorJsonLd(
  * Prefer explicit `forSlugs` on posts for precision.
  */
 export const BLOG_CATEGORY_AUDIENCES: Record<BlogCategory, string[]> = {
-  teaching: ["teachers", "group-leaders"],
-  retention: ["teachers", "churches"],
+  teaching: ["teachers", "group-leaders", "pastors"],
+  retention: ["teachers", "churches", "pastors"],
   equipping: ["churches"],
   "study-habits": ["daily-readers", "sunday-note-takers"],
   "using-harvous": ["daily-readers", "bible-app-users"],
-  "scripture-study": ["going-through-a-book", "following-a-theme"],
+  "scripture-study": ["going-through-a-book", "following-a-theme", "pastors"],
   "how-we-think": [],
 };
 
@@ -360,12 +360,12 @@ export const BLOG_CATEGORY_AUDIENCES: Record<BlogCategory, string[]> = {
  * Prefer explicit `useCaseSlugs` on posts for precision.
  */
 export const BLOG_CATEGORY_USE_CASES: Record<BlogCategory, string[]> = {
-  teaching: ["small-group"],
+  teaching: ["small-group", "sermon-prep"],
   retention: ["daily-journal"],
   equipping: ["small-group"],
   "study-habits": ["daily-journal"],
   "using-harvous": ["daily-journal"],
-  "scripture-study": ["book-study", "topical-study"],
+  "scripture-study": ["book-study", "topical-study", "sermon-prep"],
   "how-we-think": [],
 };
 
@@ -388,11 +388,13 @@ const AUDIENCE_HOME_CATEGORIES: Record<string, BlogCategory[]> = {
   "going-through-a-book": ["teaching", "using-harvous", "scripture-study"],
   "following-a-theme": ["using-harvous", "scripture-study"],
   "seminary-students": ["teaching", "how-we-think", "scripture-study"],
+  pastors: ["teaching", "retention", "scripture-study"],
 };
 
 const USE_CASE_HOME_CATEGORIES: Record<string, BlogCategory[]> = {
   "small-group": ["teaching", "retention", "equipping"],
   "sermon-notes": ["teaching", "study-habits"],
+  "sermon-prep": ["teaching", "scripture-study", "retention"],
   "book-study": ["teaching", "using-harvous", "scripture-study"],
   "topical-study": ["using-harvous", "scripture-study"],
   "deep-study": ["using-harvous", "how-we-think", "scripture-study"],

@@ -1,0 +1,12 @@
+---
+import UseCaseDetailPage from "../../components/UseCaseDetailPage.astro";
+import { getUseCaseBySlug } from "../../lib/use-cases-data.ts";
+
+const useCase = getUseCaseBySlug("sermon-prep");
+
+if (!useCase) {
+  throw new Error("Use case not found: sermon-prep");
+}
+---
+
+<UseCaseDetailPage useCase={useCase} />

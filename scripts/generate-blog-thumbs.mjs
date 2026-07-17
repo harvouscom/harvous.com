@@ -110,7 +110,8 @@ const CATEGORY_SOURCE_PACK = {
     "ai_bg_073.webp",
   ],
   teaching: [
-    // lilac / purple-friendly lights
+    // lilac / purple-friendly lights (+ abstract violet wash)
+    "ai_bg_076.webp",
     "ai_bg_053.webp",
     "ai_bg_051.webp",
     "ai_bg_058.webp",
@@ -127,15 +128,17 @@ const CATEGORY_SOURCE_PACK = {
     "ai_bg_074.webp",
   ],
   equipping: [
-    // mint / soft green (discipleship growth)
+    // mint / soft green (discipleship growth); teal wash as cool companion
     "ai_bg_058.webp",
     "ai_bg_052.webp",
+    "ai_bg_075.webp",
     "ai_bg_044.webp",
     "ai_bg_053.webp",
     "ai_bg_061.webp",
   ],
   "study-habits": [
-    // cool / airy — blue grade
+    // cool / airy — blue/teal grade (+ abstract teal wash)
+    "ai_bg_075.webp",
     "ai_bg_053.webp",
     "ai_bg_051.webp",
     "ai_bg_058.webp",
@@ -143,7 +146,8 @@ const CATEGORY_SOURCE_PACK = {
     "ai_bg_045.webp",
   ],
   "using-harvous": [
-    // soft slate / gray companions
+    // soft slate / gray companions; airy abstracts read well under gray grade
+    "ai_bg_075.webp",
     "ai_bg_053.webp",
     "ai_bg_051.webp",
     "ai_bg_045.webp",
@@ -151,7 +155,8 @@ const CATEGORY_SOURCE_PACK = {
     "ai_bg_050.webp",
   ],
   "scripture-study": [
-    // lilac-friendly lights
+    // lilac-friendly lights (+ abstract violet wash)
+    "ai_bg_076.webp",
     "ai_bg_053.webp",
     "ai_bg_051.webp",
     "ai_bg_058.webp",
@@ -185,6 +190,8 @@ function collectSources() {
   }
   const files = readdirSync(AUTH_HERO_DIR)
     .filter((name) => /\.(webp|png|jpe?g)$/i.test(name))
+    // Skip editor/preview leftovers (e.g. `_preview_075.jpg`).
+    .filter((name) => !name.startsWith("_"))
     .map((name) => join(AUTH_HERO_DIR, name))
     .sort();
   if (files.length === 0) {

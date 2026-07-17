@@ -106,8 +106,8 @@ const useCases: UseCase[] = [
     title: "Sermon notes",
     tagline: "Sunday thoughts have a habit of fading by Monday.",
     icon: "fa6-solid:church",
-    ink: "var(--study-dock-accent-violet)",
-    image: "/images/auth-hero/ai_bg_072.webp",
+    ink: "var(--study-dock-accent-teal)",
+    image: "/images/auth-hero/ai_bg_075.webp",
     seoTitle: "Sermon notes app — Harvous",
     seoDescription:
       "Sunday thoughts fade by Monday. Harvous keeps sermon notes organized in series threads, searchable and scripture-linked — a notes app, not sermon transcription.",
@@ -163,7 +163,73 @@ const useCases: UseCase[] = [
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
     compareSlugs: ["bible-note", "bible-notes", "church-notes", "pencil-bible", "spirit-notes"],
+    relatedUseCaseSlugs: ["sermon-prep"],
     testimonialId: "teaella",
+  },
+  {
+    slug: "sermon-prep",
+    href: "/use-cases/sermon-prep/",
+    title: "Sermon prep",
+    tagline: "Sunday keeps coming. Prep should compound — not restart from a blank doc.",
+    icon: "fa6-solid:pen-to-square",
+    ink: "var(--study-dock-accent-violet)",
+    image: "/images/auth-hero/ai_bg_076.webp",
+    seoTitle: "Sermon prep notes app — Harvous",
+    seoDescription:
+      "Sermon prep that compounds across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, not a sermon-writing suite.",
+    heroTitle: "Sunday keeps coming. Prep should compound.",
+    heroLead:
+      "You’re not taking notes on someone else’s sermon. You’re preparing the one you’ll preach — outlines, exegesis, cross-references, the line you want to land — and next week’s blank page shouldn’t erase what you already built.",
+    sections: [
+      {
+        heading: "A preaching calendar deserves a home",
+        paragraphs: [
+          "Sermon prep isn’t one note. It’s a year of series threads, passage work, abandoned outlines that still had a good idea in them, and the illustration you meant to reuse. Harvous gives that work a place that lasts — so week 40 can still find week 3.",
+          "We’re not a manuscript suite with podium mode and illustration libraries. Keep Sermonary, Logos, or Docs for the jobs they’re built for. Harvous is where the notes you write while you prepare stay scripture-linked and findable.",
+        ],
+      },
+      {
+        heading: "Outline notes, not a transcript of Sunday",
+        paragraphs: [
+          "Drop the text as scripture pills. Sketch the moves of the message. Highlight the sentence that has to land. Thread a whole series so Advent week four still sits next to week one.",
+          "When you’re drafting again next year on a familiar text, Recall can resurface what you already studied — still linked to the passage — instead of hoping a folder of untitled docs still makes sense.",
+        ],
+      },
+      {
+        heading: "Works alongside the tools you already use",
+        paragraphs: [
+          "Keep Logos (or another suite) for commentaries and languages. Keep a dedicated prep app if you want templates and podium view. Keep Docs or Word for the final manuscript polish. Harvous sits in the middle: the notes-first home for prep that has to compound across years of preaching.",
+        ],
+      },
+    ],
+    moments: [
+      {
+        icon: "fa6-solid:folder",
+        heading: "One thread per series",
+        body: "Give Romans, Advent, or a topical run its own thread so every week’s prep builds on the last — not a pile of one-off files.",
+      },
+      {
+        icon: "fa6-solid:book-bible",
+        heading: "Passages at hand while you outline",
+        body: "Scripture pills keep every reference one tap away as you move from exegesis notes to the shape of the message.",
+      },
+      {
+        icon: "fa6-solid:highlighter",
+        heading: "Save the line that has to land",
+        body: "Highlights keep the phrases and applications you don’t want to lose between Thursday’s draft and Sunday’s pulpit.",
+      },
+      {
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall finds last year’s work",
+        body: "When you’re back on a familiar text, Recall can bring forward prep you already did — still linked to the passage.",
+      },
+    ],
+    featureIds: ["scripture-pills", "threads", "highlights", "recall"],
+    featuresHeading: "What sermon prep asks of your notes",
+    featuresLead:
+      "Series threads, scripture nearby, and Recall across the preaching year — so prep compounds instead of resetting every Monday.",
+    compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion"],
+    relatedUseCaseSlugs: ["deep-study", "book-study", "sermon-notes"],
   },
   {
     slug: "book-study",

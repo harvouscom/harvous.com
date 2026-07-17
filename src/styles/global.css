@@ -306,6 +306,7 @@ main > section:first-child.border-b {
   --tint-mint: color-mix(in oklab, var(--study-dock-accent-mintGreen) 16%, var(--color-paper));
   --tint-violet: color-mix(in oklab, var(--study-dock-accent-violet) 16%, var(--color-paper));
   --tint-coral: color-mix(in oklab, var(--study-dock-accent-coralRose) 16%, var(--color-paper));
+  --tint-teal: color-mix(in oklab, var(--study-dock-accent-teal) 16%, var(--color-paper));
   --tint-blue: color-mix(in oklab, var(--color-accent) 14%, var(--color-paper));
 }
 

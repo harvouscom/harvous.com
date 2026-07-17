@@ -94,6 +94,8 @@ const defaultId = items[0]?.id ?? "";
   .hub-section-nav__slot {
     display: flex;
     justify-content: center;
+    width: 100%;
+    min-width: 0;
     margin-top: clamp(1.75rem, 4vw, 2.5rem);
   }
 
@@ -101,12 +103,14 @@ const defaultId = items[0]?.id ?? "";
     position: relative;
     z-index: 35;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
     gap: 0.45rem 0.55rem;
-    width: fit-content;
+    box-sizing: border-box;
+    width: min(100%, max-content);
     max-width: calc(100% - 2 * var(--frame-content-pad));
+    min-width: 0;
     padding: 0.4rem 0.55rem;
     border: 1px solid var(--color-rule);
     border-radius: 999px;
@@ -115,6 +119,12 @@ const defaultId = items[0]?.id ?? "";
     box-shadow:
       0 1px 2px rgba(15, 23, 42, 0.04),
       0 8px 24px -12px rgba(15, 23, 42, 0.1);
+  }
+
+  .hub-section-nav__float:not(.is-compact):not(.is-pinned) {
+    /* Cap to the slot so the pill row can scroll instead of clipping. */
+    width: 100%;
+    max-width: min(max-content, calc(100% - 2 * var(--frame-content-pad)));
   }
 
   .hub-section-nav__search {
@@ -136,11 +146,26 @@ const defaultId = items[0]?.id ?? "";
 
   .hub-section-nav__pills {
     display: none;
+    flex: 1 1 auto;
     flex-wrap: nowrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 0.35rem;
-    max-width: none;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--color-ink) 22%, transparent) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hub-section-nav__pills::-webkit-scrollbar {
+    height: 4px;
+  }
+  .hub-section-nav__pills::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--color-ink) 22%, transparent);
   }
 
   .hub-section-nav__select-wrap {
@@ -170,21 +195,6 @@ const defaultId = items[0]?.id ?? "";
   .hub-section-nav__float.is-compact .hub-section-nav__search :global(.blog-search-bar__input),
   .hub-section-nav__float.is-pinned .hub-section-nav__search :global(.blog-search-bar__input) {
     width: 100%;
-  }
-
-  .hub-section-nav__float.is-measuring .hub-section-nav__pills {
-    display: flex !important;
-    visibility: hidden;
-    position: absolute;
-    left: 0;
-    top: 0;
-    /* Must not shrink to the float — otherwise scrollWidth under-reports and overflow never triggers compact. */
-    width: max-content;
-    pointer-events: none;
-  }
-
-  .hub-section-nav__float.is-measuring .hub-section-nav__select-wrap {
-    visibility: hidden;
   }
 
   /* Hard viewport fallback — matches COMPACT_MAX_WIDTH in the script. */
@@ -304,40 +314,9 @@ const defaultId = items[0]?.id ?? "";
     const compactMq = window.matchMedia(`(max-width: ${COMPACT_MAX_WIDTH}px)`);
 
     const syncCompact = () => {
-      if (!pillsNav) return;
-      navFloat.classList.add("is-measuring");
-
-      const floatStyle = getComputedStyle(navFloat);
-      const gap = parseFloat(getComputedStyle(pillsNav).gap) || 0;
-      const pillEls = [...pillsNav.children] as HTMLElement[];
-      // Sum pill boxes — don't trust container scrollWidth while absolutely positioned.
-      const pillsWidth = pillEls.reduce((sum, el, i) => {
-        return sum + el.getBoundingClientRect().width + (i > 0 ? gap : 0);
-      }, 0);
-      const searchEl = navFloat.querySelector<HTMLElement>("[data-hub-section-nav-search]");
-      const searchWidth = searchEl ? searchEl.getBoundingClientRect().width : 0;
-      const rowGap = parseFloat(floatStyle.columnGap || floatStyle.gap) || 0;
-      const chromeX =
-        parseFloat(floatStyle.paddingLeft) +
-        parseFloat(floatStyle.paddingRight) +
-        parseFloat(floatStyle.borderLeftWidth) +
-        parseFloat(floatStyle.borderRightWidth);
-      const needed =
-        pillsWidth + chromeX + (searchWidth > 0 ? searchWidth + rowGap : 0);
-
-      navFloat.classList.remove("is-measuring");
-
-      const slotWidth = navSlot.getBoundingClientRect().width;
-      const maxWidthPx = parseFloat(floatStyle.maxWidth);
-      const available =
-        Number.isFinite(maxWidthPx) && maxWidthPx > 0
-          ? Math.min(slotWidth, maxWidthPx)
-          : slotWidth;
-
-      navFloat.classList.toggle(
-        "is-compact",
-        compactMq.matches || needed > available
-      );
+      // Narrow viewports use the select. Wider ones keep pills and scroll
+      // horizontally when the row is longer than the float.
+      navFloat.classList.toggle("is-compact", compactMq.matches);
     };
 
     const syncPin = () => {
@@ -367,6 +346,11 @@ const defaultId = items[0]?.id ?? "";
         const active = pill.dataset.sectionId === id;
         pill.classList.toggle("hub-section-nav__pill--active", active);
         pill.setAttribute("aria-current", active ? "location" : "false");
+        if (active && pillsNav && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          pill.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+        } else if (active && pillsNav) {
+          pill.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
+        }
       });
       if (select && select.value !== id) {
         select.value = id;

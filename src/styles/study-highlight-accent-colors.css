@@ -13,6 +13,8 @@
   --study-dock-accent-violet: #9d5ac7;
   --study-dock-accent-mintGreen: #2bc71e;
   --study-dock-accent-coralRose: #eb598e;
+  /* Marketing secondary (sermon prep / pastors) — not a native highlight swatch yet. */
+  --study-dock-accent-teal: #1a9e96;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,6 +25,7 @@
     --study-dock-accent-violet: #ba6aeb;
     --study-dock-accent-mintGreen: #35f224;
     --study-dock-accent-coralRose: #ff619a;
+    --study-dock-accent-teal: #2fd4c8;
   }
 }
 
@@ -33,4 +36,5 @@
   --study-dock-accent-violet: #ba6aeb;
   --study-dock-accent-mintGreen: #35f224;
   --study-dock-accent-coralRose: #ff619a;
+  --study-dock-accent-teal: #2fd4c8;
 }

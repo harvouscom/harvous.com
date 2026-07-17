@@ -333,6 +333,7 @@
   --pds-highlight-violet: var(--study-dock-accent-violet);
   --pds-highlight-mint-green: var(--study-dock-accent-mintGreen);
   --pds-highlight-coral-rose: var(--study-dock-accent-coralRose);
+  --pds-highlight-teal: var(--study-dock-accent-teal);
 
   /* Site paper editor — mirrors /site/src/styles/global.css (founder letter card) */
   --pds-paper-desk: #f7f6f3;

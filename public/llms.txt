@@ -24,7 +24,7 @@ Harvous is not a Bible reader. It is not built around sermon transcription or AI
 
 ## Bright Enough — the Harvous blog
 
-Bright Enough is editorial content about teaching craft, retention after Sunday, study habits, and notes-first Bible study — for teachers, group leaders, churches, and anyone who wants learning to last.
+Bright Enough is editorial content about teaching craft, retention after Sunday, study habits, and notes-first Bible study — for teachers, pastors, group leaders, churches, and anyone who wants learning to last.
 
 Hub: https://harvous.com/blog/
 
@@ -53,6 +53,7 @@ Hub: https://harvous.com/blog/
 
 - https://harvous.com/compare/best-bible-notes-apps/
 - https://harvous.com/compare/best-sermon-notes-apps/
+- https://harvous.com/compare/best-sermon-prep-tools/
 - https://harvous.com/compare/best-free-bible-notes-apps/
 - https://harvous.com/compare/best-bible-study-notes-apps/
 - https://harvous.com/compare/best-notion-bible-study-apps/
@@ -65,6 +66,10 @@ Hub: https://harvous.com/blog/
 - https://harvous.com/compare/bible-notes-alternative/
 - https://harvous.com/compare/church-notes-alternative/
 - https://harvous.com/compare/spirit-notes-alternative/
+- https://harvous.com/compare/sermonary-alternative/
+- https://harvous.com/compare/sermons-app-alternative/
+- https://harvous.com/compare/sermons-com-alternative/
+- https://harvous.com/compare/pulpit-ai-alternative/
 
 ## Compare pages
 
@@ -73,6 +78,10 @@ Individual comparisons (Harvous vs alternatives): https://harvous.com/compare/
 Examples:
 - https://harvous.com/compare/youversion/
 - https://harvous.com/compare/logos/
+- https://harvous.com/compare/sermonary/
+- https://harvous.com/compare/sermons-app/
+- https://harvous.com/compare/sermons-com/
+- https://harvous.com/compare/pulpit-ai/
 - https://harvous.com/compare/e-sword/
 - https://harvous.com/compare/pocketbible/
 - https://harvous.com/compare/olive-tree/
@@ -88,3 +97,16 @@ Examples:
 
 - https://harvous.com/use-cases/daily-journal/
 - https://harvous.com/use-cases/sermon-notes/
+- https://harvous.com/use-cases/sermon-prep/
+- https://harvous.com/use-cases/book-study/
+- https://harvous.com/use-cases/deep-study/
+- https://harvous.com/use-cases/topical-study/
+- https://harvous.com/use-cases/small-group/
+
+## Who it's for
+
+- https://harvous.com/for/
+- https://harvous.com/for/pastors/
+- https://harvous.com/for/teachers/
+- https://harvous.com/for/seminary-students/
+- https://harvous.com/for/sunday-note-takers/

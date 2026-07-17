@@ -1,12 +1,20 @@
 {
-  "generatedAt": "2026-07-17T04:08:37.638Z",
+  "generatedAt": "2026-07-17T17:01:09.360Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
   "sourceBrightness": [
     {
+      "name": "ai_bg_075.webp",
+      "mean": 237
+    },
+    {
       "name": "ai_bg_053.webp",
       "mean": 234
+    },
+    {
+      "name": "ai_bg_076.webp",
+      "mean": 230
     },
     {
       "name": "ai_bg_051.webp",
@@ -75,6 +83,7 @@
       "ai_bg_073.webp"
     ],
     "teaching": [
+      "ai_bg_076.webp",
       "ai_bg_053.webp",
       "ai_bg_051.webp",
       "ai_bg_058.webp",
@@ -92,11 +101,13 @@
     "equipping": [
       "ai_bg_058.webp",
       "ai_bg_052.webp",
+      "ai_bg_075.webp",
       "ai_bg_044.webp",
       "ai_bg_053.webp",
       "ai_bg_061.webp"
     ],
     "study-habits": [
+      "ai_bg_075.webp",
       "ai_bg_053.webp",
       "ai_bg_051.webp",
       "ai_bg_058.webp",
@@ -104,6 +115,7 @@
       "ai_bg_045.webp"
     ],
     "using-harvous": [
+      "ai_bg_075.webp",
       "ai_bg_053.webp",
       "ai_bg_051.webp",
       "ai_bg_045.webp",
@@ -111,6 +123,7 @@
       "ai_bg_050.webp"
     ],
     "scripture-study": [
+      "ai_bg_076.webp",
       "ai_bg_053.webp",
       "ai_bg_051.webp",
       "ai_bg_058.webp",
@@ -123,9 +136,10 @@
       "category": "teaching",
       "mood": "light",
       "shape": "wedge",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
       "pack": [
+        "ai_bg_076.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -145,11 +159,12 @@
       "category": "equipping",
       "mood": "light",
       "shape": "arc",
-      "source": "ai_bg_058.webp",
-      "sourceMean": 187,
+      "source": "ai_bg_061.webp",
+      "sourceMean": 160,
       "pack": [
         "ai_bg_058.webp",
         "ai_bg_052.webp",
+        "ai_bg_075.webp",
         "ai_bg_044.webp",
         "ai_bg_053.webp",
         "ai_bg_061.webp"
@@ -167,9 +182,10 @@
       "category": "using-harvous",
       "mood": "light",
       "shape": "bars",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
+      "source": "ai_bg_072.webp",
+      "sourceMean": 199,
       "pack": [
+        "ai_bg_075.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_045.webp",
@@ -215,6 +231,7 @@
       "source": "ai_bg_053.webp",
       "sourceMean": 234,
       "pack": [
+        "ai_bg_075.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -234,9 +251,10 @@
       "category": "teaching",
       "mood": "light",
       "shape": "streak",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
       "pack": [
+        "ai_bg_076.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -259,6 +277,7 @@
       "source": "ai_bg_051.webp",
       "sourceMean": 229,
       "pack": [
+        "ai_bg_076.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -278,9 +297,10 @@
       "category": "using-harvous",
       "mood": "light",
       "shape": "rings",
-      "source": "ai_bg_045.webp",
-      "sourceMean": 211,
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
       "pack": [
+        "ai_bg_075.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_045.webp",
@@ -300,9 +320,10 @@
       "category": "using-harvous",
       "mood": "light",
       "shape": "streak",
-      "source": "ai_bg_053.webp",
-      "sourceMean": 234,
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
       "pack": [
+        "ai_bg_075.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_045.webp",
@@ -322,9 +343,10 @@
       "category": "teaching",
       "mood": "light",
       "shape": "arc",
-      "source": "ai_bg_053.webp",
-      "sourceMean": 234,
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
       "pack": [
+        "ai_bg_076.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -344,9 +366,10 @@
       "category": "study-habits",
       "mood": "light",
       "shape": "bars",
-      "source": "ai_bg_051.webp",
-      "sourceMean": 229,
+      "source": "ai_bg_075.webp",
+      "sourceMean": 237,
       "pack": [
+        "ai_bg_075.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -366,9 +389,10 @@
       "category": "teaching",
       "mood": "light",
       "shape": "corner",
-      "source": "ai_bg_045.webp",
-      "sourceMean": 211,
+      "source": "ai_bg_076.webp",
+      "sourceMean": 230,
       "pack": [
+        "ai_bg_076.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -434,11 +458,12 @@
       "category": "equipping",
       "mood": "light",
       "shape": "split",
-      "source": "ai_bg_061.webp",
-      "sourceMean": 160,
+      "source": "ai_bg_075.webp",
+      "sourceMean": 237,
       "pack": [
         "ai_bg_058.webp",
         "ai_bg_052.webp",
+        "ai_bg_075.webp",
         "ai_bg_044.webp",
         "ai_bg_053.webp",
         "ai_bg_061.webp"
@@ -479,11 +504,12 @@
       "category": "equipping",
       "mood": "light",
       "shape": "split",
-      "source": "ai_bg_061.webp",
-      "sourceMean": 160,
+      "source": "ai_bg_058.webp",
+      "sourceMean": 187,
       "pack": [
         "ai_bg_058.webp",
         "ai_bg_052.webp",
+        "ai_bg_075.webp",
         "ai_bg_044.webp",
         "ai_bg_053.webp",
         "ai_bg_061.webp"
@@ -504,6 +530,7 @@
       "source": "ai_bg_051.webp",
       "sourceMean": 229,
       "pack": [
+        "ai_bg_076.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",
@@ -526,6 +553,7 @@
       "source": "ai_bg_058.webp",
       "sourceMean": 187,
       "pack": [
+        "ai_bg_075.webp",
         "ai_bg_053.webp",
         "ai_bg_051.webp",
         "ai_bg_058.webp",

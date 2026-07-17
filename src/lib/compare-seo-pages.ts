@@ -464,6 +464,142 @@ const SEO_PAGES: CompareSeoPage[] = [
       },
     ],
   },
+  {
+    kind: "category",
+    slug: "best-sermon-prep-tools",
+    guideLabel: "Best sermon prep tools",
+    guideDescription: "Outline suites, resource libraries, and notes-first prep — not listener sermon notes",
+    seoTitle: "Best sermon prep tools — Harvous",
+    seoDescription:
+      "Compare the best sermon prep tools for pastors — Sermonary, Sermons.app, Sermons.com, Pulpit AI, Logos, and Harvous. Notes-first prep that compounds, not a manuscript suite or listener capture app.",
+    h1: "Best sermon prep tools",
+    lead: "Tools for preparing and writing sermons — dedicated outline apps, resource libraries, AI coaches, and research suites. Harvous is notes-first prep you’ll find again next year — not podium mode, not listener sermon notes.",
+    pickSlugs: [
+      "sermonary",
+      "sermons-app",
+      "logos",
+      "harvous",
+      "sermons-com",
+      "pulpit-ai",
+      "notion",
+    ],
+    honestNote:
+      "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: dedicated prep suites own outlines, templates, and podium delivery. Harvous is here if you want scripture-linked prep notes and series memory that compound across the preaching year — not AI that writes the sermon for you.",
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: "You want a notes-first home for outline notes, series threads, and Recall across years of preaching — beside Logos or a manuscript app, not instead of every research tool.",
+      },
+      {
+        heading: "Choose a dedicated sermon suite if…",
+        body: "You want block outlines, templates, and podium mode in one subscription — Sermonary is built for that weekly writing-and-delivery job.",
+      },
+      {
+        heading: "Choose a study suite if…",
+        body: "You need commentaries, original languages, and a full library wired into sermon building — Logos (and its Sermon Builder) is built for research-heavy prep.",
+      },
+      {
+        heading: "Choose an AI coach or content tool if…",
+        body: "You want help sharpening a draft (Sermons.app) or multiplying a finished sermon into clips and guides (Pulpit AI) — different jobs than long-term personal prep notes.",
+      },
+      {
+        heading: "Choose a resource library if…",
+        body: "You mainly need illustrations, sample sermons, and lectionary starters — Sermons.com is a library, not a notes home.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "sermonary-alternative",
+    targetSlug: "sermonary",
+    guideLabel: "Best Sermonary alternative",
+    guideDescription: "Notes-first prep and peers beside the outline suite",
+    seoTitle: "Best Sermonary alternative — Harvous",
+    seoDescription:
+      "Looking for a Sermonary alternative? Compare Harvous, Sermons.app, Logos, Sermons.com, and Notion — options for sermon prep notes, AI coaching, research, or a flexible doc — without assuming you need podium mode.",
+    h1: "Best Sermonary alternative",
+    lead: "Sermonary owns block outlines and podium delivery. These alternatives cover notes-first prep, AI coaching, research suites, or a doc you adapt yourself.",
+    pickSlugs: ["sermons-app", "logos", "sermons-com", "pulpit-ai", "notion"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: "You want scripture-linked prep notes and series memory that last years — not a full outline builder with podium mode.",
+      },
+      {
+        heading: "Choose Sermonary if…",
+        body: "You want drag-and-drop sermon blocks, templates, and a dedicated preaching view in one app.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "sermons-app-alternative",
+    targetSlug: "sermons-app",
+    guideLabel: "Best Sermons.app alternative",
+    guideDescription: "Prep peers without an AI sermon coach at the center",
+    seoTitle: "Best Sermons.app alternative — Harvous",
+    seoDescription:
+      "Looking for a Sermons.app alternative? Compare Harvous, Sermonary, Logos, Sermons.com, and Notion — sermon prep options focused on notes, outlines, or research rather than an AI writing coach.",
+    h1: "Best Sermons.app alternative",
+    lead: "Sermons.app centers an AI coach for drafting in your voice. These alternatives cover notes-first prep, outline suites, research, or a flexible workspace.",
+    pickSlugs: ["sermonary", "logos", "sermons-com", "pulpit-ai", "notion"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: "You want to keep authorship in your own notes — scripture-linked, threaded by series, findable later — without an AI coach in the middle of the draft.",
+      },
+      {
+        heading: "Choose Sermons.app if…",
+        body: "You want conversational AI help structuring and clarifying a sermon while you stay the author.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "sermons-com-alternative",
+    targetSlug: "sermons-com",
+    guideLabel: "Best Sermons.com alternative",
+    guideDescription: "Prep notes and tools beyond an illustration library",
+    seoTitle: "Best Sermons.com alternative — Harvous",
+    seoDescription:
+      "Looking for a Sermons.com alternative? Compare Harvous, Sermonary, Logos, Sermons.app, and Notion — places for your own prep notes and outlines, not only borrowed illustrations.",
+    h1: "Best Sermons.com alternative",
+    lead: "Sermons.com is a resource library. These alternatives help you write and keep your own prep — or coach a draft — instead of only browsing illustrations.",
+    pickSlugs: ["sermonary", "logos", "sermons-app", "pulpit-ai", "notion"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: "You already have (or don’t need) illustration libraries — and you want your own scripture-linked outline notes to compound across the year.",
+      },
+      {
+        heading: "Choose Sermons.com if…",
+        body: "You mainly need searchable illustrations, sample sermons, and weekly worship resources for the lectionary.",
+      },
+    ],
+  },
+  {
+    kind: "alternative",
+    slug: "pulpit-ai-alternative",
+    targetSlug: "pulpit-ai",
+    guideLabel: "Best Pulpit AI alternative",
+    guideDescription: "Prep and notes peers beyond sermon-to-content AI",
+    seoTitle: "Best Pulpit AI alternative — Harvous",
+    seoDescription:
+      "Looking for a Pulpit AI alternative? Compare Harvous, Sermonary, Sermons.app, Logos, and Notion — tools for sermon prep notes and outlines rather than multiplying a finished sermon into clips and guides.",
+    h1: "Best Pulpit AI alternative",
+    lead: "Pulpit AI shines at AI assistance and turning a sermon into church content. These alternatives focus on prep notes, outlines, coaching, or research.",
+    pickSlugs: ["sermonary", "sermons-app", "logos", "sermons-com", "notion"],
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: "You care more about remembering the prep you wrote than generating social clips from Sunday’s audio.",
+      },
+      {
+        heading: "Choose Pulpit AI if…",
+        body: "You want an AI sermon assistant and a pipeline that turns one message into clips, guides, and midweek content.",
+      },
+    ],
+  },
 ];
 
 function harvousPick(): ComparePick {
@@ -507,6 +643,9 @@ function drawbackFor(entry: CompareEntry): string {
   }
   if (entry.competitorType === "Bible Study Suite") {
     return "Heavier and more expensive — built for scholars, not lightweight personal notes";
+  }
+  if (entry.competitorType === "Sermon Prep") {
+    return "Built for outlines, resources, or AI assistance — not a notes-first home for years of prep";
   }
   if (entry.competitorType === "AI Guided Bible") {
     return "AI and reading lead — less focused on threading your own written reflections";

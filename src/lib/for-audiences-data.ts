@@ -226,8 +226,8 @@ const audiences: ForAudience[] = [
     title: "Sunday note-takers",
     tagline: "You write things down on Sunday. Monday shouldn't erase them.",
     icon: "fa6-solid:church",
-    ink: "var(--study-dock-accent-violet)",
-    image: "/images/auth-hero/ai_bg_060.webp",
+    ink: "var(--study-dock-accent-teal)",
+    image: "/images/auth-hero/ai_bg_075.webp",
     seoTitle: "For Sunday sermon note-takers — Harvous",
     seoDescription:
       "You take notes at church. Harvous keeps them in series threads, scripture-linked and searchable — not sermon transcription.",
@@ -337,9 +337,68 @@ const audiences: ForAudience[] = [
     featuresLead:
       "Series threads, scripture nearby, and private prep — plus sharing when your group is ready for it.",
     compareSlugs: ["logos", "notion", "bible-note", "goodnotes"],
-    useCaseSlugs: ["sermon-notes", "small-group"],
+    useCaseSlugs: ["small-group"],
     comingSoon: true,
     comingSoonLine: "Shared spaces coming soon",
+  },
+  {
+    slug: "pastors",
+    href: "/for/pastors/",
+    title: "Pastors",
+    tagline: "You prepare, then you preach. Keep a year of that work.",
+    icon: "fa6-solid:book-bible",
+    ink: "var(--study-dock-accent-violet)",
+    image: "/images/auth-hero/ai_bg_076.webp",
+    seoTitle: "For pastors — sermon prep notes that last — Harvous",
+    seoDescription:
+      "Sermon prep that compounds across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, alongside Logos and dedicated prep tools.",
+    heroTitle: "For people who prepare, then preach.",
+    heroLead:
+      "Sunday keeps coming. You’re digging into a text, shaping an outline, landing a line — then somehow next week starts from a blank page. The prep for a preaching calendar deserves a home that lasts years, not a folder of untitled docs.",
+    sections: [
+      {
+        heading: "Prep that compounds across the year",
+        paragraphs: [
+          "Harvous is where your personal sermon prep lives — passages as scripture pills, notes per message, threads for a series you’re walking the church through. You’re not looking for podium mode or an illustration marketplace. You’re looking for a place that remembers what you already studied when week 40 needs week 3.",
+          "Sketch the moves of the message. Save the cross-references. Highlight the sentence that has to land. When you’re back on a familiar text next year, the trail is still there.",
+        ],
+      },
+      {
+        heading: "Depth without the heavy suite (unless you want one)",
+        paragraphs: [
+          "Logos and library stacks have their place for commentaries and languages. Dedicated sermon apps own templates, blocks, and preaching views. Harvous sits in the middle for the notes you write while you prepare — scripture-linked, threaded by series, searchable when half a phrase is all you remember.",
+          "Keep the tools that already work for manuscript polish and research. Use Harvous so the thinking behind the sermon doesn’t disappear between Sundays.",
+        ],
+      },
+    ],
+    moments: [
+      {
+        icon: "fa6-solid:folder",
+        heading: "A thread per series",
+        body: "Romans, Advent, a topical run — keep every week’s prep together so the arc stays visible.",
+      },
+      {
+        icon: "fa6-solid:book-bible",
+        heading: "Passages at hand",
+        body: "Scripture pills keep every reference one tap away while you outline and while you revise.",
+      },
+      {
+        icon: "fa6-solid:clock-rotate-left",
+        heading: "Recall finds last year’s work",
+        body: "When you’ve preached something like this before, Recall can bring that prep forward — still linked to the passage.",
+      },
+      {
+        icon: "fa6-solid:lock",
+        heading: "Prep stays private",
+        body: "Your working notes are yours. Church-level curriculum and shared spaces are a longer road — personal prep works today.",
+      },
+    ],
+    featureIds: ["scripture-pills", "threads", "highlights", "recall"],
+    featuresHeading: "What preaching asks of your notes",
+    featuresLead:
+      "Series threads, scripture nearby, and Recall across the calendar year — so prep compounds instead of resetting every Monday.",
+    compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion", "obsidian"],
+    useCaseSlugs: ["sermon-prep", "deep-study", "book-study"],
   },
   {
     slug: "going-through-a-book",
