@@ -108,23 +108,20 @@ const defaultId = items[0]?.id ?? "";
     justify-content: center;
     gap: 0.45rem 0.55rem;
     box-sizing: border-box;
-    width: min(100%, max-content);
+    /* Hug pills when they fit; cap to the slot so the row can scroll when they don't. */
+    width: max-content;
     max-width: calc(100% - 2 * var(--frame-content-pad));
     min-width: 0;
+    /* Vertical only when pills are showing — horizontal padding lives on the scroll row. */
     padding: 0.4rem 0.55rem;
     border: 1px solid var(--color-rule);
     border-radius: 999px;
+    overflow: hidden;
     background: color-mix(in oklab, var(--color-card) 90%, transparent);
     backdrop-filter: blur(8px);
     box-shadow:
       0 1px 2px rgba(15, 23, 42, 0.04),
       0 8px 24px -12px rgba(15, 23, 42, 0.1);
-  }
-
-  .hub-section-nav__float:not(.is-compact):not(.is-pinned) {
-    /* Cap to the slot so the pill row can scroll instead of clipping. */
-    width: 100%;
-    max-width: min(max-content, calc(100% - 2 * var(--frame-content-pad)));
   }
 
   .hub-section-nav__search {
@@ -146,30 +143,40 @@ const defaultId = items[0]?.id ?? "";
 
   .hub-section-nav__pills {
     display: none;
-    flex: 1 1 auto;
+    /* Don't grow to fill the float (that forced full-width bars); shrink + scroll when capped. */
+    flex: 0 1 auto;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
     gap: 0.35rem;
     min-width: 0;
     max-width: 100%;
+    /* Pad the scroll content so first/last pills clear the float's rounded ends. */
+    padding-inline: 0.55rem;
+    scroll-padding-inline: 0.55rem;
+    box-sizing: border-box;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklab, var(--color-ink) 22%, transparent) transparent;
     -webkit-overflow-scrolling: touch;
+    /* Keep scroll (trackpad / touch / shift-wheel); hide the bar chrome. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .hub-section-nav__pills::-webkit-scrollbar {
-    height: 4px;
-  }
-  .hub-section-nav__pills::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-    background: color-mix(in oklab, var(--color-ink) 22%, transparent);
+    display: none;
   }
 
   .hub-section-nav__select-wrap {
     display: block;
+  }
+
+  .hub-section-nav__float:not(.is-compact):not(.is-pinned) {
+    padding-inline: 0;
+  }
+
+  .hub-section-nav__float:not(.is-compact):not(.is-pinned) .hub-section-nav__search {
+    padding-left: 0.55rem;
   }
 
   .hub-section-nav__float:not(.is-compact):not(.is-pinned) .hub-section-nav__pills {
