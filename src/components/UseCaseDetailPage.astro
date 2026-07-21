@@ -81,7 +81,12 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={useCase.seoTitle} description={useCase.seoDescription} jsonLd={jsonLd}>
+<BaseLayout
+  title={useCase.seoTitle}
+  description={useCase.seoDescription}
+  ogImage={`/images/use-cases/og/${useCase.slug}.webp`}
+  jsonLd={jsonLd}
+>
   <article class="use-case-detail" style={`--use-case-ink: ${useCase.ink};`}>
     <!-- Hero -->
     <header class="border-b border-[var(--color-rule)]">

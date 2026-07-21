@@ -84,7 +84,12 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={audience.seoTitle} description={audience.seoDescription} jsonLd={jsonLd}>
+<BaseLayout
+  title={audience.seoTitle}
+  description={audience.seoDescription}
+  ogImage={`/images/for/og/${audience.slug}.webp`}
+  jsonLd={jsonLd}
+>
   <article class="use-case-detail" style={`--use-case-ink: ${audience.ink};`}>
     <header class="border-b border-[var(--color-rule)]">
       <div class="detail-content py-10 md:py-14">

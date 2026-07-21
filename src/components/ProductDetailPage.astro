@@ -63,9 +63,13 @@ const defaultHeroImage =
   page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
 const lightAccent = page.kind === "feature" && isLightFeatureInk(page.ink);
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
+const ogImage =
+  page.kind === "feature"
+    ? `/images/features/og/${page.slug}.webp`
+    : `/images/add-ons/og/${page.slug}.webp`;
 ---
 
-<BaseLayout title={page.seoTitle} description={page.seoDescription} jsonLd={jsonLd}>
+<BaseLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} jsonLd={jsonLd}>
   <article
     class:list={["use-case-detail product-detail", lightAccent && "product-detail--light-accent"]}
     style={`--use-case-ink: ${page.ink};`}

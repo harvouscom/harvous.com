@@ -1,0 +1,177 @@
+{
+  "generatedAt": "2026-07-21T19:33:52.360Z",
+  "size": "1200x630",
+  "count": 34,
+  "targets": [
+    {
+      "kind": "use-case",
+      "slug": "daily-journal",
+      "out": "/images/use-cases/og/daily-journal.webp"
+    },
+    {
+      "kind": "use-case",
+      "slug": "sermon-notes",
+      "out": "/images/use-cases/og/sermon-notes.webp"
+    },
+    {
+      "kind": "use-case",
+      "slug": "sermon-prep",
+      "out": "/images/use-cases/og/sermon-prep.webp"
+    },
+    {
+      "kind": "use-case",
+      "slug": "book-study",
+      "out": "/images/use-cases/og/book-study.webp"
+    },
+    {
+      "kind": "use-case",
+      "slug": "topical-study",
+      "out": "/images/use-cases/og/topical-study.webp"
+    },
+    {
+      "kind": "use-case",
+      "slug": "deep-study",
+      "out": "/images/use-cases/og/deep-study.webp"
+    },
+    {
+      "kind": "use-case",
+      "slug": "small-group",
+      "out": "/images/use-cases/og/small-group.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "daily-readers",
+      "out": "/images/for/og/daily-readers.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "prayer-journaling",
+      "out": "/images/for/og/prayer-journaling.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "new-to-the-bible",
+      "out": "/images/for/og/new-to-the-bible.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "sunday-note-takers",
+      "out": "/images/for/og/sunday-note-takers.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "teachers",
+      "out": "/images/for/og/teachers.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "pastors",
+      "out": "/images/for/og/pastors.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "going-through-a-book",
+      "out": "/images/for/og/going-through-a-book.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "seminary-students",
+      "out": "/images/for/og/seminary-students.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "following-a-theme",
+      "out": "/images/for/og/following-a-theme.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "churches",
+      "out": "/images/for/og/churches.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "group-leaders",
+      "out": "/images/for/og/group-leaders.webp"
+    },
+    {
+      "kind": "for",
+      "slug": "bible-app-users",
+      "out": "/images/for/og/bible-app-users.webp"
+    },
+    {
+      "kind": "addon",
+      "slug": "shared-spaces",
+      "out": "/images/add-ons/og/shared-spaces.webp"
+    },
+    {
+      "kind": "addon",
+      "slug": "review",
+      "out": "/images/add-ons/og/review.webp"
+    },
+    {
+      "kind": "addon",
+      "slug": "challenges",
+      "out": "/images/add-ons/og/challenges.webp"
+    },
+    {
+      "kind": "addon",
+      "slug": "connector",
+      "out": "/images/add-ons/og/connector.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "daily-passage",
+      "out": "/images/features/og/daily-passage.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "dictionary",
+      "out": "/images/features/og/dictionary.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "highlights",
+      "out": "/images/features/og/highlights.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "native-apps",
+      "out": "/images/features/og/native-apps.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "offline-sync",
+      "out": "/images/features/og/offline-sync.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "recall",
+      "out": "/images/features/og/recall.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "scripture-pills",
+      "out": "/images/features/og/scripture-pills.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "sharing",
+      "out": "/images/features/og/sharing.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "sidebar-modes",
+      "out": "/images/features/og/sidebar-modes.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "threads",
+      "out": "/images/features/og/threads.webp"
+    },
+    {
+      "kind": "pricing",
+      "slug": "pricing",
+      "out": "/images/pricing/og.webp"
+    }
+  ]
+}
