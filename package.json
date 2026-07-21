@@ -12,7 +12,8 @@
     "astro": "astro",
     "images:compress": "bash scripts/compress-images.sh",
     "blog:thumbs": "node scripts/generate-blog-thumbs.mjs",
-    "og:pages": "node scripts/generate-page-og-images.mjs"
+    "og:pages": "node scripts/generate-page-og-images.mjs",
+    "og:compare": "node scripts/generate-compare-og-images.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

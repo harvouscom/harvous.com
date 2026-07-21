@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Download compare-page OG images from compare.csv into public/images/compare/og/.
- * Re-run when compare.csv Open Graph URLs change.
+ * Legacy: download Webflow compare OG PNGs from compare.csv into public/images/compare/og/.
+ *
+ * Prefer `npm run og:compare`, which regenerates hero-matched OGs (grid + vs + icons)
+ * from competitor app images instead of mirroring outdated CDN artwork.
  */
 import { createWriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
