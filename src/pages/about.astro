@@ -35,6 +35,14 @@ const beliefs = [
     linkLabel: "read the plan for churches",
     bodyAfter: ".",
   },
+  {
+    title: "Church finding, kept current.",
+    bodyBefore:
+      "Separately from Harvous, Here's My Church is our open-source, crowd-sourced map of Christian churches in the U.S. — free to browse, no account needed — ",
+    linkHref: "https://heresmychurch.com",
+    linkLabel: "explore the map",
+    bodyAfter: ".",
+  },
 ] as const;
 
 const jsonLd = {
@@ -134,7 +142,14 @@ const jsonLd = {
                 {"bodyBefore" in belief ? (
                   <>
                     {belief.bodyBefore}
-                    <a href={belief.linkHref}>{belief.linkLabel}</a>
+                    <a
+                      href={belief.linkHref}
+                      {...(belief.linkHref.startsWith("http")
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                    >
+                      {belief.linkLabel}
+                    </a>
                     {belief.bodyAfter}
                   </>
                 ) : (
