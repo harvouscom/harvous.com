@@ -290,7 +290,7 @@ const audiences: ForAudience[] = [
     image: "/images/auth-hero/ai_bg_046.webp",
     seoTitle: "For Bible teachers — Harvous",
     seoDescription:
-      "Prepare lessons and remember what you taught — Harvous keeps prep notes, scripture, and follow-ups in one place. Shared group spaces coming soon.",
+      "Prepare lessons and remember what you taught — Harvous keeps prep notes, scripture, and follow-ups in one place. Host a Shared Space with Harvous Plus when the class needs a room that lasts.",
     heroTitle: "For people who prepare, then teach.",
     heroLead:
       "Sunday school, small group, a class at church — you dig into a passage, sketch questions, teach it out loud, then somehow start from scratch next week. The prep and the teaching deserve a home that lasts.",
@@ -303,10 +303,10 @@ const audiences: ForAudience[] = [
         ],
       },
       {
-        heading: "Personal now. Shared when you're ready.",
+        heading: "Personal prep. Shared when the class needs it.",
         paragraphs: [
-          "Today, Harvous shines for your private prep and the notes you take while you teach. Shared spaces for the whole group are on the way — so what the room discovers together can live beyond the hour.",
-          "Until then, keep using Harvous the way you study alone. The same tools will carry into group spaces when they launch.",
+          "Harvous shines for your private prep and the notes you take while you teach. When the room needs a shared trail, [Shared Spaces](/add-ons/shared-spaces/) let the whole group add to the same threads — hosting is [Harvous Plus](/pricing/); joining is free.",
+          "Your prep stays private until you choose what to share into the space.",
         ],
       },
     ],
@@ -324,22 +324,20 @@ const audiences: ForAudience[] = [
       {
         icon: "fa6-solid:lock",
         heading: "Prep stays private",
-        body: "Your working notes are yours. Share what you choose when group spaces arrive — not everything by default.",
+        body: "Your working notes are yours. Share what you choose into a Shared Space — not everything by default.",
       },
       {
         icon: "fa6-solid:user-group",
-        heading: "Shared spaces on the way",
-        body: "Soon your group can add to the same threads. You're building on personal study habits that already work.",
+        heading: "Shared Spaces when you're ready",
+        body: "Host a room for your class with Harvous Plus. Everyone can add to the same threads after you leave.",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "highlights", "sharing"],
+    featureIds: ["scripture-pills", "threads", "highlights", "shared-spaces"],
     featuresHeading: "What teaching asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, and private prep — plus sharing when your group is ready for it.",
+      "Series threads, scripture nearby, private prep — and Shared Spaces when the class needs a room that lasts.",
     compareSlugs: ["logos", "notion", "bible-note", "goodnotes"],
     useCaseSlugs: ["small-group"],
-    comingSoon: true,
-    comingSoonLine: "Shared spaces coming soon",
   },
   {
     slug: "pastors",
@@ -584,20 +582,20 @@ const audiences: ForAudience[] = [
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
     comingSoon: true,
-    comingSoonLine: "On the roadmap",
+    comingSoonLine: "Church org on the roadmap",
     interestForm: true,
     seoTitle: "For churches — Harvous plans for group study and curriculum",
     seoDescription:
-      "Harvous wants to serve how the church learns — Shared Spaces for groups soon, and future church organization accounts for curriculum. Tell us your church is interested.",
+      "Harvous wants to serve how the church learns — Shared Spaces for groups are live (host with Harvous Plus), and church organization accounts for curriculum are on the roadmap. Tell us your church is interested.",
     heroTitle: "Education for the church.",
     heroLead:
       "Long-term, Harvous wants to serve how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
     sections: [
       {
-        heading: "Near-term: Shared Spaces for groups",
+        heading: "Available now: Shared Spaces for groups",
         paragraphs: [
-          "The first group layer is Shared Spaces — a room your church or small group can study in together, with threads, scripture, and notes that live beyond the hour you meet. Joining a space is free for members; the space owner adds the paid add-on when they're ready.",
-          "If your church needs a shared study space for a class or small group, start there: [Shared Spaces](/add-ons/shared-spaces/).",
+          "The first group layer is [Shared Spaces](/add-ons/shared-spaces/) — a room your church or small group can study in together, with threads, scripture, and notes that live beyond the hour you meet. Joining a space is free for members; hosting is included with [Harvous Plus](/pricing/).",
+          "If your church needs a shared study space for a class or small group, start there.",
         ],
       },
       {
@@ -654,26 +652,24 @@ const audiences: ForAudience[] = [
     icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_059.webp",
-    comingSoon: true,
-    comingSoonLine: "Coming soon",
     seoTitle: "For small group leaders — Harvous",
     seoDescription:
-      "Lead your group and keep what you discover together. Harvous shared spaces are coming — personal prep works today.",
+      "Lead your group and keep what you discover together. Host a Shared Space with Harvous Plus — joining is free. Personal prep works the same way.",
     heroTitle: "For people who lead the discussion.",
     heroLead:
       "You prep questions, you facilitate, you watch people realize things out loud. And then next week it feels like starting over. What the group found together lives in someone's memory — maybe — but not somewhere you can all return to.",
     sections: [
       {
-        heading: "Shared spaces are coming soon",
+        heading: "A shared space for the whole group",
         paragraphs: [
-          "We're building shared spaces so a whole group can study in the same threads — questions, notes, and scripture that live beyond the hour you meet. It's not fully launched yet, but the foundation is the same Harvous you can use for personal prep today.",
-          "If you lead a group and want early access — or your church is interested in future organization features — [share your interest here](/for/churches/#interest). We'd love to hear how you study together.",
+          "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, notes, and scripture that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
+          "If your church wants future organization accounts for curriculum (beyond a personal shared space) — [share your interest here](/for/churches/#interest).",
         ],
       },
       {
         heading: "Lead with your own notes first",
         paragraphs: [
-          "While shared spaces finish, use Harvous for private prep — passages, questions, the things you almost said. When the group layer ships, that habit carries over. Your prep stays private; the group sees what you choose to share.",
+          "Use Harvous for private prep — passages, questions, the things you almost said. That habit carries into the group space. Your prep stays private; the group sees what you choose to share.",
         ],
       },
     ],
@@ -700,9 +696,9 @@ const audiences: ForAudience[] = [
       },
     ],
     featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
-    featuresHeading: "What group leadership will need from Harvous",
+    featuresHeading: "What group leadership needs from Harvous",
     featuresLead:
-      "Shared Spaces are on the way — until then, threads, scripture pills, and highlights are the personal-study pieces leaders use for prep and follow-up.",
+      "Shared Spaces for the room, plus threads, scripture pills, and highlights for the prep and follow-up leaders already do.",
     compareSlugs: ["pray-com", "youversion", "notion"],
     useCaseSlugs: ["small-group"],
     testimonialId: "joschua",

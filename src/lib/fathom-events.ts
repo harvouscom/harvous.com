@@ -13,6 +13,8 @@ export const fathomSignup = {
   useCasesHub: "signup_use_cases",
   compareHub: "signup_compare",
   pricing: "signup_pricing",
+  /** Pricing page — Harvous Plus upgrade CTA. */
+  pricingPlus: "signup_pricing_plus",
   useCaseDetail: (slug: string) => `signup_use_case_${slug}`,
   forHub: "signup_for",
   forDetail: (slug: string) => `signup_for_${slug}`,

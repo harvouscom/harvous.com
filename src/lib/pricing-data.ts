@@ -1,31 +1,52 @@
 /** Pricing plan cards — shared by /pricing/ page. */
 import { fathomSignup } from "./fathom-events.ts";
 
-export type PricingAddon = {
+export type PricingPlanCta = {
+  label: string;
+  href: string;
+  external?: boolean;
+  fathomTrack?: string;
+};
+
+/** Free or paid plan shown as a primary card. */
+export type PricingPlan = {
+  id: "free" | "plus";
+  icon: string;
+  name: string;
+  priceDisplay: string;
+  /** Optional second price shown after a tiny “OR” (e.g. founding yearly). */
+  priceDisplaySecondary?: string;
+  /** Secondary price line under the main price (e.g. founding cap). */
+  priceNote?: string;
+  tagline: string;
+  features: string[];
+  /** Features included in the plan but not shipped yet. */
+  comingSoonFeatures?: string[];
+  cta: PricingPlanCta;
+  /** Asterisk fine print under the CTA. */
+  finePrint?: string;
+};
+
+/** Compact roadmap row — not sold as separate Shared Spaces SKUs. */
+export type PricingRoadmapItem = {
   id: string;
   icon: string;
   name: string;
   tagline: string;
-  /** Badge shown beside "Paid add-on" (defaults to "Coming soon"). */
+  /** Badge label (defaults to "Coming later"). */
   soonLabel?: string;
 };
 
-export type FreePlan = {
-  id: "free";
-  icon: string;
-  name: string;
-  priceDisplay: string;
-  tagline: string;
-  features: string[];
-  cta: {
-    label: string;
-    href: string;
-    external?: boolean;
-    fathomTrack?: string;
-  };
-};
+/** @deprecated Prefer PricingRoadmapItem — kept for existing call sites. */
+export type PricingAddon = PricingRoadmapItem;
 
-export const FREE_PLAN: FreePlan = {
+/** @deprecated Prefer PricingPlan — Free is no longer a separate type. */
+export type FreePlan = PricingPlan & { id: "free" };
+
+/** Opens the in-app Plus page; signed-out users get sign-up/sign-in with return to /upgrade. */
+export const APP_UPGRADE_URL = "https://app.harvous.com/upgrade?from=pricing";
+
+export const FREE_PLAN: PricingPlan = {
   id: "free",
   icon: "fa6-solid:book-open-reader",
   name: "Free",
@@ -47,25 +68,46 @@ export const FREE_PLAN: FreePlan = {
   },
 };
 
-export const PRICING_ADDONS: PricingAddon[] = [
-  {
-    id: "shared-spaces",
-    icon: "fa6-solid:user-group",
-    name: "Shared Spaces",
-    tagline: "Shared spaces where your group contributes notes together. Joining is free.",
+export const PLUS_PLAN: PricingPlan = {
+  id: "plus",
+  icon: "fa6-solid:plus",
+  name: "Harvous Plus",
+  priceDisplay: "$8/mo",
+  priceDisplaySecondary: "$45/yr*",
+  tagline: "More than a private study Bible",
+  features: [
+    "Everything in free",
+    "Unlimited shared spaces",
+    "Up to 100 people per space",
+    "Joining is always free",
+  ],
+  comingSoonFeatures: [
+    "Review — practice from your notes",
+    "Challenges — guided study seasons",
+  ],
+  cta: {
+    label: "Get Harvous Plus",
+    href: APP_UPGRADE_URL,
+    external: true,
+    fathomTrack: fathomSignup.pricingPlus,
   },
+  finePrint: "*founding price for the first 99. Then $64/yr",
+};
+
+/** Roadmap items shown under Free + Plus (not for sale yet as separate products). */
+export const PRICING_ROADMAP: PricingRoadmapItem[] = [
   {
     id: "review",
     icon: "fa6-solid:clock-rotate-left",
     name: "Review",
-    tagline: "Spaced practice from your notes, highlights, and passages.",
+    tagline: "Spaced practice from your notes, highlights, and passages. Included with Plus when it ships.",
     soonLabel: "Coming later",
   },
   {
     id: "challenges",
     icon: "fa6-solid:trophy",
     name: "Challenges",
-    tagline: "Themed study seasons with guides, leaderboards, and more.",
+    tagline: "Themed study seasons with guides, leaderboards, and more. Included with Plus when it ships.",
     soonLabel: "Coming later",
   },
   {
@@ -76,3 +118,6 @@ export const PRICING_ADDONS: PricingAddon[] = [
     soonLabel: "Coming later",
   },
 ];
+
+/** @deprecated Use PRICING_ROADMAP */
+export const PRICING_ADDONS = PRICING_ROADMAP;

@@ -72,9 +72,10 @@ const items = [
     desc: "Pin a note, folder, or thread to keep it right at the top of the list.",
   },
   {
-    icon: "fa6-solid:share-nodes",
-    title: "Sharing",
-    desc: "Share a note with a link. No account needed on the other end.",
+    icons: ["fa6-solid:share-nodes", "fa6-solid:user-group"],
+    title: "Sharing & Shared spaces",
+    desc: "Share a note by link, or host a group space with Harvous Plus — joining is always free.",
+    href: "/add-ons/shared-spaces/",
   },
   {
     icon: "fa6-solid:arrows-rotate",
@@ -109,11 +110,18 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
 
     <div class="included__grid" data-reveal="stagger" style="--reveal-delay: 100ms;">
       {items.map((item) => {
-        const href = featureHref("featureSlug" in item ? item.featureSlug : undefined);
+        const href =
+          ("href" in item && item.href) ||
+          featureHref("featureSlug" in item ? item.featureSlug : undefined);
+        const icons = "icons" in item ? item.icons : [item.icon];
         const Tag = href ? "a" : "div";
         return (
           <Tag class:list={["included__item", href && "included__item--link"]} href={href}>
-            <div class="included__icon"><Icon name={item.icon} /></div>
+            <div class="included__icons">
+              {icons.map((icon) => (
+                <div class="included__icon"><Icon name={icon} /></div>
+              ))}
+            </div>
             <div class="included__title">{item.title}</div>
             <p class="included__desc">{item.desc}</p>
             {href && <span class="included__more">Learn more →</span>}
@@ -171,6 +179,11 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
   }
   @media (min-width: 1024px) {
     .included__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .included__icons {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
   }
   .included__icon {
     display: inline-flex;
@@ -262,17 +275,17 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
   }
   .included__soon-grid {
     margin-top: clamp(1.5rem, 4vw, 2rem);
-    max-width: 48rem;
+    max-width: 42rem;
     margin-inline: auto;
     display: grid;
-    gap: 1.25rem;
+    gap: 1.25rem 1.5rem;
     grid-template-columns: 1fr;
+    justify-content: center;
   }
-  @media (min-width: 640px) {
-    .included__soon-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1024px) {
-    .included__soon-grid { grid-template-columns: repeat(4, 1fr); }
+  @media (min-width: 720px) {
+    .included__soon-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   .included__soon-icons {
     display: flex;

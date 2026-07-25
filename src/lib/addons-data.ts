@@ -1,4 +1,4 @@
-import { PRICING_ADDONS } from "./pricing-data.ts";
+import { APP_UPGRADE_URL, PRICING_ROADMAP } from "./pricing-data.ts";
 import type { ProductPage } from "./product-page-data.ts";
 
 export type AddonPage = ProductPage & {
@@ -13,15 +13,14 @@ const ADDON_PAGES: AddonPage[] = [
     href: "/add-ons/shared-spaces/",
     title: "Shared Spaces",
     tagline:
-      "Shared spaces where your group contributes notes together. Joining is free.",
-    seoTitle: "Shared Spaces — Harvous add-on",
+      "Shared spaces where your group contributes notes together. Joining is free; hosting is Harvous Plus.",
+    seoTitle: "Shared Spaces — Harvous Plus",
     seoDescription:
-      "Shared Spaces let your whole group study in the same threads — questions, insights, and scripture references that live beyond the hour you meet.",
+      "Shared Spaces let your whole group study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. Hosting is included with Harvous Plus; joining is always free.",
     icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
-    comingSoon: true,
-    comingSoonLine: "Coming soon",
+    comingSoon: false,
     heroTitle: "A shared space where your whole group can study together.",
     heroLead:
       "You lead the discussion. Your group has realizations out loud. Shared Spaces keep what you build together — in threads that live beyond the hour you meet.",
@@ -30,7 +29,7 @@ const ADDON_PAGES: AddonPage[] = [
         heading: "What the group discovers shouldn't disappear.",
         paragraphs: [
           "Personal Harvous is already where your prep and reflections live. Shared Spaces add a group layer — the same threads, scripture pills, and highlights you use alone, opened up so everyone in the space can contribute.",
-          "Joining a shared space is free for members. The space owner adds the paid add-on when they're ready to open a room for the group.",
+          "Joining a shared space is free for members. Hosting — creating spaces for your group — is included with [Harvous Plus](/pricing/) ($8/mo or $64/yr; Founding $45/yr for the first 99).",
         ],
       },
       {
@@ -76,11 +75,14 @@ const ADDON_PAGES: AddonPage[] = [
       },
     ],
     relatedIds: ["review", "challenges", "connector"],
-    relatedHeading: "Harvous free + other add-ons",
+    relatedHeading: "Harvous free + what's next",
     relatedLead:
-      "Shared Spaces builds on the free plan. See what else is included — and what's coming next on the roadmap.",
+      "Shared Spaces hosting is included with Harvous Plus. See the free plan — and what's coming next on the roadmap.",
     closingHeading: "Lead your group. Keep what you build together.",
-    closingLead: "Sign up free today — Shared Spaces will be an optional paid add-on when it launches.",
+    closingLead:
+      "Get Harvous Plus to host shared spaces — joining is always free for your group.",
+    closingHref: APP_UPGRADE_URL,
+    closingLabel: "Get Harvous Plus",
     draft: false,
   },
   {
@@ -156,7 +158,7 @@ const ADDON_PAGES: AddonPage[] = [
 
 /** Card fields from pricing-data for pages that share the same ids. */
 export function getPricingAddonCard(slug: string) {
-  return PRICING_ADDONS.find((a) => a.id === slug);
+  return PRICING_ROADMAP.find((a) => a.id === slug);
 }
 
 export function getAddonPages(): AddonPage[] {

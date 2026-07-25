@@ -5,25 +5,29 @@ export type ComingSoonGridItem = {
   title: string;
   desc: string;
   href?: string;
+  /** When false, the product is live — no “Coming soon” chip. Defaults to true. */
+  comingSoon?: boolean;
 };
 
 export type RelatedFeatureCard =
   | { kind: "feature"; feature: import("astro:content").CollectionEntry<"features"> }
   | { kind: "comingSoon"; item: ComingSoonGridItem };
 
-export const COMING_SOON_GRID_ITEMS: ComingSoonGridItem[] = [
+/** Product cards referenced from use-case / audience / blog bridges + homepage. */
+export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
   {
     id: "shared-spaces",
     icon: "fa6-solid:user-group",
     title: "Shared spaces",
-    desc: "An optional paid add-on will add shared spaces your whole group can study in.",
+    desc: "Host a room for your group with Harvous Plus. Joining is always free.",
     href: "/add-ons/shared-spaces/",
+    comingSoon: false,
   },
   {
     id: "review-challenges",
     icons: ["fa6-solid:clock-rotate-left", "fa6-solid:trophy"],
     title: "Review & Challenges",
-    desc: "Optional paid add-ons for spaced review from your notes and themed study seasons.",
+    desc: "Spaced review and study seasons — included with Harvous Plus.",
   },
   {
     id: "connector",
@@ -39,11 +43,20 @@ export const COMING_SOON_GRID_ITEMS: ComingSoonGridItem[] = [
   },
 ];
 
+/** Roadmap-only items for the homepage “Coming soon” strip. */
+export const COMING_SOON_GRID_ITEMS: ComingSoonGridItem[] = PRODUCT_GRID_ITEMS.filter(
+  (item) => item.comingSoon !== false
+);
+
 export function getComingSoonGridItem(id: string): ComingSoonGridItem | undefined {
-  return COMING_SOON_GRID_ITEMS.find((item) => item.id === id);
+  return PRODUCT_GRID_ITEMS.find((item) => item.id === id);
 }
 
 export function getComingSoonGridItems(ids?: string[]): ComingSoonGridItem[] {
   if (!ids) return COMING_SOON_GRID_ITEMS;
   return COMING_SOON_GRID_ITEMS.filter((item) => ids.includes(item.id));
+}
+
+export function isComingSoonGridItem(item: ComingSoonGridItem): boolean {
+  return item.comingSoon !== false;
 }

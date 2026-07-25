@@ -52,9 +52,16 @@ const publishedSlugs = new Set(
                     <span class="use-case-features__icon">
                       <Icon name={item.icon ?? item.icons?.[0] ?? "fa6-solid:note-sticky"} />
                     </span>
-                    <span class="use-case-features__title use-case-features__title--with-chip">
+                    <span
+                      class:list={[
+                        "use-case-features__title",
+                        item.comingSoon !== false && "use-case-features__title--with-chip",
+                      ]}
+                    >
                       <span>{item.title}</span>
-                      <span class="use-case-features__soon-chip">Coming soon</span>
+                      {item.comingSoon !== false && (
+                        <span class="use-case-features__soon-chip">Coming soon</span>
+                      )}
                     </span>
                     <p class="use-case-features__desc">{item.desc}</p>
                     {item.href && <span class="use-case-features__more">Learn more →</span>}

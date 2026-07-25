@@ -49,6 +49,9 @@ export type ProductPage = {
   relatedLead: string;
   closingHeading: string;
   closingLead: string;
+  /** Override default sign-up CTA on the detail closing section. */
+  closingHref?: string;
+  closingLabel?: string;
 };
 
 export type FeatureDetailData = {

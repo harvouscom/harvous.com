@@ -82,9 +82,16 @@ const cards: RelatedFeatureCard[] = ids
                     <span class="blog-bridge__icon">
                       <Icon name={item.icon ?? item.icons?.[0] ?? "fa6-solid:note-sticky"} />
                     </span>
-                    <span class="blog-bridge__card-title blog-bridge__card-title--with-chip">
+                    <span
+                      class:list={[
+                        "blog-bridge__card-title",
+                        item.comingSoon !== false && "blog-bridge__card-title--with-chip",
+                      ]}
+                    >
                       <span>{item.title}</span>
-                      <span class="blog-bridge__soon-chip">Coming soon</span>
+                      {item.comingSoon !== false && (
+                        <span class="blog-bridge__soon-chip">Coming soon</span>
+                      )}
                     </span>
                     <p class="blog-bridge__desc">{item.desc}</p>
                     {item.href && <span class="blog-bridge__more">Learn more →</span>}

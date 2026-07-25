@@ -1,42 +1,63 @@
 ---
 import { Icon } from "astro-icon/components";
 import CTAButton from "./CTAButton.astro";
-import type { FreePlan, PricingAddon } from "../lib/pricing-data.ts";
+import type { PricingPlan } from "../lib/pricing-data.ts";
 
-interface FreeProps {
-  variant: "primary";
-  plan: FreePlan;
+interface Props {
+  plan: PricingPlan;
 }
 
-interface AddonProps {
-  variant: "addon";
-  plan: PricingAddon;
-  detailHref?: string;
-}
-
-type Props = FreeProps | AddonProps;
-
-const props = Astro.props;
-const isPrimary = props.variant === "primary";
+const { plan } = Astro.props;
 ---
 
-{
-  isPrimary ? (
-    <article class="pricing-plan-card pricing-plan-card--primary">
-      <header class="pricing-plan-card__head">
-        <span class="pricing-plan-card__icon pricing-plan-card__icon--plan">
-          <Icon name={props.plan.icon} />
+<article
+  class:list={[
+    "pricing-plan-card",
+    "pricing-plan-card--primary",
+    plan.id === "plus" && "pricing-plan-card--plus",
+  ]}
+>
+  <header class="pricing-plan-card__head">
+    <span class="pricing-plan-card__icon pricing-plan-card__icon--plan">
+      <Icon name={plan.icon} />
+    </span>
+    <h2 class="pricing-plan-card__name">{plan.name}</h2>
+  </header>
+
+  <div class="pricing-plan-card__price-block">
+    <p class="pricing-plan-card__price">
+      {plan.priceDisplay}{plan.priceDisplaySecondary && (
+        <><span class="pricing-plan-card__price-or">OR</span>{plan.priceDisplaySecondary}</>
+      )}
+    </p>
+    {plan.priceNote && <p class="pricing-plan-card__price-note">{plan.priceNote}</p>}
+    <p class="pricing-plan-card__tagline">{plan.tagline}</p>
+  </div>
+
+  <ul class="pricing-plan-card__features" role="list">
+    {plan.features.map((feature) => (
+      <li>
+        <span class="pricing-plan-card__check" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path
+              d="M3 8.5l3.5 3.5L13 4.5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </span>
-        <h2 class="pricing-plan-card__name">{props.plan.name}</h2>
-      </header>
+        <span>{feature}</span>
+      </li>
+    ))}
+  </ul>
 
-      <div class="pricing-plan-card__price-block">
-        <p class="pricing-plan-card__price">{props.plan.priceDisplay}</p>
-        <p class="pricing-plan-card__tagline">{props.plan.tagline}</p>
-      </div>
-
-      <ul class="pricing-plan-card__features" role="list">
-        {props.plan.features.map((feature) => (
+  {plan.comingSoonFeatures && plan.comingSoonFeatures.length > 0 && (
+    <>
+      <p class="pricing-plan-card__coming-label">Coming soon</p>
+      <ul class="pricing-plan-card__features pricing-plan-card__features--coming" role="list">
+        {plan.comingSoonFeatures.map((feature) => (
           <li>
             <span class="pricing-plan-card__check" aria-hidden="true">
               <svg viewBox="0 0 16 16" fill="none">
@@ -53,40 +74,28 @@ const isPrimary = props.variant === "primary";
           </li>
         ))}
       </ul>
+    </>
+  )}
 
-      <div class="pricing-plan-card__footer">
-        <CTAButton
-          href={props.plan.cta.href}
-          variant="primary"
-          size="lg"
-          external={props.plan.cta.external}
-          fathomTrack={props.plan.cta.fathomTrack}
-          class="pricing-plan-card__cta"
-        >
-          {props.plan.cta.label}
-        </CTAButton>
-      </div>
-    </article>
-  ) : (
-    <article class="pricing-plan-card pricing-plan-card--addon">
-      <div class="pricing-addon-card__main">
-        <span class="pricing-plan-card__icon pricing-plan-card__icon--addon-block">
-          <Icon name={props.plan.icon} />
-        </span>
-        <div class="pricing-addon-card__heading">
-          <h2 class="pricing-plan-card__name">{props.plan.name}</h2>
-          <div class="pricing-plan-card__badges">
-            <span class="pricing-plan-card__addon-badge">Paid add-on</span>
-            <span class="pricing-plan-card__soon-badge">{props.plan.soonLabel ?? "Coming soon"}</span>
-          </div>
-        </div>
-        <p class="pricing-addon-card__tagline">{props.plan.tagline}</p>
-        {props.detailHref && (
-          <a href={props.detailHref} class="pricing-addon-card__link">
-            Learn more →
-          </a>
-        )}
-      </div>
-    </article>
-  )
-}
+  <div class="pricing-plan-card__footer">
+    <CTAButton
+      href={plan.cta.href}
+      variant="primary"
+      size="lg"
+      external={plan.cta.external}
+      fathomTrack={plan.cta.fathomTrack}
+      class="pricing-plan-card__cta"
+    >
+      {plan.cta.label}
+    </CTAButton>
+    {/* Always reserve this slot so CTAs align in the two-column desktop grid. */}
+    <p
+      class:list={[
+        "pricing-plan-card__fine-print",
+        !plan.finePrint && "pricing-plan-card__fine-print--empty",
+      ]}
+    >
+      {plan.finePrint ?? "\u00A0"}
+    </p>
+  </div>
+</article>

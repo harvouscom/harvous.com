@@ -409,30 +409,28 @@ const useCases: UseCase[] = [
     href: "/use-cases/small-group/",
     title: "Group study",
     carouselTitle: "Group study",
-    tagline: "Shared spaces are coming soon — so next week can pick up where this discussion left off.",
+    tagline: "Shared Spaces keep next week picking up where this discussion left off.",
     icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
-    comingSoon: true,
-    comingSoonLine: "Coming soon",
     seoTitle: "Group study — Harvous",
     seoDescription:
-      "Lead your group. Harvous shared spaces let your whole group add notes to the same threads — so what you discover together doesn't disappear.",
+      "Lead your group. Harvous Shared Spaces let your whole group add notes to the same threads — so what you discover together doesn't disappear. Hosting is Harvous Plus; joining is free.",
     heroTitle: "Keep what the group builds.",
     heroLead:
       "You prep questions, you facilitate, you watch people have realizations out loud. And then next week you start from scratch. The things your group discovered together — they're in someone's head, maybe, but not anywhere you can all come back to.",
     sections: [
       {
-        heading: "Shared spaces are coming soon",
+        heading: "A shared space for the whole group",
         paragraphs: [
-          "We're building shared spaces so a whole group can study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. It's not fully launched yet, but the foundation is the same Harvous you use for personal study today.",
-          "If you lead a group and want early access — or your church is interested in future organization features — [share your interest here](/for/churches/#interest). We'd love to hear how you study together.",
+          "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
+          "If your church wants future organization accounts for curriculum (beyond a personal shared space) — [share your interest here](/for/churches/#interest).",
         ],
       },
       {
-        heading: "What we're building toward",
+        heading: "How it works",
         paragraphs: [
-          "A shared space for your group with threads per week or topic. Your prep notes stay private; the group sees what you choose to share. You stay in control of who belongs and what the space contains.",
+          "Open a shared space for your group with threads per week or topic. Your prep notes stay private; the group sees what you choose to share. You stay in control of who belongs and what the space contains.",
         ],
       },
     ],
@@ -459,9 +457,9 @@ const useCases: UseCase[] = [
       },
     ],
     featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
-    featuresHeading: "What group study will need from Harvous",
+    featuresHeading: "What group study needs from Harvous",
     featuresLead:
-      "Shared Spaces are on the way — until then, threads, scripture pills, and highlights are the personal-study pieces leaders reach for when prepping and following up.",
+      "Shared Spaces for the room, plus threads, scripture pills, and highlights for the prep and follow-up leaders already do.",
     compareSlugs: ["pray-com", "youversion", "notion"],
     testimonialId: "joschua",
   },

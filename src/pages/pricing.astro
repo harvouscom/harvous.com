@@ -3,8 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import PageIntro from "../components/PageIntro.astro";
 import PricingPlanCard from "../components/PricingPlanCard.astro";
-import { FREE_PLAN, PRICING_ADDONS } from "../lib/pricing-data.ts";
-import { getAddonDetailHref } from "../lib/addons-data.ts";
+import { FREE_PLAN, PLUS_PLAN } from "../lib/pricing-data.ts";
 import "../styles/pricing.css";
 
 const pricingHeroImage = "/images/auth-hero/ai_bg_072.webp";
@@ -16,7 +15,7 @@ const jsonLd = {
       "@type": "WebPage",
       name: "Harvous Pricing",
       description:
-        "Harvous is free for personal Bible study. Optional paid add-ons: Review, Shared Spaces, Challenges, and Connector.",
+        "Harvous is free for personal Bible study. Harvous Plus unlocks Shared Spaces hosting — Founding $45/yr for the first 99, then $8/mo or $64/yr.",
       url: "https://harvous.com/pricing/",
       isPartOf: { "@type": "WebSite", name: "Harvous", url: "https://harvous.com" },
     },
@@ -32,12 +31,22 @@ const jsonLd = {
       name: "Harvous",
       applicationCategory: "ProductivityApplication",
       operatingSystem: "Web",
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-        description: "Free tier — unlimited notes and core Bible study features",
-      },
+      offers: [
+        {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+          description: "Free tier — unlimited notes and core Bible study features",
+        },
+        {
+          "@type": "Offer",
+          name: "Harvous Plus",
+          price: "45",
+          priceCurrency: "USD",
+          description:
+            "Harvous Plus founding price ($45/yr for the first 99) — unlimited shared spaces, up to 100 people per space. Then $8/mo or $64/yr. Joining is always free.",
+        },
+      ],
     },
   ],
 };
@@ -45,7 +54,7 @@ const jsonLd = {
 
 <BaseLayout
   title="Pricing — Harvous"
-  description="Harvous is free for personal Bible study — unlimited notes, scripture pills, highlights, and more. Optional paid add-ons: Review, Shared Spaces, Challenges, and Connector."
+  description="Harvous is free for personal Bible study. Harvous Plus unlocks Shared Spaces hosting — Founding $45/yr for the first 99, then $8/mo or $64/yr. Joining a space is always free."
   ogImage="/images/pricing/og.webp"
   jsonLd={jsonLd}
 >
@@ -55,7 +64,7 @@ const jsonLd = {
       <PageIntro>
         <h1 class="section-title text-pretty">Pricing on your terms</h1>
         <p class="mt-4 text-lg leading-relaxed text-[var(--color-ink-soft)]">
-          Add-ons are optional paid upgrades when you need more.
+          Free for personal study. Harvous Plus when you're ready to host a shared space.
         </p>
       </PageIntro>
     </div>
@@ -65,13 +74,8 @@ const jsonLd = {
     <Container>
       <div class="pricing-page__inner" data-reveal style="--reveal-delay: 80ms;">
         <div class="pricing-grid">
-          <PricingPlanCard plan={FREE_PLAN} variant="primary" />
-
-          <div class="pricing-addons">
-            {PRICING_ADDONS.map((plan) => (
-              <PricingPlanCard plan={plan} variant="addon" detailHref={getAddonDetailHref(plan.id)} />
-            ))}
-          </div>
+          <PricingPlanCard plan={FREE_PLAN} />
+          <PricingPlanCard plan={PLUS_PLAN} />
         </div>
 
         <div class="pricing-page__note">
