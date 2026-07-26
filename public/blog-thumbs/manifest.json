@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T02:45:55.072Z",
+  "generatedAt": "2026-07-26T03:24:07.658Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -226,7 +226,7 @@
       },
       "spot": "/blog-thumbs/host-a-space-for-your-group-spot.webp",
       "feat": "/blog-thumbs/host-a-space-for-your-group-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "keep-what-the-group-finds": {
       "category": "equipping",
@@ -249,7 +249,7 @@
       },
       "spot": "/blog-thumbs/keep-what-the-group-finds-spot.webp",
       "feat": "/blog-thumbs/keep-what-the-group-finds-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "notes-first-vs-ai-that-studies-for-you": {
       "category": "how-we-think",
@@ -319,6 +319,29 @@
       "spot": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-spot.webp",
       "feat": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-feat.webp",
       "skipped": true
+    },
+    "remembering-is-the-point": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "arc",
+      "source": "ai_bg_059.webp",
+      "sourceMean": 157,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
+      },
+      "spot": "/blog-thumbs/remembering-is-the-point-spot.webp",
+      "feat": "/blog-thumbs/remembering-is-the-point-feat.webp",
+      "skipped": false
     },
     "sermon-series-to-small-group-follow-up": {
       "category": "teaching",
@@ -571,7 +594,7 @@
       },
       "spot": "/blog-thumbs/when-co-leaders-share-a-trail-spot.webp",
       "feat": "/blog-thumbs/when-co-leaders-share-a-trail-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "when-pdfs-arent-a-trail": {
       "category": "equipping",
