@@ -78,7 +78,7 @@ export const PLUS_PLAN: PricingPlan = {
   features: [
     "Everything in free",
     "Unlimited shared spaces",
-    "Up to 100 people per space",
+    "Up to 50 people per space",
     "Joining is always free",
   ],
   comingSoonFeatures: [
