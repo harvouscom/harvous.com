@@ -1,4 +1,5 @@
 ---
+import "plyr/dist/plyr.css";
 import { fathomCta } from "../lib/fathom-events.ts";
 
 interface Props {
@@ -6,7 +7,7 @@ interface Props {
   label?: string;
 }
 
-const { src, label = "Watch the tour" } = Astro.props;
+const { src, label = "Watch the 5 min tour" } = Astro.props;
 ---
 
 <div class="hero-video" data-hero-video-root>
@@ -17,13 +18,13 @@ const { src, label = "Watch the tour" } = Astro.props;
     data-hero-video-trigger
     data-fathom-track={fathomCta.videoTour}
   >
-  <span class="hero-video-callout__play" aria-hidden="true">
-    <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-      <path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.2-5.2c.5-.3.5-1 0-1.3L5.7 2.1c-.5-.3-1.2.1-1.2.7z"></path>
-    </svg>
-  </span>
-  <span class="hero-video-callout__label">{label}</span>
-</button>
+    <span class="hero-video-callout__play" aria-hidden="true">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+        <path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.2-5.2c.5-.3.5-1 0-1.3L5.7 2.1c-.5-.3-1.2.1-1.2.7z"></path>
+      </svg>
+    </span>
+    <span class="hero-video-callout__label">{label}</span>
+  </button>
 
   <div
     class="hero-video-lightbox"
@@ -34,17 +35,22 @@ const { src, label = "Watch the tour" } = Astro.props;
     data-hero-video-lightbox
   >
     <div class="hero-video-lightbox__backdrop" data-hero-video-close aria-hidden="true"></div>
-  <div class="hero-video-lightbox__panel">
-    <button type="button" class="hero-video-lightbox__close" data-hero-video-close aria-label="Close video">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-        <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"></path>
-      </svg>
-    </button>
-    <video class="hero-video-lightbox__video" controls playsinline preload="metadata" data-hero-video-player>
-      <source src={src} type="video/mp4" />
-    </video>
+    <div class="hero-video-lightbox__panel">
+      <button type="button" class="hero-video-lightbox__close" data-hero-video-close aria-label="Close video">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <video
+        class="hero-video-lightbox__video"
+        playsinline
+        preload="metadata"
+        data-hero-video-player
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+    </div>
   </div>
-</div>
 </div>
 
 <style>
@@ -149,7 +155,7 @@ const { src, label = "Watch the tour" } = Astro.props;
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    z-index: 2;
+    z-index: 3;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -181,11 +187,20 @@ const { src, label = "Watch the tour" } = Astro.props;
     display: block;
     width: 100%;
     max-width: 100%;
-    max-height: min(85dvh, 720px);
-    height: auto;
     vertical-align: middle;
-    object-fit: contain;
     background: #000;
+  }
+
+  .hero-video-lightbox__panel :global(.plyr) {
+    --plyr-color-main: #006eff;
+    --plyr-video-background: #000;
+    width: 100%;
+    max-height: min(85dvh, 720px);
+  }
+
+  .hero-video-lightbox__panel :global(.plyr__video-wrapper),
+  .hero-video-lightbox__panel :global(.plyr video) {
+    max-height: min(85dvh, 720px);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -197,14 +212,20 @@ const { src, label = "Watch the tour" } = Astro.props;
 </style>
 
 <script>
+  import Plyr from "plyr";
+
+  type PlyrInstance = InstanceType<typeof Plyr>;
+
   function initHeroVideoLightbox(root: HTMLElement) {
     const trigger = root.querySelector<HTMLButtonElement>("[data-hero-video-trigger]");
     const lightbox = root.querySelector<HTMLElement>("[data-hero-video-lightbox]");
-    const video = root.querySelector<HTMLVideoElement>("[data-hero-video-player]");
-    const closeEls = root.querySelectorAll<HTMLElement>("[data-hero-video-close]");
-    const closeBtn = root.querySelector<HTMLButtonElement>(".hero-video-lightbox__close");
+    if (!trigger || !lightbox) return;
 
-    if (!trigger || !lightbox || !video || !closeBtn) return;
+    const video = lightbox.querySelector<HTMLVideoElement>("[data-hero-video-player]");
+    const closeEls = lightbox.querySelectorAll<HTMLElement>("[data-hero-video-close]");
+    const closeBtn = lightbox.querySelector<HTMLButtonElement>(".hero-video-lightbox__close");
+
+    if (!video || !closeBtn) return;
 
     // Escape .hero__shot-frame overflow/transform so fixed backdrop covers the viewport.
     if (lightbox.parentElement !== document.body) {
@@ -212,11 +233,35 @@ const { src, label = "Watch the tour" } = Astro.props;
     }
 
     let previousFocus: HTMLElement | null = null;
+    let player: PlyrInstance | null = null;
+
+    const ensurePlayer = () => {
+      if (player) return player;
+      player = new Plyr(video, {
+        controls: [
+          "play-large",
+          "play",
+          "progress",
+          "current-time",
+          "duration",
+          "mute",
+          "volume",
+          "settings",
+          "fullscreen",
+        ],
+        settings: ["speed"],
+        speed: { selected: 1, options: [0.75, 1, 1.25, 1.5, 2] },
+        hideControls: true,
+        keyboard: { focused: true, global: false },
+        tooltips: { controls: true, seek: true },
+      });
+      return player;
+    };
 
     const getFocusables = () =>
       Array.from(
         lightbox.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), video[controls], [tabindex]:not([tabindex="-1"])'
+          'button:not([disabled]):not([hidden]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), video, [tabindex]:not([tabindex="-1"])'
         )
       ).filter((el) => !el.hasAttribute("hidden") && el.offsetParent !== null);
 
@@ -240,13 +285,14 @@ const { src, label = "Watch the tour" } = Astro.props;
       lightbox.hidden = false;
       document.body.style.overflow = "hidden";
       closeBtn.focus();
-      void video.play().catch(() => {});
+      const plyr = ensurePlayer();
+      void plyr.play().catch(() => {});
     };
 
     const close = () => {
       lightbox.hidden = true;
       document.body.style.overflow = "";
-      video.pause();
+      player?.pause();
       previousFocus?.focus();
       previousFocus = null;
     };

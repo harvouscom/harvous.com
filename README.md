@@ -15,7 +15,7 @@ Output is written to `dist/`. Preview locally with `npm run preview`.
 
 Netlify builds from the repo root (`netlify.toml` at project root). Connect this repo in the Netlify dashboard and point the `harvous.com` domain to the site.
 
-**Git LFS:** `public/touring-new-harvous-share.mp4` (~371 MB) is tracked with Git LFS. Enable [Netlify Git LFS support](https://docs.netlify.com/git/large-media/setup/) (or ensure LFS files are fetched at build time) so the hero video is present in `dist/`.
+**Git LFS:** `public/*.mp4` is tracked with Git LFS. The site tour CTA uses `touring-harvous-short.mp4` (Remotion cut of the long tour — see [`video/`](video/)). Enable [Netlify Git LFS support](https://docs.netlify.com/git/large-media/setup/) (or ensure LFS files are fetched at build time) so the video is present in `dist/`.
 
 **Node:** Use Node 22 locally (see `.nvmrc` and `netlify.toml`). Netlify sets `NODE_VERSION = "22"`.
 
