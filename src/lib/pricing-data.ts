@@ -91,7 +91,7 @@ export const PLUS_PLAN: PricingPlan = {
     external: true,
     fathomTrack: fathomSignup.pricingPlus,
   },
-  finePrint: "*founding price for the first 99. Then $64/yr",
+  finePrint: "*founding price for the first 99. Then $60/yr",
 };
 
 /** Roadmap items shown under Free + Plus (not for sale yet as separate products). */
