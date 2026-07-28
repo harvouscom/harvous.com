@@ -72,7 +72,7 @@ export const PLUS_PLAN: PricingPlan = {
   id: "plus",
   icon: "fa6-solid:plus",
   name: "Harvous Plus",
-  priceDisplay: "$8/mo",
+  priceDisplay: "$5/mo",
   priceDisplaySecondary: "$45/yr*",
   tagline: "More than a private study Bible",
   features: [
