@@ -73,7 +73,7 @@ export const PLUS_PLAN: PricingPlan = {
   icon: "fa6-solid:plus",
   name: "Harvous Plus",
   priceDisplay: "$5/mo",
-  priceDisplaySecondary: "$45/yr*",
+  priceDisplaySecondary: "$30/yr*",
   tagline: "More than a private study Bible",
   features: [
     "Everything in free",
@@ -91,7 +91,7 @@ export const PLUS_PLAN: PricingPlan = {
     external: true,
     fathomTrack: fathomSignup.pricingPlus,
   },
-  finePrint: "*founding price for the first 99. Then $60/yr",
+  finePrint: "*founding price for the first 99. Then $45/yr",
 };
 
 /** Roadmap items shown under Free + Plus (not for sale yet as separate products). */
