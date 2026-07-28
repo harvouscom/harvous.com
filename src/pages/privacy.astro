@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageIntro from "../components/PageIntro.astro";
 
-const updated = "June 30, 2025";
+const updated = "July 28, 2026";
 ---
 
 <BaseLayout
@@ -41,9 +41,16 @@ const updated = "June 30, 2025";
           your account and is private by default.
         </p>
         <p class="mt-3 text-[var(--color-ink-soft)]">
-          <strong class="text-[var(--color-ink)]">Usage and device data.</strong> We may collect basic
-          technical information — such as browser type, app version, and general usage patterns — to
-          keep the service reliable and secure.
+          <strong class="text-[var(--color-ink)]">Usage and device data.</strong> We collect technical
+          and product-usage information to keep Harvous reliable and to understand how the app is used
+          — for example browser or device type, app version, pages or screens viewed, feature usage,
+          and error reports. This may be associated with your account (such as your user id, and
+          limited profile details like email or name) so we can improve the product.
+        </p>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          <strong class="text-[var(--color-ink)]">Email and messaging.</strong> If you have an account
+          or subscribe to updates, we may store your email and related preferences so we can send
+          product or service communications (for example, onboarding or important account notices).
         </p>
       </div>
 
@@ -51,8 +58,9 @@ const updated = "June 30, 2025";
         <h2 class="text-xl font-semibold text-[var(--color-ink)]">How we use your information</h2>
         <p class="mt-3 text-[var(--color-ink-soft)]">
           We use your information to provide and improve Harvous: syncing your notes across devices,
-          authenticating your account, responding to support requests, and protecting the service from
-          abuse. We do not sell your personal information.
+          authenticating your account, analyzing product usage, responding to support requests,
+          sending relevant product or service emails, and protecting the service from abuse. We do
+          not sell your personal information.
         </p>
       </div>
 
@@ -61,17 +69,24 @@ const updated = "June 30, 2025";
         <p class="mt-3 text-[var(--color-ink-soft)]">
           Your notes are private unless you choose to share them. When you create a share link, only
           the content you explicitly share becomes accessible to people with that link. We use trusted
-          service providers (such as Clerk for auth and Supabase for data storage) who process data on
-          our behalf under appropriate agreements.
+          service providers who process data on our behalf under appropriate agreements, including
+          Clerk (authentication), Supabase (data storage), PostHog (product analytics), and Audienceful
+          (email). These providers only receive what they need to perform their services for us.
+        </p>
+        <p class="mt-3 text-[var(--color-ink-soft)]">
+          We configure analytics with privacy in mind: we do not enable session recording by default,
+          we do not turn on broad automatic click capture, and we respect browser Do Not Track
+          settings when they are enabled.
         </p>
       </div>
 
       <div>
         <h2 class="text-xl font-semibold text-[var(--color-ink)]">Cookies</h2>
         <p class="mt-3 text-[var(--color-ink-soft)]">
-          Harvous uses cookies and similar technologies to keep you signed in and to remember basic
-          preferences. You can control cookies through your browser settings, though some features may
-          not work without them.
+          Harvous uses cookies and similar technologies (including local storage) to keep you signed
+          in, remember basic preferences, and support product analytics. You can control cookies
+          through your browser settings, though some features may not work without them. Enabling Do
+          Not Track in your browser may limit analytics collection.
         </p>
       </div>
 
@@ -80,7 +95,8 @@ const updated = "June 30, 2025";
         <p class="mt-3 text-[var(--color-ink-soft)]">
           We retain your account and content for as long as your account is active. You may request
           deletion of your account and associated data by contacting us. Some information may be kept
-          briefly where required for legal or security purposes.
+          briefly where required for legal or security purposes, or for a limited time in analytics or
+          email systems after deletion while those systems process the request.
         </p>
       </div>
 
