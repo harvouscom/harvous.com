@@ -607,7 +607,7 @@ function harvousPick(): ComparePick {
     slug: "harvous",
     name: "Harvous",
     intro:
-      "A Bible study notes app — scripture pills, highlights, threads, and recall. Not a Bible reader, not sermon transcription.",
+      "A Bible study notes app — scripture pills, highlights, threads, @ mentions, and recall. Not a Bible reader, not sermon transcription.",
     competitorType: "Bible Notes",
     competitorImage: "/images/harvous-2-icon.png",
     competitorLink: "https://app.harvous.com/sign-up",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T03:24:07.658Z",
+  "generatedAt": "2026-07-28T20:30:12.309Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -341,7 +341,7 @@
       },
       "spot": "/blog-thumbs/remembering-is-the-point-spot.webp",
       "feat": "/blog-thumbs/remembering-is-the-point-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "sermon-series-to-small-group-follow-up": {
       "category": "teaching",
@@ -687,6 +687,29 @@
       "spot": "/blog-thumbs/why-church-education-evaporates-by-monday-spot.webp",
       "feat": "/blog-thumbs/why-church-education-evaporates-by-monday-feat.webp",
       "skipped": true
+    },
+    "why-scripture-engagement-stalls": {
+      "category": "retention",
+      "mood": "dark",
+      "shape": "arc",
+      "source": "ai_bg_074.webp",
+      "sourceMean": 98,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_074.webp"
+      ],
+      "grade": {
+        "a": "#7a2810",
+        "b": "#fbc8ad",
+        "c": "#fff1e8"
+      },
+      "spot": "/blog-thumbs/why-scripture-engagement-stalls-spot.webp",
+      "feat": "/blog-thumbs/why-scripture-engagement-stalls-feat.webp",
+      "skipped": false
     }
   }
 }

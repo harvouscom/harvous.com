@@ -753,6 +753,18 @@ html.js [data-reveal="stagger"] > *:nth-child(9) { --stagger-index: 8; }
 html.js [data-reveal="stagger"] > *:nth-child(10) { --stagger-index: 9; }
 html.js [data-reveal="stagger"] > *:nth-child(11) { --stagger-index: 10; }
 html.js [data-reveal="stagger"] > *:nth-child(12) { --stagger-index: 11; }
+html.js [data-reveal="stagger"] > *:nth-child(13) { --stagger-index: 12; }
+html.js [data-reveal="stagger"] > *:nth-child(14) { --stagger-index: 13; }
+html.js [data-reveal="stagger"] > *:nth-child(15) { --stagger-index: 14; }
+html.js [data-reveal="stagger"] > *:nth-child(16) { --stagger-index: 15; }
+html.js [data-reveal="stagger"] > *:nth-child(17) { --stagger-index: 16; }
+html.js [data-reveal="stagger"] > *:nth-child(18) { --stagger-index: 17; }
+html.js [data-reveal="stagger"] > *:nth-child(19) { --stagger-index: 18; }
+html.js [data-reveal="stagger"] > *:nth-child(20) { --stagger-index: 19; }
+html.js [data-reveal="stagger"] > *:nth-child(21) { --stagger-index: 20; }
+html.js [data-reveal="stagger"] > *:nth-child(22) { --stagger-index: 21; }
+html.js [data-reveal="stagger"] > *:nth-child(23) { --stagger-index: 22; }
+html.js [data-reveal="stagger"] > *:nth-child(24) { --stagger-index: 23; }
 
 @media (prefers-reduced-motion: reduce) {
   html.js [data-reveal] {

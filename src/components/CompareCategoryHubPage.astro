@@ -22,7 +22,7 @@ const honestNote = getHonestNoteForPage(page, picks);
 const decisionRows = [
   { label: "Built-in Bible reader", harvous: "No — type a reference, open inline text", others: "Varies — readers yes, notes apps no" },
   { label: "Sermon transcription", harvous: "No", others: "Some Bible Notes apps yes; general notes no" },
-  { label: "Scripture-linked notes", harvous: "Yes — pills, highlights, threads", others: "Dedicated apps yes; general notes DIY" },
+  { label: "Scripture-linked notes", harvous: "Yes — pills, highlights, threads, @ mentions", others: "Dedicated apps yes; general notes DIY" },
   { label: "Price", harvous: "Free for personal study", others: "Varies — many free tiers, Logos paid" },
 ];
 ---
@@ -167,7 +167,7 @@ const decisionRows = [
 
   <PageClosingCTA
     heading="Try a notes-first Bible study app."
-    lead="Harvous is free for personal study — unlimited notes, scripture pills, highlights, and threads."
+    lead="Harvous is free for personal study — unlimited notes, scripture pills, highlights, threads, and @ mentions."
     fathomTrack={fathomSignup.compareDetail(page.slug)}
   />
 </BaseLayout>

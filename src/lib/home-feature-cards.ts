@@ -3,7 +3,7 @@ export const HOME_FEATURE_CARDS = [
   {
     pills: ["note"] as const,
     title: "Take notes like Google Docs",
-    body: "Rich text formatting is, of course, there from creating headings to adding bullets, dividers, and links.",
+    body: "Rich text is there — headings, bullets, dividers, links. Type @ to mention a note, folder, or thread as a pill.",
     image: "/app-note.png",
     imageAlt: "Writing a note in Harvous with rich-text formatting",
   },

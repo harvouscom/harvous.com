@@ -54,7 +54,7 @@ export const FREE_PLAN: PricingPlan = {
   tagline: "For personal Bible study",
   features: [
     "Unlimited notes",
-    "Scripture pills, highlights, and threads",
+    "Scripture pills, highlights, threads, and @ mentions",
     "Built-in dictionary and daily passage",
     "Offline sync across devices",
     "Sharable notes via link",

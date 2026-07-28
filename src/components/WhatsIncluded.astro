@@ -15,9 +15,15 @@ import { COMING_SOON_GRID_ITEMS } from "../lib/coming-soon-grid.ts";
 const items = [
   // Core writing / organizing
   {
-    icon: "fa6-solid:folder-tree",
-    title: "Sorts itself",
-    desc: "Auto-folders and auto-tags organize every note. Add your own anytime.",
+    icons: ["fa6-solid:folder-tree", "fa6-solid:thumbtack"],
+    title: "Sorts itself & Pin",
+    desc: "Auto-folders and auto-tags organize every note. Pin a note, folder, or thread to keep it at the top.",
+  },
+  {
+    icon: "fa6-solid:list-check",
+    title: "Note templates",
+    desc: "Start from a structured template — lesson prep, study outline, or your own — then make it yours.",
+    featureSlug: "note-templates",
   },
   {
     icon: "fa6-solid:arrow-right-arrow-left",
@@ -39,9 +45,10 @@ const items = [
     featureSlug: "recall",
   },
   {
-    icon: "fa6-solid:magnifying-glass",
-    title: "Search",
-    desc: "Search across notes, highlights, and scripture — find anything in seconds.",
+    icons: ["fa6-solid:magnifying-glass", "fa6-solid:at"],
+    title: "Search & @ mentions",
+    desc: "Search notes, highlights, and scripture. Type @ in a note to link a note, folder, or thread as a pill.",
+    href: "/features/sidebar-modes/",
   },
   // Engagement
   {
@@ -65,11 +72,6 @@ const items = [
     icon: "fa6-solid:palette",
     title: "Make it yours",
     desc: "Light or dark, a color or photo background — Harvous looks the way you want.",
-  },
-  {
-    icon: "fa6-solid:thumbtack",
-    title: "Pin what matters",
-    desc: "Pin a note, folder, or thread to keep it right at the top of the list.",
   },
   {
     icons: ["fa6-solid:share-nodes", "fa6-solid:user-group"],
@@ -103,8 +105,8 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
       <h2 class="section-title">It all comes together.</h2>
       <p class="lead included__lead">
         <strong>Auto folders + tags</strong> organize as you write, <strong>Scripture pills</strong> link every
-        reference across 11 translations, and <strong>Highlights</strong> save what matters most. Together,
-        every note becomes <mark>your own study Bible</mark>.
+        reference, and <strong>@ mentions</strong> connect notes, folders, and threads. Together, every note
+        becomes <mark>your own study Bible</mark>.
       </p>
     </div>
 

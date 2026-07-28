@@ -1,0 +1,258 @@
+---
+/**
+ * AboutResearchGap — dedicated About band: two research punches, the
+ * accompanying Bright Enough essay, then a handoff to what’s included /
+ * features (the dunk).
+ */
+import Container from "./layout/Container.astro";
+import BlogCard from "./BlogCard.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+
+const stats = [
+  {
+    figure: "4+",
+    unit: "days / week",
+    label: "The four-day wall",
+    body: "One to three days barely moves the needle. Four or more is where research starts to see real shifts.",
+    source: "Center for Bible Engagement",
+  },
+  {
+    figure: "57%",
+    unit: "of U.S. adults",
+    label: "Bible Disengaged",
+    body: "Open to Scripture isn’t the same as engaged. Only about 18% are Scripture Engaged.",
+    source: "American Bible Society, 2024",
+  },
+];
+---
+
+<section class="about-gap frame-divider" aria-labelledby="about-gap-title">
+  <Container size="xl">
+    <div class="about-gap__head" data-reveal>
+      <span class="eyebrow-pill">The gap</span>
+      <h2 class="section-title about-gap__title" id="about-gap-title">
+        Two things research keeps saying.
+      </h2>
+      <p class="lead about-gap__lead">
+        Sporadic reading rarely sticks. Most adults stay Bible Disengaged.
+        Harvous exists for the part after the verse — digesting, keeping, and
+        coming back.
+      </p>
+    </div>
+
+    <ul class="about-gap__stats" role="list" data-reveal style="--reveal-delay: 50ms;">
+      {
+        stats.map((s) => (
+          <li class="about-gap__stat">
+            <p class="about-gap__figure">
+              <span class="about-gap__num">{s.figure}</span>
+              <span class="about-gap__unit">{s.unit}</span>
+            </p>
+            <p class="about-gap__label">{s.label}</p>
+            <p class="about-gap__body">{s.body}</p>
+            <p class="about-gap__source">{s.source}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="about-gap__essay" data-reveal style="--reveal-delay: 80ms;">
+      <p class="about-gap__essay-kicker">From Bright Enough</p>
+      <BlogCard
+        variant="featured"
+        title={post.data.title}
+        description={post.data.description}
+        publishDate={post.data.publishDate}
+        category={post.data.category}
+        slug={post.id}
+        readingTime={post.data.readingTime}
+        draft={post.data.draft}
+      />
+    </div>
+
+    <div class="about-gap__dunk" data-reveal style="--reveal-delay: 110ms;">
+      <p class="about-gap__dunk-copy">
+        That’s the setup. The dunk is a notes hub built for study that compounds —
+        scripture pills, threads, recall, and the rest.
+      </p>
+      <div class="about-gap__actions">
+        <a class="about-gap__btn about-gap__btn--primary" href="/#included">
+          See what’s included
+        </a>
+        <a class="about-gap__btn about-gap__btn--secondary" href="/features/">
+          Explore features
+        </a>
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .about-gap {
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+
+  .about-gap__head {
+    max-width: 38rem;
+  }
+
+  .about-gap__title {
+    margin-top: 0.75rem;
+  }
+
+  .about-gap__lead {
+    margin-top: 1rem;
+    max-width: 34rem;
+  }
+
+  .about-gap__stats {
+    list-style: none;
+    margin: clamp(2rem, 4vw, 2.75rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  @media (min-width: 720px) {
+    .about-gap__stats {
+      grid-template-columns: 1fr 1fr;
+      gap: 0 3rem;
+    }
+
+    .about-gap__stat + .about-gap__stat {
+      padding-left: 3rem;
+      border-left: 1px solid var(--color-rule);
+    }
+  }
+
+  .about-gap__figure {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.55rem;
+  }
+
+  .about-gap__num {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 5.5vw, 3.5rem);
+    font-weight: 650;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--color-ink);
+  }
+
+  .about-gap__unit {
+    font-size: 0.8125rem;
+    font-weight: 550;
+    color: var(--color-ink-faint);
+  }
+
+  .about-gap__label {
+    margin: 0.85rem 0 0;
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  .about-gap__body {
+    margin: 0.4rem 0 0;
+    max-width: 24rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  .about-gap__source {
+    margin: 0.6rem 0 0;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    color: var(--color-ink-faint);
+  }
+
+  .about-gap__essay {
+    margin-top: clamp(2.25rem, 4.5vw, 3rem);
+  }
+
+  .about-gap__essay-kicker {
+    margin: 0 0 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-ink-faint);
+  }
+
+  .about-gap__dunk {
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.1rem;
+  }
+
+  @media (min-width: 720px) {
+    .about-gap__dunk {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+  }
+
+  .about-gap__dunk-copy {
+    margin: 0;
+    max-width: 28rem;
+    font-size: 0.975rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  .about-gap__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    flex-shrink: 0;
+  }
+
+  .about-gap__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.15rem;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 550;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .about-gap__btn--primary {
+    color: white;
+    background: linear-gradient(171deg, #2bb5ff 7%, #006eff 93%);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 10px 24px -10px rgba(0, 110, 255, 0.55);
+  }
+
+  .about-gap__btn--primary:hover {
+    filter: brightness(1.05);
+  }
+
+  .about-gap__btn--secondary {
+    color: var(--color-ink);
+    border: 1px solid var(--color-rule);
+    background: var(--color-card, white);
+  }
+
+  .about-gap__btn--secondary:hover {
+    background: var(--color-warm);
+  }
+</style>

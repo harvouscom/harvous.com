@@ -175,7 +175,7 @@ const { heading = "One last thing" } = Astro.props;
      floating above it ─────────────────────────────────────────────── */
   .cta-panel--shot {
     position: relative;
-    min-height: 14rem;
+    min-height: clamp(20rem, 58vw, 26rem);
     height: 100%;
     align-self: stretch;
     background: var(--color-card);
@@ -183,7 +183,7 @@ const { heading = "One last thing" } = Astro.props;
   }
   @media (min-width: 860px) {
     .cta-panel--shot {
-      min-height: 28rem;
+      min-height: 36rem;
     }
   }
   .cta-panel--shot :global(picture) {
