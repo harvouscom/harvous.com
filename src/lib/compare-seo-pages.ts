@@ -601,10 +601,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Compare the best small group Bible study apps for a lasting group trail — Harvous Shared Spaces, GroupMe, WhatsApp, Band, and Notion. Host with Harvous Plus; joining is free.",
     h1: "Best small group Bible study apps",
-    lead: "Apps and tools small groups adapt for shared study. Harvous keeps personal prep private and Shared Spaces for the room — host with Harvous Plus; joining is free.",
+    lead: "Tools small groups adapt for shared study. Harvous keeps prep private and Shared Spaces for the room — host with Plus; join free.",
     pickSlugs: ["groupme", "whatsapp", "band", "notion", "church-notes"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We put it first because Shared Spaces give a group the same scripture-linked threads as personal prep — not a chat thread that scrolls away, not a wiki, not a church management system. Hosting is Harvous Plus; joining is always free.",
+      "We built Harvous — so of course we care how this list reads. We put it first because Shared Spaces give a group the same scripture-linked threads as personal prep — not chat, a wiki, or a ChMS. Host with Plus; join free.",
     whenToChoose: [
       chooseHarvous("Group Study"),
       {
@@ -630,7 +630,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Compare church Bible study apps for classes and groups — Harvous Shared Spaces, Planning Center Groups, GroupMe, Church Notes, and YouVersion. Notes and a group room now; church org curriculum on the roadmap.",
     h1: "Best church Bible study apps",
-    lead: "Tools churches use for class and group study — not a church management system. Harvous Shared Spaces are live for groups; organization-wide curriculum accounts are on the roadmap.",
+    lead: "Tools for class and group study — not a ChMS. Shared Spaces are live; org-wide curriculum is on the roadmap.",
     pickSlugs: [
       "planning-center-groups",
       "groupme",
@@ -639,7 +639,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "youversion",
     ],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We put it first for scripture-linked notes and Shared Spaces for a class or small group — not attendance, giving, or Planning Center Groups Resources. Church-wide org curriculum (the job of pushing shared materials across groups) is still ahead; Spaces work today (host with Plus, join free).",
+      "We built Harvous — so of course we care how this list reads. We put it first for scripture-linked notes and Shared Spaces — not attendance or Groups Resources. Org curriculum is still ahead; Spaces work today (host with Plus, join free).",
     whenToChoose: [
       chooseHarvous("Group Study"),
       {
@@ -665,10 +665,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Compare the best Bible study apps for groups — Harvous Shared Spaces, GroupMe, WhatsApp, Band, and Notion. Joining a Shared Space is free; hosting is Harvous Plus.",
     h1: "Best Bible study apps for groups",
-    lead: "Group Bible study needs a place after the meeting ends. Harvous Shared Spaces put the whole group in the same threads — joining is free; hosting is Harvous Plus.",
+    lead: "Group Bible study needs a place after the meeting. Shared Spaces put everyone in the same threads — join free; host with Plus.",
     pickSlugs: ["groupme", "whatsapp", "band", "notion", "youversion"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We put it first because Shared Spaces keep what the group finds in the same scripture-linked threads as personal prep — not buried in a GroupMe or WhatsApp scroll. Members join free; the host needs Harvous Plus.",
+      "We built Harvous — so of course we care how this list reads. We put it first because Shared Spaces keep what the group finds in scripture-linked threads — not buried in a chat scroll. Join free; host with Plus.",
     whenToChoose: [
       chooseHarvous("Group Study"),
       {
@@ -695,10 +695,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Using Notion for small group Bible study? Compare Harvous Shared Spaces, Google Docs, Church Notes, YouVersion, and Obsidian — scripture-linked group trails without building and maintaining a Notion system.",
     h1: "Best Notion alternative for small group Bible study",
-    lead: "Notion can hold a group wiki if you build it. These options are built for scripture-linked study — or lighter shared docs — when the small group needs a trail that lasts.",
+    lead: "Notion can hold a group wiki if you build it. These options are built for scripture-linked study when the trail needs to last.",
     pickSlugs: ["google-docs", "church-notes", "youversion", "obsidian", "pray-com"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. Keep Notion for church docs and ops if it already works. Harvous is for personal prep plus Shared Spaces when the group’s study notes need scripture pills and threads — host with Plus, join free.",
+      "We built Harvous — so of course we care how this list reads. Keep Notion for docs and ops if it works. Harvous is for prep plus Shared Spaces with scripture pills — host with Plus, join free.",
     whenToChoose: [
       chooseHarvous("Group Study"),
       {
@@ -721,10 +721,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Using Google Docs for Bible study or small groups? Compare Harvous Shared Spaces, Notion, Church Notes, Obsidian, and Apple Notes — scripture pills and threads instead of pasted verses in a doc.",
     h1: "Best Google Docs alternative for Bible study",
-    lead: "Google Docs is familiar for shared writing. These options are built for scripture-linked study notes — or a purpose-built group room — when paste-and-scroll stops scaling.",
+    lead: "Google Docs is familiar for shared writing. These options are built for scripture-linked study when paste-and-scroll stops scaling.",
     pickSlugs: ["notion", "church-notes", "obsidian", "apple-notes", "youversion"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. Docs still win for plain collaborative writing. Harvous is for when the study needs scripture pills, threads, and Shared Spaces — host with Harvous Plus; joining is free.",
+      "We built Harvous — so of course we care how this list reads. Docs still win for plain collaborative writing. Harvous is for scripture pills, threads, and Shared Spaces — host with Plus; join free.",
     whenToChoose: [
       chooseHarvous("Group Study"),
       {
@@ -1037,7 +1037,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Compare church small group apps — GroupMe, WhatsApp, Band, Planning Center Groups, Flock, Subsplash Groups, and Harvous Shared Spaces. Keep chat where it works; use Harvous for the study trail.",
     h1: "Best church small group apps",
-    lead: "Church small groups already stay connected in chat — and use church tools for rosters and care. Harvous Shared Spaces own the scripture-linked trail; hosting is Harvous Plus, joining is free.",
+    lead: "Groups already stay connected in chat. Harvous Shared Spaces own the scripture-linked trail — host with Plus, join free.",
     pickSlugs: [
       "groupme",
       "whatsapp",
@@ -1047,7 +1047,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "subsplash-groups",
     ],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: GroupMe and WhatsApp own everyday connection; Planning Center owns ops and Groups Resources. Harvous is here for the study trail — Shared Spaces with pills and threads — beside the tools your group already opens. Church-wide curriculum distribution is on our roadmap.",
+      "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: messengers own connection; Planning Center owns ops. Harvous is here for the study trail beside those tools.",
     whenToChoose: [
       chooseHarvous("Small Groups"),
       {
@@ -1076,17 +1076,17 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Study trails beside Planning Center — not a ChMS swap",
     seoTitle: "Best Planning Center Groups alternative for study notes — Harvous",
     seoDescription:
-      "Looking for a Planning Center Groups alternative for Bible study notes? Compare Harvous Shared Spaces, GroupMe, WhatsApp, Band, and Flock — keep Planning Center for rosters and Groups Resources; use a notes-first trail for what the group studied. Church-wide curriculum in Harvous is on the roadmap.",
+      "Looking for a Planning Center Groups alternative for Bible study notes? Compare Harvous Shared Spaces, GroupMe, WhatsApp, Band, and Flock — keep Planning Center for rosters and Resources; use Harvous for the study trail.",
     h1: "Best Planning Center Groups alternative for study notes",
-    lead: "Planning Center Groups owns rosters, attendance, and Groups Resources — including shared materials across groups. These options cover the messengers groups already use — or a scripture-linked study trail — beside Planning Center, not instead of it.",
+    lead: "Planning Center Groups owns rosters, attendance, and Groups Resources. These options cover chat — or a study trail — beside Planning Center, not instead of it.",
     pickSlugs: ["groupme", "whatsapp", "band", "flock", "subsplash-groups"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. Keep Planning Center for people, rooms, group admin, and Groups Resources. Shared Spaces are live for the study trail (host with Plus, join free). Church organization accounts that distribute curriculum the way Planning Center shares resources across groups — that’s on our roadmap.",
+      "We built Harvous — so of course we care how this list reads. Keep Planning Center for people, rooms, and Groups Resources. Shared Spaces are for the study trail (host with Plus, join free). Org curriculum is on our roadmap.",
     whenToChoose: [
       chooseHarvous("Small Groups"),
       {
         heading: "Choose Planning Center Groups if…",
-        body: "Church-wide group management, attendance, and shared Groups Resources (curriculum and guides pushed to groups from the church) are the job — Harvous is not that ChMS replacement. Org-level curriculum distribution in Harvous is still ahead.",
+        body: "You need church-wide group admin, attendance, and Groups Resources — Harvous is not that ChMS replacement.",
       },
     ],
   },
@@ -1100,10 +1100,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Using Band for your small group? Compare Harvous Shared Spaces, GroupMe, WhatsApp, Planning Center Groups, and Flock — keep Band for chat and calendars; use a scripture-linked trail for what you studied.",
     h1: "Best Band alternative for Bible study notes",
-    lead: "Band wins at free group communication with calendars and files. These options cover simpler messengers, church ops, care — or Shared Spaces when the study notes need to outlast the feed.",
+    lead: "Band wins at free group posts, calendars, and files. These options cover other messengers — or Shared Spaces for study notes.",
     pickSlugs: ["groupme", "whatsapp", "planning-center-groups", "flock", "subsplash-groups"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. Keep Band for posts, chat, and files. Harvous is for scripture-linked Shared Spaces when the group’s Bible study needs a trail — host with Plus, join free.",
+      "We built Harvous — so of course we care how this list reads. Keep Band for posts and files. Harvous Shared Spaces are for the study trail — host with Plus, join free.",
     whenToChoose: [
       chooseHarvous("Small Groups"),
       {
@@ -1122,7 +1122,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Looking for a Flock alternative for study notes? Compare Harvous Shared Spaces, GroupMe, WhatsApp, Band, and Planning Center Groups — keep Flock for prayer and care; use Harvous for the scripture-linked trail.",
     h1: "Best Flock alternative for study notes",
-    lead: "Flock focuses on prayer, attendance intelligence, and care between Sundays. These options cover messengers, ops — or Shared Spaces for what the group studied in Scripture.",
+    lead: "Flock focuses on prayer and care between Sundays. These options cover messengers — or Shared Spaces for what the group studied.",
     pickSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "subsplash-groups"],
     whenToChoose: [
       chooseHarvous("Small Groups"),
@@ -1142,10 +1142,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Using GroupMe for your small group? Compare Harvous Shared Spaces, WhatsApp, Band, Planning Center Groups, and Flock — keep GroupMe for chat; use a scripture-linked trail for what you studied.",
     h1: "Best GroupMe alternative for Bible study notes",
-    lead: "GroupMe is where many church groups already talk. These options cover other messengers, church ops, care — or Shared Spaces when Bible study notes need to outlast the chat scroll.",
+    lead: "GroupMe is where many church groups already talk. These options cover other messengers — or Shared Spaces when study notes need to last.",
     pickSlugs: ["whatsapp", "band", "planning-center-groups", "flock", "subsplash-groups"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. Keep GroupMe for reminders, prayer requests, and quick shares. Harvous Shared Spaces are for the scripture-linked notes that disappear in the thread — host with Plus, join free.",
+      "We built Harvous — so of course we care how this list reads. Keep GroupMe for chat. Harvous Shared Spaces are for study notes that disappear in the thread — host with Plus, join free.",
     whenToChoose: [
       chooseHarvous("Small Groups"),
       {
@@ -1164,10 +1164,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Using WhatsApp for your small group? Compare Harvous Shared Spaces, GroupMe, Band, Planning Center Groups, and Flock — keep WhatsApp for messaging; use a scripture-linked trail for what you studied.",
     h1: "Best WhatsApp alternative for Bible study notes",
-    lead: "WhatsApp is the messenger many groups already have. These options cover other chats, church ops, care — or Shared Spaces when study notes need scripture pills and threads.",
+    lead: "WhatsApp is the messenger many groups already have. These options cover other chats — or Shared Spaces for scripture-linked notes.",
     pickSlugs: ["groupme", "band", "planning-center-groups", "flock", "subsplash-groups"],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. Keep WhatsApp for everyday connection. Harvous Shared Spaces are for the study trail that shouldn’t live only in a chat history — host with Plus, join free.",
+      "We built Harvous — so of course we care how this list reads. Keep WhatsApp for connection. Harvous Shared Spaces are for the study trail — host with Plus, join free.",
     whenToChoose: [
       chooseHarvous("Small Groups"),
       {
@@ -1186,7 +1186,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Using Subsplash Groups? Compare Harvous Shared Spaces, GroupMe, WhatsApp, Band, and Planning Center Groups — keep the church app for messaging; use Harvous for scripture-linked study notes.",
     h1: "Best Subsplash Groups alternative for study notes",
-    lead: "Subsplash Groups live inside a branded church app. These options cover the messengers groups already use — or Shared Spaces when deep study notes need their own home.",
+    lead: "Subsplash Groups live inside a branded church app. These options cover messengers — or Shared Spaces for study notes.",
     pickSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "flock"],
     whenToChoose: [
       chooseHarvous("Small Groups"),
@@ -1206,7 +1206,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Looking for a Called alternative for study notes? Compare Harvous Shared Spaces, GroupMe, WhatsApp, Band, and Planning Center Groups — keep Called for community and care; use Harvous for the study trail.",
     h1: "Best Called alternative for study notes",
-    lead: "Called is built for ministry community and follow-up. These alternatives cover GroupMe-class chat, ChMS groups, care tools — or Shared Spaces for scripture-linked notes that last.",
+    lead: "Called is built for ministry community and follow-up. These options cover chat and care — or Shared Spaces for study notes.",
     pickSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "flock"],
     whenToChoose: [
       chooseHarvous("Small Groups"),

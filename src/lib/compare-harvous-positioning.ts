@@ -309,17 +309,15 @@ const POSITIONS: Record<string, HarvousPosition> = {
   /** SEO guides for small groups / church classes (docs, Notion, readers). */
   "Group Study": {
     chooseIf:
-      "You want personal scripture-linked prep plus a Shared Space where the whole group adds to the same threads — hosting with Harvous Plus, joining always free. Not a church management system.",
+      "You want personal prep plus a Shared Space where the group adds to the same threads — host with Plus; joining is free.",
     bestAt: "Group study trails on the same pills and threads as personal prep",
     primaryUse: "Private prep notes and Shared Spaces for classes and small groups",
-    idealFor: "Small group leaders, teachers, and classes that need a lasting trail after the meeting",
-    tradeoff: "Not a ChMS, Planning Center replacement, or church-wide curriculum org account (those are on the roadmap).",
-    introHalf:
-      "keeps personal prep private and Shared Spaces for the group trail — same pills and threads, host with Plus, join free.",
-    pickIntro:
-      "Personal prep plus Shared Spaces for the group trail — host with Harvous Plus; joining is free.",
+    idealFor: "Leaders and classes that need a lasting trail after the meeting",
+    tradeoff: "Not a ChMS or church-wide curriculum org account (roadmap).",
+    introHalf: "keeps Shared Spaces for the group trail — host with Plus, join free.",
+    pickIntro: "Personal prep plus Shared Spaces for the group — host with Plus; join free.",
     ctaMode: "alongside",
-    hubLane: "In this lane, Harvous is personal notes plus Shared Spaces — not a church management or curriculum platform.",
+    hubLane: "In this lane, Harvous is personal notes plus Shared Spaces — not a ChMS.",
     tableRows: [
       {
         label: "Group shared study",
@@ -343,18 +341,15 @@ const POSITIONS: Record<string, HarvousPosition> = {
   /** CSV type: Planning Center Groups, Band, GroupMe, WhatsApp, Flock, Subsplash, Called. */
   "Small Groups": {
     chooseIf:
-      "Your group already chats in GroupMe, WhatsApp, Band, or a church app — and you want Shared Spaces for the scripture-linked study trail that disappears when the thread scrolls. Host with Harvous Plus; joining is free. Not a chat or ChMS replacement.",
-    bestAt: "Scripture-linked group study trails beside the chat and ops tools groups already use",
-    primaryUse: "Shared Spaces for notes, pills, and threads after the meeting — beside GroupMe, WhatsApp, or your church group tool",
-    idealFor: "Leaders whose group lives in a messenger and still loses what they studied by Monday",
-    tradeoff:
-      "Not group chat, rosters, attendance, prayer walls, Groups Resources–style church-wide curriculum push, or a full ChMS. Org curriculum accounts are on the roadmap.",
-    introHalf:
-      "keeps the scripture-linked study trail in Shared Spaces — beside the chat, rosters, or care tools your group already uses.",
-    pickIntro:
-      "Shared Spaces for the study trail — scripture pills and threads beside GroupMe, WhatsApp, or your church group app. Host with Plus; join free.",
+      "Your group already chats elsewhere, and you want Shared Spaces for the study trail. Host with Plus; joining is free.",
+    bestAt: "Scripture-linked study trails beside the chat tools groups already use",
+    primaryUse: "Shared Spaces for notes and threads after the meeting",
+    idealFor: "Leaders whose group lives in a messenger and loses the study trail",
+    tradeoff: "Not group chat, rosters, or a ChMS. Org curriculum is on the roadmap.",
+    introHalf: "keeps Shared Spaces for the study trail.",
+    pickIntro: "Shared Spaces for the study trail beside chat. Host with Plus; join free.",
     ctaMode: "alongside",
-    hubLane: "In this lane, Harvous sits beside messengers and group hubs — study notes and Shared Spaces, not chat, rosters, or ChMS.",
+    hubLane: "In this lane, Harvous sits beside messengers — Shared Spaces for the study trail, not chat or ChMS.",
     tableRows: [
       {
         label: "Group chat & logistics",
