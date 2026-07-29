@@ -84,7 +84,7 @@ const CATEGORY_HARVOUS_TYPE: Record<string, string> = {
   "best-small-group-bible-study-apps": "Group Study",
   "best-church-bible-study-apps": "Group Study",
   "best-bible-study-apps-for-groups": "Group Study",
-  "best-church-small-group-apps": "Church Groups",
+  "best-church-small-group-apps": "Small Groups",
   "best-scripture-notes-apps": "Bible Notes",
   "best-apps-to-remember-bible-study": "Bible Notes",
   "best-apps-to-connect-bible-study-notes": "Bible Notes",
@@ -97,13 +97,13 @@ const CATEGORY_HARVOUS_TYPE: Record<string, string> = {
 const ALTERNATIVE_HARVOUS_TYPE: Record<string, string> = {
   "notion-for-small-groups-alternative": "Group Study",
   "google-docs-bible-study-alternative": "Group Study",
-  "planning-center-groups-alternative": "Church Groups",
-  "band-alternative": "Church Groups",
-  "flock-alternative": "Church Groups",
-  "groupme-alternative": "Church Groups",
-  "whatsapp-alternative": "Church Groups",
-  "subsplash-groups-alternative": "Church Groups",
-  "called-alternative": "Church Groups",
+  "planning-center-groups-alternative": "Small Groups",
+  "band-alternative": "Small Groups",
+  "flock-alternative": "Small Groups",
+  "groupme-alternative": "Small Groups",
+  "whatsapp-alternative": "Small Groups",
+  "subsplash-groups-alternative": "Small Groups",
+  "called-alternative": "Small Groups",
 };
 
 export function harvousTypeForSeoPage(page: CompareSeoPage): string {
@@ -1049,7 +1049,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     honestNote:
       "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: GroupMe and WhatsApp own everyday connection; Planning Center owns ops and Groups Resources. Harvous is here for the study trail — Shared Spaces with pills and threads — beside the tools your group already opens. Church-wide curriculum distribution is on our roadmap.",
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose GroupMe or WhatsApp if…",
         body: "You need a free messenger everyone already has — reminders, prayer requests, photos, and quick shares between meetings.",
@@ -1083,7 +1083,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     honestNote:
       "We built Harvous — so of course we care how this list reads. Keep Planning Center for people, rooms, group admin, and Groups Resources. Shared Spaces are live for the study trail (host with Plus, join free). Church organization accounts that distribute curriculum the way Planning Center shares resources across groups — that’s on our roadmap.",
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose Planning Center Groups if…",
         body: "Church-wide group management, attendance, and shared Groups Resources (curriculum and guides pushed to groups from the church) are the job — Harvous is not that ChMS replacement. Org-level curriculum distribution in Harvous is still ahead.",
@@ -1105,7 +1105,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     honestNote:
       "We built Harvous — so of course we care how this list reads. Keep Band for posts, chat, and files. Harvous is for scripture-linked Shared Spaces when the group’s Bible study needs a trail — host with Plus, join free.",
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose Band if…",
         body: "You need a free hub for announcements, calendars, and files so the whole group stays coordinated.",
@@ -1125,7 +1125,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     lead: "Flock focuses on prayer, attendance intelligence, and care between Sundays. These options cover messengers, ops — or Shared Spaces for what the group studied in Scripture.",
     pickSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "subsplash-groups"],
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose Flock if…",
         body: "Prayer walls, at-risk alerts, and shepherding midweek are the primary job — keep that care layer.",
@@ -1147,7 +1147,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     honestNote:
       "We built Harvous — so of course we care how this list reads. Keep GroupMe for reminders, prayer requests, and quick shares. Harvous Shared Spaces are for the scripture-linked notes that disappear in the thread — host with Plus, join free.",
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose GroupMe if…",
         body: "You need a free group chat everyone can join fast — polls, photos, and files without another church login.",
@@ -1169,7 +1169,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     honestNote:
       "We built Harvous — so of course we care how this list reads. Keep WhatsApp for everyday connection. Harvous Shared Spaces are for the study trail that shouldn’t live only in a chat history — host with Plus, join free.",
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose WhatsApp if…",
         body: "Your group already messages there for family and friends — and you want zero friction for midweek connection.",
@@ -1189,7 +1189,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     lead: "Subsplash Groups live inside a branded church app. These options cover the messengers groups already use — or Shared Spaces when deep study notes need their own home.",
     pickSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "flock"],
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose Subsplash Groups if…",
         body: "You want group finder, messaging, and attendance inside the same branded church app as media and giving.",
@@ -1209,7 +1209,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     lead: "Called is built for ministry community and follow-up. These alternatives cover GroupMe-class chat, ChMS groups, care tools — or Shared Spaces for scripture-linked notes that last.",
     pickSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "flock"],
     whenToChoose: [
-      chooseHarvous("Church Groups"),
+      chooseHarvous("Small Groups"),
       {
         heading: "Choose Called if…",
         body: "You want a ministry-shaped GroupMe replacement with engagement visibility and safe community tools.",
@@ -1263,7 +1263,7 @@ function drawbackFor(entry: CompareEntry): string {
   if (entry.competitorType === "Sermon Prep") {
     return "Built for outlines, resources, or AI assistance — not a notes-first home for years of prep";
   }
-  if (entry.competitorType === "Church Groups") {
+  if (entry.competitorType === "Small Groups") {
     return "Built for rosters, chat, care, or church-app groups — not a scripture-linked study trail";
   }
   if (entry.competitorType === "AI Guided Bible") {

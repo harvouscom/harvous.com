@@ -341,7 +341,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
   },
 
   /** CSV type: Planning Center Groups, Band, GroupMe, WhatsApp, Flock, Subsplash, Called. */
-  "Church Groups": {
+  "Small Groups": {
     chooseIf:
       "Your group already chats in GroupMe, WhatsApp, Band, or a church app — and you want Shared Spaces for the scripture-linked study trail that disappears when the thread scrolls. Host with Harvous Plus; joining is free. Not a chat or ChMS replacement.",
     bestAt: "Scripture-linked group study trails beside the chat and ops tools groups already use",
@@ -354,7 +354,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
     pickIntro:
       "Shared Spaces for the study trail — scripture pills and threads beside GroupMe, WhatsApp, or your church group app. Host with Plus; join free.",
     ctaMode: "alongside",
-    hubLane: "In this lane, Harvous sits beside messengers and church group tools — study notes and Shared Spaces, not chat, rosters, or ChMS.",
+    hubLane: "In this lane, Harvous sits beside messengers and group hubs — study notes and Shared Spaces, not chat, rosters, or ChMS.",
     tableRows: [
       {
         label: "Group chat & logistics",
