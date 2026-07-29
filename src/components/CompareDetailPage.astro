@@ -6,6 +6,12 @@ import CompareCarousel from "./CompareCarousel.astro";
 import { fathomCompare, fathomSignup } from "../lib/fathom-events.ts";
 import type { CompareEntry } from "../lib/compare-data.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
+import {
+  composeCompareIntro,
+  featureLabel,
+  getCompareCtaHeading,
+  getHarvousPosition,
+} from "../lib/compare-harvous-positioning.ts";
 import "../styles/compare.css";
 
 interface Props {
@@ -16,9 +22,9 @@ interface Props {
 
 const { entry, related, jsonLd } = Astro.props;
 const relatedGuides = getGuidesForCompareSlug(entry.slug);
-
-const HARVOUS_PITCH =
-  "You want a notes-first Bible study app — no built-in Bible reader, no sermon transcription — focused on remembering and reconnecting with what you saved.";
+const position = getHarvousPosition(entry.competitorType);
+const intro = composeCompareIntro(entry.intro, entry.competitorType);
+const ctaHeading = getCompareCtaHeading(entry.name, entry.competitorType);
 ---
 
 <BaseLayout title={entry.seoTitle} description={entry.seoDescription} ogImage={entry.ogImage} jsonLd={jsonLd}>
@@ -43,7 +49,7 @@ const HARVOUS_PITCH =
         <div class="mt-8 text-center">
           <h1 class="font-display text-4xl leading-[1.05] md:text-5xl">Harvous vs {entry.name}</h1>
           <p class="compare-detail__lead mx-auto mt-5 text-lg leading-relaxed text-[var(--color-ink-soft)]">
-            {entry.intro}
+            {intro}
           </p>
           {
             entry.competitorLink && (
@@ -72,7 +78,22 @@ const HARVOUS_PITCH =
         </div>
         <div>
           <h2 class="text-xl font-semibold text-[var(--color-ink)]">Choose Harvous if…</h2>
-          <p class="mt-3 text-[var(--color-ink-soft)]">{HARVOUS_PITCH}</p>
+          <p class="mt-3 text-[var(--color-ink-soft)]">{position.chooseIf}</p>
+          {
+            position.featureIds.length > 0 && (
+              <ul class="compare-detail__feature-links" role="list">
+                {position.featureIds.map((id) => (
+                  <li>
+                    <a href={`/features/${id}/`}>{featureLabel(id)}</a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Harvous isn’t for…</h2>
+          <p class="mt-3 text-[var(--color-ink-soft)]">{position.tradeoff}</p>
         </div>
         <div>
           <h2 class="text-xl font-semibold text-[var(--color-ink)]">Works best alongside</h2>
@@ -99,27 +120,26 @@ const HARVOUS_PITCH =
             <tbody>
               <tr>
                 <th scope="row">Best at</th>
-                <td>Remembering and threading what you saved from Scripture</td>
+                <td>{position.bestAt}</td>
                 <td>{entry.bestAt}</td>
               </tr>
               <tr>
                 <th scope="row">Primary use</th>
-                <td>Bible study notes with scripture pills, highlights, @ mentions, and recall</td>
+                <td>{position.primaryUse}</td>
                 <td>{entry.primaryUse}</td>
               </tr>
-              <tr>
-                <th scope="row">Built-in Bible reader</th>
-                <td>No — type a reference, open inline text</td>
-                <td>{entry.competitorType === "Bible Reader" ? "Yes" : "Varies"}</td>
-              </tr>
-              <tr>
-                <th scope="row">Sermon transcription</th>
-                <td>No</td>
-                <td>{entry.name === "Bible Note" || entry.name === "Bible Notes" ? "Yes" : "No / varies"}</td>
-              </tr>
+              {
+                position.tableRows.map((row) => (
+                  <tr>
+                    <th scope="row">{row.label}</th>
+                    <td>{row.harvous}</td>
+                    <td>{row.competitorHint}</td>
+                  </tr>
+                ))
+              }
               <tr>
                 <th scope="row">Ideal for</th>
-                <td>People who want to remember what they saved from study</td>
+                <td>{position.idealFor}</td>
                 <td>{entry.idealFor}</td>
               </tr>
             </tbody>
@@ -173,7 +193,7 @@ const HARVOUS_PITCH =
   </article>
 
   <PageClosingCTA
-    heading={`Harvous works alongside ${entry.name}.`}
+    heading={ctaHeading}
     lead={entry.worksBestAlongside}
     fathomTrack={fathomSignup.compareDetail(entry.slug)}
   />
@@ -182,5 +202,31 @@ const HARVOUS_PITCH =
 <style>
   .compare-detail__lead {
     max-width: 28rem;
+  }
+  .compare-detail__feature-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin-top: 0.85rem;
+    padding: 0;
+    list-style: none;
+  }
+  .compare-detail__feature-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+  .compare-detail__feature-links a:hover {
+    background: var(--color-warm);
+    border-color: color-mix(in srgb, var(--color-ink) 16%, var(--color-rule));
   }
 </style>

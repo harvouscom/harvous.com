@@ -224,10 +224,10 @@ const useCases: UseCase[] = [
         body: "When you’re back on a familiar text, Recall can bring forward prep you already did — still linked to the passage.",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "highlights", "recall"],
+    featureIds: ["scripture-pills", "threads", "note-templates", "recall"],
     featuresHeading: "What sermon prep asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, and Recall across the preaching year — so prep builds on itself instead of resetting every Monday.",
+      "Series threads, scripture nearby, note templates when you want a starting shape — and Recall across the preaching year.",
     compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion"],
     relatedUseCaseSlugs: ["deep-study", "book-study", "sermon-notes"],
   },
@@ -456,11 +456,11 @@ const useCases: UseCase[] = [
         body: "Your own notes on the passage — the prep, the things you wanted to say, the questions you almost asked — stay in your personal space. The group only sees what you add to the shared one.",
       },
     ],
-    featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
+    featureIds: ["shared-spaces", "threads", "scripture-pills", "note-templates"],
     featuresHeading: "What group study needs from Harvous",
     featuresLead:
-      "Shared Spaces for the room, plus threads, scripture pills, and highlights for the prep and follow-up leaders already do.",
-    compareSlugs: ["pray-com", "youversion", "notion"],
+      "Shared Spaces for the room, plus threads, scripture pills, and note templates for the prep leaders already do.",
+    compareSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "flock", "youversion"],
     testimonialId: "joschua",
   },
 ];

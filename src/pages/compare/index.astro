@@ -6,6 +6,7 @@ import CompareSectionNav from "../../components/CompareSectionNav.astro";
 import PageClosingCTA from "../../components/PageClosingCTA.astro";
 import IntroChip from "../../components/IntroChip.astro";
 import { getCompareTypes, getCompareByType, compareTypeToId, getCompareEntries } from "../../lib/compare-data.ts";
+import { getHarvousHubLane } from "../../lib/compare-harvous-positioning.ts";
 import { fathomCompare, fathomSignup } from "../../lib/fathom-events.ts";
 import "../../styles/compare.css";
 
@@ -72,6 +73,7 @@ const jsonLd = {
               entries={getCompareByType(type)}
               groupTitle={type}
               groupTitleId={`${sectionId}-title`}
+              laneBlurb={getHarvousHubLane(type)}
               trackLabel={`${type} app comparisons`}
               fathomTrack={fathomCompare.hubCard}
             />

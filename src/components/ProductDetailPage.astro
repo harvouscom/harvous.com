@@ -9,6 +9,7 @@ import ChurchOrgInterestBridge from "./ChurchOrgInterestBridge.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
+import { getCompareSeoPageBySlug } from "../lib/compare-seo-pages.ts";
 import type { ProductPage } from "../lib/product-page-data.ts";
 import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
 import { hasDetailContent, isLightFeatureInk } from "../lib/product-page-data.ts";
@@ -39,9 +40,14 @@ const relatedFeatures =
         .filter((f): f is NonNullable<typeof f> => f !== undefined)
     : [];
 
-const relatedCompare = (page.compareSlugs ?? [])
+const compareSlugs = page.compareSlugs ?? [];
+const relatedCompare = compareSlugs
   .map((slug) => getCompareBySlug(slug))
   .filter((e): e is NonNullable<typeof e> => e !== undefined);
+/** SEO category/alternative guides mixed into compareSlugs (not CSV vs entries). */
+const relatedSeoGuides = compareSlugs
+  .map((slug) => getCompareSeoPageBySlug(slug))
+  .filter((g): g is NonNullable<typeof g> => g !== undefined && g.draft !== true);
 
 const showDrafts = includeBlogDrafts();
 const relatedBlogPosts =
@@ -174,6 +180,32 @@ const ogImage =
         />
       )
     }
+
+    {
+      relatedSeoGuides.length > 0 && (
+        <section class="frame-divider" data-reveal>
+          <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
+            <span class="eyebrow-pill">Guides</span>
+            <h2 class="section-title mt-3">Related shortlists</h2>
+            <p class="lead mt-3">
+              Curated comparisons that call out this job — how Harvous stacks up for the same search intent.
+            </p>
+            <ul class="product-seo-guides" role="list">
+              {
+                relatedSeoGuides.map((guide) => (
+                  <li>
+                    <a href={`/compare/${guide.slug}/`}>
+                      <span class="product-seo-guides__label">{guide.guideLabel}</span>
+                      <span class="product-seo-guides__desc">{guide.guideDescription}</span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </section>
+      )
+    }
   </article>
 
   <PageClosingCTA
@@ -194,5 +226,42 @@ const ogImage =
     color: var(--color-accent);
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  .product-seo-guides {
+    list-style: none;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .product-seo-guides a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-seo-guides li:last-child a {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .product-seo-guides a:hover .product-seo-guides__label {
+    color: var(--color-accent);
+  }
+
+  .product-seo-guides__label {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .product-seo-guides__desc {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
   }
 </style>

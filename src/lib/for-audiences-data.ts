@@ -332,10 +332,10 @@ const audiences: ForAudience[] = [
         body: "Host a room for your class with Harvous Plus. Everyone can add to the same threads after you leave.",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "highlights", "shared-spaces"],
+    featureIds: ["scripture-pills", "threads", "note-templates", "shared-spaces"],
     featuresHeading: "What teaching asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, private prep — and Shared Spaces when the class needs a room that lasts.",
+      "Series threads, scripture nearby, note templates for lesson structure — and Shared Spaces when the class needs a room that lasts.",
     compareSlugs: ["logos", "notion", "bible-note", "goodnotes"],
     useCaseSlugs: ["small-group"],
   },
@@ -349,7 +349,7 @@ const audiences: ForAudience[] = [
     image: "/images/auth-hero/ai_bg_076.webp",
     seoTitle: "For pastors — sermon prep notes that last — Harvous",
     seoDescription:
-      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, alongside Logos and dedicated prep tools.",
+      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Shared Spaces when a staff huddle or class needs the trail — host with Harvous Plus; joining is free.",
     heroTitle: "For people who prepare, then preach.",
     heroLead:
       "Sunday keeps coming. You’re digging into a text, shaping an outline, landing a line — then somehow next week starts from a blank page. The prep for a preaching calendar deserves a home that lasts years, not a folder of untitled docs.",
@@ -366,6 +366,13 @@ const audiences: ForAudience[] = [
         paragraphs: [
           "Logos and library stacks have their place for commentaries and languages. Dedicated sermon apps own templates, blocks, and preaching views. Harvous sits in the middle for the notes you write while you prepare — scripture-linked, threaded by series, searchable when half a phrase is all you remember.",
           "Keep the tools that already work for manuscript polish and research. Use Harvous so the thinking behind the sermon doesn’t disappear between Sundays.",
+        ],
+      },
+      {
+        heading: "Shared Spaces when the room needs the trail",
+        paragraphs: [
+          "Personal prep stays private by default. When a staff huddle, elder study, or class needs the same threads, [Shared Spaces](/add-ons/shared-spaces/) let the whole group contribute — hosting is included with [Harvous Plus](/pricing/); joining is always free.",
+          "Church-wide organization accounts for curriculum are still on the roadmap — [tell us your church is interested](/for/churches/#interest). Individual Shared Spaces work today.",
         ],
       },
     ],
@@ -388,15 +395,15 @@ const audiences: ForAudience[] = [
       {
         icon: "fa6-solid:lock",
         heading: "Prep stays private",
-        body: "Your working notes are yours. Church-level curriculum and shared spaces are a longer road — personal prep works today.",
+        body: "Your working notes are yours. Share into a Shared Space when a staff huddle or class needs the trail — hosting is Harvous Plus; joining is free. Church-wide org curriculum is still on the roadmap.",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "highlights", "recall"],
+    featureIds: ["scripture-pills", "threads", "note-templates", "recall", "shared-spaces"],
     featuresHeading: "What preaching asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, and Recall across the calendar year — so prep builds on itself instead of resetting every Monday.",
+      "Series threads, scripture nearby, note templates when you want a starting shape — and Recall across the calendar year. Shared Spaces when a room needs the trail.",
     compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion", "obsidian"],
-    useCaseSlugs: ["sermon-prep", "deep-study", "book-study"],
+    useCaseSlugs: ["sermon-prep", "deep-study", "book-study", "small-group"],
   },
   {
     slug: "going-through-a-book",
@@ -602,7 +609,7 @@ const audiences: ForAudience[] = [
         heading: "Further out: church organization accounts",
         paragraphs: [
           "Beyond personal and group spaces, we're planning church organization accounts for education and curriculum. Staff and volunteers publish threads and notes at the church level; people who connect their Harvous account to the church can receive that curriculum — without needing a personal invite link for every study.",
-          "Individual Shared Spaces stay the “I share my space with my group” story. Church org is “the church shares curriculum to everyone who’s connected.”",
+          "Think of the job Planning Center Groups Resources does well today — shared study materials pushed to one group or across group types from the church. Individual Shared Spaces stay the “I share my space with my group” story. Church org is “the church shares curriculum to everyone who’s connected.”",
         ],
         ctaHref: "#interest",
         ctaLabel: "Our church is interested",
@@ -610,8 +617,8 @@ const audiences: ForAudience[] = [
       {
         heading: "What Harvous is not",
         paragraphs: [
-          "Harvous is a notes and study tool — not a full church management system. It complements tools churches already use for people, groups, and services. It is never a substitute for pastors, friends, or the gathered body.",
-          "Down the road, we plan integrations with church tools like Planning Center (and similar systems) so rosters and groups can sync into Harvous — keep your ChMS; use Harvous where Bible study lives.",
+          "Harvous is a notes and study tool — not a full church management system. It complements tools churches already use for people, groups, services, and resource distribution. It is never a substitute for pastors, friends, or the gathered body.",
+          "Down the road, we plan integrations with church tools like Planning Center (and similar systems) so rosters and groups can sync into Harvous — keep your ChMS and Groups Resources; use Harvous where Bible study lives. Org-level curriculum in Harvous is the longer road.",
         ],
       },
     ],
@@ -641,7 +648,15 @@ const audiences: ForAudience[] = [
     featuresHeading: "What church study builds on today",
     featuresLead:
       "Personal Harvous already supports prep and teaching. Shared Spaces and church org features build on the same notes, threads, and scripture tools.",
-    compareSlugs: ["church-notes", "pray-com", "youversion", "notion"],
+    compareSlugs: [
+      "planning-center-groups",
+      "band",
+      "groupme",
+      "whatsapp",
+      "church-notes",
+      "youversion",
+      "notion",
+    ],
     useCaseSlugs: ["small-group", "sermon-notes"],
   },
   {
@@ -695,11 +710,11 @@ const audiences: ForAudience[] = [
         body: "The notes you need to lead stay in your space. Share into the group thread when you're ready.",
       },
     ],
-    featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
+    featureIds: ["shared-spaces", "threads", "scripture-pills", "note-templates"],
     featuresHeading: "What group leadership needs from Harvous",
     featuresLead:
-      "Shared Spaces for the room, plus threads, scripture pills, and highlights for the prep and follow-up leaders already do.",
-    compareSlugs: ["pray-com", "youversion", "notion"],
+      "Shared Spaces for the room, plus threads, scripture pills, and note templates for the prep leaders already do.",
+    compareSlugs: ["groupme", "whatsapp", "band", "planning-center-groups", "flock", "youversion"],
     useCaseSlugs: ["small-group"],
     testimonialId: "joschua",
   },

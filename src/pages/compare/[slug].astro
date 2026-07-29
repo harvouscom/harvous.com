@@ -9,9 +9,12 @@ import {
   buildCategoryJsonLd,
   buildAlternativeJsonLd,
   isCompareSeoPageDraft,
+  harvousTypeForSeoPage,
+  type ComparePick,
   type CompareSeoPage,
 } from "../../lib/compare-seo-pages.ts";
 import type { CompareEntry } from "../../lib/compare-data.ts";
+import { composeCompareIntro } from "../../lib/compare-harvous-positioning.ts";
 
 export function getStaticPaths() {
   const vsPaths = getCompareEntries().map((entry) => ({
@@ -38,7 +41,7 @@ let vsEntry: CompareEntry | undefined;
 let vsJsonLd: Record<string, unknown> | undefined;
 let vsRelated: CompareEntry[] = [];
 let seoPage: CompareSeoPage | undefined;
-let seoPicks = [];
+let seoPicks: ComparePick[] = [];
 let seoJsonLd: Record<string, unknown> | undefined;
 let seoNoindex = false;
 let seoTarget: CompareEntry | undefined;
@@ -46,6 +49,7 @@ let seoTarget: CompareEntry | undefined;
 if (props.kind === "vs") {
   vsEntry = props.entry;
   const pageUrl = `${site}/compare/${vsEntry.slug}/`;
+  const composedIntro = composeCompareIntro(vsEntry.intro, vsEntry.competitorType);
   vsJsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -70,7 +74,7 @@ if (props.kind === "vs") {
           {
             "@type": "Question",
             name: `Is Harvous a good alternative to ${vsEntry.name}?`,
-            acceptedAnswer: { "@type": "Answer", text: vsEntry.intro },
+            acceptedAnswer: { "@type": "Answer", text: composedIntro },
           },
           {
             "@type": "Question",
@@ -92,7 +96,7 @@ if (props.kind === "vs") {
 } else {
   seoPage = props.page;
   seoNoindex = isCompareSeoPageDraft(seoPage);
-  seoPicks = resolvePickSlugs(seoPage.pickSlugs);
+  seoPicks = resolvePickSlugs(seoPage.pickSlugs, harvousTypeForSeoPage(seoPage));
   if (seoPage.kind === "category") {
     seoJsonLd = buildCategoryJsonLd(seoPage, seoPicks);
   } else {

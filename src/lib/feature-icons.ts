@@ -9,4 +9,5 @@ export const FEATURE_ICONS: Record<string, string> = {
   "sidebar-modes": "fa6-solid:magnifying-glass",
   threads: "fa6-solid:arrow-right-arrow-left",
   recall: "fa6-solid:clock-rotate-left",
+  "note-templates": "fa6-solid:list-check",
 };

@@ -1,12 +1,15 @@
 ---
 import Container from "./layout/Container.astro";
 import type { CompareEntry } from "../lib/compare-data.ts";
+import { composeCompareIntro } from "../lib/compare-harvous-positioning.ts";
 import { fathomCompare } from "../lib/fathom-events.ts";
 
 interface Props {
   entries: CompareEntry[];
   groupTitle?: string;
   groupTitleId?: string;
+  /** Optional one-liner under the category title (hub lanes). */
+  laneBlurb?: string;
   trackLabel: string;
   fathomTrack?: string;
   /** When false, only the scroll track renders (parent supplies its own control bar). */
@@ -18,6 +21,7 @@ const {
   entries,
   groupTitle,
   groupTitleId,
+  laneBlurb,
   trackLabel,
   fathomTrack = fathomCompare.hubCard,
   showBar = true,
@@ -31,9 +35,12 @@ const {
       <Container size="xl">
         <div class="compare-carousel__bar">
           {groupTitle ? (
-            <h2 class="compare-carousel__title" id={groupTitleId}>
-              {groupTitle}
-            </h2>
+            <div class="compare-carousel__heading">
+              <h2 class="compare-carousel__title" id={groupTitleId}>
+                {groupTitle}
+              </h2>
+              {laneBlurb && <p class="compare-carousel__lane">{laneBlurb}</p>}
+            </div>
           ) : (
             <span class="compare-carousel__bar-spacer" aria-hidden="true" />
           )}
@@ -79,7 +86,8 @@ const {
                 </span>
               </span>
               <span class="compare-carousel__caption">
-                <strong>Harvous vs {entry.name}.</strong> {entry.intro}
+                <strong>Harvous vs {entry.name}.</strong>{" "}
+                {composeCompareIntro(entry.intro, entry.competitorType)}
               </span>
             </a>
           </li>
@@ -93,12 +101,16 @@ const {
   .compare-carousel__bar {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 1rem 1.5rem;
   }
   .compare-carousel__bar-spacer {
     flex: 1;
+  }
+  .compare-carousel__heading {
+    min-width: 0;
+    flex: 1 1 16rem;
   }
   .compare-carousel__title {
     font-family: var(--font-display);
@@ -107,12 +119,20 @@ const {
     letter-spacing: -0.01em;
     color: var(--color-ink);
   }
+  .compare-carousel__lane {
+    margin-top: 0.35rem;
+    max-width: 36rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+  }
   .compare-carousel__controls {
     display: flex;
     align-items: center;
     gap: 0.6rem;
     flex: none;
     margin-left: auto;
+    align-self: center;
   }
 
   .compare-carousel__arrow {
