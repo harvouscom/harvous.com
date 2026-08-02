@@ -5,6 +5,10 @@
 [build.environment]
   NODE_VERSION = "22"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # Legacy Webflow paths → Astro marketing site
 [[redirects]]
   from = "/updates"
@@ -40,3 +44,9 @@
   from = "/release-notes/page/1/"
   to = "/release-notes/"
   status = 301
+
+# Church interest form typeahead (src/scripts/church-interest-form.ts)
+[[redirects]]
+  from = "/api/church-search"
+  to = "/.netlify/functions/church-search"
+  status = 200

@@ -1,9 +1,24 @@
 ---
+import { HMC_COUNTRIES, getHmcRegionsForCountry } from "../lib/hmc-directory";
+
 interface Props {
   id?: string;
 }
 
 const { id = "interest" } = Astro.props;
+
+/** Matches the option-label rule used by the app's HmcChurchPicker. */
+function regionOptionLabel(code: string, label: string): string {
+  return code.length <= 3 ? `${code} — ${label}` : label;
+}
+
+// Server-rendered so the no-JS path (and Netlify's static form scrape) has a
+// real default-country region list; the client script rebuilds this select
+// when the visitor changes country.
+const defaultCountry = "US";
+const defaultCountryConfig = HMC_COUNTRIES.find((c) => c.code === defaultCountry);
+const defaultNoun = defaultCountryConfig?.regionNoun.one ?? "state";
+const defaultRegions = getHmcRegionsForCountry(defaultCountry);
 ---
 
 <section class="church-interest-form frame-divider" id={id} data-church-interest>
@@ -40,6 +55,11 @@ const { id = "interest" } = Astro.props;
           </label>
         </p>
 
+        <!-- Filled in by the picker in src/scripts/church-interest-form.ts on a match. -->
+        <input type="hidden" name="hmcChurchId" data-church-hmc-id />
+        <input type="hidden" name="hmcShortId" data-church-hmc-short-id />
+        <input type="hidden" name="churchDenomination" data-church-denomination />
+
         <div class="church-interest-form__grid">
           <div class="church-interest-form__field-wrap">
             <label class="church-interest-form__label" for="church-interest-name">Name</label>
@@ -66,41 +86,147 @@ const { id = "interest" } = Astro.props;
           </div>
 
           <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full">
-            <label class="church-interest-form__label" for="church-interest-churchName">Church name</label>
+            <label class="church-interest-form__label" for="church-interest-churchCountry">Country</label>
+            <select
+              class="church-interest-form__field"
+              id="church-interest-churchCountry"
+              name="churchCountry"
+              autocomplete="country"
+              required
+              data-church-country
+            >
+              {
+                HMC_COUNTRIES.map((country) => (
+                  <option value={country.code} selected={country.code === defaultCountry}>
+                    {country.name}
+                  </option>
+                ))
+              }
+              <option value="other">My country isn’t listed</option>
+            </select>
+          </div>
+
+          <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full" data-church-state-select-wrap>
+            <label class="church-interest-form__label" for="church-interest-churchState">
+              <span data-church-state-noun>State / region</span>
+            </label>
+            <select
+              class="church-interest-form__field"
+              id="church-interest-churchState"
+              name="churchState"
+              required
+              data-church-state-select
+            >
+              <option value="" disabled selected>{`Select a ${defaultNoun}`}</option>
+              {
+                defaultRegions.map((region) => (
+                  <option value={region.code}>{regionOptionLabel(region.code, region.label)}</option>
+                ))
+              }
+            </select>
+          </div>
+
+          <div
+            class="church-interest-form__field-wrap church-interest-form__field-wrap--full"
+            data-church-state-manual-wrap
+            hidden
+          >
+            <label class="church-interest-form__label" for="church-interest-churchStateManual">State / region</label>
             <input
               class="church-interest-form__field"
-              id="church-interest-churchName"
-              name="churchName"
+              id="church-interest-churchStateManual"
+              name="churchState"
               type="text"
-              autocomplete="organization"
-              placeholder="e.g. Grace Community Church"
-              required
+              autocomplete="address-level1"
+              placeholder="State, province, or region"
+              disabled
+              data-church-state-manual
             />
           </div>
 
-          <div class="church-interest-form__field-wrap">
+          <div
+            class="church-interest-form__field-wrap church-interest-form__field-wrap--full church-interest-form__combobox"
+            data-church-combobox
+          >
+            <label class="church-interest-form__label" for="church-interest-churchName">Church name</label>
+            <div class="church-interest-form__combobox-input-wrap">
+              <input
+                class="church-interest-form__field"
+                id="church-interest-churchName"
+                name="churchName"
+                type="text"
+                autocomplete="off"
+                placeholder={`Select a ${defaultNoun} first`}
+                role="combobox"
+                aria-expanded="false"
+                aria-controls="church-interest-churchName-listbox"
+                aria-autocomplete="list"
+                aria-describedby="church-interest-churchName-hint"
+                required
+                disabled
+                data-church-name-input
+              />
+              <ul
+                class="church-interest-form__listbox"
+                id="church-interest-churchName-listbox"
+                role="listbox"
+                aria-label="Matching churches"
+                hidden
+                data-church-listbox
+              ></ul>
+            </div>
+            <p
+              class="church-interest-form__hint"
+              id="church-interest-churchName-hint"
+              role="status"
+              aria-live="polite"
+              data-church-status
+            >
+              {`Select a ${defaultNoun} above, then start typing your church’s name.`}
+            </p>
+            <div class="church-interest-form__chosen" data-church-chosen hidden>
+              <div class="church-interest-form__chosen-info">
+                <strong data-church-chosen-name></strong>
+                <span data-church-chosen-location></span>
+              </div>
+              <button type="button" class="church-interest-form__chosen-change" data-church-chosen-change>
+                Change
+              </button>
+            </div>
+            <button type="button" class="church-interest-form__unlisted-toggle" data-church-unlisted-toggle>
+              My church isn’t listed
+            </button>
+          </div>
+
+          <div class="church-interest-form__field-wrap church-interest-form__field-wrap--full" data-church-city-wrap hidden>
             <label class="church-interest-form__label" for="church-interest-churchCity">City</label>
             <input
               class="church-interest-form__field"
               id="church-interest-churchCity"
               name="churchCity"
-              type="text"
+              type="hidden"
               autocomplete="address-level2"
               placeholder="City"
-              required
+              data-church-city
             />
           </div>
 
-          <div class="church-interest-form__field-wrap">
-            <label class="church-interest-form__label" for="church-interest-churchState">State / region</label>
+          <div
+            class="church-interest-form__field-wrap church-interest-form__field-wrap--full"
+            data-church-other-wrap
+            hidden
+          >
+            <label class="church-interest-form__label" for="church-interest-churchCountryOther">
+              What country is your church in?
+            </label>
             <input
               class="church-interest-form__field"
-              id="church-interest-churchState"
-              name="churchState"
+              id="church-interest-churchCountryOther"
+              name="churchCountryOther"
               type="text"
-              autocomplete="address-level1"
-              placeholder="State or region"
-              required
+              autocomplete="off"
+              placeholder="Country"
+              disabled
             />
           </div>
 
@@ -185,118 +311,8 @@ const { id = "interest" } = Astro.props;
   </div>
 </section>
 
-<script is:inline>
-  (function () {
-    var root = document.querySelector("[data-church-interest]");
-    if (!root || root.dataset.bound === "true") return;
-    root.dataset.bound = "true";
-
-    var form = root.querySelector("[data-church-interest-form]");
-    var formPanel = root.querySelector("[data-church-interest-form-panel]");
-    var success = root.querySelector("[data-church-interest-success]");
-    var errorEl = root.querySelector("[data-church-interest-error]");
-    var submitBtn = root.querySelector("[data-church-interest-submit]");
-    var fieldset = document.getElementById("church-interest-interests");
-    var hint = document.getElementById("church-interest-interests-hint");
-    var roleSelect = document.getElementById("church-interest-role");
-    var roleOtherWrap = document.getElementById("church-interest-role-other-wrap");
-    var roleOtherInput = document.getElementById("church-interest-roleOther");
-
-    function showSuccess() {
-      if (formPanel) formPanel.hidden = true;
-      if (success) {
-        success.hidden = false;
-        success.focus?.();
-      }
-      try {
-        history.replaceState(null, "", "/for/churches/?submitted=1#interest");
-      } catch (e) {}
-      root.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function syncRoleOther() {
-      if (!roleSelect || !roleOtherWrap || !roleOtherInput) return;
-      var isOther = roleSelect.value === "other";
-      if (isOther) {
-        roleOtherWrap.removeAttribute("hidden");
-        roleOtherInput.setAttribute("required", "required");
-      } else {
-        roleOtherWrap.setAttribute("hidden", "");
-        roleOtherInput.removeAttribute("required");
-        roleOtherInput.value = "";
-      }
-    }
-
-    // Static pages can't read ?submitted=1 at build time — check on the client.
-    if (new URLSearchParams(window.location.search).get("submitted") === "1") {
-      showSuccess();
-      return;
-    }
-
-    if (!form) return;
-
-    roleSelect?.addEventListener("change", syncRoleOther);
-    syncRoleOther();
-
-    fieldset?.addEventListener("change", function () {
-      var checked = form.querySelectorAll('input[name="interests"]:checked');
-      if (checked.length > 0 && fieldset && hint) {
-        fieldset.classList.remove("is-invalid");
-        hint.textContent = "Select at least one.";
-      }
-    });
-
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      var checked = form.querySelectorAll('input[name="interests"]:checked');
-      if (checked.length === 0) {
-        if (fieldset && hint) {
-          fieldset.classList.add("is-invalid");
-          hint.textContent = "Select at least one option.";
-          var first = fieldset.querySelector('input[name="interests"]');
-          if (first) first.focus();
-        }
-        return;
-      }
-      if (fieldset && hint) {
-        fieldset.classList.remove("is-invalid");
-        hint.textContent = "Select at least one.";
-      }
-
-      if (errorEl) {
-        errorEl.hidden = true;
-        errorEl.textContent = "";
-      }
-
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Sending…";
-      }
-
-      var body = new URLSearchParams(new FormData(form)).toString();
-
-      fetch("/for/churches/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: body,
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error("Submit failed");
-          showSuccess();
-        })
-        .catch(function () {
-          if (errorEl) {
-            errorEl.hidden = false;
-            errorEl.textContent = "Something went wrong. Please try again.";
-          }
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = "Share interest";
-          }
-        });
-    });
-  })();
+<script>
+  import "../scripts/church-interest-form.ts";
 </script>
 
 <style>
@@ -396,6 +412,10 @@ const { id = "interest" } = Astro.props;
     margin: 0 0 0.75rem;
     font-size: 0.8125rem;
     color: var(--pds-text-tertiary);
+  }
+
+  .church-interest-form__combobox .church-interest-form__hint {
+    margin: 0.5rem 0 0;
   }
 
   .church-interest-form__fieldset.is-invalid .church-interest-form__hint {
@@ -515,11 +535,149 @@ const { id = "interest" } = Astro.props;
     background: var(--pds-bg-input);
   }
 
+  .church-interest-form__field:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
   select.church-interest-form__field {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 2.25rem;
+  }
+
+  .church-interest-form__combobox-input-wrap {
+    position: relative;
+  }
+
+  .church-interest-form__listbox {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--pds-bg-page, #fff);
+    border: 0.5px solid var(--pds-border);
+    border-radius: var(--pds-radius-input);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+  }
+
+  .church-interest-form__listbox[hidden] {
+    display: none;
+  }
+
+  /*
+   * Options below are created client-side (document.createElement) in
+   * src/scripts/church-interest-form.ts, so they never receive Astro's
+   * scoped data-astro-cid attribute — these rules must stay :global()
+   * or they silently never match.
+   */
+  :global(.church-interest-form__option) {
+    display: block;
+    padding: 8px 10px;
+    border-radius: calc(var(--pds-radius-input) - 4px);
+    cursor: pointer;
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    color: var(--pds-text-primary);
+  }
+
+  :global(.church-interest-form__option:hover),
+  :global(.church-interest-form__option[aria-selected="true"]) {
+    background: var(--pds-bg-input-hover);
+  }
+
+  :global(.church-interest-form__option-name) {
+    display: block;
+    font-weight: 600;
+  }
+
+  :global(.church-interest-form__option-location) {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--pds-text-tertiary);
+  }
+
+  :global(.church-interest-form__option-empty) {
+    padding: 10px;
+    font-size: 0.875rem;
+    color: var(--pds-text-tertiary);
+    cursor: default;
+  }
+
+  .church-interest-form__chosen {
+    margin-top: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 10px 14px;
+    border: 0.5px solid var(--pds-border);
+    border-radius: var(--pds-radius-input);
+    background: var(--pds-bg-input);
+  }
+
+  .church-interest-form__chosen[hidden] {
+    display: none;
+  }
+
+  .church-interest-form__chosen-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .church-interest-form__chosen-info strong {
+    font-size: 0.9375rem;
+    color: var(--pds-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .church-interest-form__chosen-info span {
+    font-size: 0.8125rem;
+    color: var(--pds-text-tertiary);
+  }
+
+  .church-interest-form__chosen-change {
+    flex-shrink: 0;
+    border: none;
+    background: none;
+    color: var(--color-accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 6px;
+  }
+
+  .church-interest-form__chosen-change:hover {
+    text-decoration: underline;
+  }
+
+  .church-interest-form__unlisted-toggle {
+    margin-top: 0.5rem;
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 0.8125rem;
+    color: var(--pds-text-tertiary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .church-interest-form__unlisted-toggle:hover {
+    color: var(--pds-text-secondary);
   }
 
   .church-interest-form__error {

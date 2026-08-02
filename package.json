@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "dev:netlify": "netlify dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -35,6 +36,10 @@
     "typescript": "^5.6.3"
   },
   "devDependencies": {
+    "netlify-cli": "^27.0.1",
+    "sharp": "^0.35.3"
+  },
+  "overrides": {
     "sharp": "^0.35.3"
   }
 }
