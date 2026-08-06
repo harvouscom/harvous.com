@@ -205,7 +205,7 @@ const audiences: ForAudience[] = [
         body: "No templates required. A short note next to a verse is enough. The point is remembering, not sounding polished.",
       },
       {
-        icon: "fa7-solid:calendar-days",
+        icon: "fa7-solid:calendar-day",
         heading: "A gentle place to start",
         body: "When you're not sure what to read, the daily passage gives you a starting point and room to jot what stays with you.",
       },

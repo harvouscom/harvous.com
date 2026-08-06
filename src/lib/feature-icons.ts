@@ -2,7 +2,7 @@
 export const FEATURE_ICONS: Record<string, string> = {
   "scripture-pills": "fa7-solid:book-bible",
   highlights: "fa7-solid:highlighter",
-  "daily-passage": "fa7-solid:calendar-days",
+  "daily-passage": "fa7-solid:calendar-day",
   dictionary: "fa7-solid:lines-leaning",
   "offline-sync": "fa7-solid:arrows-rotate",
   sharing: "fa7-solid:share-nodes",
