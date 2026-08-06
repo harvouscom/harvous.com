@@ -24,6 +24,13 @@ export type ForAudience = {
   ink: string;
   comingSoon?: boolean;
   comingSoonLine?: string;
+  /**
+   * A neutral status chip for something that is live but not self-serve — it
+   * sits in the same slot as the coming-soon badge without claiming the page is
+   * unbuilt. Church org shipped in v2.21.0 while onboarding stays by request,
+   * which neither `comingSoon` nor silence describes honestly.
+   */
+  statusLine?: string;
   seoTitle: string;
   seoDescription: string;
   heroTitle: string;
@@ -372,7 +379,14 @@ const audiences: ForAudience[] = [
         heading: "Shared Spaces when the room needs the trail",
         paragraphs: [
           "Personal prep stays private by default. When a staff huddle, elder study, or class needs the same threads, [Shared Spaces](/add-ons/shared-spaces/) let the whole group contribute — hosting is included with [Harvous Plus](/pricing/); joining is always free.",
-          "Church-wide organization accounts for curriculum are still on the roadmap — [tell us your church is interested](/for/churches/#interest). Individual Shared Spaces work today.",
+          "If your church runs on Harvous, the plan behind Sunday lives there too — a teaching plan per ministry, a series that holds its weeks, and roles that tell a pastor's job from a teacher's. [See how it works for churches](/for/churches/).",
+        ],
+      },
+      {
+        heading: "Plan the run, not one week at a time",
+        paragraphs: [
+          "A series in a church plan is a real thing you can open, not a title you retype each week. Name it once and every week carries it. Rename it in week five and weeks one through four agree with you — which the retyped version never did.",
+          "When you already know the shape of a run, plan the whole quarter in a pass. Harvous stops at the first week that is already spoken for and tells you which one, so a short plan is a plan you can see rather than one with a hole in it.",
         ],
       },
     ],
@@ -395,7 +409,7 @@ const audiences: ForAudience[] = [
       {
         icon: "fa6-solid:lock",
         heading: "Prep stays private",
-        body: "Your working notes are yours. Share into a Shared Space when a staff huddle or class needs the trail — hosting is Harvous Plus; joining is free. Church-wide org curriculum is still on the roadmap.",
+        body: "Your working notes are yours. Share into a Shared Space when a staff huddle or class needs the trail — hosting is Harvous Plus; joining is free. A church on Harvous sees how many people it reaches, never who wrote what.",
       },
     ],
     featureIds: ["scripture-pills", "threads", "note-templates", "recall", "shared-spaces"],
@@ -584,41 +598,54 @@ const audiences: ForAudience[] = [
     slug: "churches",
     href: "/for/churches/",
     title: "Churches",
-    tagline: "Education for the church — groups now, organization accounts later.",
+    tagline: "Education for the church — plan what each ministry teaches, and keep it.",
     icon: "fa6-solid:church",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
-    comingSoon: true,
-    comingSoonLine: "Church org on the roadmap",
+    statusLine: "Running with churches now",
     interestForm: true,
-    seoTitle: "For churches — Harvous plans for group study and curriculum",
+    seoTitle: "For churches — teaching plans, series, and curriculum in Harvous",
     seoDescription:
-      "Harvous wants to serve how the church learns — Shared Spaces for groups are live (host with Harvous Plus), and church organization accounts for curriculum are on the roadmap. Tell us your church is interested.",
+      "Harvous serves how the church learns. Plan what each ministry teaches, keep a series together across its weeks, give a volunteer a room to lead, and let connected people receive it. Running with churches now — tell us about yours.",
     heroTitle: "Education for the church.",
     heroLead:
-      "Long-term, Harvous wants to serve how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
+      "Harvous serves how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
     sections: [
       {
-        heading: "Available now: Shared Spaces for groups",
+        heading: "A room for the group",
         paragraphs: [
           "The first group layer is [Shared Spaces](/add-ons/shared-spaces/) — a room your church or small group can study in together, with threads, scripture, and notes that live beyond the hour you meet. Joining a space is free for members; hosting is included with [Harvous Plus](/pricing/).",
           "If your church needs a shared study space for a class or small group, start there.",
         ],
       },
       {
-        heading: "Further out: church organization accounts",
+        heading: "Plan what each ministry teaches",
         paragraphs: [
-          "Beyond personal and group spaces, we're planning church organization accounts for education and curriculum. Staff and volunteers publish threads and notes at the church level; people who connect their Harvous account to the church can receive that curriculum — without needing a personal invite link for every study.",
-          "Think of the job Planning Center Groups Resources does well today — shared study materials pushed to one group or across group types from the church. Individual Shared Spaces stay the “I share my space with my group” story. Church org is “the church shares curriculum to everyone who’s connected.”",
+          "Your church keeps a teaching plan — the date, the passage, the title, the series it belongs to. Each ministry can keep its own alongside it, so the youth group's Wednesdays sit next to the main service's Sundays instead of competing for the same row.",
+          "A series is a real thing rather than a label you retype each week. Name it once and every week carries it; rename it in one place and week eight and week one agree again. When you know the shape of a run, plan the whole quarter in one pass instead of thirteen trips through the same form.",
+        ],
+      },
+      {
+        heading: "Roles that match how a church actually works",
+        paragraphs: [
+          "A pastor decides what the church teaches and what its notes start from. A teacher reads the plan they teach from and publishes to the room they lead. Those are different jobs, and Harvous treats them that way.",
+          "The volunteer who actually runs the youth channel can lead it — one room, granted deliberately and taken back the same way. That leadership is theirs alone; it reaches the room they were given and nothing else in the church.",
         ],
         ctaHref: "#interest",
-        ctaLabel: "Our church is interested",
+        ctaLabel: "Tell us about your church",
+      },
+      {
+        heading: "What a church sees",
+        paragraphs: [
+          "How many people are connected, and how many follow each channel. That is the whole of it. A ministry that is reaching people looks different from one that is quiet, which is the question worth answering.",
+          "Harvous never shows a church who wrote what, or whether anyone wrote at all. Not a summary, not a name, not a count of who took notes on Sunday. Review belongs to the person doing it — a church that could see it would be a different kind of tool than this one.",
+        ],
       },
       {
         heading: "What Harvous is not",
         paragraphs: [
           "Harvous is a notes and study tool — not a full church management system. It complements tools churches already use for people, groups, services, and resource distribution. It is never a substitute for pastors, friends, or the gathered body.",
-          "Down the road, we plan integrations with church tools like Planning Center (and similar systems) so rosters and groups can sync into Harvous — keep your ChMS and Groups Resources; use Harvous where Bible study lives. Org-level curriculum in Harvous is the longer road.",
+          "Down the road, we plan integrations with church tools like Planning Center (and similar systems) so rosters and groups can sync into Harvous — keep your ChMS and Groups Resources; use Harvous where Bible study lives.",
         ],
       },
     ],
@@ -630,13 +657,13 @@ const audiences: ForAudience[] = [
       },
       {
         icon: "fa6-solid:book-bible",
-        heading: "Curriculum from the church",
-        body: "Future org accounts let staff publish study content to people connected to the church.",
+        heading: "A plan per ministry",
+        body: "Youth's Wednesdays sit beside the church's Sundays — each ministry keeps its own, and a series holds its weeks together.",
       },
       {
         icon: "fa6-solid:link",
         heading: "Connect, don’t clutter",
-        body: "Congregants link to their church to receive curriculum — without joining a staff org roster.",
+        body: "Congregants link to their church to receive curriculum — no staff roster to join, and one next gathering rather than a calendar.",
       },
       {
         icon: "fa6-solid:hands-praying",
@@ -645,9 +672,9 @@ const audiences: ForAudience[] = [
       },
     ],
     featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
-    featuresHeading: "What church study builds on today",
+    featuresHeading: "What church study builds on",
     featuresLead:
-      "Personal Harvous already supports prep and teaching. Shared Spaces and church org features build on the same notes, threads, and scripture tools.",
+      "Church features ride the same notes, threads, and scripture tools personal Harvous already uses — so what a congregant keeps from Sunday is an ordinary note in their own Harvous, theirs to keep.",
     compareSlugs: [
       "planning-center-groups",
       "band",
@@ -678,7 +705,7 @@ const audiences: ForAudience[] = [
         heading: "A shared space for the whole group",
         paragraphs: [
           "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, notes, and scripture that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
-          "If your church wants future organization accounts for curriculum (beyond a personal shared space) — [share your interest here](/for/churches/#interest).",
+          "If your whole church teaches on Harvous — a plan per ministry, a series that holds its weeks, a room a volunteer can lead — [see how it works for churches](/for/churches/).",
         ],
       },
       {

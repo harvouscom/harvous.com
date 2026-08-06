@@ -313,7 +313,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
     bestAt: "Group study trails on the same pills and threads as personal prep",
     primaryUse: "Private prep notes and Shared Spaces for classes and small groups",
     idealFor: "Leaders and classes that need a lasting trail after the meeting",
-    tradeoff: "Not a ChMS or church-wide curriculum org account (roadmap).",
+    tradeoff: "A study tool, not a ChMS — attendance and giving stay where they are.",
     introHalf: "keeps Shared Spaces for the group trail — host with Plus, join free.",
     pickIntro: "Personal prep plus Shared Spaces for the group — host with Plus; join free.",
     ctaMode: "alongside",
@@ -331,7 +331,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Church org / ChMS",
-        harvous: "No — Spaces now; org curriculum later",
+        harvous: "Church curriculum yes; ChMS no",
         competitorHint: "Some tools own attendance or plans",
       },
     ],
@@ -345,7 +345,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
     bestAt: "Scripture-linked study trails beside the chat tools groups already use",
     primaryUse: "Shared Spaces for notes and threads after the meeting",
     idealFor: "Leaders whose group lives in a messenger and loses the study trail",
-    tradeoff: "Not group chat, rosters, or a ChMS. Org curriculum is on the roadmap.",
+    tradeoff: "A study tool, not group chat or a rostering system.",
     introHalf: "keeps Shared Spaces for the study trail.",
     pickIntro: "Shared Spaces for the study trail beside chat. Host with Plus; join free.",
     ctaMode: "alongside",
@@ -358,7 +358,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Rosters / resources / ChMS",
-        harvous: "No — keep Planning Center (Resources later in Harvous)",
+        harvous: "Church curriculum yes; rosters keep Planning Center",
         competitorHint: "Church admin and shared packs",
       },
       {

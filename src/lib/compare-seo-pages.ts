@@ -475,12 +475,12 @@ const SEO_PAGES: CompareSeoPage[] = [
     kind: "category",
     slug: "best-sermon-prep-tools",
     guideLabel: "Best sermon prep tools",
-    guideDescription: "Outline suites, resource libraries, and notes-first prep — not listener sermon notes",
+    guideDescription: "Outline suites, sermon libraries, and notes-first prep — not listener sermon notes",
     seoTitle: "Best sermon prep tools — Harvous",
     seoDescription:
       "Compare the best sermon prep tools for pastors — Sermonary, Sermons.app, Sermons.com, Pulpit AI, Logos, and Harvous. Notes-first prep that compounds, not a manuscript suite or listener capture app.",
     h1: "Best sermon prep tools",
-    lead: "Tools for preparing and writing sermons — dedicated outline apps, resource libraries, AI coaches, and research suites. Harvous is notes-first prep you’ll find again next year — not podium mode, not listener sermon notes.",
+    lead: "Tools for preparing and writing sermons — dedicated outline apps, sermon libraries, AI coaches, and research suites. Harvous is notes-first prep you’ll find again next year — not podium mode, not listener sermon notes.",
     pickSlugs: [
       "sermonary",
       "sermons-app",
@@ -507,7 +507,7 @@ const SEO_PAGES: CompareSeoPage[] = [
         body: "You want help sharpening a draft (Sermons.app) or multiplying a finished sermon into clips and guides (Pulpit AI) — different jobs than long-term personal prep notes.",
       },
       {
-        heading: "Choose a resource library if…",
+        heading: "Choose a sermon library if…",
         body: "You mainly need illustrations, sample sermons, and lectionary starters — Sermons.com is a library, not a notes home.",
       },
     ],
@@ -562,7 +562,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Looking for a Sermons.com alternative? Compare Harvous, Sermonary, Logos, Sermons.app, and Notion — places for your own prep notes and outlines, not only borrowed illustrations.",
     h1: "Best Sermons.com alternative",
-    lead: "Sermons.com is a resource library. These alternatives help you write and keep your own prep — or coach a draft — instead of only browsing illustrations.",
+    lead: "Sermons.com is a sermon library. These alternatives help you write and keep your own prep — or coach a draft — instead of only browsing illustrations.",
     pickSlugs: ["sermonary", "logos", "sermons-app", "pulpit-ai", "notion"],
     whenToChoose: [
       chooseHarvous("Sermon Prep"),
@@ -628,9 +628,9 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Class and group study notes — not Planning Center",
     seoTitle: "Best church Bible study apps — Harvous",
     seoDescription:
-      "Compare church Bible study apps for classes and groups — Harvous Shared Spaces, Planning Center Groups, GroupMe, Church Notes, and YouVersion. Notes and a group room now; church org curriculum on the roadmap.",
+      "Compare church Bible study apps for classes and groups — Harvous Shared Spaces, Planning Center Groups, GroupMe, Church Notes, and YouVersion. Scripture-linked notes, a room for the group, and church-wide teaching plans.",
     h1: "Best church Bible study apps",
-    lead: "Tools for class and group study — not a ChMS. Shared Spaces are live; org-wide curriculum is on the roadmap.",
+    lead: "Tools for class and group study — not a ChMS. Shared Spaces host the group; church teaching plans reach everyone connected.",
     pickSlugs: [
       "planning-center-groups",
       "groupme",
@@ -639,7 +639,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "youversion",
     ],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We put it first for scripture-linked notes and Shared Spaces — not attendance or Groups Resources. Org curriculum is still ahead; Spaces work today (host with Plus, join free).",
+      "We built Harvous — so of course we care how this list reads. We put it first for scripture-linked notes, Shared Spaces, and church teaching plans — not attendance or Groups Resources. Hosting a space is Plus; joining is free.",
     whenToChoose: [
       chooseHarvous("Group Study"),
       {

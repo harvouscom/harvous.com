@@ -196,6 +196,13 @@ const useCases: UseCase[] = [
         ],
       },
       {
+        heading: "When the church plans the series too",
+        paragraphs: [
+          "If your church runs on Harvous, a series is something the plan knows about rather than a title you retype each week. Name it once and every week carries it; rename it in week five and weeks one through four agree with you.",
+          "Plan a whole run in one pass when you already know its shape, and the people connected to your church see the next one coming. [See how it works for churches](/for/churches/).",
+        ],
+      },
+      {
         heading: "Works alongside the tools you already use",
         paragraphs: [
           "Keep Logos (or another suite) for commentaries and languages. Keep a dedicated prep app if you want templates and podium view. Keep Docs or Word for the final manuscript polish. Harvous sits in the middle: the notes-first home for prep that has to last across years of preaching.",
@@ -424,7 +431,7 @@ const useCases: UseCase[] = [
         heading: "A shared space for the whole group",
         paragraphs: [
           "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
-          "If your church wants future organization accounts for curriculum (beyond a personal shared space) — [share your interest here](/for/churches/#interest).",
+          "If your whole church teaches on Harvous — a plan per ministry, a series that holds its weeks, a room a volunteer can lead — [see how it works for churches](/for/churches/).",
         ],
       },
       {

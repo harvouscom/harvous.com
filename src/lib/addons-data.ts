@@ -46,7 +46,7 @@ const ADDON_PAGES: AddonPage[] = [
         color: "coral",
         body: [
           "Week four of your James study gets its own thread. Everyone's notes from that session live together — questions, answers, and scripture references in one place.",
-          "Look back at what the group found without trying to remember who said what.",
+          "Look back at what the group found, weeks after the night everyone was in the room.",
         ],
         image: "/app-organize.png",
         imageAlt: "Notes organized into folders and threads in Harvous",

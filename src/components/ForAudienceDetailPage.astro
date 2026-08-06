@@ -124,9 +124,9 @@ const jsonLd = {
                 {audience.title}
               </span>
               {
-                audience.comingSoon && (
+                (audience.comingSoon || audience.statusLine) && (
                   <span class="use-case-detail__soon-badge">
-                    {audience.comingSoonLine ?? "Coming soon"}
+                    {audience.statusLine ?? audience.comingSoonLine ?? "Coming soon"}
                   </span>
                 )
               }

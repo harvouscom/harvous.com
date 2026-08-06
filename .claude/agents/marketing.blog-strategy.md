@@ -38,7 +38,7 @@ Product marketing conversation (harvous.com blog direction). Applies whenever ma
 - Longer thesis: **“Education for the church.”** A tool for education. Never a substitute for the body.
 - Voice pillars: *Humans help humans. Tools only help.* / *The search is yours* / *Keep your Bible app — add a notes hub.*
 - Site audiences already aligned: `/for/teachers/`, `/for/group-leaders/`, `/for/churches/`, `/for/seminary-students/` (`src/lib/for-audiences-data.ts`).
-- **Product stage honesty:** Personal prep + teaching workflows work today. **Shared Spaces are live** (host with Harvous Plus; joining is free) — soft CTAs to `/add-ons/shared-spaces/` are fine. Church org / curriculum continuity remains roadmap (interest form only). Write **principles first**, product second; never pitch unshipped features as available.
+- **Product stage honesty:** Personal prep + teaching workflows work today. **Shared Spaces are live** (host with Harvous Plus; joining is free) — soft CTAs to `/add-ons/shared-spaces/` are fine. Church org / curriculum is live as of app v2.21.0, with onboarding by request (the interest form is now a “tell us about your church” path, not a waitlist). Write **principles first**, product second; never pitch unshipped features as available.
 
 ## Content pillars (only these four)
 
@@ -85,7 +85,7 @@ Beliefs under the product — theology of tools, why not AI-that-studies-for-you
 
 - Generic “5 tips for quiet time” SEO bait
 - Competing with sermon archives or commentary sites
-- Overclaiming church org / curriculum features still coming soon (Shared Spaces are live — don’t bury that, and don’t invent org features)
+- Inventing church org features that do not exist. What exists: teaching plans per ministry, sermon series, staff/volunteer roles, connect, aggregate engagement (counts only). What does not: self-serve signup, ChMS, a congregant calendar
 - AI devotionals / “let the app do the searching”
 - Card-heavy “resource hub” tone like generic ministry SaaS blogs
 - Posts that could live on Crosswalk with the Harvous logo swapped out

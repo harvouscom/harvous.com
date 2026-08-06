@@ -81,10 +81,22 @@ function decodeHtml(text: string): string {
     .replace(/&#39;/g, "'");
 }
 
+/**
+ * Drop the "We've added a new feature: …" preamble the app repo's exporter
+ * wraps every entry body in.
+ *
+ * The prefixes have to match `scripts/export-changelog-csv.js` in the app repo
+ * exactly, and they drifted: the exporter writes "We've made an improvement: "
+ * while this only stripped "We've improved: ". An unstripped body no longer
+ * equals its title, so `[slug].astro` rendered it — every Improvement entry
+ * published its own boilerplate as visible copy. Both spellings are kept so
+ * older rows keep working.
+ */
 function stripBoilerplate(text: string): string {
   return text
     .replace(/^We've added a new feature:\s*/i, "")
     .replace(/^We've fixed an issue:\s*/i, "")
+    .replace(/^We've made an improvement:\s*/i, "")
     .replace(/^We've improved:\s*/i, "")
     .trim();
 }

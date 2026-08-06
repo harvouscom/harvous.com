@@ -30,7 +30,7 @@ Quick recall:
 - **Sources:** 0–3 durable cites; inline + GFM footnotes
 - **North star:** Working library for church educators — how learning sticks
 - **Pillars:** teaching · retention · equipping · how-we-think (+ thin `using-harvous`)
-- **Shared Spaces:** live (Plus hosting, join free). Church org / curriculum: roadmap
+- **Shared Spaces:** live (Plus hosting, join free). **Church org / curriculum: live** as of app v2.21.0; onboarding by request
 - TipTap `editor-agent` / app `content-agent` UI ownership is unrelated — blog editorial is **marketing-agent**
 
 ## Invariants
@@ -39,7 +39,7 @@ Quick recall:
 - Soft CTAs; stage-honest product claims
 - Bright Enough `##` ≤ 33 characters
 - Plain voice over clever packaging
-- Never claim church org curriculum as shipped
+- Church org curriculum **is** shipped (app v2.21.0) — describe it in present tense. Do not claim self-serve church signup; onboarding is admin-provisioned
 
 ## Current state
 
