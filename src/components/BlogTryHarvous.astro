@@ -80,7 +80,7 @@ const cards: RelatedFeatureCard[] = ids
                     href={item.href}
                   >
                     <span class="blog-bridge__icon">
-                      <Icon name={item.icon ?? item.icons?.[0] ?? "fa6-solid:note-sticky"} />
+                      <Icon name={item.icon ?? item.icons?.[0] ?? "fa7-solid:note-sticky"} />
                     </span>
                     <span
                       class:list={[
@@ -107,7 +107,7 @@ const cards: RelatedFeatureCard[] = ids
               <li>
                 <Tag class:list={["blog-bridge__card", href && "blog-bridge__card--link"]} href={href}>
                   <span class="blog-bridge__icon">
-                    <Icon name={FEATURE_ICONS[f.id] ?? "fa6-solid:note-sticky"} />
+                    <Icon name={FEATURE_ICONS[f.id] ?? "fa7-solid:note-sticky"} />
                   </span>
                   <span class="blog-bridge__card-title">{f.data.tagline}</span>
                   <p class="blog-bridge__desc">{f.data.title}</p>

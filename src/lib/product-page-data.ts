@@ -101,7 +101,7 @@ export function featureToProductPage(slug: string, data: FeatureDetailData): Pro
     tagline: data.title,
     seoTitle: data.seoTitle ?? `${data.tagline} — Harvous`,
     seoDescription: data.seoDescription ?? data.title,
-    icon: data.icon ?? "fa6-solid:note-sticky",
+    icon: data.icon ?? "fa7-solid:note-sticky",
     ink: data.ink ?? "var(--study-dock-accent-skyBlue)",
     image: data.image,
     comingSoon: data.comingSoon,

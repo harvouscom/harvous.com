@@ -17,7 +17,7 @@ export type RelatedFeatureCard =
 export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
   {
     id: "shared-spaces",
-    icon: "fa6-solid:user-group",
+    icon: "fa7-solid:user-group",
     title: "Shared spaces",
     desc: "Host a room for your group with Harvous Plus. Joining is always free.",
     href: "/add-ons/shared-spaces/",
@@ -25,19 +25,19 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
   },
   {
     id: "review-challenges",
-    icons: ["fa6-solid:clock-rotate-left", "fa6-solid:trophy"],
+    icons: ["fa7-solid:clock-rotate-left", "fa7-solid:trophy"],
     title: "Review & Challenges",
     desc: "Spaced review and study seasons — included with Harvous Plus.",
   },
   {
     id: "connector",
-    icon: "fa6-solid:puzzle-piece",
+    icon: "fa7-solid:puzzle-piece",
     title: "Connector",
     desc: "An optional paid add-on will let you reference your study in Claude and ChatGPT.",
   },
   {
     id: "apple-apps",
-    icon: "fa6-solid:mobile-screen",
+    icon: "fa7-solid:mobile-screen",
     title: "Mac, iPad & iPhone",
     desc: "Native apps for Apple platforms. Harvous is on the web today.",
   },

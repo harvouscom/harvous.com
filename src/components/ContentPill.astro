@@ -20,11 +20,11 @@ interface Props {
 const { type, class: className = "" } = Astro.props;
 
 const PILLS: Record<PillType, { word: string; icon: string }> = {
-  note: { word: "note", icon: "fa6-solid:note-sticky" },
-  scripture: { word: "scripture", icon: "fa6-solid:book" },
-  highlight: { word: "highlight", icon: "fa6-solid:highlighter" },
-  folder: { word: "folder", icon: "fa6-solid:folder" },
-  thread: { word: "thread", icon: "fa6-solid:arrow-right-arrow-left" },
+  note: { word: "note", icon: "fa7-solid:note-sticky" },
+  scripture: { word: "scripture", icon: "fa7-solid:book" },
+  highlight: { word: "highlight", icon: "fa7-solid:highlighter" },
+  folder: { word: "folder", icon: "fa7-solid:folder" },
+  thread: { word: "thread", icon: "fa7-solid:arrow-right-arrow-left" },
 };
 
 const { word, icon } = PILLS[type];

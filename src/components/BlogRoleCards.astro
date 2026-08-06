@@ -25,11 +25,11 @@ type Tone = "sky" | "mint" | "peach" | "lilac" | "cream";
 function iconFor(label: string, explicit?: string): string {
   if (explicit) return explicit;
   const l = label.toLowerCase();
-  if (l.includes("teacher")) return "fa6-solid:chalkboard-user";
-  if (l.includes("group")) return "fa6-solid:user-group";
-  if (l.includes("church") || l.includes("staff")) return "fa6-solid:church";
-  if (l.includes("listener") || l.includes("personal")) return "fa6-solid:headphones";
-  return "fa6-solid:circle-user";
+  if (l.includes("teacher")) return "fa7-solid:chalkboard-user";
+  if (l.includes("group")) return "fa7-solid:user-group";
+  if (l.includes("church") || l.includes("staff")) return "fa7-solid:church";
+  if (l.includes("listener") || l.includes("personal")) return "fa7-solid:headphones";
+  return "fa7-solid:circle-user";
 }
 
 /** Pastels that read as “audience” without rainbow noise. */

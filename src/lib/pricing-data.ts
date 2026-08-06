@@ -48,7 +48,7 @@ export const APP_UPGRADE_URL = "https://app.harvous.com/upgrade?from=pricing";
 
 export const FREE_PLAN: PricingPlan = {
   id: "free",
-  icon: "fa6-solid:book-open-reader",
+  icon: "fa7-solid:book-open-reader",
   name: "Free",
   priceDisplay: "$0",
   tagline: "For personal Bible study",
@@ -70,7 +70,7 @@ export const FREE_PLAN: PricingPlan = {
 
 export const PLUS_PLAN: PricingPlan = {
   id: "plus",
-  icon: "fa6-solid:plus",
+  icon: "fa7-solid:plus",
   name: "Harvous Plus",
   priceDisplay: "$5/mo",
   priceDisplaySecondary: "$30/yr*",
@@ -98,21 +98,21 @@ export const PLUS_PLAN: PricingPlan = {
 export const PRICING_ROADMAP: PricingRoadmapItem[] = [
   {
     id: "review",
-    icon: "fa6-solid:clock-rotate-left",
+    icon: "fa7-solid:clock-rotate-left",
     name: "Review",
     tagline: "Spaced practice from your notes, highlights, and passages. Included with Plus when it ships.",
     soonLabel: "Coming later",
   },
   {
     id: "challenges",
-    icon: "fa6-solid:trophy",
+    icon: "fa7-solid:trophy",
     name: "Challenges",
     tagline: "Themed study seasons with guides, leaderboards, and more. Included with Plus when it ships.",
     soonLabel: "Coming later",
   },
   {
     id: "connector",
-    icon: "fa6-solid:puzzle-piece",
+    icon: "fa7-solid:puzzle-piece",
     name: "Connector",
     tagline: "Reference your Harvous study wherever you already work.",
     soonLabel: "Coming later",

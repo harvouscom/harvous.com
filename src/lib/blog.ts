@@ -47,13 +47,13 @@ export const BLOG_CATEGORY_COLORS: Record<BlogCategory, { bg: string; ink: strin
 };
 
 export const BLOG_CATEGORY_ICONS: Record<BlogCategory, string> = {
-  "study-habits": "fa6-solid:book-open",
-  "how-we-think": "fa6-solid:lightbulb",
-  "scripture-study": "fa6-solid:book-bible",
-  "using-harvous": "fa6-solid:compass",
-  teaching: "fa6-solid:chalkboard-user",
-  retention: "fa6-solid:arrows-rotate",
-  equipping: "fa6-solid:seedling",
+  "study-habits": "fa7-solid:lines-leaning",
+  "how-we-think": "fa7-solid:lightbulb",
+  "scripture-study": "fa7-solid:book-bible",
+  "using-harvous": "fa7-solid:compass",
+  teaching: "fa7-solid:chalkboard-user",
+  retention: "fa7-solid:arrows-rotate",
+  equipping: "fa7-solid:seedling",
 };
 
 export function blogCategoryLabel(category: string): string {
@@ -77,7 +77,7 @@ export function blogCategoryColor(category: string): { bg: string; ink: string }
 }
 
 export function blogCategoryIcon(category: string): string {
-  return BLOG_CATEGORY_ICONS[category as BlogCategory] ?? "fa6-solid:bookmark";
+  return BLOG_CATEGORY_ICONS[category as BlogCategory] ?? "fa7-solid:bookmark";
 }
 
 export const BLOG_CATEGORY_PAGE_SIZE = 5;
