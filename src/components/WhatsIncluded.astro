@@ -47,7 +47,7 @@ const items = [
   {
     icons: ["fa7-solid:magnifying-glass", "fa7-solid:at"],
     title: "Search & @ mentions",
-    desc: "Search notes, highlights, and scripture. Type @ in a note to link a note, folder, or thread as a pill.",
+    desc: "Search notes, highlights, and scripture. Type @ in a note to link a note, folder, thread, or resource as a pill.",
     href: "/features/sidebar-modes/",
   },
   // Engagement
@@ -57,16 +57,18 @@ const items = [
     desc: "Color-code phrases, leave annotations, and find them in the highlights view.",
     featureSlug: "highlights",
   },
+  // Two things Harvous hands you rather than things you make — combined so the
+  // grid can name the Resource Library without growing past twelve.
   {
-    icon: "fa7-solid:calendar-days",
-    title: "Daily Passage",
-    desc: "A curated passage waits each day — one tap to read it, one tap to make it a note.",
+    icons: ["fa7-solid:calendar-days", "fa7-solid:lines-leaning"],
+    title: "Daily passage & dictionary",
+    desc: "A curated passage waits each day. Select a name or term in a note for its Easton's entry and cross-references.",
+    featureSlug: "dictionary",
   },
   {
-    icon: "fa7-solid:lines-leaning",
-    title: "Bible dictionary",
-    desc: "Select a name or term in your note for its Easton's entry and cross-references.",
-    featureSlug: "dictionary",
+    icons: ["fa7-solid:newspaper", "fa7-solid:link"],
+    title: "Resource Library",
+    desc: "Keep the links and files your study leans on in one place — then pull one into a note with @.",
   },
   // Platform / utility
   {
