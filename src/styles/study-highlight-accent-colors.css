@@ -15,6 +15,13 @@
   --study-dock-accent-coralRose: #eb598e;
   /* Marketing secondary (sermon prep / pastors) — not a native highlight swatch yet. */
   --study-dock-accent-teal: #1a9e96;
+  /*
+    Marketing secondary (resource library) — also not a native swatch. The set
+    had no orange: warmAmber is #f2cf13, a yellow. Tuned to 3.30:1 on white so
+    it sits with coralRose (3.31) and teal (3.29) and carries white text,
+    rather than needing a LIGHT_FEATURE_INKS exception like amber and mint.
+  */
+  --study-dock-accent-orange: #dd6f10;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,6 +33,7 @@
     --study-dock-accent-mintGreen: #35f224;
     --study-dock-accent-coralRose: #ff619a;
     --study-dock-accent-teal: #2fd4c8;
+    --study-dock-accent-orange: #ff8c3d;
   }
 }
 
@@ -37,4 +45,5 @@
   --study-dock-accent-mintGreen: #35f224;
   --study-dock-accent-coralRose: #ff619a;
   --study-dock-accent-teal: #2fd4c8;
+  --study-dock-accent-orange: #ff8c3d;
 }
