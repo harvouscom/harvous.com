@@ -770,7 +770,7 @@ const audiences: ForAudience[] = [
       {
         heading: "What you saved shouldn't disappear",
         paragraphs: [
-          "A short note after a plan day. A longer sit with one passage. A line from Sunday. Harvous holds those across days — and Recall can bring a fading note back so last week's insight isn't gone just because the plan moved on.",
+          "A short note after a plan day. A longer sit with one passage. A line from Sunday. Harvous holds those across days — and Recall can bring a fading note back so last week's thought isn't gone just because the plan moved on.",
         ],
       },
     ],

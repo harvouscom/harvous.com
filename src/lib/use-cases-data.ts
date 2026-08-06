@@ -314,7 +314,7 @@ const useCases: UseCase[] = [
       {
         heading: "Themes don't stay in one book",
         paragraphs: [
-          "Topical study means notes from everywhere — different books, different seasons, different moments of insight. Harvous organizes by what the notes are about, not where you happened to be reading that day.",
+          "Topical study means notes from everywhere — different books, different seasons, different moments of noticing. Harvous organizes by what the notes are about, not where you happened to be reading that day.",
         ],
       },
       {
@@ -430,7 +430,7 @@ const useCases: UseCase[] = [
       {
         heading: "A shared space for the whole group",
         paragraphs: [
-          "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
+          "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, discoveries, and scripture references that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
           "If your whole church teaches on Harvous — a plan per ministry, a series that holds its weeks, a room a volunteer can lead — [see how it works for churches](/for/churches/).",
         ],
       },

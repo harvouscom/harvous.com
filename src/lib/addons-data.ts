@@ -16,7 +16,7 @@ const ADDON_PAGES: AddonPage[] = [
       "Shared spaces where your group contributes notes together. Joining is free; hosting is Harvous Plus.",
     seoTitle: "Shared Spaces — Harvous Plus",
     seoDescription:
-      "Shared Spaces let your whole group study in the same threads — questions, insights, and scripture references that live beyond the hour you meet. Hosting is included with Harvous Plus; joining is always free.",
+      "Shared Spaces let your whole group study in the same threads — questions, discoveries, and scripture references that live beyond the hour you meet. Hosting is included with Harvous Plus; joining is always free.",
     icon: "fa6-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
