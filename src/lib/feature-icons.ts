@@ -10,4 +10,5 @@ export const FEATURE_ICONS: Record<string, string> = {
   threads: "fa7-solid:arrow-right-arrow-left",
   recall: "fa7-solid:clock-rotate-left",
   "note-templates": "fa7-solid:list-check",
+  "resource-library": "fa7-solid:newspaper",
 };
