@@ -58,12 +58,15 @@ const items = [
     featureSlug: "highlights",
   },
   // Two things Harvous hands you rather than things you make — combined so the
-  // grid can name the Resource Library without growing past twelve.
+  // grid can name the Resource Library without growing past twelve. Both halves
+  // still have their own page, so this tile carries two links instead of
+  // wrapping in one and quietly dropping the other.
   {
     icons: ["fa7-solid:calendar-day", "fa7-solid:lines-leaning"],
     title: "Daily passage & dictionary",
     desc: "A curated passage waits each day. Select a name or term in a note for its Easton's entry and cross-references.",
-    featureSlug: "dictionary",
+    featureSlugs: ["daily-passage", "dictionary"],
+    linkLabels: ["Daily passage", "Dictionary"],
   },
   {
     icon: "fa7-solid:newspaper",
@@ -115,9 +118,23 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
 
     <div class="included__grid" data-reveal="stagger" style="--reveal-delay: 100ms;">
       {items.map((item) => {
+        /*
+          A tile with two destinations can't be one big <a> — nested anchors are
+          invalid — so it renders as a plain div and puts its links in the
+          footer. Single-destination tiles keep wrapping, which is the nicer
+          target.
+        */
+        const multi =
+          "featureSlugs" in item
+            ? item.featureSlugs
+                .map((slug, i) => ({ href: featureHref(slug), label: item.linkLabels[i] }))
+                .filter((l): l is { href: string; label: string } => Boolean(l.href))
+            : [];
         const href =
-          ("href" in item && item.href) ||
-          featureHref("featureSlug" in item ? item.featureSlug : undefined);
+          multi.length > 0
+            ? undefined
+            : ("href" in item && item.href) ||
+              featureHref("featureSlug" in item ? item.featureSlug : undefined);
         const icons = "icons" in item ? item.icons : [item.icon];
         const Tag = href ? "a" : "div";
         return (
@@ -130,6 +147,15 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
             <div class="included__title">{item.title}</div>
             <p class="included__desc">{item.desc}</p>
             {href && <span class="included__more">Learn more →</span>}
+            {multi.length > 0 && (
+              <span class="included__more-row">
+                {multi.map((link) => (
+                  <a class="included__more included__more--link" href={link.href}>
+                    {link.label} →
+                  </a>
+                ))}
+              </span>
+            )}
           </Tag>
         );
       })}
@@ -232,6 +258,19 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
     font-size: 0.75rem;
     font-weight: 500;
     color: var(--color-accent);
+  }
+  /* Two destinations on one tile — the card itself isn't a link, so these are. */
+  .included__more-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.9rem;
+  }
+  .included__more--link {
+    text-decoration: none;
+  }
+  .included__more--link:hover,
+  .included__more--link:focus-visible {
+    text-decoration: underline;
   }
 
   /* Coming soon — hairline divider + centered chip, content below */
