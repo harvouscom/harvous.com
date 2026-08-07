@@ -306,33 +306,37 @@ const POSITIONS: Record<string, HarvousPosition> = {
     featureIds: ["scripture-pills", "threads", "recall"],
   },
 
-  /** SEO guides for small groups / church classes (docs, Notion, readers). */
+  /**
+   * CSV type: WordGo, MyBSF, Waha — curated content a group meets around.
+   * Distinct from Small Groups, which is chat and rosters. Also backs the
+   * small-group / church-class SEO guides, which read only chooseIf.
+   */
   "Group Study": {
     chooseIf:
       "You want personal prep plus a Shared Space where the group adds to the same threads — host with Plus; joining is free.",
     bestAt: "Group study trails on the same pills and threads as personal prep",
     primaryUse: "Private prep notes and Shared Spaces for classes and small groups",
     idealFor: "Leaders and classes that need a lasting trail after the meeting",
-    tradeoff: "A study tool, not a ChMS — attendance and giving stay where they are.",
+    tradeoff: "Not a curriculum — we don’t write the study or run the meeting.",
     introHalf: "keeps Shared Spaces for the group trail — host with Plus, join free.",
     pickIntro: "Personal prep plus Shared Spaces for the group — host with Plus; join free.",
     ctaMode: "alongside",
-    hubLane: "In this lane, Harvous is personal notes plus Shared Spaces — not a ChMS.",
+    hubLane: "In this lane, Harvous is Shared Spaces for the trail — the study itself stays where it is.",
     tableRows: [
       {
-        label: "Group shared study",
-        harvous: "Shared Spaces — same threads for the room",
-        competitorHint: "Docs, wikis, plans, or chat — varies",
+        label: "The study itself",
+        harvous: "No — bring the study your group is already doing",
+        competitorHint: "The curriculum, and often the discussion too",
       },
       {
-        label: "Scripture-linked notes",
-        harvous: "Pills, threads, highlights out of the box",
-        competitorHint: "Often paste or DIY linking",
+        label: "What the group keeps",
+        harvous: "Shared Spaces — one trail the whole room adds to",
+        competitorHint: "Inside the study, and scoped to it",
       },
       {
-        label: "Church org / ChMS",
-        harvous: "Church curriculum yes; ChMS no",
-        competitorHint: "Some tools own attendance or plans",
+        label: "After it ends",
+        harvous: "Your notes stay, across every study you do",
+        competitorHint: "Tied to the study that produced them",
       },
     ],
     featureIds: ["scripture-pills", "threads", "sharing", "note-templates"],
