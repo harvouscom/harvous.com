@@ -7,12 +7,7 @@ import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
 import WordCycle from "../components/WordCycle.astro";
 import AboutResearchGap from "../components/AboutResearchGap.astro";
-import { getCollection } from "astro:content";
 import { fathomSignup } from "../lib/fathom-events.ts";
-
-const researchPost = (await getCollection("blog")).find(
-  (p) => p.id === "why-scripture-engagement-stalls",
-);
 
 const site = "https://harvous.com";
 
@@ -132,11 +127,7 @@ const jsonLd = {
     </div>
   </section>
 
-  {
-    researchPost && (
-      <AboutResearchGap post={researchPost} />
-    )
-  }
+  <AboutResearchGap />
 
   <!-- What we believe -->
   <section class="about-believe frame-divider" data-reveal style="--reveal-delay: 100ms;">

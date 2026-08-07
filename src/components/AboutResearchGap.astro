@@ -1,34 +1,49 @@
 ---
 /**
- * AboutResearchGap — dedicated About band: two research punches, then the
- * Bright Enough essay that argues them at length. Conversion stays with the
- * page’s closing CTA.
+ * AboutResearchGap — dedicated About band, built as one argument rather than a
+ * pair of statistics: where most people are, then the thing research says moves
+ * that number, then an invitation to go look at the product. The two figures are
+ * unlike (a population share and a behavioral threshold), so each carries a role
+ * eyebrow naming its job in the sequence — that keeps the logic legible when the
+ * grid stacks below 720px and nothing sits side by side.
+ *
+ * Copy deliberately avoids the source taxonomies (“Bible Disengaged”,
+ * “Scripture Engaged”) and describes the behavior instead; the citations carry
+ * the provenance.
+ *
+ * The closing CTA points at /features rather than signup on purpose: the page
+ * already ends with PageClosingCTA for signup, so a second signup button here
+ * would compete with it. This one picks the argument back up — the fourth day —
+ * so it reads as a next step rather than a pitch.
  */
 import Container from "./layout/Container.astro";
-import BlogCard from "./BlogCard.astro";
-import { blogReadingMinutes } from "../lib/blog";
-import type { CollectionEntry } from "astro:content";
+import CTAButton from "./CTAButton.astro";
+import { fathomCta } from "../lib/fathom-events.ts";
 
-interface Props {
-  post: CollectionEntry<"blog">;
-}
-
-const { post } = Astro.props;
+/**
+ * `href` points at the section of the Bright Enough essay that works through
+ * each finding — not at the study itself — so the citation is prefixed with
+ * “via” and the link carries an aria-label naming where it actually goes. A
+ * bare org name linking to a Harvous page would read as the source.
+ */
+const ESSAY = "/blog/why-scripture-engagement-stalls";
 
 const stats = [
   {
+    role: "The situation",
     figure: "57%",
     unit: "of U.S. adults",
-    label: "Bible Disengaged",
-    body: "Only about 18% are Scripture Engaged. Friendly toward Scripture isn’t the same as shaped by it.",
+    body: "They open a Bible rarely, and say it shapes little of how they live. About 18% sit at the other end — reading often, and shaped by it.",
     source: "American Bible Society, 2024",
+    href: `${ESSAY}#bible-disengaged`,
   },
   {
+    role: "What moves it",
     figure: "4+",
     unit: "days a week",
-    label: "The four-day wall",
-    body: "One to three days looks about like none. Four or more is where the research sees real change.",
+    body: "One to three days looks about like none. Four or more is where researchers start to see real change.",
     source: "Center for Bible Engagement",
+    href: `${ESSAY}#the-four-day-wall`,
   },
 ];
 ---
@@ -38,11 +53,11 @@ const stats = [
     <div class="about-gap__head" data-reveal>
       <span class="eyebrow-pill">The gap</span>
       <h2 class="section-title about-gap__title" id="about-gap-title">
-        Access went up. Return didn’t.
+        Most people have a Bible. Few have a rhythm.
       </h2>
       <p class="lead about-gap__lead">
-        More people carry a Bible than any generation before. Research keeps
-        finding that access isn’t the variable — coming back is.
+        Owning one was never the hard part. What research keeps finding is that
+        coming back is.
       </p>
     </div>
 
@@ -50,30 +65,44 @@ const stats = [
       {
         stats.map((s) => (
           <li class="about-gap__stat">
+            <p class="about-gap__role">{s.role}</p>
             <p class="about-gap__figure">
               <span class="about-gap__num">{s.figure}</span>
               <span class="about-gap__unit">{s.unit}</span>
             </p>
-            <p class="about-gap__label">{s.label}</p>
             <p class="about-gap__body">{s.body}</p>
-            <p class="about-gap__source">{s.source}</p>
+            <p class="about-gap__source">
+              via{" "}
+              <a
+                class="about-gap__source-link"
+                href={s.href}
+                aria-label={`${s.source} — read how this finding is used, in Why scripture engagement stalls`}
+              >
+                {s.source}
+              </a>
+            </p>
           </li>
         ))
       }
     </ul>
 
-    <div class="about-gap__essay" data-reveal style="--reveal-delay: 80ms;">
-      <p class="about-gap__essay-kicker">From Bright Enough, the Harvous blog</p>
-      <BlogCard
-        variant="story"
-        title={post.data.title}
-        description={post.data.description}
-        publishDate={post.data.publishDate}
-        category={post.data.category}
-        slug={post.id}
-        readingTime={blogReadingMinutes(post.body)}
-        draft={post.data.draft}
-      />
+    <div class="about-gap__cta" data-reveal style="--reveal-delay: 80ms;">
+      <div class="about-gap__cta-copy">
+        <p class="about-gap__cta-title">Built for the coming back.</p>
+        <p class="about-gap__cta-body">
+          A fourth day is easier when last week’s study is still where you left
+          it — and still makes sense when you get there.
+        </p>
+      </div>
+      <CTAButton
+        href="/features/"
+        variant="primary"
+        size="lg"
+        class="about-gap__cta-btn"
+        fathomTrack={fathomCta.featuresAnchor}
+      >
+        Explore Harvous
+      </CTAButton>
     </div>
   </Container>
 </section>
@@ -139,44 +168,97 @@ const stats = [
     color: var(--color-ink-faint);
   }
 
-  .about-gap__label {
-    margin: 0.85rem 0 0;
-    font-size: 1rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    color: var(--color-ink);
-  }
-
-  .about-gap__body {
-    margin: 0.4rem 0 0;
-    max-width: 24rem;
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    color: var(--color-ink-soft);
-  }
-
-  .about-gap__source {
-    margin: 0.6rem 0 0;
+  /* Names each figure's job in the argument, so "the situation → what moves it"
+     survives the grid stacking on narrow screens. */
+  .about-gap__role {
+    margin: 0 0 0.6rem;
     font-size: 0.6875rem;
-    letter-spacing: 0.02em;
-    color: var(--color-ink-faint);
-  }
-
-  .about-gap__essay {
-    margin-top: clamp(2.25rem, 4.5vw, 3rem);
-  }
-
-  .about-gap__essay-kicker {
-    margin: 0 0 0.85rem;
-    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--color-ink-faint);
   }
 
-  /* The story card carries its own list padding; this band already spaces it. */
-  .about-gap__essay :global(.blog-story) {
-    padding-block: 0;
+  .about-gap__body {
+    margin: 0.85rem 0 0;
+    max-width: 24rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  /* Uneven body copy would otherwise leave the two citations at different
+     heights; stretch the item and drop them to a shared baseline. */
+  .about-gap__stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-gap__source {
+    margin: auto 0 0;
+    padding-top: 0.6rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    color: var(--color-ink-faint);
+  }
+
+  /* Hairline underline at rest so it reads as a link at 11px without shouting;
+     the citation is a footnote, not a call to action. */
+  .about-gap__source-link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 0.25em;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+
+  .about-gap__source-link:hover {
+    color: var(--color-ink);
+    text-decoration-color: currentColor;
+  }
+
+  /* What the two figures add up to, plus the way out. Sits on a full-bleed rule
+     so it reads as the band's conclusion rather than a stray sentence. */
+  .about-gap__cta {
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 720px) {
+    .about-gap__cta {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2.5rem;
+    }
+  }
+
+  .about-gap__cta-copy {
+    max-width: 32rem;
+  }
+
+  .about-gap__cta-title {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  .about-gap__cta-body {
+    margin: 0.35rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  /* Keep the pill on one line when the copy beside it wants the space. */
+  .about-gap__cta-btn {
+    flex-shrink: 0;
   }
 </style>
