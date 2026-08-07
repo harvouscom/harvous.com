@@ -1,11 +1,12 @@
 ---
 /**
- * AboutResearchGap — dedicated About band: two research punches, the
- * accompanying Bright Enough essay, then a handoff to what’s included /
- * features (the dunk).
+ * AboutResearchGap — dedicated About band: two research punches, then the
+ * Bright Enough essay that argues them at length. Conversion stays with the
+ * page’s closing CTA.
  */
 import Container from "./layout/Container.astro";
 import BlogCard from "./BlogCard.astro";
+import { blogReadingMinutes } from "../lib/blog";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
@@ -16,18 +17,18 @@ const { post } = Astro.props;
 
 const stats = [
   {
-    figure: "4+",
-    unit: "days / week",
-    label: "The four-day wall",
-    body: "One to three days barely moves the needle. Four or more is where research starts to see real shifts.",
-    source: "Center for Bible Engagement",
-  },
-  {
     figure: "57%",
     unit: "of U.S. adults",
     label: "Bible Disengaged",
-    body: "Open to Scripture isn’t the same as engaged. Only about 18% are Scripture Engaged.",
+    body: "Only about 18% are Scripture Engaged. Friendly toward Scripture isn’t the same as shaped by it.",
     source: "American Bible Society, 2024",
+  },
+  {
+    figure: "4+",
+    unit: "days a week",
+    label: "The four-day wall",
+    body: "One to three days looks about like none. Four or more is where the research sees real change.",
+    source: "Center for Bible Engagement",
   },
 ];
 ---
@@ -37,12 +38,11 @@ const stats = [
     <div class="about-gap__head" data-reveal>
       <span class="eyebrow-pill">The gap</span>
       <h2 class="section-title about-gap__title" id="about-gap-title">
-        Two things research keeps saying.
+        Access went up. Return didn’t.
       </h2>
       <p class="lead about-gap__lead">
-        Sporadic reading rarely sticks. Most adults stay Bible Disengaged.
-        Harvous exists for the part after the verse — digesting, keeping, and
-        coming back.
+        More people carry a Bible than any generation before. Research keeps
+        finding that access isn’t the variable — coming back is.
       </p>
     </div>
 
@@ -63,32 +63,17 @@ const stats = [
     </ul>
 
     <div class="about-gap__essay" data-reveal style="--reveal-delay: 80ms;">
-      <p class="about-gap__essay-kicker">From Bright Enough</p>
+      <p class="about-gap__essay-kicker">From Bright Enough, the Harvous blog</p>
       <BlogCard
-        variant="featured"
+        variant="story"
         title={post.data.title}
         description={post.data.description}
         publishDate={post.data.publishDate}
         category={post.data.category}
         slug={post.id}
-        readingTime={post.data.readingTime}
+        readingTime={blogReadingMinutes(post.body)}
         draft={post.data.draft}
       />
-    </div>
-
-    <div class="about-gap__dunk" data-reveal style="--reveal-delay: 110ms;">
-      <p class="about-gap__dunk-copy">
-        That’s the setup. The dunk is a notes hub built for study that compounds —
-        scripture pills, threads, recall, and the rest.
-      </p>
-      <div class="about-gap__actions">
-        <a class="about-gap__btn about-gap__btn--primary" href="/#included">
-          See what’s included
-        </a>
-        <a class="about-gap__btn about-gap__btn--secondary" href="/features/">
-          Explore features
-        </a>
-      </div>
     </div>
   </Container>
 </section>
@@ -190,69 +175,8 @@ const stats = [
     color: var(--color-ink-faint);
   }
 
-  .about-gap__dunk {
-    margin-top: clamp(2rem, 4vw, 2.75rem);
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-rule);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.1rem;
-  }
-
-  @media (min-width: 720px) {
-    .about-gap__dunk {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-    }
-  }
-
-  .about-gap__dunk-copy {
-    margin: 0;
-    max-width: 28rem;
-    font-size: 0.975rem;
-    line-height: 1.5;
-    color: var(--color-ink-soft);
-  }
-
-  .about-gap__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    flex-shrink: 0;
-  }
-
-  .about-gap__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.7rem 1.15rem;
-    border-radius: 999px;
-    font-size: 0.9375rem;
-    font-weight: 550;
-    text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-  }
-
-  .about-gap__btn--primary {
-    color: white;
-    background: linear-gradient(171deg, #2bb5ff 7%, #006eff 93%);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 10px 24px -10px rgba(0, 110, 255, 0.55);
-  }
-
-  .about-gap__btn--primary:hover {
-    filter: brightness(1.05);
-  }
-
-  .about-gap__btn--secondary {
-    color: var(--color-ink);
-    border: 1px solid var(--color-rule);
-    background: var(--color-card, white);
-  }
-
-  .about-gap__btn--secondary:hover {
-    background: var(--color-warm);
+  /* The story card carries its own list padding; this band already spaces it. */
+  .about-gap__essay :global(.blog-story) {
+    padding-block: 0;
   }
 </style>

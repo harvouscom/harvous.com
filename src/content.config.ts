@@ -89,7 +89,6 @@ const blog = defineCollection({
       "retention",
       "equipping",
     ]),
-    readingTime: z.number().optional(),
     /**
      * Author registry id (`bright-enough`, `derek`, or a guest/team id).
      * Defaults: how-we-think + using-harvous → derek; otherwise Bright Enough.

@@ -26,11 +26,15 @@ function escapeHtml(value: string): string {
     .replaceAll('"', "&quot;");
 }
 
+// UTC to match the server-rendered cards (see formatBlogDate in lib/blog.ts):
+// publishDate is a calendar date stored as UTC midnight, so a local-zone format
+// would show the day before for any visitor west of Greenwich.
 function formatDate(iso: string): string {
   return new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
+    timeZone: "UTC",
   }).format(new Date(iso));
 }
 

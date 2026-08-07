@@ -143,10 +143,15 @@ function formatReleaseDate(raw: string): { label: string; key: number } {
   if (Number.isNaN(parsed)) return { label: raw, key: 0 };
   return {
     key: parsed,
+    // UTC to agree with calendarDayKey below, which groups and slugs releases by
+    // their UTC day. A local-zone label would disagree with its own grouping for
+    // anything committed in the early UTC hours, and would shift with whatever
+    // zone the site was built in.
     label: new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
+      timeZone: "UTC",
     }).format(parsed),
   };
 }

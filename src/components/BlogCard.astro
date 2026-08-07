@@ -5,6 +5,7 @@ import {
   blogCategoryIcon,
   blogCategoryLabel,
   blogThumbUrl,
+  formatBlogDate,
 } from "../lib/blog";
 
 interface Props {
@@ -36,11 +37,7 @@ const icon = blogCategoryIcon(category);
 const featThumb = blogThumbUrl(slug, "feat");
 const spotThumb = blogThumbUrl(slug, "spot");
 
-const formattedDate = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-}).format(new Date(publishDate));
+const formattedDate = formatBlogDate(publishDate);
 
 const href = `/blog/${slug}`;
 ---

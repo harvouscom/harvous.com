@@ -267,6 +267,46 @@ export function blogThumbUrl(slug: string, kind: "spot" | "feat"): string {
   return `/blog-thumbs/${slug}-${kind}.webp`;
 }
 
+/**
+ * Rough read time for a post, in whole minutes, computed from the raw MDX body.
+ *
+ * This replaces a hand-written `readingTime` frontmatter field that had drifted
+ * to roughly double the real length on every post. An MDX body carries imports,
+ * component tags, and footnote definitions nobody reads, so those come out
+ * first; 200 wpm is the usual prose estimate. It is an approximation on purpose
+ * — close enough to set expectations, never precise.
+ */
+export function blogReadingMinutes(body: string | undefined): number {
+  if (!body) return 1;
+  const prose = body
+    .replace(/```[\s\S]*?```/g, " ") // fenced code
+    .replace(/^import\s.+$/gm, " ") // MDX imports
+    .replace(/^\[\^[^\]]+\]:.*$/gm, " ") // GFM footnote definitions
+    .replace(/<[^>]+>/g, " ") // JSX + inline HTML tags
+    .replace(/\]\([^)]*\)/g, "] ") // link targets, keeping the link text
+    .replace(/[#*_>`|-]/g, " ");
+  const words = prose.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+/**
+ * A post's publish date as prose, e.g. "July 28, 2026".
+ *
+ * Pinned to UTC on purpose. `publishDate` is a bare `YYYY-MM-DD` in frontmatter,
+ * which `z.coerce.date()` parses as UTC midnight — formatting that in any
+ * negative-offset zone renders the day before. It is a calendar date, not an
+ * instant, so it should read the same everywhere and not depend on where the
+ * site happens to be built.
+ */
+export function formatBlogDate(date: Date | string | number): string {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(date));
+}
+
 /* -------------------------------------------------------------------------- */
 /* Authors                                                                    */
 /* -------------------------------------------------------------------------- */

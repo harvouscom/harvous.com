@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T20:30:12.309Z",
+  "generatedAt": "2026-08-07T15:44:07.888Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -297,6 +297,29 @@
       "feat": "/blog-thumbs/one-place-for-the-trail-feat.webp",
       "skipped": true
     },
+    "plan-the-quarter-not-the-week": {
+      "category": "equipping",
+      "mood": "light",
+      "shape": "plume",
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
+      "pack": [
+        "ai_bg_058.webp",
+        "ai_bg_052.webp",
+        "ai_bg_075.webp",
+        "ai_bg_044.webp",
+        "ai_bg_053.webp",
+        "ai_bg_061.webp"
+      ],
+      "grade": {
+        "a": "#2a5a25",
+        "b": "#c9e3b8",
+        "c": "#eef6e6"
+      },
+      "spot": "/blog-thumbs/plan-the-quarter-not-the-week-spot.webp",
+      "feat": "/blog-thumbs/plan-the-quarter-not-the-week-feat.webp",
+      "skipped": false
+    },
     "prep-a-lesson-that-leaves-a-trail": {
       "category": "teaching",
       "mood": "light",
@@ -573,6 +596,29 @@
       "feat": "/blog-thumbs/what-proverbs-25-2-taught-me-feat.webp",
       "skipped": true
     },
+    "what-your-church-never-sees": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "arc",
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
+      },
+      "spot": "/blog-thumbs/what-your-church-never-sees-spot.webp",
+      "feat": "/blog-thumbs/what-your-church-never-sees-feat.webp",
+      "skipped": false
+    },
     "when-co-leaders-share-a-trail": {
       "category": "teaching",
       "mood": "light",
@@ -709,7 +755,7 @@
       },
       "spot": "/blog-thumbs/why-scripture-engagement-stalls-spot.webp",
       "feat": "/blog-thumbs/why-scripture-engagement-stalls-feat.webp",
-      "skipped": false
+      "skipped": true
     }
   }
 }

@@ -14,6 +14,7 @@ import {
   blogCategoryIcon,
   blogCategoryLabel,
   blogCategoryLead,
+  blogReadingMinutes,
   getBlogCategoryPage,
   includeBlogDrafts,
   isBlogPostListed,
@@ -116,7 +117,7 @@ const jsonLd = [
                 publishDate={post.data.publishDate}
                 category={post.data.category}
                 slug={post.id}
-                readingTime={post.data.readingTime}
+                readingTime={blogReadingMinutes(post.body)}
                 draft={post.data.draft}
                 variant="story"
               />

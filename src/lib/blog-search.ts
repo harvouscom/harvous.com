@@ -1,6 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import {
   blogCategoryLabel,
+  blogReadingMinutes,
   includeBlogDrafts,
   isBlogPostListed,
   sortBlogPostsByDate,
@@ -26,7 +27,7 @@ export function toBlogSearchRecord(post: CollectionEntry<"blog">): BlogSearchRec
     category: post.data.category,
     categoryLabel: blogCategoryLabel(post.data.category),
     publishDate: post.data.publishDate.toISOString(),
-    readingTime: post.data.readingTime,
+    readingTime: blogReadingMinutes(post.body),
     draft: Boolean(post.data.draft),
   };
 }

@@ -16,7 +16,9 @@ import {
   blogCategoryIcon,
   blogCategoryLabel,
   blogHeadingsFromBody,
+  blogReadingMinutes,
   blogThumbUrl,
+  formatBlogDate,
   includeBlogDrafts,
   isBlogCategory,
   isBlogPostListed,
@@ -90,11 +92,7 @@ if (props.kind === "post") {
   categoryHref = blogCategoryHref(post.data.category);
   featThumb = blogThumbUrl(post.id, "feat");
 
-  formattedDate = new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(post.data.publishDate));
+  formattedDate = formatBlogDate(post.data.publishDate);
 
   const showDrafts = includeBlogDrafts();
   const allPosts = (await getCollection("blog"))
@@ -230,12 +228,8 @@ if (props.kind === "post") {
           }
           <span class="blog-post-meta__sep" aria-hidden="true">·</span>
           <time datetime={post.data.publishDate.toISOString()}>{formattedDate}</time>
-          {post.data.readingTime && (
-            <>
-              <span class="blog-post-meta__sep" aria-hidden="true">·</span>
-              <span>{post.data.readingTime} min read</span>
-            </>
-          )}
+          <span class="blog-post-meta__sep" aria-hidden="true">·</span>
+          <span>{blogReadingMinutes(post.body)} min read</span>
         </div>
 
         <h1 class="section-title mt-5 text-pretty">
@@ -284,7 +278,7 @@ if (props.kind === "post") {
               publishDate={p.data.publishDate}
               category={p.data.category}
               slug={p.id}
-              readingTime={p.data.readingTime}
+              readingTime={blogReadingMinutes(p.body)}
               draft={p.data.draft}
               variant="story"
             />

@@ -638,7 +638,7 @@ const audiences: ForAudience[] = [
         heading: "What a church sees",
         paragraphs: [
           "How many people are connected, and how many follow each channel. That is the whole of it. A ministry that is reaching people looks different from one that is quiet, which is the question worth answering.",
-          "Harvous never shows a church who wrote what, or whether anyone wrote at all. Not a summary, not a name, not a count of who took notes on Sunday. Review belongs to the person doing it — a church that could see it would be a different kind of tool than this one.",
+          "Harvous never shows a church who wrote what, or whether anyone wrote at all. Not a summary, not a name, not a count of who took notes on Sunday. Study belongs to the person doing it — a church that could see it would be a different kind of tool than this one.",
         ],
       },
       {
