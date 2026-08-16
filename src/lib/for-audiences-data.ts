@@ -101,7 +101,7 @@ const audiences: ForAudience[] = [
         body: "When the week gets loud, Recall can resurface a fading note or passage — so Monday's thought isn't gone by Thursday.",
       },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "sidebar-modes", "recall"],
+    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "recall"],
     featuresHeading: "What a daily rhythm asks of your notes",
     featuresLead:
       "Open a verse, save what stood out, and find it again later — the pieces people lean on most for everyday study.",
@@ -220,7 +220,7 @@ const audiences: ForAudience[] = [
         body: "Noticing \"grace\" everywhere? A thread can hold notes from wherever they show up, at your pace.",
       },
     ],
-    featureIds: ["daily-passage", "scripture-pills", "dictionary", "sidebar-modes"],
+    featureIds: ["daily-passage", "scripture-pills", "bible-reader", "dictionary"],
     featuresHeading: "What helps when you're getting started",
     featuresLead:
       "A starting point, simple capture, and tools that explain without overwhelming — so you can build a record as you go.",
@@ -470,7 +470,7 @@ const audiences: ForAudience[] = [
         body: "Look up a word without leaving the note. The definition comes to you.",
       },
     ],
-    featureIds: ["scripture-pills", "dictionary", "threads", "highlights"],
+    featureIds: ["scripture-pills", "bible-reader", "threads", "highlights"],
     featuresHeading: "What book study asks of your notes",
     featuresLead:
       "Chapter by chapter, reference by reference — the pieces that help one book compound instead of scatter.",
@@ -796,7 +796,7 @@ const audiences: ForAudience[] = [
         body: "Plans keep going. Your notes shouldn't vanish with them. Recall resurfaces a fading note, highlight, or passage from your own study.",
       },
     ],
-    featureIds: ["scripture-pills", "recall", "sidebar-modes", "offline-sync"],
+    featureIds: ["scripture-pills", "bible-reader", "recall", "offline-sync"],
     featuresHeading: "What dual-app study asks of your notes",
     featuresLead:
       "Scripture that stays linked, a way back to what you saved, and capture that works when you're offline in the pew or on a plane.",

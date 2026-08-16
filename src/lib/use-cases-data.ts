@@ -93,7 +93,7 @@ const useCases: UseCase[] = [
         body: "When the habit thins out, Recall resurfaces a fading note, highlight, or passage — so last week's thought isn't gone just because Tuesday got loud.",
       },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "sidebar-modes", "recall"],
+    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "recall"],
     featuresHeading: "What daily study asks of your notes",
     featuresLead:
       "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
@@ -289,7 +289,7 @@ const useCases: UseCase[] = [
         body: "Easton's Bible Dictionary is right there. You won't have to leave the note to look up a word — the definition comes to you.",
       },
     ],
-    featureIds: ["scripture-pills", "dictionary", "threads", "highlights"],
+    featureIds: ["scripture-pills", "bible-reader", "threads", "highlights"],
     featuresHeading: "What book study asks of your notes",
     featuresLead:
       "Chapter by chapter, cross-reference by cross-reference — the Harvous pieces that help one book compound instead of scatter.",

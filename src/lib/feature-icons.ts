@@ -1,6 +1,7 @@
 /** Icons for feature cards on use case pages (matches WhatsIncluded set). */
 export const FEATURE_ICONS: Record<string, string> = {
   "scripture-pills": "fa7-solid:book-bible",
+  "bible-reader": "fa7-solid:book-open",
   highlights: "fa7-solid:highlighter",
   "daily-passage": "fa7-solid:calendar-day",
   dictionary: "fa7-solid:lines-leaning",
