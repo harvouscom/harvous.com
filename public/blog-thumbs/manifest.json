@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T15:44:07.888Z",
+  "generatedAt": "2026-08-16T20:48:24.599Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -318,7 +318,7 @@
       },
       "spot": "/blog-thumbs/plan-the-quarter-not-the-week-spot.webp",
       "feat": "/blog-thumbs/plan-the-quarter-not-the-week-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "prep-a-lesson-that-leaves-a-trail": {
       "category": "teaching",
@@ -388,6 +388,29 @@
       "spot": "/blog-thumbs/sermon-series-to-small-group-follow-up-spot.webp",
       "feat": "/blog-thumbs/sermon-series-to-small-group-follow-up-feat.webp",
       "skipped": true
+    },
+    "start-reading-in-harvous": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "bars",
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
+      "pack": [
+        "ai_bg_075.webp",
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
+      },
+      "spot": "/blog-thumbs/start-reading-in-harvous-spot.webp",
+      "feat": "/blog-thumbs/start-reading-in-harvous-feat.webp",
+      "skipped": false
     },
     "start-with-scripture-pills": {
       "category": "using-harvous",
@@ -617,7 +640,7 @@
       },
       "spot": "/blog-thumbs/what-your-church-never-sees-spot.webp",
       "feat": "/blog-thumbs/what-your-church-never-sees-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "when-co-leaders-share-a-trail": {
       "category": "teaching",
@@ -733,6 +756,29 @@
       "spot": "/blog-thumbs/why-church-education-evaporates-by-monday-spot.webp",
       "feat": "/blog-thumbs/why-church-education-evaporates-by-monday-feat.webp",
       "skipped": true
+    },
+    "why-harvous-has-a-reader-now": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "slash",
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
+      },
+      "spot": "/blog-thumbs/why-harvous-has-a-reader-now-spot.webp",
+      "feat": "/blog-thumbs/why-harvous-has-a-reader-now-feat.webp",
+      "skipped": false
     },
     "why-scripture-engagement-stalls": {
       "category": "retention",
