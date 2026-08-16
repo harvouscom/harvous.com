@@ -79,6 +79,7 @@ export const PLUS_PLAN: PricingPlan = {
     "Everything in free",
     "Unlimited shared spaces",
     "Up to 50 people per space",
+    "Turn a thread into a study plan your group reads together",
     "Joining is always free",
   ],
   comingSoonFeatures: [

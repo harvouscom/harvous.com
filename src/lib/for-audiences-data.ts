@@ -187,7 +187,7 @@ const audiences: ForAudience[] = [
         heading: "There's space for you here",
         paragraphs: [
           "Bible study looks different for different people. Some folks have decades of notes. Some are opening Scripture for the first time. Harvous is a memory tool either way — save what stood out, link it to the verse, find it again later.",
-          "We're not a Bible reader and we're not a course. Keep whatever app or paper Bible you already use. Harvous is where the notes go.",
+          "We're not a course, and you don't need another app to start — open a chapter right inside Harvous, or keep whatever app or paper Bible you already use. Either way, the notes go here.",
         ],
       },
       {
@@ -763,7 +763,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Keep your Bible app. Add a notes hub.",
         paragraphs: [
-          "Harvous isn't a Bible reader and it isn't trying to replace the app you already trust for reading plans, audio, or a church feed. It's built for the part in between — capture what stood out, keep it next to scripture, and find it again when half a phrase is all you remember.",
+          "Harvous isn't trying to replace the app you already trust for reading plans, audio, or a church feed. It's built for the part in between — read a passage, capture what stood out right there, and find it again when half a phrase is all you remember.",
           "Type a reference and it becomes a scripture pill across translations. Your notes stay yours. Your reading habit can stay exactly where it is.",
         ],
       },

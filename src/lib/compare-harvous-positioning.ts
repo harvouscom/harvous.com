@@ -48,7 +48,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
     bestAt: "Long-term study notes that sit beside your Bible reader",
     primaryUse: "Scripture-linked notes, highlights, and threads you’ll reopen later",
     idealFor: "People who already have a reader and need notes that outgrow it",
-    tradeoff: "Not a Bible reader — no reading plans, audio Bible, or in-app community feed.",
+    tradeoff: "No reading plans, audio Bible, or in-app community feed — reading here feeds your notes, not a daily habit tracker.",
     introHalf:
       "is the notes home that sits beside your reader — scripture pills, threads, and Recall for what you write.",
     pickIntro:
@@ -147,11 +147,11 @@ const POSITIONS: Record<string, HarvousPosition> = {
     bestAt: "Threading and recalling written scripture-linked study notes",
     primaryUse: "Bible study notes with pills, highlights, threads, @ mentions, and Recall",
     idealFor: "People choosing among Bible notes apps who care most about finding what they wrote later",
-    tradeoff: "No built-in Bible reader, live transcription, or handwriting canvas.",
+    tradeoff: "No live transcription or handwriting canvas — reading here is built to feed your notes, not stand alone.",
     introHalf:
-      "focuses on threading and Recall for notes you write — pills and highlights, not transcription or a bundled reader.",
+      "focuses on threading and Recall for notes you write — pills, highlights, and a reader that shares your notes, not transcription.",
     pickIntro:
-      "Bible study notes with scripture pills, highlights, threads, and Recall — not a reader or transcription app.",
+      "Bible study notes with scripture pills, highlights, threads, Recall, and a reader that shares your highlights — not a transcription app.",
     ctaMode: "peer",
     hubLane: "In this lane, Harvous competes on threads, pills, and Recall — not transcription or a reader bundle.",
     tableRows: [
@@ -167,7 +167,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Reader bundled",
-        harvous: "No — sits beside your Bible app",
+        harvous: "Yes — built for notes, not a separate SOAP flow",
         competitorHint: "Some include a reader or SOAP flow",
       },
     ],

@@ -38,6 +38,13 @@ const ADDON_PAGES: AddonPage[] = [
           "You don't switch apps or rebuild your workflow. Your private notes stay private. What you add to the shared space is what the group sees — prep stays in your personal folders until you choose to share it.",
         ],
       },
+      {
+        heading: "Turn a thread into a study plan the room reads together",
+        paragraphs: [
+          "Any thread in the space can become a study plan. Publish it and the room reads along on the same page, instead of everyone catching up separately or flipping back to find where the group left off.",
+          "Preview a plan publicly before you publish it, so you know what the group will see.",
+        ],
+      },
     ],
     showcases: [
       {
@@ -72,6 +79,11 @@ const ADDON_PAGES: AddonPage[] = [
         icon: "fa7-solid:user",
         heading: "Keep your prep notes private",
         body: "Your own notes on the passage stay in your personal space. The group only sees what you add to the shared one.",
+      },
+      {
+        icon: "fa7-solid:route",
+        heading: "A thread becomes a study plan",
+        body: "Publish a thread as a study plan and the room reads along together — everyone on the same page, not catching up on their own.",
       },
     ],
     relatedIds: ["review", "challenges", "connector"],

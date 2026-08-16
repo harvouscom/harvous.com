@@ -10,7 +10,7 @@ export const HOME_FEATURE_CARDS = [
   {
     pills: ["scripture"] as const,
     title: "Just type the reference",
-    body: "Instead of a Bible reader just type the Scripture reference you want and open it. Available in 11 English translations.",
+    body: "Type a reference and it becomes a pill in your note, available in 11 translations. Open the chapter instead, and your notes and highlights for it are already there in the margin.",
     image: "/app-scripture.png",
     imageAlt: "A scripture reference opened inline with a translation picker",
   },

@@ -5,7 +5,7 @@ const SITE = "https://harvous.com";
 
 /** Default “Side note” copy when Harvous leads the shortlist. */
 export const DEFAULT_HONEST_NOTE_FIRST =
-  "We built Harvous — so of course we care how this list reads. We put it first because we believe scripture-linked study notes deserve their own home: not a reader feature, not sermon transcription — a place to thread and recall what you saved.";
+  "We built Harvous — so of course we care how this list reads. We put it first because we believe scripture-linked study notes deserve their own home: not sermon transcription — a place to write, thread, and recall what you saved, with the passage right there when you need it.";
 
 /** Default when Harvous is on the list but not #1. */
 export const DEFAULT_HONEST_NOTE_NOT_FIRST =
@@ -125,9 +125,9 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Curated shortlist for scripture-linked study notes",
     seoTitle: "Best Bible notes apps — Harvous",
     seoDescription:
-      "Compare the best Bible notes apps for scripture-linked study notes — Harvous, Church Notes, Bible Note, Obsidian, and more. Notes-first, not a Bible reader.",
+      "Compare the best Bible notes apps for scripture-linked study notes — Harvous, Church Notes, Bible Note, Obsidian, and more. Notes-first, with Scripture built in.",
     h1: "Best Bible notes apps",
-    lead: "Scripture-linked study notes — dedicated apps and tools people adapt. Harvous is notes-first, not a reader.",
+    lead: "Scripture-linked study notes — dedicated apps and tools people adapt. Harvous is notes-first, with the passage right there when you write.",
     pickSlugs: [
       "spirit-notes",
       "bible-note",
@@ -259,7 +259,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "goodnotes",
     ],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: Church Notes (and transcription apps) own Sunday capture. Harvous is here if you want the notes you write to stay findable later — not a reader, not AI transcription.",
+      "We built Harvous — so of course we care how this list reads. We didn’t put ourselves first: Church Notes (and transcription apps) own Sunday capture. Harvous is here if you want the notes you write to stay findable later — not AI transcription.",
     whenToChoose: [
       chooseHarvous("Bible Notes"),
       {
@@ -315,9 +315,9 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Apps built for study notes linked to Scripture",
     seoTitle: "Best Bible study notes apps — Harvous",
     seoDescription:
-      "Compare the best Bible study notes apps for scripture-linked reflections — Harvous, Church Notes, Bible Note, Obsidian, Logos, and more. Notes-first study, not a Bible reader.",
+      "Compare the best Bible study notes apps for scripture-linked reflections — Harvous, Church Notes, Bible Note, Obsidian, Logos, and more. Notes-first study, with Scripture built in.",
     h1: "Best Bible study notes apps",
-    lead: "Apps for study notes linked to Scripture — dedicated tools and ones people adapt. Harvous is notes-first, not a reader.",
+    lead: "Apps for study notes linked to Scripture — dedicated tools and ones people adapt. Harvous is notes-first, with the passage right there when you write.",
     pickSlugs: [
       "spirit-notes",
       "bible-note",
@@ -744,7 +744,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Inline scripture references in notes — not copy-paste",
     seoTitle: "Best scripture notes apps — Harvous",
     seoDescription:
-      "Compare the best apps for scripture-linked notes — Harvous, Church Notes, Spirit Notes, Obsidian, and Logos. Type a reference, keep the verse in your writing — not a Bible reader bolted on.",
+      "Compare the best apps for scripture-linked notes — Harvous, Church Notes, Spirit Notes, Obsidian, and Logos. Type a reference, keep the verse in your writing — or open the chapter and write from there.",
     h1: "Best scripture notes apps",
     lead: "Notes where Scripture stays in the writing — dedicated apps and tools people adapt. Harvous turns typed references into scripture pills across 11 translations.",
     pickSlugs: [
@@ -756,7 +756,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "notion",
     ],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We put it first because scripture pills are the spine: type a reference, open the verse in your note — not a reader feature, not a vault plugin you maintain yourself.",
+      "We built Harvous — so of course we care how this list reads. We put it first because scripture pills are the spine: type a reference, open the verse in your note, or read the chapter and start a note from what you're reading — not a vault plugin you maintain yourself.",
     whenToChoose: [
       chooseHarvous("Bible Notes"),
       {

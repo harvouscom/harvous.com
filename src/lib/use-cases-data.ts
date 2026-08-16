@@ -119,7 +119,7 @@ const useCases: UseCase[] = [
         heading: "You don't need another sermon app",
         paragraphs: [
           "Some apps transcribe the sermon for you. Some turn Sunday into flashcards. Harvous does something simpler: it gives your own notes a home — linked to scripture, grouped by series, searchable when half a phrase is all you remember.",
-          "We're not a Bible reader and we're not sermon transcription. If you want to write what stood out to you and find it again in October, that's what we're for.",
+          "We're not sermon transcription. If you want to write what stood out to you — read the passage right there if you need it — and find it again in October, that's what we're for.",
         ],
       },
       {

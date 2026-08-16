@@ -37,7 +37,7 @@ export async function buildHomeJsonLd() {
         name: "Harvous",
         url: SITE,
         description:
-          "A Bible study notes app alternative — remember and reconnect with what you saved from Scripture. Not a Bible reader. No sermon transcription.",
+          "A Bible study notes app alternative — remember and reconnect with what you saved from Scripture, read right alongside your notes. No sermon transcription.",
       },
       {
         "@type": "SoftwareApplication",
@@ -46,7 +46,7 @@ export async function buildHomeJsonLd() {
         operatingSystem: "Web",
         url: SITE,
         description:
-          "Bible study notes app with scripture pills, highlights, threads, and recall — built to help you remember what you saved, without replacing your Bible reader.",
+          "Bible study notes app with scripture pills, highlights, threads, recall, and a built-in Bible reader — built to help you remember what you saved.",
         offers: {
           "@type": "Offer",
           price: "0",

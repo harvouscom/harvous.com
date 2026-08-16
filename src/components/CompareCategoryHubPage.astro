@@ -20,7 +20,7 @@ const { page, picks, jsonLd, noindex = false } = Astro.props;
 const honestNote = getHonestNoteForPage(page, picks);
 
 const decisionRows = [
-  { label: "Built-in Bible reader", harvous: "No — type a reference, open inline text", others: "Varies — readers yes, notes apps no" },
+  { label: "Built-in Bible reader", harvous: "Yes — shares highlights and notes with the page", others: "Varies — readers yes, notes apps no" },
   { label: "Sermon transcription", harvous: "No", others: "Some Bible Notes apps yes; general notes no" },
   { label: "Scripture-linked notes", harvous: "Yes — pills, highlights, threads, @ mentions", others: "Dedicated apps yes; general notes DIY" },
   { label: "Price", harvous: "Free for personal study", others: "Varies — many free tiers, Logos paid" },

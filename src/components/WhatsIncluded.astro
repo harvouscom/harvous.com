@@ -19,6 +19,18 @@ const items = [
     title: "Sorts itself & Pin",
     desc: "Auto-folders and auto-tags organize every note. Pin a note, folder, or thread to keep it at the top.",
   },
+  // Scripture-specific
+  // Two ways into the same Scripture — combined so the grid can name the
+  // reader without growing past twelve. Both halves still have their own
+  // page, so this tile carries two links instead of wrapping in one and
+  // quietly dropping the other.
+  {
+    icons: ["fa7-solid:book-bible", "fa7-solid:book-open-reader"],
+    title: "Scripture pills & Bible reader",
+    desc: "Type a reference and it becomes a pill, in 11 translations — or open the chapter and read, with your notes and highlights already there.",
+    featureSlugs: ["scripture-pills", "bible-reader"],
+    linkLabels: ["Scripture pills", "Bible reader"],
+  },
   {
     icon: "fa7-solid:list-check",
     title: "Note templates",
@@ -30,13 +42,6 @@ const items = [
     title: "Threads",
     desc: "Manually connect notes together to create a thread, even across folders.",
     featureSlug: "threads",
-  },
-  // Scripture-specific
-  {
-    icon: "fa7-solid:book-bible",
-    title: "Scripture pills",
-    desc: "Type a reference and it becomes a pill — 11 translations, switchable per pill.",
-    featureSlug: "scripture-pills",
   },
   {
     icon: "fa7-solid:clock-rotate-left",
