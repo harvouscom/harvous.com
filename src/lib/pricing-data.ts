@@ -55,6 +55,7 @@ export const FREE_PLAN: PricingPlan = {
   features: [
     "Unlimited notes",
     "Scripture pills, highlights, threads, and @ mentions",
+    "Built-in Bible reader",
     "Built-in dictionary and daily passage",
     "Offline sync across devices",
     "Sharable notes via link",
