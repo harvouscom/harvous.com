@@ -9,7 +9,8 @@ import Container from "./layout/Container.astro";
 import HeroPillCycle from "./HeroPillCycle.astro";
 import HeroVideoLightbox from "./HeroVideoLightbox.astro";
 import OptimizedImage from "./OptimizedImage.astro";
-import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
+import { fathomCta, fathomTry } from "../lib/fathom-events.ts";
+import { buildTryUrl } from "../lib/signup-url.ts";
 ---
 
 <section class="hero">
@@ -24,14 +25,22 @@ import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
       </h1>
 
       <div class="hero__actions" data-reveal style="--reveal-delay: 60ms;">
+        {/*
+          The first click no longer asks for an account. It opens the app on today's passage,
+          and the offer to keep what you make comes later, from inside — someone deciding
+          whether Harvous is for them should be reading Scripture in it, not filling in a form
+          about it. Signing up keeps its permanent home in the header.
+
+          Same tab, unlike the signup link it replaces: a transition that continues into the app
+          cannot happen in a different one.
+        */}
         <a
           class="hero__cta"
-          href="https://app.harvous.com/sign-up"
-          target="_blank"
-          rel="noopener"
-          data-fathom-track={fathomSignup.hero}
+          href={buildTryUrl({ source: "hero" })}
+          data-try-morph
+          data-fathom-track={fathomTry.hero}
         >
-          Sign up free
+          Try it free
         </a>
         <a class="hero__cta-secondary" href="#features" data-fathom-track={fathomCta.featuresAnchor}>
           More about Harvous
