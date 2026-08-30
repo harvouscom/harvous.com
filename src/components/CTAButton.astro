@@ -5,6 +5,12 @@ interface Props {
   size?: "md" | "lg";
   external?: boolean;
   fathomTrack?: string;
+  /**
+   * Marks this as a "try it free" link, so the handoff script animates it into the app shell
+   * instead of letting the browser cut straight to a blank page. Opt-in per button: every other
+   * CTA on the site keeps behaving as a plain link.
+   */
+  tryMorph?: boolean;
   class?: string;
 }
 
@@ -14,6 +20,7 @@ const {
   size = "md",
   external = false,
   fathomTrack,
+  tryMorph = false,
   class: className = "",
 } = Astro.props;
 
@@ -40,6 +47,7 @@ const cls = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
   class={cls}
   {...external ? { target: "_blank", rel: "noopener" } : {}}
   {...fathomTrack ? { "data-fathom-track": fathomTrack } : {}}
+  {...tryMorph ? { "data-try-morph": "" } : {}}
 >
   <slot />
 </a>

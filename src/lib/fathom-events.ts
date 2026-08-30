@@ -23,6 +23,17 @@ export const fathomSignup = {
   addonDetail: (slug: string) => `signup_addon_${slug}`,
 } as const;
 
+/**
+ * "Try it free" — going into the app as a guest, which is a different intent from signing up
+ * and so a different event. Deliberately not folded into `fathomSignup`: those names go back
+ * years on the dashboard, and repointing one at a new CTA would silently break every
+ * before-and-after comparison drawn against it.
+ */
+export const fathomTry = {
+  hero: "try_hero",
+  header: "try_header",
+} as const;
+
 export const fathomSignin = {
   header: "signin_header",
 } as const;
