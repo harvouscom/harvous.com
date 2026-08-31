@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T20:47:50.854Z",
+  "generatedAt": "2026-08-31T20:55:08.444Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -573,6 +573,29 @@
       "feat": "/blog-thumbs/the-monday-retention-loop-feat.webp",
       "skipped": true
     },
+    "the-sidebar-did-too-much": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "arc",
+      "source": "ai_bg_072.webp",
+      "sourceMean": 199,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
+      },
+      "spot": "/blog-thumbs/the-sidebar-did-too-much-spot.webp",
+      "feat": "/blog-thumbs/the-sidebar-did-too-much-feat.webp",
+      "skipped": false
+    },
     "tools-help-humans-teach": {
       "category": "how-we-think",
       "mood": "light",
@@ -824,29 +847,6 @@
       },
       "spot": "/blog-thumbs/why-scripture-engagement-stalls-spot.webp",
       "feat": "/blog-thumbs/why-scripture-engagement-stalls-feat.webp",
-      "skipped": true
-    },
-    "why-the-sidebar-had-to-go": {
-      "category": "how-we-think",
-      "mood": "light",
-      "shape": "slash",
-      "source": "ai_bg_045.webp",
-      "sourceMean": 211,
-      "pack": [
-        "ai_bg_045.webp",
-        "ai_bg_047.webp",
-        "ai_bg_059.webp",
-        "ai_bg_072.webp",
-        "ai_bg_050.webp",
-        "ai_bg_073.webp"
-      ],
-      "grade": {
-        "a": "#5a4116",
-        "b": "#f6ecd6",
-        "c": "#fff8e8"
-      },
-      "spot": "/blog-thumbs/why-the-sidebar-had-to-go-spot.webp",
-      "feat": "/blog-thumbs/why-the-sidebar-had-to-go-feat.webp",
       "skipped": true
     }
   }
