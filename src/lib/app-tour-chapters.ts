@@ -60,7 +60,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "activity",
     size: "wide",
     eyebrow: "Activity",
-    title: "Open to what already happened.",
+    title: "Last week's study is still here.",
     lead:
       "Harvous starts on your study, not an empty page. Each day is its own sheet, and the days behind it are still there to flip back through.",
     shot: {
@@ -94,7 +94,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "read",
     size: "half",
     eyebrow: "Read",
-    title: "A chapter, with the one before it still there.",
+    title: "Read the chapter with your notes in the margin.",
     lead:
       "Chapters sit like paper on both sides of the one you're reading, so turning back is the same motion as turning forward. Your notes and highlights are already in the margin.",
     shot: {
@@ -127,7 +127,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "write",
     size: "half",
     eyebrow: "Write",
-    title: "Type the reference. It knows what you mean.",
+    title: "Write a note. The verse comes with it.",
     lead:
       "Write the way you'd write anywhere else. References become pills you can open, and anything you highlight stays findable long after you've closed the note.",
     shot: {
@@ -160,7 +160,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "find",
     size: "half",
     eyebrow: "Find",
-    title: "One panel for everything you've saved.",
+    title: "Find the note you wrote months ago.",
     lead:
       "Browsing and searching stopped being two different places. Open the Library, pick a kind or type what you remember, and act on what comes back without leaving the note underneath.",
     shot: {
@@ -193,7 +193,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "share",
     size: "half",
     eyebrow: "Share",
-    title: "A space that looks like the place it is.",
+    title: "Study the same passage as your group.",
     lead:
       "Open a space for your group and it gets its own front door — its own cover, its own threads, its own tools. Your private study stays private.",
     shot: {
