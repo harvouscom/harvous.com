@@ -59,7 +59,7 @@ const categories: FeatureCategory[] = [
     tagline: "Open to what you already studied, not an empty page.",
     icon: "fa7-solid:layer-group",
     ink: "var(--pill-note)",
-    image: "/images/auth-hero/ai_bg_077.webp",
+    image: "/images/auth-hero/ai_bg_053.webp",
     seoTitle: "Activity — see your Bible study as it accumulates | Harvous",
     seoDescription:
       "Harvous opens on the study you have already done. Each day is its own sheet, the days behind it are still there, and what is worth revisiting comes back to you.",
@@ -238,7 +238,7 @@ const categories: FeatureCategory[] = [
     tagline: "One panel for everything you have saved.",
     icon: "fa7-solid:magnifying-glass",
     ink: "var(--pill-thread)",
-    image: "/images/auth-hero/ai_bg_052.webp",
+    image: "/images/auth-hero/ai_bg_044.webp",
     seoTitle: "Find — search and browse every Bible study note you have | Harvous",
     seoDescription:
       "Browse by kind or search across notes, highlights, scripture and resources in one panel — and act on what comes back without leaving the note underneath.",
