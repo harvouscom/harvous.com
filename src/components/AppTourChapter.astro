@@ -149,6 +149,14 @@ const { eyebrow, title, shot, items, size } = chapter;
     */
     min-height: 2.3em; /* 2 × the 1.15 line-height above */
   }
+  /*
+    The wide card leads the bento, and at the same type size as a card half its
+    width it read as the smaller of the two. min-height is in em, so the reserved
+    two lines scale with it.
+  */
+  .tcard--wide .tcard__title {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+  }
 
   .tcard__arrow {
     position: relative;
