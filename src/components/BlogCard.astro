@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import {
+  blogCardDescription,
   blogCategoryColor,
   blogCategoryIcon,
   blogCategoryLabel,
@@ -30,6 +31,9 @@ const {
   draft = false,
   variant = "card",
 } = Astro.props;
+
+// Every card surface goes through here, so the cap lives in one place.
+const cardDescription = blogCardDescription(description);
 
 const label = blogCategoryLabel(category);
 const color = blogCategoryColor(category);
@@ -85,7 +89,7 @@ const href = `/blog/${slug}`;
           </h2>
         </div>
         <p class="text-sm leading-relaxed text-[var(--color-ink-soft)]">
-          {description}
+          {cardDescription}
         </p>
       </div>
     </a>
@@ -162,7 +166,7 @@ const href = `/blog/${slug}`;
           {title}
         </h3>
         <p class="mt-2 max-w-2xl text-[0.95rem] leading-relaxed text-[var(--color-ink-soft)]">
-          {description}
+          {cardDescription}
         </p>
       </div>
     </a>
@@ -193,7 +197,7 @@ const href = `/blog/${slug}`;
           {title}
         </h2>
         <p class="mt-2 text-sm leading-relaxed text-[var(--color-ink-soft)]">
-          {description}
+          {cardDescription}
         </p>
       </div>
 
