@@ -109,6 +109,12 @@ const href = category?.href;
     */
     --cat-ink: var(--color-accent);
     --cat-glyph: color-mix(in oklab, var(--cat-ink) 70%, var(--color-ink));
+    /*
+      The label is small bold text, not a glyph, so it answers to 4.5:1 rather
+      than 3:1. --pill-highlight only reaches 3.2 at the icon's 70%, so the label
+      takes a darker mix of the same hue.
+    */
+    --cat-text: color-mix(in oklab, var(--cat-ink) 45%, var(--color-ink));
     position: relative;
     display: flex;
     flex-direction: column;
@@ -149,20 +155,18 @@ const href = category?.href;
     take the darkened ink rather than the raw one — ContentPill's palette is
     hand-picked to read at 10% tint, these inks are not.
   */
+  /* No chip — just the icon and the word, both in the category's colour. */
   .tcard__eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
-    padding: 0.45em 0.8em;
-    border-radius: 999px;
     font-family: var(--font-display);
     font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.01em;
     white-space: nowrap;
-    color: var(--cat-glyph);
-    background: color-mix(in oklab, var(--cat-ink) 12%, transparent);
+    color: var(--cat-text);
     font-variation-settings: "wdth" 100, "ROND" 0;
   }
   .tcard__eyebrow-icon { display: inline-flex; font-size: 1em; }
