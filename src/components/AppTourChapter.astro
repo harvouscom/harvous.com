@@ -102,19 +102,13 @@ const href = category?.href;
 <style>
   .tcard {
     /*
-      The accent inks are chosen for highlighter fills, not for small glyphs:
-      warmAmber is 1.53:1 on white and mintGreen 2.26:1, so using them raw would
-      make three of five cards' icons effectively invisible. Mixing toward ink
-      keeps the hue identity and clears the 3:1 floor for meaningful graphics.
+      The pill palette at full strength, the way ContentPill uses it. These are
+      highlighter fills, so --pill-highlight measures 1.53:1 on white — chosen for
+      the colour rather than for contrast.
     */
     --cat-ink: var(--color-accent);
-    --cat-glyph: color-mix(in oklab, var(--cat-ink) 70%, var(--color-ink));
-    /*
-      The label is small bold text, not a glyph, so it answers to 4.5:1 rather
-      than 3:1. --pill-highlight only reaches 3.2 at the icon's 70%, so the label
-      takes a darker mix of the same hue.
-    */
-    --cat-text: color-mix(in oklab, var(--cat-ink) 45%, var(--color-ink));
+    --cat-glyph: var(--cat-ink);
+    --cat-text: var(--cat-ink);
     position: relative;
     display: flex;
     flex-direction: column;

@@ -246,12 +246,7 @@ const jsonLd = {
     border-radius: 1rem;
     background: var(--color-card);
     box-shadow: var(--shadow-card);
-    /*
-      70% is as saturated as one ratio can go and still clear the 3:1 floor for
-      meaningful graphics on all five: --pill-highlight lands at 3.11 there and
-      2.75 at 75%. Raw, it is 1.53 — visible as a shape, not as a colour.
-    */
-    color: color-mix(in oklab, var(--cat-ink) 70%, var(--color-ink));
+    color: var(--cat-ink);
   }
   .cat-card__badge :global(svg) { width: 1.35rem; height: 1.35rem; }
 
@@ -326,7 +321,7 @@ const jsonLd = {
   a.cat-card__pill:hover {
     border-color: color-mix(in srgb, var(--cat-ink) 35%, var(--color-rule));
     background: color-mix(in oklab, var(--cat-ink) 10%, var(--color-paper));
-    color: color-mix(in oklab, var(--cat-ink) 70%, var(--color-ink));
+    color: var(--cat-ink);
   }
   .cat-card__pill--flat { color: var(--color-ink-soft); }
 </style>
