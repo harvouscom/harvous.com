@@ -26,6 +26,8 @@ export type TourItem = {
 
 export type TourChapter = {
   key: string;
+  /** Bento weight. "wide" spans both columns; "half" takes one. */
+  size: "wide" | "half";
   eyebrow: string;
   title: string;
   lead: string;
@@ -45,12 +47,15 @@ export type TourChapter = {
  * roughly 2x — enough that app text stays readable rather than turning into
  * texture, which is the whole failure mode for a tour built out of screenshots.
  */
-const SHOT_W = 2400;
-const SHOT_H = 1200;
+const WIDE_W = 2400;
+const WIDE_H = 1100;
+const HALF_W = 1600;
+const HALF_H = 1150;
 
 export const APP_TOUR_CHAPTERS: TourChapter[] = [
   {
     key: "activity",
+    size: "wide",
     eyebrow: "Activity",
     title: "Open to what already happened.",
     lead:
@@ -58,8 +63,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     shot: {
       src: "/tour/tour-activity.png",
       alt: "The Activity view: a day sheet with the days before it stacked behind, listing the passages read and notes written that day.",
-      width: SHOT_W,
-      height: SHOT_H,
+      width: WIDE_W,
+      height: WIDE_H,
       direction: [
         "A finished day, not today — today is usually still empty.",
         "Two previous-day edges visible above the sheet.",
@@ -84,6 +89,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
   },
   {
     key: "read",
+    size: "half",
     eyebrow: "Read",
     title: "A chapter, with the one before it still there.",
     lead:
@@ -91,8 +97,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     shot: {
       src: "/tour/tour-read.png",
       alt: "A Bible chapter open in Harvous, with the previous and next chapters visible as paper edges and margin marks alongside the text.",
-      width: SHOT_W,
-      height: SHOT_H,
+      width: HALF_W,
+      height: HALF_H,
       direction: [
         "A chapter with paper edges on BOTH sides.",
         "Margin dots or bars showing where notes exist.",
@@ -117,6 +123,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
   },
   {
     key: "write",
+    size: "half",
     eyebrow: "Write",
     title: "Type the reference. It knows what you mean.",
     lead:
@@ -124,8 +131,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     shot: {
       src: "/tour/tour-write.png",
       alt: "A note in Harvous containing a scripture pill, a highlighted phrase, and an annotation attached to it.",
-      width: SHOT_W,
-      height: SHOT_H,
+      width: HALF_W,
+      height: HALF_H,
       direction: [
         "One note holding all three at once:",
         "a scripture pill, a highlighted phrase, an annotation.",
@@ -150,6 +157,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
   },
   {
     key: "find",
+    size: "half",
     eyebrow: "Find",
     title: "One panel for everything you've saved.",
     lead:
@@ -157,8 +165,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     shot: {
       src: "/tour/tour-library.png",
       alt: "The Harvous Library panel open over a note, showing tabs for each kind of saved thing and a list of results.",
-      width: SHOT_W,
-      height: SHOT_H,
+      width: HALF_W,
+      height: HALF_H,
       direction: [
         "The Library panel open OVER a note, note still visible behind.",
         "The kind tabs showing (may need a wider window than 1280).",
@@ -183,6 +191,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
   },
   {
     key: "share",
+    size: "half",
     eyebrow: "Share",
     title: "A space that looks like the place it is.",
     lead:
@@ -190,8 +199,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     shot: {
       src: "/tour/tour-share.png",
       alt: "A shared space in Harvous with its own cover image, showing the notes and threads the group is studying together.",
-      width: SHOT_W,
-      height: SHOT_H,
+      width: HALF_W,
+      height: HALF_H,
       direction: [
         "A shared space hub with its cover image showing.",
         "The space's own tools in its header.",

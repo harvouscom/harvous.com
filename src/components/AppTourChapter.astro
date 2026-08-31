@@ -1,12 +1,19 @@
 ---
 /**
- * AppTourChapter — one chapter of the homepage tour: a heading, the screenshot,
- * and the two or three features that screenshot actually demonstrates.
+ * AppTourChapter — one card in the tour bento.
  *
- * The items sit *under* the shot rather than beside it. Dinky's app is a
- * portrait window and reads fine in half a column; Harvous is a wide, dense
- * document app, so the shot needs the full measure or the interface in it stops
- * being legible — which would defeat the point of showing it at all.
+ * Modelled on Notion's feature-page cards: a tinted card carrying a quiet
+ * eyebrow, a headline, an arrow to the detail page, and a product visual that
+ * bleeds off the bottom edge.
+ *
+ * The bleed is the load-bearing part, not decoration. A Harvous screenshot is
+ * dense document UI, so shrinking a whole window into a half-width card makes
+ * the interface unreadable — which would defeat the point of showing it. A
+ * cropped detail running off the card's edge stays near 1:1 instead, and the
+ * card does the cropping.
+ *
+ * The two features each card demonstrates sit above the visual, where there is
+ * room for them, rather than below it where the bleed leaves none.
  */
 import { Icon } from "astro-icon/components";
 import TourShotFrame from "./TourShotFrame.astro";
@@ -14,172 +21,185 @@ import type { TourChapter } from "../lib/app-tour-chapters.ts";
 
 interface Props {
   chapter: TourChapter;
-  /** Zero-based position, rendered as the chapter number. */
-  index: number;
   /** Per-item destinations, resolved by the parent against published pages. */
   hrefs: (string | undefined)[];
   loading?: "lazy" | "eager";
 }
 
-const { chapter, index, hrefs, loading = "lazy" } = Astro.props;
-const num = String(index + 1).padStart(2, "0");
-const { eyebrow, title, lead, shot, items } = chapter;
+const { chapter, hrefs, loading = "lazy" } = Astro.props;
+const { eyebrow, title, shot, items, size } = chapter;
+
+// The arrow points at the card's first real destination; a card whose features
+// have no published page yet simply doesn't get one, rather than a dead control.
+const primaryHref = hrefs.find(Boolean);
 ---
 
-<article class="chapter">
-  <div class="chapter__head">
-    <p class="chapter__label">
-      <span class="chapter__num">{num}</span>
-      <span>{eyebrow}</span>
-    </p>
-    <h3 class="chapter__title">{title}</h3>
-    <p class="lead chapter__lead">{lead}</p>
+<article class:list={["tcard", `tcard--${size}`]}>
+  <div class="tcard__body">
+    <div class="tcard__head">
+      <div>
+        <p class="tcard__eyebrow">{eyebrow}</p>
+        <h3 class="tcard__title">{title}</h3>
+      </div>
+      {
+        primaryHref && (
+          <a class="tcard__arrow" href={primaryHref} aria-label={`More about ${eyebrow}`}>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" />
+            </svg>
+          </a>
+        )
+      }
+    </div>
+
+    <ul class="tcard__items" role="list">
+      {
+        items.map((item, i) => {
+          const href = hrefs[i];
+          const Tag = href ? "a" : "div";
+          return (
+            <li>
+              <Tag class:list={["tcard__item", href && "tcard__item--link"]} href={href}>
+                <span class="tcard__icons">
+                  {item.icons.map((icon) => (
+                    <span class="tcard__icon"><Icon name={icon} /></span>
+                  ))}
+                </span>
+                <span class="tcard__item-title">{item.title}</span>
+                <span class="tcard__item-desc">{item.desc}</span>
+              </Tag>
+            </li>
+          );
+        })
+      }
+    </ul>
   </div>
 
-  <TourShotFrame
-    src={shot.src}
-    alt={shot.alt}
-    width={shot.width}
-    height={shot.height}
-    direction={shot.direction}
-    loading={loading}
-  />
-
-  <ul class="chapter__items" role="list">
-    {
-      items.map((item, i) => {
-        const href = hrefs[i];
-        const Tag = href ? "a" : "div";
-        return (
-          <li>
-            <Tag class:list={["chapter__item", href && "chapter__item--link"]} href={href}>
-              <div class="chapter__icons">
-                {item.icons.map((icon) => (
-                  <span class="chapter__icon"><Icon name={icon} /></span>
-                ))}
-              </div>
-              <span class="chapter__item-title">{item.title}</span>
-              <p class="chapter__item-desc">{item.desc}</p>
-              {href && <span class="chapter__more">Learn more →</span>}
-            </Tag>
-          </li>
-        );
-      })
-    }
-  </ul>
+  <div class="tcard__shot">
+    <TourShotFrame
+      src={shot.src}
+      alt={shot.alt}
+      width={shot.width}
+      height={shot.height}
+      direction={shot.direction}
+      loading={loading}
+      panel
+    />
+  </div>
 </article>
 
 <style>
-  .chapter {
+  .tcard {
     display: flex;
     flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2.25rem);
+    height: 100%;
+    background: var(--color-warm);
+    border-radius: clamp(20px, 2.2vw, 28px);
+    /* Clips the visual's bleed — without this the shot just overhangs. */
+    overflow: hidden;
   }
 
-  /*
-    Left-aligned and numbered, against a centered section head. The two used to
-    share one treatment — pill, centered title, centered lead — which read as the
-    same header twice and left no signal for where the section stopped and the
-    first chapter started. The rule and the number also make five repeats scan as
-    one sequence rather than five loose blocks.
-  */
-  .chapter__head {
-    max-width: 44rem;
-    text-align: left;
+  .tcard__body {
+    padding: clamp(1.5rem, 2.4vw, 2rem);
+    padding-bottom: 0;
   }
-  .chapter__head > * + * { margin-top: 0.6rem; }
 
-  .chapter__label {
+  .tcard__head {
     display: flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-ink-faint);
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.25rem;
   }
-  .chapter__num {
-    font-variant-numeric: tabular-nums;
-    color: var(--color-accent);
+  .tcard__eyebrow {
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
   }
-
-  .chapter__title {
+  .tcard__title {
+    margin-top: 0.35rem;
     font-family: var(--font-display);
     font-weight: 600;
     font-variation-settings: "wdth" 100, "ROND" 0;
-    font-size: clamp(1.45rem, 2.8vw, 1.9rem);
-    line-height: 1.14;
+    font-size: clamp(1.25rem, 2.1vw, 1.6rem);
+    line-height: 1.15;
     letter-spacing: -0.02em;
     color: var(--color-ink);
     text-wrap: balance;
   }
-  .chapter__lead {
-    max-width: 38rem;
-  }
 
-  /* Items — centered flow so a chapter with one item doesn't sit in a lopsided
-     two-column grid, and a chapter with two still reads as a pair. */
-  /*
-    A two-column grid rather than a wrapping flex row, so the items line up with
-    the screenshot's edges instead of hanging at the left with dead space beside
-    them. A chapter carrying one item keeps the first column and sits half-width,
-    which reads as deliberate where a stretched full-width item would not.
-  */
-  .chapter__items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.75rem 2.5rem;
-  }
-  @media (min-width: 720px) {
-    .chapter__items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-
-  .chapter__item {
-    display: block;
-    height: 100%;
-    text-decoration: none;
-    color: inherit;
-  }
-  .chapter__item--link { transition: transform 200ms ease; }
-  .chapter__item--link:hover { transform: translateY(-2px); }
-  .chapter__item--link:hover .chapter__item-title { color: var(--color-accent); }
-
-  .chapter__icons { display: flex; align-items: center; gap: 0.35rem; }
-  .chapter__icon {
+  .tcard__arrow {
+    flex: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 0.7rem;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    text-decoration: none;
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+  .tcard__arrow svg { width: 0.9rem; height: 0.9rem; }
+  .tcard__arrow:hover { transform: translateX(2px); opacity: 0.88; }
+
+  .tcard__items {
+    list-style: none;
+    margin: clamp(1.25rem, 2.2vw, 1.75rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+  .tcard__item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .tcard__item--link:hover .tcard__item-title { color: var(--color-accent); }
+
+  .tcard__icons { display: flex; align-items: center; gap: 0.3rem; }
+  .tcard__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    border-radius: 0.55rem;
     background: var(--color-accent-soft);
     color: var(--color-accent);
   }
-  .chapter__icon :global(svg) { width: 1rem; height: 1rem; }
+  .tcard__icon :global(svg) { width: 0.85rem; height: 0.85rem; }
 
-  .chapter__item-title {
+  .tcard__item-title {
     display: block;
-    margin-top: 0.7rem;
+    margin-top: 0.5rem;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     color: var(--color-ink);
   }
-  .chapter__item-desc {
-    margin-top: 0.3rem;
-    font-size: 0.9rem;
-    line-height: 1.55;
+  .tcard__item-desc {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
     color: var(--color-ink-soft);
     text-wrap: pretty;
   }
-  .chapter__more {
-    display: inline-block;
-    margin-top: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--color-accent);
+
+  /*
+    The visual runs to the card's side edges and past its bottom. margin-top:auto
+    pins it to the bottom whatever the text above it costs, so cards sitting side
+    by side in a row line their visuals up.
+  */
+  /*
+    The bleed: the frame renders at its own aspect ratio and the wrapper is pulled
+    up by a negative bottom margin, so its last stretch sits outside the card's
+    box and is cut by the card's overflow. Expressed as an offset rather than a
+    fixed window height so the amount cut stays the same across card widths.
+  */
+  .tcard__shot {
+    margin-top: auto;
+    padding: clamp(1.5rem, 2.4vw, 2rem) clamp(1.5rem, 2.4vw, 2rem) 0;
+    margin-bottom: calc(-1 * clamp(48px, 7vw, 96px));
   }
 </style>
