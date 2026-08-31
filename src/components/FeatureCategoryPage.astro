@@ -67,6 +67,15 @@ const relatedBlogPosts = getRelatedBlogPosts(
 
 const shot = getTourChapter(category.tourKey)?.shot;
 
+/*
+  The accent inks are highlighter fills, not glyph colours: warmAmber renders at
+  1.53:1 on white and mintGreen at 2.26:1, so Write and Find shipped a hero badge
+  you could not see. Mixed toward ink they keep the hue and clear the 3:1 floor.
+  The shared use-case chrome takes a colour, so this is passed in rather than
+  fixed there — it belongs to the ink choice, not the badge.
+*/
+const glyphInk = `color-mix(in oklab, ${category.ink} 60%, var(--color-ink))`;
+
 const pageUrl = `https://harvous.com${category.href}`;
 const jsonLd = {
   "@context": "https://schema.org",
@@ -116,7 +125,7 @@ const jsonLd = {
             style={`--usecase-art-image: url('${category.image}');`}
           >
             <span class="use-case-hero__badge">
-              <Icon name={category.icon} style={`color: ${category.ink};`} />
+              <Icon name={category.icon} style={`color: ${glyphInk};`} />
             </span>
           </div>
 
@@ -124,7 +133,7 @@ const jsonLd = {
             <div class="use-case-detail__badges">
               <span
                 class="use-case-detail__title-badge"
-                style={`background: color-mix(in oklab, ${category.ink} 14%, var(--color-paper)); color: ${category.ink};`}
+                style={`background: color-mix(in oklab, ${category.ink} 14%, var(--color-paper)); color: ${glyphInk};`}
               >
                 {category.title}
               </span>

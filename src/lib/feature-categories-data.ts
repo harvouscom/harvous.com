@@ -58,7 +58,7 @@ const categories: FeatureCategory[] = [
     title: "Activity",
     tagline: "Open to what you already studied, not an empty page.",
     icon: "fa7-solid:layer-group",
-    ink: "var(--study-dock-accent-violet)",
+    ink: "var(--study-dock-accent-skyBlue)",
     image: "/images/auth-hero/ai_bg_044.webp",
     seoTitle: "Activity — see your Bible study as it accumulates | Harvous",
     seoDescription:
@@ -126,7 +126,7 @@ const categories: FeatureCategory[] = [
     title: "Read",
     tagline: "A chapter, with the one before it still there.",
     icon: "fa7-solid:book-open",
-    ink: "var(--study-dock-accent-skyBlue)",
+    ink: "var(--study-dock-accent-violet)",
     image: "/images/auth-hero/ai_bg_046.webp",
     seoTitle: "Read — a Bible reader with your notes in the margin | Harvous",
     seoDescription:
