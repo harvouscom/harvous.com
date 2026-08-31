@@ -50,7 +50,6 @@ if (!hasShot) {
     ) : (
       <div class="tourshot__ph" role="img" aria-label={`Screenshot pending: ${alt}`}>
         <div class="tourshot__ph-inner">
-          <span class="tourshot__chip">Screenshot needed</span>
           <code class="tourshot__file">{src}</code>
           <ul class="tourshot__dir">
             {direction.map((line) => <li>{line}</li>)}
@@ -117,18 +116,6 @@ if (!hasShot) {
     gap: 0.6rem;
     text-align: center;
     max-width: 34rem;
-  }
-  .tourshot__chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--color-paper);
-    background: var(--color-ink);
   }
   .tourshot__file {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

@@ -60,7 +60,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "activity",
     size: "wide",
     eyebrow: "Activity",
-    title: "Today, yesterday, or six weeks back — still here.",
+    title: "Filed for you, threaded by you, brought back by Recall.",
     lead:
       "Harvous starts on your study, not an empty page. Each day is its own sheet, and the days behind it are still there to flip back through.",
     shot: {
