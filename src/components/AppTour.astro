@@ -21,14 +21,12 @@ interface Props {
   id?: string;
   eyebrow?: string;
   title?: string;
-  lead?: string;
 }
 
 const {
   id,
   eyebrow = "A tour of Harvous",
-  title = "Study you can follow, and come back to.",
-  lead = "Read a chapter, mark what lands, write what you saw — and find all of it again later. Here is what that looks like.",
+  title = "Here’s what using Harvous looks like day to day.",
 } = Astro.props;
 
 const published = new Set(
@@ -56,7 +54,11 @@ const chapterHrefs = APP_TOUR_CHAPTERS.map((chapter) =>
     <div class="tour__head section-head" data-reveal>
       <span class="eyebrow-pill">{eyebrow}</span>
       <h2 class="section-title">{title}</h2>
-      <p class="lead tour__lead">{lead}</p>
+      <p class="lead tour__lead">
+        <strong>Activity</strong> opens on what you studied yesterday, <strong>scripture pills</strong>
+        link every reference you type, and the <strong>Library</strong> brings any of it back. Day after
+        day, it stops being a pile of notes and becomes <mark>your own study Bible</mark>.
+      </p>
     </div>
 
     <div class="tour__controls">
