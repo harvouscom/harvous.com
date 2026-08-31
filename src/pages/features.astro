@@ -169,21 +169,9 @@ const jsonLd = {
     gap: 1.25rem;
     grid-template-columns: 1fr;
   }
-  /*
-    Five cards into three columns leaves an orphan row of two. Laying the grid out
-    in double-width tracks lets that row start half a track in, so it sits centred
-    under the three above rather than hanging left.
-  */
+  /* Two equal columns. Every card occupies one; the fifth simply starts a row. */
   @media (min-width: 720px) {
-    .cat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .cat-grid > li { grid-column: span 2; }
-    .cat-grid > li:nth-child(5) { grid-column: 2 / span 2; }
-  }
-  @media (min-width: 1024px) {
-    .cat-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .cat-grid > li { grid-column: span 2; }
-    .cat-grid > li:nth-child(4) { grid-column: 2 / span 2; }
-    .cat-grid > li:nth-child(5) { grid-column: 4 / span 2; }
+    .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
   /*
