@@ -263,6 +263,21 @@ export function blogProductBridgeCopy(category: BlogCategory): BlogProductBridge
 }
 
 /** Paths written by `npm run blog:thumbs` (see scripts/generate-blog-thumbs.mjs). */
+/**
+ * Cards render a description at a fixed size in a fixed column, so a long one
+ * stops being a summary and becomes a wall of type — the card ends up taller
+ * than the thumb above it. Trim on a word boundary; the full text still goes to
+ * RSS, the search index, and the post's own standfirst, none of which are boxed.
+ *
+ * Authored descriptions run 57–194 characters across the blog, median 125.
+ */
+export function blogCardDescription(text: string, max = 150): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const boundary = cut.lastIndexOf(" ");
+  return `${(boundary > 0 ? cut.slice(0, boundary) : cut).replace(/[\s,;:—–-]+$/, "")}…`;
+}
+
 export function blogThumbUrl(slug: string, kind: "spot" | "feat"): string {
   return `/blog-thumbs/${slug}-${kind}.webp`;
 }
