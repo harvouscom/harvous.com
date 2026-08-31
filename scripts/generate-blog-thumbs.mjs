@@ -47,6 +47,7 @@ const SHAPE_BY_SLUG = {
   "start-with-scripture-pills": "rings",
   "start-with-threads": "streak",
   "the-five-minute-capture": "bars",
+  "the-sidebar-did-too-much": "split",
   "the-monday-retention-loop": "rings",
   "why-church-education-evaporates-by-monday": "plume",
   "why-bible-study-thoughts-disappear": "plume",

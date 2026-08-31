@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T20:55:08.444Z",
+  "generatedAt": "2026-08-31T20:58:30.040Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -576,7 +576,7 @@
     "the-sidebar-did-too-much": {
       "category": "how-we-think",
       "mood": "light",
-      "shape": "arc",
+      "shape": "split",
       "source": "ai_bg_072.webp",
       "sourceMean": 199,
       "pack": [
