@@ -7,7 +7,6 @@
    Scoped to .proto-* / --pds-* so it does not leak into site chrome. */
 @import "./prototype-tokens.css";
 @import "./study-highlight-accent-colors.css";
-@import "./app-shell.css";
 
 /* Display + body font is Google Sans Flex (self-hosted variable font in fonts.css). */
 
