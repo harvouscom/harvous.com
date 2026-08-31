@@ -59,10 +59,10 @@ const { word, icon } = PILLS[type];
   .cpill__icon :global(svg) { width: 1em; height: 1em; display: block; }
   .cpill__word { display: inline-block; }
 
-  /* Exact frame palette */
-  .cpill--note      { --pill: #2a9ed6; }
-  .cpill--scripture { --pill: #9250c0; }
-  .cpill--highlight { --pill: #f0c814; }
-  .cpill--folder    { --pill: #e84f83; }
-  .cpill--thread    { --pill: #26c01c; }
+  /* Frame palette — defined once in global.css, shared with feature categories. */
+  .cpill--note      { --pill: var(--pill-note); }
+  .cpill--scripture { --pill: var(--pill-scripture); }
+  .cpill--highlight { --pill: var(--pill-highlight); }
+  .cpill--folder    { --pill: var(--pill-folder); }
+  .cpill--thread    { --pill: var(--pill-thread); }
 </style>
