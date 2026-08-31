@@ -14,6 +14,12 @@
  *
  * The two features each card demonstrates sit above the visual, where there is
  * room for them, rather than below it where the bleed leaves none.
+ *
+ * The whole card is clickable, but it is not wrapped in an anchor — it holds the
+ * per-feature links, and nesting anchors is invalid. Instead the arrow's link
+ * stretches a pseudo-element over the card, and the feature links sit above that
+ * overlay so they still win their own clicks. One real link, one hit area, and
+ * the keyboard still gets a single sensible stop.
  */
 import { Icon } from "astro-icon/components";
 import TourShotFrame from "./TourShotFrame.astro";
@@ -90,6 +96,7 @@ const primaryHref = hrefs.find(Boolean);
 
 <style>
   .tcard {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -97,6 +104,10 @@ const primaryHref = hrefs.find(Boolean);
     border-radius: clamp(20px, 2.2vw, 28px);
     /* Clips the visual's bleed — without this the shot just overhangs. */
     overflow: hidden;
+    transition: background-color 200ms ease;
+  }
+  .tcard:has(.tcard__arrow):hover {
+    background: color-mix(in oklab, var(--color-ink) 4%, var(--color-warm));
   }
 
   .tcard__body {
@@ -137,12 +148,32 @@ const primaryHref = hrefs.find(Boolean);
     background: var(--color-ink);
     color: var(--color-paper);
     text-decoration: none;
-    transition: transform 180ms ease, opacity 180ms ease;
   }
-  .tcard__arrow svg { width: 0.9rem; height: 0.9rem; }
-  .tcard__arrow:hover { transform: translateX(2px); opacity: 0.88; }
+  /*
+    Stretches the arrow's hit area across the whole card. No transform on the
+    arrow itself — a transform would make it a containing block and this would
+    resolve against the arrow instead of the card, so the glyph moves, not the
+    button.
+  */
+  .tcard__arrow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .tcard__arrow svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    transition: transform 180ms ease;
+  }
+  .tcard:hover .tcard__arrow svg { transform: translateX(2px); }
+  @media (prefers-reduced-motion: reduce) {
+    .tcard .tcard__arrow svg { transition: none; }
+    .tcard:hover .tcard__arrow svg { transform: none; }
+  }
 
   .tcard__items {
+    position: relative;
+    z-index: 1;
     list-style: none;
     margin: clamp(1.25rem, 2.2vw, 1.75rem) 0 0;
     padding: 0;
