@@ -87,6 +87,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         title: "Sorts itself & Pin",
         desc: "Auto-folders and auto-tags organize every note. Pin a note, folder, or thread to keep it at the top.",
       },
+      {
+        icons: ["fa7-solid:arrow-right-arrow-left"],
+        title: "Threads",
+        desc: "Connect notes into one line of thinking you can follow later, even across folders and months.",
+      },
     ],
   },
   {
@@ -182,9 +187,9 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         desc: "Notes, folders, threads, highlights, scripture, and resources — browse by kind or search across all of it in one panel.",
       },
       {
-        icons: ["fa7-solid:arrow-right-arrow-left"],
-        title: "Threads",
-        desc: "Manually connect notes together to create a thread, even across folders.",
+        icons: ["fa7-solid:newspaper"],
+        title: "Resource library",
+        desc: "The links and files your study leans on, in one place and one @ away from any note.",
       },
     ],
   },

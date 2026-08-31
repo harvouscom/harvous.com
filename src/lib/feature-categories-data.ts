@@ -76,6 +76,13 @@ const categories: FeatureCategory[] = [
         ],
       },
       {
+        heading: "A thread is the long version of a day sheet",
+        paragraphs: [
+          "A day sheet shows what one day held. A thread shows what one *study* held — the notes you connected on purpose, across every day you worked on it, even when they sit in different folders and were written months apart.",
+          "Auto-folders do the filing so you do not have to. A thread is the opposite: the one piece of organizing worth doing by hand, because only you know which notes belong to the same line of thinking.",
+        ],
+      },
+      {
         heading: "What is worth coming back to finds you",
         paragraphs: [
           "Recall watches for the note that is fading, the highlight you never returned to, the passage you have circled three times without writing anything down. It brings them back when they are worth another look.",
@@ -99,11 +106,16 @@ const categories: FeatureCategory[] = [
         heading: "It sorts itself as you go",
         body: "Auto-folders and auto-tags file each note by what it is actually about, so the record stays usable without you maintaining it.",
       },
+      {
+        icon: "fa7-solid:arrow-right-arrow-left",
+        heading: "Threads follow one study across days",
+        body: "Collect the notes that belong to the same line of thinking, however far apart in the record they were written.",
+      },
     ],
-    featureIds: ["recall", "daily-passage"],
+    featureIds: ["recall", "daily-passage", "threads"],
     featuresHeading: "What keeps the record worth opening",
     featuresLead:
-      "Activity is built out of what Harvous already logs — nothing new to maintain, which is why it can show you a trail that reaches back further than the feature itself.",
+      "Activity is built out of what Harvous already logs — nothing new to maintain, which is why it can show you a trail reaching back further than the feature itself.",
     useCaseSlugs: ["daily-journal", "deep-study"],
     compareSlugs: ["best-apps-to-remember-bible-study", "youversion", "obsidian", "apple-notes"],
     testimonialId: "theo",
@@ -243,10 +255,10 @@ const categories: FeatureCategory[] = [
         ],
       },
       {
-        heading: "Connections you make on purpose",
+        heading: "Act on what you find, without losing your place",
         paragraphs: [
-          "Auto-folders handle the filing. Threads are the opposite: a connection you make deliberately, collecting notes that belong together even when they live in different folders and were written months apart.",
-          "The resource library holds the links and files your study leans on, so you can pull one into a note with @ instead of hunting for it again.",
+          "The Library is not a modal. The note you were writing stays put underneath it, so looking something up is a thing you dip into rather than a place you go.",
+          "Type a query and what you can *do* with a result appears above the results — move it to a folder, pin it, start a thread from it. The resource library sits in the same panel, holding the links and files your study leans on so you can pull one into a note with @ rather than hunting for it again.",
         ],
       },
     ],
@@ -257,9 +269,9 @@ const categories: FeatureCategory[] = [
         body: "Notes, highlights and scripture in one query — enough to find a thought you only half remember.",
       },
       {
-        icon: "fa7-solid:arrow-right-arrow-left",
-        heading: "Threads hold a study together",
-        body: "Connect notes across folders and months into one line of thinking you can follow later.",
+        icon: "fa7-solid:thumbtack",
+        heading: "Pinned things come first",
+        body: "What you pinned heads the list; everything else falls back to how recently you touched it.",
       },
       {
         icon: "fa7-solid:newspaper",
@@ -267,7 +279,7 @@ const categories: FeatureCategory[] = [
         body: "The links and files you keep coming back to, in one place and droppable straight into a note.",
       },
     ],
-    featureIds: ["sidebar-modes", "threads", "resource-library"],
+    featureIds: ["sidebar-modes", "resource-library"],
     featuresHeading: "What finding things again asks for",
     featuresLead:
       "Study you cannot get back to is study you did once. These are the pieces that keep it reachable.",
