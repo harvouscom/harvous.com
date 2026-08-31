@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-31T19:31:07.649Z",
+  "generatedAt": "2026-08-31T20:09:16.529Z",
   "size": "1200x630",
-  "count": 41,
+  "count": 42,
   "targets": [
     {
       "kind": "use-case",
@@ -147,6 +147,11 @@
       "kind": "feature",
       "slug": "bible-reader",
       "out": "/images/features/og/bible-reader.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "compare-translations",
+      "out": "/images/features/og/compare-translations.webp"
     },
     {
       "kind": "feature",

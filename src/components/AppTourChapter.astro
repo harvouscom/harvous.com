@@ -113,7 +113,10 @@ const href = category?.href;
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--color-warm);
+    /* Lighter than the flat --color-warm it replaces, and carrying a trace of the
+       card's own colour, so five cards in a column are not five grey boxes. */
+    background: color-mix(in oklab, var(--cat-ink) 5%, var(--color-paper));
+    border: 1px solid color-mix(in oklab, var(--cat-ink) 12%, var(--color-rule));
     border-radius: clamp(20px, 2.2vw, 28px);
     /* Clips the visual's bleed — without this the shot just overhangs. */
     overflow: hidden;
@@ -141,25 +144,30 @@ const href = category?.href;
     justify-content: space-between;
     gap: 1.25rem;
   }
+  /*
+    Shaped like ContentPill, the brand's content-type chip: one rounded unit,
+    icon at half the word's size, tinted with its own colour. The glyph and word
+    take the darkened ink rather than the raw one — ContentPill's palette is
+    hand-picked to read at 10% tint, these inks are not.
+  */
   .tcard__eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-ink-soft);
-  }
-  .tcard__eyebrow-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.6rem;
-    height: 1.6rem;
-    border-radius: 0.5rem;
-    background: color-mix(in oklab, var(--cat-ink) 16%, var(--color-paper));
+    gap: 0.4em;
+    padding: 0.3em 0.7em;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
     color: var(--cat-glyph);
+    background: color-mix(in oklab, var(--cat-ink) 12%, transparent);
+    font-variation-settings: "wdth" 100, "ROND" 0;
   }
-  .tcard__eyebrow-icon :global(svg) { width: 0.8rem; height: 0.8rem; }
+  .tcard__eyebrow-icon { display: inline-flex; font-size: 0.75em; }
+  .tcard__eyebrow-icon :global(svg) { width: 1em; height: 1em; display: block; }
   .tcard__title {
     margin-top: 0.35rem;
     font-family: var(--font-display);
