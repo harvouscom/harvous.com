@@ -161,7 +161,10 @@ const jsonLd = {
   .cat-grid {
     list-style: none;
     margin: 0;
-    padding: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+    /* Symmetric block padding — the grid had none at the bottom, so the last
+       row of cards sat against the section's closing hairline. */
+    padding-block: clamp(2.5rem, 5vw, 3.5rem);
+    padding-inline: 0;
     display: grid;
     gap: 1.25rem;
     grid-template-columns: 1fr;
