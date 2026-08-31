@@ -149,6 +149,14 @@ const primaryHref = hrefs.find(Boolean);
     letter-spacing: -0.02em;
     color: var(--color-ink);
     text-wrap: balance;
+    /*
+      Two lines' worth of room whether or not the words need it. Headings differ
+      in length, so a one-line title used to start its features higher than the
+      card beside it and the row stopped lining up. Reserving the height fixes
+      that at every width, where breaking the copy by hand would only fix it at
+      the one width it was checked in.
+    */
+    min-height: 2.3em; /* 2 × the 1.15 line-height above */
   }
 
   .tcard__arrow {
