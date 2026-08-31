@@ -168,7 +168,7 @@ const categories: FeatureCategory[] = [
         body: "Select a name or term for its Easton's entry and cross-references, in place, without losing the chapter.",
       },
     ],
-    featureIds: ["bible-reader", "scripture-pills", "dictionary"],
+    featureIds: ["bible-reader", "compare-translations", "scripture-pills", "dictionary"],
     featuresHeading: "What reading in Harvous gives you",
     featuresLead:
       "Keep the Bible app you love. This is for the reading that you want to leave something behind.",
