@@ -33,8 +33,8 @@ const {
  * made a card that reads as a single idea behave as three — and forced the card's
  * own hit area to be layered underneath them.
  */
-const chapterHrefs = APP_TOUR_CHAPTERS.map(
-  (chapter) => getFeatureCategoryBySlug(chapter.categorySlug)?.href
+const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
+  getFeatureCategoryBySlug(chapter.categorySlug)
 );
 ---
 
@@ -65,7 +65,7 @@ const chapterHrefs = APP_TOUR_CHAPTERS.map(
       {
         APP_TOUR_CHAPTERS.map((chapter, i) => (
           <li class:list={["tour__slide", `tour__slide--${chapter.size}`]} data-reveal style={`--reveal-delay: ${Math.min(i, 2) * 60}ms;`}>
-            <AppTourChapter chapter={chapter} href={chapterHrefs[i]} />
+            <AppTourChapter chapter={chapter} category={chapterCategories[i]} />
           </li>
         ))
       }

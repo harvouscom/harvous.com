@@ -28,25 +28,32 @@
 import { Icon } from "astro-icon/components";
 import TourShotFrame from "./TourShotFrame.astro";
 import type { TourChapter } from "../lib/app-tour-chapters.ts";
+import type { FeatureCategory } from "../lib/feature-categories-data.ts";
 
 interface Props {
   chapter: TourChapter;
-  /** The category page this card opens. */
-  href?: string;
+  /** The category this card opens — supplies its destination, icon and colour. */
+  category?: FeatureCategory;
   loading?: "lazy" | "eager";
 }
 
-const { chapter, href, loading = "lazy" } = Astro.props;
+const { chapter, category, loading = "lazy" } = Astro.props;
 const { eyebrow, title, shot, items, size } = chapter;
+const href = category?.href;
 ---
 
-<article class:list={["tcard", `tcard--${size}`]}>
+<article class:list={["tcard", `tcard--${size}`]} style={category ? `--cat-ink: ${category.ink};` : undefined}>
   {href && <a class="tcard__link" href={href} aria-label={`More about ${eyebrow}`} />}
 
   <div class="tcard__body">
     <div class="tcard__head">
       <div>
-        <p class="tcard__eyebrow">{eyebrow}</p>
+        <p class="tcard__eyebrow">
+          {category && (
+            <span class="tcard__eyebrow-icon"><Icon name={category.icon} /></span>
+          )}
+          {eyebrow}
+        </p>
         <h3 class="tcard__title">{title}</h3>
       </div>
       {
@@ -94,6 +101,14 @@ const { eyebrow, title, shot, items, size } = chapter;
 
 <style>
   .tcard {
+    /*
+      The accent inks are chosen for highlighter fills, not for small glyphs:
+      warmAmber is 1.53:1 on white and mintGreen 2.26:1, so using them raw would
+      make three of five cards' icons effectively invisible. Mixing toward ink
+      keeps the hue identity and clears the 3:1 floor for meaningful graphics.
+    */
+    --cat-ink: var(--color-accent);
+    --cat-glyph: color-mix(in oklab, var(--cat-ink) 60%, var(--color-ink));
     position: relative;
     display: flex;
     flex-direction: column;
@@ -127,9 +142,24 @@ const { eyebrow, title, shot, items, size } = chapter;
     gap: 1.25rem;
   }
   .tcard__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.875rem;
+    font-weight: 500;
     color: var(--color-ink-soft);
   }
+  .tcard__eyebrow-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 0.5rem;
+    background: color-mix(in oklab, var(--cat-ink) 16%, var(--color-paper));
+    color: var(--cat-glyph);
+  }
+  .tcard__eyebrow-icon :global(svg) { width: 0.8rem; height: 0.8rem; }
   .tcard__title {
     margin-top: 0.35rem;
     font-family: var(--font-display);
@@ -239,8 +269,8 @@ const { eyebrow, title, shot, items, size } = chapter;
     width: 1.85rem;
     height: 1.85rem;
     border-radius: 0.55rem;
-    background: var(--color-accent-soft);
-    color: var(--color-accent);
+    background: color-mix(in oklab, var(--cat-ink) 16%, var(--color-paper));
+    color: var(--cat-glyph);
   }
   .tcard__icon :global(svg) { width: 0.85rem; height: 0.85rem; }
 

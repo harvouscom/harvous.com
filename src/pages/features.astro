@@ -168,8 +168,10 @@ const jsonLd = {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 0.75rem;
-    background: color-mix(in oklab, var(--cat-ink) 14%, var(--color-paper));
-    color: var(--cat-ink);
+    background: color-mix(in oklab, var(--cat-ink) 16%, var(--color-paper));
+    /* Same reason as the tour cards: raw accent inks are too light to read as
+       glyphs — warmAmber is 1.53:1 on white. Mixed toward ink they clear 3:1. */
+    color: color-mix(in oklab, var(--cat-ink) 60%, var(--color-ink));
   }
   .cat-card__icon :global(svg) { width: 1.05rem; height: 1.05rem; }
 
