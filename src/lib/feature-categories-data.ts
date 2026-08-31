@@ -181,7 +181,7 @@ const categories: FeatureCategory[] = [
     title: "Write",
     tagline: "Type the reference. It knows what you mean.",
     icon: "fa7-solid:pen",
-    ink: "var(--pill-highlight)",
+    ink: "var(--pill-highlight-ink)",
     image: "/images/auth-hero/ai_bg_072.webp",
     seoTitle: "Write — Bible study notes that stay connected | Harvous",
     seoDescription:
