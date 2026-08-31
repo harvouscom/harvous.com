@@ -243,170 +243,33 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
       window.addEventListener("hashchange", () => revealHashTarget(window.location.hash));
     </script>
 
-    {/*
-      `is:global` because the overlay below is built in JS at click time, so it never carries
-      the scoping attribute Astro stamps on elements written in this template — scoped, these
-      rules match nothing and the handoff silently degrades to a plain navigation.
-    */}
-    <style is:global>
-      /*
-        The handoff to the app.
-
-        harvous.com and app.harvous.com are separate origins, so there is no shared-element
-        transition to be had here: cross-document view transitions are same-origin only, and the
-        app's CSP forbids framing it. What is possible is a matched seam — end this page on
-        exactly the frame the app begins on, and the document swap in the middle has nothing to
-        show. Those two values are the app's real first paint, painted before its bundle loads
-        by public/scripts/prototype-route-boot.js: the canvas underneath, and a rounded card
-        inset 14px. Keep them in sync with prototype-tokens.css.
-
-        clip-path rather than a transform, for the same reason the app's own morphs use it: a
-        transform scaling a pill up to a viewport would stretch the card inside it back out.
-      */
-      .try-morph {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        background: oklch(98.7% 0.005 92);
-        clip-path: inset(var(--t) var(--r) var(--b) var(--l) round 999px);
-        transition:
-          clip-path 420ms cubic-bezier(0.32, 0.72, 0.24, 1);
-        pointer-events: none;
-      }
-      .try-morph[data-open="true"] {
-        clip-path: inset(0 0 0 0 round 0);
-      }
-      /* No believable rect to grow from — cross into the app's colour without travelling. */
-      .try-morph[data-fade] {
-        clip-path: none;
-        opacity: 0;
-        transition: opacity 260ms linear;
-      }
-      .try-morph[data-fade][data-open="true"] {
-        opacity: 1;
-      }
-      .try-morph__card {
-        position: absolute;
-        inset: 14px;
-        border-radius: 18px;
-        background: oklch(100% 0 0);
-        box-shadow:
-          0 2px 12px oklch(0% 0 0 / 0.02),
-          0 1px 3px oklch(0% 0 0 / 0.01);
-        opacity: 0;
-        /* A beat behind the box, so the card arrives into a shape rather than growing as one. */
-        transition: opacity 220ms linear 140ms;
-      }
-      .try-morph[data-open="true"] .try-morph__card {
-        opacity: 1;
-      }
-      /*
-        Fewer and gentler, not none — the house rule. The ground still changes to the app's
-        colour so the navigation is not a cut from white to warm; it simply does not travel.
-      */
-      @media (prefers-reduced-motion: reduce) {
-        .try-morph {
-          clip-path: none;
-          transition: none;
-        }
-        .try-morph__card {
-          transition: none;
-        }
-      }
-    </style>
-
     <script is:inline>
-      (function tryMorph() {
-        var links = document.querySelectorAll("a[data-try-morph]");
+      /*
+       * Warm the app's origin, and nothing more.
+       *
+       * There was a clip-path morph here that grew the button into a full-bleed replica of the
+       * app's first paint. It read badly for a reason no amount of tuning fixes: the animation
+       * finishes in 420ms and a cold cross-origin load does not, so what it actually showed was
+       * a rounded rectangle sitting on screen waiting. A plain navigation with the connection
+       * already open is faster to the real thing and never pretends to be further along than it
+       * is.
+       */
+      (function warmAppOrigin() {
+        var links = document.querySelectorAll("a[data-try-cta]");
         if (!links.length) return;
-
         var warmed = false;
         function warm(event) {
           if (warmed) return;
           warmed = true;
           var link = document.createElement("link");
           link.rel = "prefetch";
-          // The anchor's own href, so this follows the origin the build was made against
-          // rather than hard-coding production into a warm-up that would then warm the wrong
-          // host in every other environment.
+          // The anchor's own href, so this follows the origin the build was made against.
           link.href = event.currentTarget.href;
           document.head.appendChild(link);
         }
-
-        /*
-         * A rect worth growing out of: on screen, and no larger than the screen.
-         *
-         * The hero's entrance animation transforms this button, and `getBoundingClientRect`
-         * reports the *visual* box — so a click landing mid-reveal measured a pill 1392px wide
-         * starting 32px off the left edge, and the app would have grown out of a rectangle
-         * nobody pressed. Same lesson the app's own panel morph records about re-measuring
-         * mid-flight. When the number is not believable, fall back to a plain fade rather than
-         * animating a lie.
-         */
-        function usableRect(rect) {
-          return (
-            rect.width > 0 &&
-            rect.height > 0 &&
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.right <= window.innerWidth &&
-            rect.bottom <= window.innerHeight
-          );
-        }
-
-        function run(anchor, href) {
-          var rect = anchor.getBoundingClientRect();
-          var overlay = document.createElement("div");
-          overlay.className = "try-morph";
-          overlay.setAttribute("aria-hidden", "true");
-          if (usableRect(rect)) {
-            // The starting shape is the button the person actually pressed, so the app grows
-            // out of the thing they touched rather than out of the middle of the screen.
-            overlay.style.setProperty("--t", rect.top + "px");
-            overlay.style.setProperty("--l", rect.left + "px");
-            overlay.style.setProperty("--r", window.innerWidth - rect.right + "px");
-            overlay.style.setProperty("--b", window.innerHeight - rect.bottom + "px");
-          } else {
-            overlay.setAttribute("data-fade", "true");
-          }
-          overlay.appendChild(document.createElement("div")).className = "try-morph__card";
-          document.body.appendChild(overlay);
-
-          // Commit the collapsed frame before opening, or the browser coalesces both into one
-          // style recalc and there is nothing to transition from.
-          void overlay.offsetWidth;
-          requestAnimationFrame(function () {
-            overlay.setAttribute("data-open", "true");
-          });
-
-          /*
-           * Navigate now, not when the animation ends. The browser keeps painting this document
-           * until the next one is ready, so the animation is cover for the network time rather
-           * than something added in front of it. Waiting for `transitionend` would turn a 420ms
-           * animation and a 400ms load into 820ms of waiting.
-           */
-          window.location.href = href;
-        }
-
         links.forEach(function (anchor) {
           anchor.addEventListener("pointerenter", warm);
           anchor.addEventListener("focus", warm);
-          anchor.addEventListener("click", function (event) {
-            // Leave modified clicks alone — a new tab should get a plain navigation, and
-            // animating this one shut while the page stays put would be a lie.
-            if (
-              event.defaultPrevented ||
-              event.button !== 0 ||
-              event.metaKey ||
-              event.ctrlKey ||
-              event.shiftKey ||
-              event.altKey
-            ) {
-              return;
-            }
-            event.preventDefault();
-            run(anchor, anchor.href);
-          });
         });
       })();
     </script>
