@@ -1,0 +1,154 @@
+---
+/**
+ * AppTourChapter — one chapter of the homepage tour: a heading, the screenshot,
+ * and the two or three features that screenshot actually demonstrates.
+ *
+ * The items sit *under* the shot rather than beside it. Dinky's app is a
+ * portrait window and reads fine in half a column; Harvous is a wide, dense
+ * document app, so the shot needs the full measure or the interface in it stops
+ * being legible — which would defeat the point of showing it at all.
+ */
+import { Icon } from "astro-icon/components";
+import TourShotFrame from "./TourShotFrame.astro";
+import type { TourChapter } from "../lib/app-tour-chapters.ts";
+
+interface Props {
+  chapter: TourChapter;
+  /** Per-item destinations, resolved by the parent against published pages. */
+  hrefs: (string | undefined)[];
+  loading?: "lazy" | "eager";
+}
+
+const { chapter, hrefs, loading = "lazy" } = Astro.props;
+const { eyebrow, title, lead, shot, items } = chapter;
+---
+
+<article class="chapter">
+  <div class="chapter__head">
+    <span class="eyebrow-pill">{eyebrow}</span>
+    <h3 class="chapter__title">{title}</h3>
+    <p class="lead chapter__lead">{lead}</p>
+  </div>
+
+  <TourShotFrame
+    src={shot.src}
+    alt={shot.alt}
+    width={shot.width}
+    height={shot.height}
+    direction={shot.direction}
+    loading={loading}
+  />
+
+  <ul class="chapter__items" role="list">
+    {
+      items.map((item, i) => {
+        const href = hrefs[i];
+        const Tag = href ? "a" : "div";
+        return (
+          <li>
+            <Tag class:list={["chapter__item", href && "chapter__item--link"]} href={href}>
+              <div class="chapter__icons">
+                {item.icons.map((icon) => (
+                  <span class="chapter__icon"><Icon name={icon} /></span>
+                ))}
+              </div>
+              <span class="chapter__item-title">{item.title}</span>
+              <p class="chapter__item-desc">{item.desc}</p>
+              {href && <span class="chapter__more">Learn more →</span>}
+            </Tag>
+          </li>
+        );
+      })
+    }
+  </ul>
+</article>
+
+<style>
+  .chapter {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .chapter__head {
+    max-width: 40rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .chapter__head > * + * { margin-top: 0.75rem; }
+  .chapter__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    font-size: clamp(1.5rem, 3.2vw, 2.125rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .chapter__lead {
+    margin-inline: auto;
+    max-width: 34rem;
+  }
+
+  /* Items — centered flow so a chapter with one item doesn't sit in a lopsided
+     two-column grid, and a chapter with two still reads as a pair. */
+  .chapter__items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.75rem 2.5rem;
+  }
+  .chapter__items > li {
+    flex: 1 1 16rem;
+    max-width: 24rem;
+  }
+
+  .chapter__item {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+  .chapter__item--link { transition: transform 200ms ease; }
+  .chapter__item--link:hover { transform: translateY(-2px); }
+  .chapter__item--link:hover .chapter__item-title { color: var(--color-accent); }
+
+  .chapter__icons { display: flex; align-items: center; gap: 0.35rem; }
+  .chapter__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.7rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .chapter__icon :global(svg) { width: 1rem; height: 1rem; }
+
+  .chapter__item-title {
+    display: block;
+    margin-top: 0.7rem;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-ink);
+  }
+  .chapter__item-desc {
+    margin-top: 0.3rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .chapter__more {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+</style>

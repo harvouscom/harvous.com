@@ -14,7 +14,8 @@ export function carouselFitsAll(track: HTMLElement, slideSelector: string): bool
 }
 
 type BindCarouselFitOptions = {
-  fitRoots: HTMLElement[];
+  /** Unused by the implementation; optional so callers aren't forced to invent one. */
+  fitRoots?: HTMLElement[];
   track: HTMLElement;
   slideSelector: string;
   controlRoots?: HTMLElement[];

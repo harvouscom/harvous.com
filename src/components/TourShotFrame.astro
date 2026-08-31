@@ -1,0 +1,146 @@
+---
+/**
+ * TourShotFrame — the screenshot slot in a tour chapter.
+ *
+ * Renders the real screenshot when one exists at `src`, and a captioned
+ * placeholder at the identical aspect ratio when it does not. The check is a
+ * filesystem lookup at build time, so adding the PNG to public/tour/ is the only
+ * step needed to swap a placeholder out — nothing here changes.
+ *
+ * The placeholder reserves the exact final height, so the page you review with
+ * placeholders is the page you get with screenshots. It is also deliberately
+ * loud: a missing shot should be impossible to mistake for a design choice, and
+ * the build prints a warning naming every one still outstanding.
+ */
+import { existsSync } from "node:fs";
+import path from "node:path";
+import OptimizedImage from "./OptimizedImage.astro";
+
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  direction: string[];
+  loading?: "lazy" | "eager";
+}
+
+const { src, alt, width, height, direction, loading = "lazy" } = Astro.props;
+
+const hasShot = existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
+
+if (!hasShot) {
+  console.warn(`[tour] screenshot missing — placeholder rendered for ${src}`);
+}
+---
+
+<figure class="tourshot" style={`--shot-ratio: ${width} / ${height};`}>
+  {
+    hasShot ? (
+      <OptimizedImage
+        class="tourshot__img"
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        loading={loading}
+      />
+    ) : (
+      <div class="tourshot__ph" role="img" aria-label={`Screenshot pending: ${alt}`}>
+        <div class="tourshot__ph-inner">
+          <span class="tourshot__chip">Screenshot needed</span>
+          <code class="tourshot__file">{src}</code>
+          <ul class="tourshot__dir">
+            {direction.map((line) => <li>{line}</li>)}
+          </ul>
+          <span class="tourshot__dims">{width} × {height}</span>
+        </div>
+      </div>
+    )
+  }
+</figure>
+
+<style>
+  .tourshot {
+    margin: 0;
+    width: 100%;
+    aspect-ratio: var(--shot-ratio);
+    border-radius: clamp(16px, 2vw, 24px);
+    overflow: hidden;
+    background: var(--color-warm);
+    box-shadow: var(--shadow-float);
+  }
+  .tourshot__img,
+  .tourshot :global(img) {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  /* Placeholder — unmistakable, but not ugly enough to distract from layout review. */
+  .tourshot__ph {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background-color: var(--color-warm);
+    background-image: repeating-linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--color-ink) 4%, transparent) 0 10px,
+      transparent 10px 20px
+    );
+    border: 2px dashed color-mix(in oklab, var(--color-ink) 22%, transparent);
+    border-radius: inherit;
+  }
+  .tourshot__ph-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+    max-width: 34rem;
+  }
+  .tourshot__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    background: var(--color-ink);
+  }
+  .tourshot__file {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8125rem;
+    color: var(--color-ink-soft);
+  }
+  .tourshot__dir {
+    margin: 0.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+  .tourshot__dims {
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+  }
+
+  /* A short frame can't hold five lines of direction; drop to the essentials. */
+  @media (max-width: 719px) {
+    .tourshot__dir { font-size: 0.8125rem; }
+    .tourshot__dir li:nth-child(n + 4) { display: none; }
+  }
+</style>
