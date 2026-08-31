@@ -35,6 +35,14 @@
   --pill-note: #2a9ed6;
   --pill-scripture: #9250c0;
   --pill-highlight: #f0c814;
+  /*
+    The yellow is the one that cannot carry itself as a glyph or a word — 1.53:1
+    on white, where the other four sit between 2.4 and 5.1. This is the same hue
+    taken to 3.49, which puts it in line with the blue (3.02) and the pink (3.57)
+    rather than below them. ContentPill keeps the raw fill; this is for anything
+    the yellow has to be *read* in.
+  */
+  --pill-highlight-ink: #a8850a;
   --pill-folder: #e84f83;
   --pill-thread: #26c01c;
   --color-accent-soft: #eaf1ff;
