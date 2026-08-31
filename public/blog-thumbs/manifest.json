@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T20:36:17.471Z",
+  "generatedAt": "2026-08-31T20:47:50.854Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -157,7 +157,7 @@
       },
       "spot": "/blog-thumbs/a-rest-day-belongs-in-the-record-spot.webp",
       "feat": "/blog-thumbs/a-rest-day-belongs-in-the-record-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "asking-better-questions-in-class-and-group": {
       "category": "teaching",
@@ -847,7 +847,7 @@
       },
       "spot": "/blog-thumbs/why-the-sidebar-had-to-go-spot.webp",
       "feat": "/blog-thumbs/why-the-sidebar-had-to-go-feat.webp",
-      "skipped": false
+      "skipped": true
     }
   }
 }
