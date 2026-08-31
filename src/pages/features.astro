@@ -169,10 +169,21 @@ const jsonLd = {
     gap: 1.25rem;
     grid-template-columns: 1fr;
   }
+  /*
+    Five cards into three columns leaves an orphan row of two. Laying the grid out
+    in double-width tracks lets that row start half a track in, so it sits centred
+    under the three above rather than hanging left.
+  */
   @media (min-width: 720px) {
-    .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    /* Activity leads, so it takes the full row the way it does on the homepage. */
-    .cat-grid > li:first-child { grid-column: 1 / -1; }
+    .cat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .cat-grid > li { grid-column: span 2; }
+    .cat-grid > li:nth-child(5) { grid-column: 2 / span 2; }
+  }
+  @media (min-width: 1024px) {
+    .cat-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .cat-grid > li { grid-column: span 2; }
+    .cat-grid > li:nth-child(4) { grid-column: 2 / span 2; }
+    .cat-grid > li:nth-child(5) { grid-column: 4 / span 2; }
   }
 
   /*
@@ -230,11 +241,6 @@ const jsonLd = {
       color-mix(in oklab, var(--color-ink) 6%, transparent) 100%
     );
   }
-  /* The lead card is wide, so its art becomes a band rather than a panel. */
-  @media (min-width: 720px) {
-    .cat-grid > li:first-child .cat-card__art { aspect-ratio: 5 / 1; min-height: 9rem; }
-  }
-
   .cat-card__badge {
     position: relative;
     z-index: 1;
@@ -246,9 +252,12 @@ const jsonLd = {
     border-radius: 1rem;
     background: var(--color-card);
     box-shadow: var(--shadow-card);
-    /* Raw pill inks are highlighter fills — --pill-highlight is 1.53:1 on white.
-       Mixed toward ink they keep the hue and clear the 3:1 floor. */
-    color: color-mix(in oklab, var(--cat-ink) 60%, var(--color-ink));
+    /*
+      70% is as saturated as one ratio can go and still clear the 3:1 floor for
+      meaningful graphics on all five: --pill-highlight lands at 3.11 there and
+      2.75 at 75%. Raw, it is 1.53 — visible as a shape, not as a colour.
+    */
+    color: color-mix(in oklab, var(--cat-ink) 70%, var(--color-ink));
   }
   .cat-card__badge :global(svg) { width: 1.35rem; height: 1.35rem; }
 
@@ -320,7 +329,7 @@ const jsonLd = {
   a.cat-card__pill:hover {
     border-color: color-mix(in srgb, var(--cat-ink) 35%, var(--color-rule));
     background: color-mix(in oklab, var(--cat-ink) 10%, var(--color-paper));
-    color: color-mix(in oklab, var(--cat-ink) 60%, var(--color-ink));
+    color: color-mix(in oklab, var(--cat-ink) 70%, var(--color-ink));
   }
   .cat-card__pill--flat { color: var(--color-ink-soft); }
 </style>
