@@ -220,14 +220,13 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
     line-height: 1.5;
     color: var(--color-ink-soft);
   }
+  /* Same measure and column gap as the grid above, so the two sets of tiles sit
+     on one set of columns instead of two nested widths. */
   .grid-band__soon-grid {
     margin-top: clamp(1.5rem, 4vw, 2rem);
-    max-width: 42rem;
-    margin-inline: auto;
     display: grid;
     gap: 1.25rem 1.5rem;
     grid-template-columns: 1fr;
-    justify-content: center;
   }
   @media (min-width: 720px) {
     .grid-band__soon-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
