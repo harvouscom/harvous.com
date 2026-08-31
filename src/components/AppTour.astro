@@ -11,11 +11,10 @@
  * Stacked on desktop; a scroll-snap slider below 720px, the same pattern and the
  * same carousel-fit binding the other homepage carousels use.
  */
-import { getCollection } from "astro:content";
 import Container from "./layout/Container.astro";
 import AppTourChapter from "./AppTourChapter.astro";
-import { hasDetailContent } from "../lib/product-page-data.ts";
 import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
+import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
 
 interface Props {
   id?: string;
@@ -29,23 +28,13 @@ const {
   title = "Here’s what using Harvous looks like day to day.",
 } = Astro.props;
 
-const published = new Set(
-  (await getCollection("features"))
-    .filter((f) => !f.data.draft && hasDetailContent(f.data))
-    .map((f) => f.id)
-);
-
 /**
- * A featureSlug that has no published page yet resolves to no link rather than a
- * 404 — which is how Compare translations sits in the tour before its page
- * exists, and how it starts linking the moment that page lands.
+ * One destination per card. The items inside used to be links of their own, which
+ * made a card that reads as a single idea behave as three — and forced the card's
+ * own hit area to be layered underneath them.
  */
-const chapterHrefs = APP_TOUR_CHAPTERS.map((chapter) =>
-  chapter.items.map((item) =>
-    item.href ?? (item.featureSlug && published.has(item.featureSlug)
-      ? `/features/${item.featureSlug}/`
-      : undefined)
-  )
+const chapterHrefs = APP_TOUR_CHAPTERS.map(
+  (chapter) => getFeatureCategoryBySlug(chapter.categorySlug)?.href
 );
 ---
 
@@ -76,7 +65,7 @@ const chapterHrefs = APP_TOUR_CHAPTERS.map((chapter) =>
       {
         APP_TOUR_CHAPTERS.map((chapter, i) => (
           <li class:list={["tour__slide", `tour__slide--${chapter.size}`]} data-reveal style={`--reveal-delay: ${Math.min(i, 2) * 60}ms;`}>
-            <AppTourChapter chapter={chapter} hrefs={chapterHrefs[i]} />
+            <AppTourChapter chapter={chapter} href={chapterHrefs[i]} />
           </li>
         ))
       }

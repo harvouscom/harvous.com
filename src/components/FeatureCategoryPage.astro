@@ -1,0 +1,284 @@
+---
+/**
+ * FeatureCategoryPage — one of the five things Harvous is for.
+ *
+ * Structured like UseCaseDetailPage, which is the site's existing "a page that
+ * houses children" shape, and it reuses that page's chrome wholesale by
+ * importing styles/use-cases.css. What it adds is the screenshot from the
+ * matching homepage tour card — the same file, the same
+ * placeholder-until-a-PNG-lands behaviour — so the card and the page it opens
+ * show the same thing.
+ *
+ * It also carries the site's first downward-to-upward link: a category names the
+ * use cases it serves, which nothing under /features/ has ever done.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageClosingCTA from "./PageClosingCTA.astro";
+import RelatedBlogPosts from "./RelatedBlogPosts.astro";
+import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
+import ComparePreview from "./ComparePreview.astro";
+import TourShotFrame from "./TourShotFrame.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+import { getCompareBySlug } from "../lib/compare-data.ts";
+import type { FeatureCategory } from "../lib/feature-categories-data.ts";
+import { getTourChapter } from "../lib/app-tour-chapters.ts";
+import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
+import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
+import { getUseCaseBySlug, getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
+import type { UseCase } from "../lib/use-cases-data.ts";
+import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
+import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
+import { buildSignupUrl } from "../lib/signup-url.ts";
+import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
+import "../styles/use-cases.css";
+
+interface Props {
+  category: FeatureCategory;
+}
+
+const { category } = Astro.props;
+
+const allFeatures = await getCollection("features");
+const housedFeatures: RelatedFeatureCard[] = category.featureIds
+  .map((id) => {
+    const soon = getComingSoonGridItem(id);
+    if (soon) return { kind: "comingSoon" as const, item: soon };
+    const feature = allFeatures.find((f) => f.id === id);
+    return feature ? { kind: "feature" as const, feature } : undefined;
+  })
+  .filter((c): c is RelatedFeatureCard => c !== undefined);
+
+const relatedUseCases = category.useCaseSlugs
+  .map((slug) => getUseCaseBySlug(slug))
+  .filter((uc): uc is UseCase => uc !== undefined);
+
+const relatedCompare = category.compareSlugs
+  .map((slug) => getCompareBySlug(slug))
+  .filter((e): e is NonNullable<typeof e> => e !== undefined);
+
+const showDrafts = includeBlogDrafts();
+const relatedBlogPosts = getRelatedBlogPosts(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+  // Blog affinity is keyed by feature, not category, so borrow the first housed
+  // feature's slug rather than adding a fourth key to RelatedBlogFilter.
+  { feature: category.featureIds[0] },
+);
+
+const shot = getTourChapter(category.tourKey)?.shot;
+
+const pageUrl = `https://harvous.com${category.href}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      name: category.seoTitle,
+      description: category.seoDescription,
+      url: pageUrl,
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
+        { "@type": "ListItem", position: 2, name: "Features", item: "https://harvous.com/features/" },
+        { "@type": "ListItem", position: 3, name: category.title, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={category.seoTitle}
+  description={category.seoDescription}
+  ogImage={`/images/features/og/${category.slug}.webp`}
+  jsonLd={jsonLd}
+>
+  <article class="use-case-detail" style={`--use-case-ink: ${category.ink};`}>
+    <header class="border-b border-[var(--color-rule)]">
+      <div class="detail-content py-10 md:py-14">
+        <div data-reveal>
+          <div class="use-case-detail__nav">
+            <a href="/features/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path
+                  fill-rule="evenodd"
+                  d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              Features
+            </a>
+          </div>
+
+          <div
+            class="use-case-hero__art mt-8"
+            style={`--usecase-art-image: url('${category.image}');`}
+          >
+            <span class="use-case-hero__badge">
+              <Icon name={category.icon} style={`color: ${category.ink};`} />
+            </span>
+          </div>
+
+          <div class="mt-8 text-center">
+            <div class="use-case-detail__badges">
+              <span
+                class="use-case-detail__title-badge"
+                style={`background: color-mix(in oklab, ${category.ink} 14%, var(--color-paper)); color: ${category.ink};`}
+              >
+                {category.title}
+              </span>
+            </div>
+            <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">{category.heroTitle}</h1>
+            <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-ink-soft)]">
+              {category.heroLead}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {
+      shot && (
+        <section class="detail-content py-10 md:py-12" data-reveal="scale" style="--reveal-delay: 80ms;">
+          <TourShotFrame
+            src={shot.src}
+            alt={shot.alt}
+            width={shot.width}
+            height={shot.height}
+            direction={shot.direction}
+            loading="eager"
+          />
+        </section>
+      )
+    }
+
+    <section class="detail-content py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
+      <div class="prose-letter space-y-8">
+        {
+          category.sections.map((section) => (
+            <div>
+              <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
+              {section.paragraphs.map((p) => (
+                <p class="mt-3 text-[var(--color-ink-soft)]" set:html={inlineMdLinksToHtml(p)} />
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="frame-divider">
+      <div class="detail-content py-14 md:py-16">
+        <h2 class="font-display text-2xl leading-snug md:text-3xl">What that looks like in Harvous</h2>
+        <ul class="mt-8 grid gap-8 sm:grid-cols-2" data-reveal="stagger" role="list">
+          {
+            category.moments.map((m) => (
+              <li class="flex gap-4">
+                <span class="use-case-moment__icon">
+                  <Icon name={m.icon} />
+                </span>
+                <div>
+                  <h3 class="font-semibold text-[var(--color-ink)]">{m.heading}</h3>
+                  <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">{m.body}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <UseCaseRelatedFeatures
+      featuresHeading={category.featuresHeading}
+      featuresLead={category.featuresLead}
+      cards={housedFeatures}
+    />
+
+    {
+      relatedUseCases.length > 0 && (
+        <section class="frame-divider">
+          <div class="detail-content py-14 md:py-16">
+            <h2 class="font-display text-2xl leading-snug md:text-3xl">When this matters most</h2>
+            <p class="mt-3 text-[var(--color-ink-soft)]">
+              The ways of studying that lean hardest on this part of Harvous.
+            </p>
+            <ul class="use-case-audiences" data-reveal="stagger" role="list">
+              {relatedUseCases.map((uc) => (
+                <li>
+                  <a href={uc.href} class="use-case-audiences__pill">
+                    <Icon name={uc.icon} />
+                    <span>{getUseCaseDisplayTitle(uc)}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-5">
+              <a href="/use-cases/" class="text-sm font-medium text-[var(--color-accent)] hover:underline">
+                See all use cases →
+              </a>
+            </p>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      relatedCompare.length > 0 && (
+        <ComparePreview
+          id="works-alongside"
+          entries={relatedCompare}
+          eyebrow="Compare"
+          title="Works alongside other tools"
+          lead="Harvous does a different job than most Bible apps. Many people use it next to something they already love."
+          showAllLink
+          fathomTrack={fathomCompare.detailRelated}
+          fathomAllTrack={fathomCompare.homeAll}
+        />
+      )
+    }
+  </article>
+
+  <PageClosingCTA
+    heading={category.heroTitle}
+    lead={category.tagline}
+    href={buildSignupUrl({ useCase: category.useCaseSlugs[0], source: `feature_${category.slug}` })}
+    fathomTrack={fathomSignup.featureDetail(category.slug)}
+  />
+
+  <RelatedBlogPosts posts={relatedBlogPosts} />
+</BaseLayout>
+
+<style>
+  .use-case-audiences {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .use-case-audiences__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+  .use-case-audiences__pill:hover {
+    background: var(--color-warm);
+    border-color: color-mix(in srgb, var(--color-ink) 16%, var(--color-rule));
+  }
+  .use-case-audiences__pill :global(svg) {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--use-case-ink);
+  }
+</style>
