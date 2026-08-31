@@ -86,11 +86,10 @@ const jsonLd = {
 >
   <PageIntro>
     <span class="eyebrow-pill">Features</span>
-    <h1 class="section-title mt-4">Everything Harvous does, in five parts.</h1>
+    <h1 class="section-title mt-4">Everything Harvous does to keep your study.</h1>
     <p class="lead page-intro-lead mt-4 max-w-2xl mx-auto">
-      The study you already did, reading Scripture, writing what you find, getting back to it
-      months later, and studying with other people. Every feature sits under
-      <mark>one of those five</mark>.
+      Read Scripture, write what you find, get back to it months later, share it with your
+      group — and open to the study you already did. <mark>Nothing you write goes missing.</mark>
     </p>
   </PageIntro>
 
@@ -202,6 +201,7 @@ const jsonLd = {
   }
 
   .cat-card__main {
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -288,6 +288,9 @@ const jsonLd = {
   }
 
   .cat-card__inside {
+    /* Fills whatever height a taller card in the row leaves over, so the tinted
+       band runs to the bottom instead of stopping at its pills. */
+    flex: 1 1 auto;
     padding: 1.1rem 1.35rem 1.35rem;
     border-top: 1px solid var(--color-rule);
     background: color-mix(in oklab, var(--color-warm) 55%, var(--color-card));

@@ -113,10 +113,9 @@ const href = category?.href;
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* Lighter than the flat --color-warm it replaces, and carrying a trace of the
-       card's own colour, so five cards in a column are not five grey boxes. */
-    background: color-mix(in oklab, var(--cat-ink) 5%, var(--color-paper));
-    border: 1px solid color-mix(in oklab, var(--cat-ink) 12%, var(--color-rule));
+    /* One quiet ground for all five. The colour lives in the pill and the icons,
+       which is enough to tell the cards apart without tinting the whole surface. */
+    background: color-mix(in oklab, var(--color-warm) 60%, var(--color-paper));
     border-radius: clamp(20px, 2.2vw, 28px);
     /* Clips the visual's bleed — without this the shot just overhangs. */
     overflow: hidden;
@@ -154,7 +153,7 @@ const href = category?.href;
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
-    padding: 0.3em 0.7em;
+    padding: 0.45em 0.8em;
     border-radius: 999px;
     font-family: var(--font-display);
     font-size: 0.8125rem;
@@ -166,7 +165,7 @@ const href = category?.href;
     background: color-mix(in oklab, var(--cat-ink) 12%, transparent);
     font-variation-settings: "wdth" 100, "ROND" 0;
   }
-  .tcard__eyebrow-icon { display: inline-flex; font-size: 0.75em; }
+  .tcard__eyebrow-icon { display: inline-flex; font-size: 1em; }
   .tcard__eyebrow-icon :global(svg) { width: 1em; height: 1em; display: block; }
   .tcard__title {
     margin-top: 0.35rem;
