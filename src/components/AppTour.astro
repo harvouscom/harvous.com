@@ -73,8 +73,8 @@ const chapterHrefs = APP_TOUR_CHAPTERS.map((chapter) =>
     <ul class="tour__track" role="list" aria-label="A tour of Harvous" tabindex="0">
       {
         APP_TOUR_CHAPTERS.map((chapter, i) => (
-          <li class="tour__slide" data-reveal style={`--reveal-delay: ${Math.min(i, 2) * 60}ms;`}>
-            <AppTourChapter chapter={chapter} index={i} hrefs={chapterHrefs[i]} />
+          <li class:list={["tour__slide", `tour__slide--${chapter.size}`]} data-reveal style={`--reveal-delay: ${Math.min(i, 2) * 60}ms;`}>
+            <AppTourChapter chapter={chapter} hrefs={chapterHrefs[i]} />
           </li>
         ))
       }
@@ -143,8 +143,12 @@ const chapterHrefs = APP_TOUR_CHAPTERS.map((chapter) =>
     scroll-snap-align: start;
   }
 
-  /* Desktop: the chapters stop being slides and become a stacked stream, so
-     every chapter's copy is on the page at once rather than behind an arrow. */
+  /*
+    Desktop: a bento rather than a uniform stack. Activity spans both columns
+    because it is the change the release is actually about, and a tour where the
+    headline feature looks exactly like the fifth one has no argument in its
+    layout. The rest pair off.
+  */
   @media (min-width: 720px) {
     .tour { overflow-x: visible; }
     .tour__controls { display: none; }
@@ -155,19 +159,16 @@ const chapterHrefs = APP_TOUR_CHAPTERS.map((chapter) =>
       overflow: visible;
     }
     .tour__track {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: clamp(1rem, 1.6vw, 1.5rem);
       overflow: visible;
       padding: 0;
       scroll-snap-type: none;
     }
-    .tour__slide {
-      width: auto;
-      scroll-snap-align: unset;
-      padding-block: clamp(3rem, 6vw, 5rem);
-      border-top: 1px solid var(--color-rule);
-    }
+    .tour__slide { width: auto; scroll-snap-align: unset; }
+    .tour__slide--wide { grid-column: 1 / -1; }
   }
 </style>
 

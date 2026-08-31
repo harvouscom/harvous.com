@@ -23,9 +23,11 @@ interface Props {
   height: number;
   direction: string[];
   loading?: "lazy" | "eager";
+  /** Sits on a tinted card and bleeds off its bottom: white ground, top corners only. */
+  panel?: boolean;
 }
 
-const { src, alt, width, height, direction, loading = "lazy" } = Astro.props;
+const { src, alt, width, height, direction, loading = "lazy", panel = false } = Astro.props;
 
 const hasShot = existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 
@@ -34,7 +36,7 @@ if (!hasShot) {
 }
 ---
 
-<figure class="tourshot" style={`--shot-ratio: ${width} / ${height};`}>
+<figure class:list={["tourshot", panel && "tourshot--panel"]} style={`--shot-ratio: ${width} / ${height};`}>
   {
     hasShot ? (
       <OptimizedImage
@@ -70,6 +72,19 @@ if (!hasShot) {
     background: var(--color-warm);
     box-shadow: var(--shadow-float);
   }
+  /* On a tinted card the visual reads as a panel laid on it: white ground, and
+     only the top corners rounded because the bottom runs off the card. */
+  .tourshot--panel {
+    background: var(--color-paper);
+    border-radius: clamp(12px, 1.4vw, 16px) clamp(12px, 1.4vw, 16px) 0 0;
+    box-shadow: 0 -1px 0 color-mix(in oklab, var(--color-ink) 8%, transparent),
+                0 12px 32px -18px color-mix(in oklab, var(--color-ink) 45%, transparent);
+    /* No height here on purpose: the aspect ratio has to drive the height so the
+       frame runs taller than the card and actually gets cut. Giving it height:100%
+       made it fit the space exactly, which is the opposite of a bleed. */
+  }
+  .tourshot--panel .tourshot__ph { background-color: var(--color-paper); }
+
   .tourshot__img,
   .tourshot :global(img) {
     width: 100%;
