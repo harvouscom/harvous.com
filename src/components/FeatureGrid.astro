@@ -1,0 +1,274 @@
+---
+/**
+ * FeatureGrid — the remainder, after the tour.
+ *
+ * Was WhatsIncluded, a twelve-tile wall that carried the whole feature argument
+ * without showing the product once. Nine of those tiles now sit under the
+ * screenshot that demonstrates them (see AppTour); what's left here are the six
+ * that a screenshot can't usefully show — you can't photograph "works offline".
+ *
+ * At six tiles nothing has to be bundled to make the grid fit, so the old
+ * two-destinations-in-one-tile workaround is gone: every tile is a single link
+ * again, and the pairs that were combined only to stay at twelve ("Daily passage
+ * & dictionary") are separate features with separate pages.
+ */
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import Container from "./layout/Container.astro";
+import { hasDetailContent } from "../lib/product-page-data.ts";
+import { COMING_SOON_GRID_ITEMS } from "../lib/coming-soon-grid.ts";
+
+const items = [
+  {
+    icon: "fa7-solid:list-check",
+    title: "Note templates",
+    desc: "Start from a structured template — lesson prep, study outline, or your own — then make it yours.",
+    featureSlug: "note-templates",
+  },
+  {
+    icon: "fa7-solid:calendar-day",
+    title: "Daily passage",
+    desc: "A curated passage waits each day, whether or not you know where to start.",
+    featureSlug: "daily-passage",
+  },
+  {
+    icon: "fa7-solid:lines-leaning",
+    title: "Dictionary",
+    desc: "Select a name or term in a note for its Easton's entry and cross-references.",
+    featureSlug: "dictionary",
+  },
+  {
+    icon: "fa7-solid:newspaper",
+    title: "Resource library",
+    desc: "Keep the links and files your study leans on in one place — then pull one into a note with @.",
+    featureSlug: "resource-library",
+  },
+  {
+    icon: "fa7-solid:arrows-rotate",
+    title: "Offline & sync",
+    desc: "Plane, pew, or basement — works offline and syncs the moment you reconnect.",
+    featureSlug: "offline-sync",
+  },
+  {
+    icon: "fa7-solid:palette",
+    title: "Make it yours",
+    desc: "Light or dark, a color or photo background — Harvous looks the way you want.",
+  },
+] as const;
+
+const published = new Set(
+  (await getCollection("features"))
+    .filter((f) => !f.data.draft && hasDetailContent(f.data))
+    .map((f) => f.id)
+);
+
+const comingSoon = COMING_SOON_GRID_ITEMS;
+---
+
+<section class="grid-band frame-divider" id="included">
+  <Container size="xl">
+    <div class="grid-band__head section-head" data-reveal>
+      <span class="eyebrow-pill">Also included</span>
+      <h2 class="section-title">Everything else it does.</h2>
+      <p class="lead grid-band__lead">
+        The rest of what comes with Harvous — on every plan, <mark>free ones included</mark>.
+      </p>
+    </div>
+
+    <div class="grid-band__grid" data-reveal="stagger" style="--reveal-delay: 100ms;">
+      {items.map((item) => {
+        const href =
+          "featureSlug" in item && item.featureSlug && published.has(item.featureSlug)
+            ? `/features/${item.featureSlug}/`
+            : undefined;
+        const Tag = href ? "a" : "div";
+        return (
+          <Tag class:list={["grid-band__item", href && "grid-band__item--link"]} href={href}>
+            <div class="grid-band__icon"><Icon name={item.icon} /></div>
+            <div class="grid-band__title">{item.title}</div>
+            <p class="grid-band__desc">{item.desc}</p>
+            {href && <span class="grid-band__more">Learn more →</span>}
+          </Tag>
+        );
+      })}
+    </div>
+
+    <div class="grid-band__soon" data-reveal style="--reveal-delay: 160ms;">
+      <div class="grid-band__soon-divider">
+        <span class="grid-band__soon-chip">Coming soon</span>
+      </div>
+      <p class="grid-band__soon-lead">These features are on the roadmap, worth a look before you sign up.</p>
+      <div class="grid-band__soon-grid" data-reveal="stagger" style="--reveal-delay: 200ms;">
+        {comingSoon.map((item) => {
+          const Tag = "href" in item && item.href ? "a" : "div";
+          return (
+            <Tag
+              class:list={["grid-band__soon-item", "href" in item && item.href && "grid-band__soon-item--link"]}
+              href={"href" in item ? item.href : undefined}
+            >
+              <div class="grid-band__soon-icons">
+                {(item.icons ?? (item.icon ? [item.icon] : [])).map((icon) => (
+                  <div class="grid-band__soon-icon"><Icon name={icon} /></div>
+                ))}
+              </div>
+              <div class="grid-band__soon-title">{item.title}</div>
+              <p class="grid-band__soon-desc">{item.desc}</p>
+              {"href" in item && item.href && <span class="grid-band__soon-more">Learn more →</span>}
+            </Tag>
+          );
+        })}
+      </div>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .grid-band { padding-block: clamp(3.5rem, 8vw, 6.5rem); }
+  .grid-band__lead { max-width: 36rem; }
+
+  .grid-band__grid {
+    margin-top: clamp(3rem, 7vw, 4.5rem);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+  }
+  /* Six tiles land as 3×2 — a shape you can take in, unlike the 4×3 it replaced. */
+  @media (min-width: 720px) {
+    .grid-band__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .grid-band__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .grid-band__icon :global(svg) { width: 1.05rem; height: 1.05rem; }
+  .grid-band__title {
+    margin-top: 0.85rem;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--color-ink);
+  }
+  .grid-band__desc {
+    margin-top: 0.3rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .grid-band__item--link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 200ms ease;
+  }
+  .grid-band__item--link:hover { transform: translateY(-2px); }
+  .grid-band__item--link:hover .grid-band__title { color: var(--color-accent); }
+  .grid-band__more {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+
+  /* Coming soon — hairline divider + centered chip, content below */
+  .grid-band__soon { margin-top: clamp(2.75rem, 6vw, 3.75rem); }
+  .grid-band__soon-divider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .grid-band__soon-divider::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--color-rule);
+    pointer-events: none;
+  }
+  .grid-band__soon-chip {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-soft);
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .grid-band__soon-lead {
+    margin-top: 1.25rem;
+    max-width: 36ch;
+    margin-inline: auto;
+    text-align: center;
+    text-wrap: balance;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+  .grid-band__soon-grid {
+    margin-top: clamp(1.5rem, 4vw, 2rem);
+    max-width: 42rem;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.25rem 1.5rem;
+    grid-template-columns: 1fr;
+    justify-content: center;
+  }
+  @media (min-width: 720px) {
+    .grid-band__soon-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .grid-band__soon-icons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .grid-band__soon-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.65rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .grid-band__soon-icon :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .grid-band__soon-title {
+    margin-top: 0.65rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--color-ink);
+  }
+  .grid-band__soon-desc {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .grid-band__soon-item--link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 200ms ease;
+  }
+  .grid-band__soon-item--link:hover { transform: translateY(-2px); }
+  .grid-band__soon-item--link:hover .grid-band__soon-title { color: var(--color-accent); }
+  .grid-band__soon-more {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+</style>

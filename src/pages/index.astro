@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroCentered from "../components/HeroCentered.astro";
-import FeatureBento from "../components/FeatureBento.astro";
-import WhatsIncluded from "../components/WhatsIncluded.astro";
+import AppTour from "../components/AppTour.astro";
+import FeatureGrid from "../components/FeatureGrid.astro";
 import PageClosingCTA from "../components/PageClosingCTA.astro";
 import UseCasesPreview from "../components/UseCasesPreview.astro";
 import ComparePreview from "../components/ComparePreview.astro";
@@ -13,7 +13,6 @@ import FounderLetterSection from "../components/FounderLetterSection.astro";
 import DownloadCTA from "../components/DownloadCTA.astro";
 import { getCollection } from "astro:content";
 import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
-import { HOME_FEATURE_CARDS } from "../lib/home-feature-cards.ts";
 import { fathomSignup, fathomCta } from "../lib/fathom-events.ts";
 import { includeBlogDrafts, isBlogPostListed } from "../lib/blog";
 
@@ -33,14 +32,9 @@ const homeBlogPosts = (await getCollection("blog"))
 >
   <HeroCentered />
 
-  <FeatureBento
-    id="features"
-    title="Harvous is a notes app made for Bible study"
-    lead="Everything you need to study Scripture, write what you learn, and find it again later."
-    cards={[...HOME_FEATURE_CARDS]}
-  />
+  <AppTour id="features" />
 
-  <WhatsIncluded />
+  <FeatureGrid />
 
   <PageClosingCTA
     heading="Ready to try it?"
