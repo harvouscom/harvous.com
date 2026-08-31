@@ -221,6 +221,14 @@ const { eyebrow, title, shot, items, size } = chapter;
     gap: 1rem 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
   }
+  /*
+    auto-fit fits four 12rem columns across the wide card and leaves the last one
+    empty, so three items sat left-weighted with a gap beside them. Fix the count
+    to what the card actually holds — but only once there is room for three.
+  */
+  @media (min-width: 720px) {
+    .tcard--wide .tcard__items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
   .tcard__item { display: block; }
 
   .tcard__icons { display: flex; align-items: center; gap: 0.3rem; }
