@@ -14,18 +14,20 @@
  * remaining step. See TourShotFrame.astro for how the swap is detected.
  */
 
+/**
+ * An item is a caption for what the screenshot shows, not a destination. The card
+ * links to its category page, which is where these features actually live.
+ */
 export type TourItem = {
   icons: string[];
   title: string;
   desc: string;
-  /** Feature-collection id; resolved to /features/{slug}/ only if published. */
-  featureSlug?: string;
-  /** Explicit destination, for items whose page is not in the features collection. */
-  href?: string;
 };
 
 export type TourChapter = {
   key: string;
+  /** The category page this card opens — see feature-categories-data.ts. */
+  categorySlug: string;
   /** Bento weight. "wide" spans both columns; "half" takes one. */
   size: "wide" | "half";
   eyebrow: string;
@@ -55,6 +57,7 @@ const HALF_H = 1150;
 export const APP_TOUR_CHAPTERS: TourChapter[] = [
   {
     key: "activity",
+    categorySlug: "activity",
     size: "wide",
     eyebrow: "Activity",
     title: "Open to what already happened.",
@@ -78,7 +81,6 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:clock-rotate-left"],
         title: "Recall",
         desc: "A fading note, a highlight, a passage — Recall resurfaces what's worth revisiting.",
-        featureSlug: "recall",
       },
       {
         icons: ["fa7-solid:folder-tree", "fa7-solid:thumbtack"],
@@ -89,6 +91,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
   },
   {
     key: "read",
+    categorySlug: "read",
     size: "half",
     eyebrow: "Read",
     title: "A chapter, with the one before it still there.",
@@ -111,18 +114,17 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:book-bible", "fa7-solid:book-open"],
         title: "Scripture pills & Bible reader",
         desc: "Type a reference and it becomes a pill, in 11 translations — or open the chapter and read, with your notes and highlights already there.",
-        featureSlug: "scripture-pills",
       },
       {
         icons: ["fa7-solid:table-columns"],
         title: "Compare translations",
         desc: "Put two versions side by side, lined up verse by verse. Highlight in either one.",
-        featureSlug: "compare-translations",
       },
     ],
   },
   {
     key: "write",
+    categorySlug: "write",
     size: "half",
     eyebrow: "Write",
     title: "Type the reference. It knows what you mean.",
@@ -145,18 +147,17 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:highlighter"],
         title: "Highlight & annotations",
         desc: "Color-code phrases, leave annotations, and find them again in the highlights view.",
-        featureSlug: "highlights",
       },
       {
         icons: ["fa7-solid:at"],
         title: "@ mentions",
         desc: "Type @ in a note to link a note, folder, thread, or resource as a pill you can open later.",
-        featureSlug: "sidebar-modes",
       },
     ],
   },
   {
     key: "find",
+    categorySlug: "find",
     size: "half",
     eyebrow: "Find",
     title: "One panel for everything you've saved.",
@@ -179,18 +180,17 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:magnifying-glass"],
         title: "The Library",
         desc: "Notes, folders, threads, highlights, scripture, and resources — browse by kind or search across all of it in one panel.",
-        featureSlug: "sidebar-modes",
       },
       {
         icons: ["fa7-solid:arrow-right-arrow-left"],
         title: "Threads",
         desc: "Manually connect notes together to create a thread, even across folders.",
-        featureSlug: "threads",
       },
     ],
   },
   {
     key: "share",
+    categorySlug: "share",
     size: "half",
     eyebrow: "Share",
     title: "A space that looks like the place it is.",
@@ -213,8 +213,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:share-nodes", "fa7-solid:user-group"],
         title: "Sharing & Shared spaces",
         desc: "Share a note by link, or host a group space with Harvous Plus — joining is always free.",
-        href: "/add-ons/shared-spaces/",
       },
     ],
   },
 ];
+
+export function getTourChapter(key: string): TourChapter | undefined {
+  return APP_TOUR_CHAPTERS.find((c) => c.key === key);
+}

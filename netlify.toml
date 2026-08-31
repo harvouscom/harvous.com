@@ -11,6 +11,16 @@
 
 # Legacy Webflow paths → Astro marketing site
 [[redirects]]
+  from = "/features/sharing"
+  to = "/features/share/"
+  status = 301
+
+[[redirects]]
+  from = "/features/sharing/"
+  to = "/features/share/"
+  status = 301
+
+[[redirects]]
   from = "/updates"
   to = "/release-notes/"
   status = 301

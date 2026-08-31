@@ -1,10 +1,15 @@
-/** Marketing pages kept as drafts — noindex, excluded from sitemap, removed from production builds. */
-export const DRAFT_PAGE_SLUGS = ["features"] as const;
+/**
+ * Marketing pages kept as drafts — noindex, excluded from sitemap, removed from
+ * production builds.
+ *
+ * Empty since /features/ became the feature-category hub. The machinery stays:
+ * it is the mechanism for shipping a page before its content is ready, and the
+ * next draft should use it rather than reinventing one.
+ */
+export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
-export type DraftPageSlug = (typeof DRAFT_PAGE_SLUGS)[number];
-
-export function isDraftPageSlug(slug: string): slug is DraftPageSlug {
-  return (DRAFT_PAGE_SLUGS as readonly string[]).includes(slug);
+export function isDraftPageSlug(slug: string): boolean {
+  return DRAFT_PAGE_SLUGS.includes(slug);
 }
 
 export function isDraftPageUrl(url: string): boolean {

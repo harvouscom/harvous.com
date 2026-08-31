@@ -9,6 +9,7 @@ import ChurchOrgInterestBridge from "./ChurchOrgInterestBridge.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
+import { getCategoryForFeature } from "../lib/feature-categories-data.ts";
 import { getCompareSeoPageBySlug } from "../lib/compare-seo-pages.ts";
 import type { ProductPage } from "../lib/product-page-data.ts";
 import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
@@ -59,8 +60,15 @@ const relatedBlogPosts =
     : [];
 
 const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJsonLd(page);
-const backHref = page.kind === "feature" ? "/#features" : "/pricing/";
-const backLabel = page.kind === "feature" ? "Features" : "Pricing";
+/*
+  A feature page now sits under a category, so "back" means the category rather
+  than an anchor on the homepage. This is the first link from a feature page back
+  up the tree — until categories existed, /features/* only ever pointed sideways
+  at other features.
+*/
+const category = page.kind === "feature" ? getCategoryForFeature(page.slug) : undefined;
+const backHref = page.kind === "feature" ? (category?.href ?? "/features/") : "/pricing/";
+const backLabel = page.kind === "feature" ? (category?.title ?? "Features") : "Pricing";
 const fathomTrack =
   page.kind === "feature"
     ? fathomSignup.featureDetail(page.slug)

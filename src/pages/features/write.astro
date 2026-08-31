@@ -1,0 +1,12 @@
+---
+import FeatureCategoryPage from "../../components/FeatureCategoryPage.astro";
+import { getFeatureCategoryBySlug } from "../../lib/feature-categories-data.ts";
+
+const category = getFeatureCategoryBySlug("write");
+
+if (!category) {
+  throw new Error("Feature category not found: write");
+}
+---
+
+<FeatureCategoryPage category={category} />

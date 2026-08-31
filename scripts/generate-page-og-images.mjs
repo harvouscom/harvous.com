@@ -12,9 +12,9 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, basename } from "node:path";
 import sharp from "sharp";
-import { icons as fa6Solid } from "@iconify-json/fa6-solid";
-import { icons as fa6Regular } from "@iconify-json/fa6-regular";
-import { icons as fa6Brands } from "@iconify-json/fa6-brands";
+import { icons as fa7Solid } from "@iconify-json/fa7-solid";
+import { icons as fa7Regular } from "@iconify-json/fa7-regular";
+import { icons as fa7Brands } from "@iconify-json/fa7-brands";
 
 const ROOT = join(import.meta.dirname, "..");
 const FORCE = process.argv.includes("--force");
@@ -32,9 +32,9 @@ const INK_HEX = {
 };
 
 const ICON_SETS = {
-  "fa6-solid": fa6Solid,
-  "fa6-regular": fa6Regular,
-  "fa6-brands": fa6Brands,
+  "fa7-solid": fa7Solid,
+  "fa7-regular": fa7Regular,
+  "fa7-brands": fa7Brands,
 };
 
 /** @type {{ kind: string; slug: string; image?: string; icon: string; ink: string; tint?: boolean; outRel: string }[]} */
@@ -83,7 +83,7 @@ function parseFeatureMdx() {
       if (/draft:\s*true/.test(fm)) return null;
       const slug = basename(file, ".mdx");
       const image = fm.match(/^image:\s*"([^"]+)"/m)?.[1];
-      const icon = fm.match(/^icon:\s*"([^"]+)"/m)?.[1] ?? "fa6-solid:note-sticky";
+      const icon = fm.match(/^icon:\s*"([^"]+)"/m)?.[1] ?? "fa7-solid:note-sticky";
       const ink = fm.match(/^ink:\s*"([^"]+)"/m)?.[1] ?? "var(--study-dock-accent-skyBlue)";
       return { slug, image, icon, ink, tint: true };
     })
@@ -200,6 +200,17 @@ for (const item of parseDataObjects(join(ROOT, "src/lib/addons-data.ts"))) {
 }
 
 // Features (tint + icon, matching on-page hero)
+// Feature categories share the features OG folder — same tint + badge treatment,
+// and the same shape (slug/image/icon/ink) the other data files use.
+for (const item of parseDataObjects(join(ROOT, "src/lib/feature-categories-data.ts"))) {
+  targets.push({
+    kind: "feature",
+    ...item,
+    tint: true,
+    outRel: `/images/features/og/${item.slug}.webp`,
+  });
+}
+
 for (const item of parseFeatureMdx()) {
   targets.push({
     ...item,

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-07-21T19:33:52.360Z",
+  "generatedAt": "2026-08-31T19:31:07.649Z",
   "size": "1200x630",
-  "count": 34,
+  "count": 41,
   "targets": [
     {
       "kind": "use-case",
@@ -120,6 +120,36 @@
     },
     {
       "kind": "feature",
+      "slug": "activity",
+      "out": "/images/features/og/activity.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "read",
+      "out": "/images/features/og/read.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "write",
+      "out": "/images/features/og/write.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "find",
+      "out": "/images/features/og/find.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "share",
+      "out": "/images/features/og/share.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "bible-reader",
+      "out": "/images/features/og/bible-reader.webp"
+    },
+    {
+      "kind": "feature",
       "slug": "daily-passage",
       "out": "/images/features/og/daily-passage.webp"
     },
@@ -140,6 +170,11 @@
     },
     {
       "kind": "feature",
+      "slug": "note-templates",
+      "out": "/images/features/og/note-templates.webp"
+    },
+    {
+      "kind": "feature",
       "slug": "offline-sync",
       "out": "/images/features/og/offline-sync.webp"
     },
@@ -150,13 +185,13 @@
     },
     {
       "kind": "feature",
-      "slug": "scripture-pills",
-      "out": "/images/features/og/scripture-pills.webp"
+      "slug": "resource-library",
+      "out": "/images/features/og/resource-library.webp"
     },
     {
       "kind": "feature",
-      "slug": "sharing",
-      "out": "/images/features/og/sharing.webp"
+      "slug": "scripture-pills",
+      "out": "/images/features/og/scripture-pills.webp"
     },
     {
       "kind": "feature",

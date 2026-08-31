@@ -1,3 +1,4 @@
+import { getCategoryForFeature } from "./feature-categories-data.ts";
 /** Shared types and helpers for feature + add-on detail pages. */
 
 export const SITE = "https://harvous.com";
@@ -123,6 +124,7 @@ export function featureToProductPage(slug: string, data: FeatureDetailData): Pro
 }
 
 export function buildFeatureJsonLd(page: ProductPage) {
+  const category = getCategoryForFeature(page.slug);
   const pageUrl = `${SITE}${page.href}`;
   return {
     "@context": "https://schema.org",
@@ -139,7 +141,11 @@ export function buildFeatureJsonLd(page: ProductPage) {
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Harvous", item: SITE },
           { "@type": "ListItem", position: 2, name: "Features", item: `${SITE}/features/` },
-          { "@type": "ListItem", position: 3, name: page.title, item: pageUrl },
+          // Categories give features a real parent, so the trail is four deep now.
+          ...(category
+            ? [{ "@type": "ListItem", position: 3, name: category.title, item: `${SITE}${category.href}` }]
+            : []),
+          { "@type": "ListItem", position: category ? 4 : 3, name: page.title, item: pageUrl },
         ],
       },
       {

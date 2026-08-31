@@ -37,7 +37,8 @@ export const COMPARE_FEATURE_LABELS: Record<string, string> = {
   recall: "Recall",
   highlights: "Highlights",
   "note-templates": "Note templates",
-  sharing: "Sharing",
+  // The Share category, not a feature page — /features/sharing/ was folded into it.
+  share: "Sharing",
   dictionary: "Dictionary",
 };
 
@@ -339,7 +340,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Tied to the study that produced them",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "sharing", "note-templates"],
+    featureIds: ["scripture-pills", "threads", "share", "note-templates"],
   },
 
   /** CSV type: Planning Center Groups, Band, GroupMe, WhatsApp, Flock, Subsplash, Called. */
@@ -371,7 +372,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Usually buried in the chat scroll",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "sharing", "note-templates"],
+    featureIds: ["scripture-pills", "threads", "share", "note-templates"],
   },
 };
 

@@ -1,22 +1,51 @@
 ---
+/**
+ * /features/ — the five categories Harvous is organised around.
+ *
+ * Was a draft listing all 13 feature MDX files as rows, stripped from the
+ * production build. It is the hub now: five categories, each of which houses its
+ * own feature pages. Un-drafting it also fixes a live bug — DownloadCTA on the
+ * homepage links here, and the link 404'd for as long as the page was stripped.
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageIntro from "../components/PageIntro.astro";
-import FeatureRow from "../components/FeatureRow.astro";
-import CTAButton from "../components/CTAButton.astro";
+import PageClosingCTA from "../components/PageClosingCTA.astro";
 import ComparePreview from "../components/ComparePreview.astro";
-import { getCollection, render } from "astro:content";
+import Container from "../components/layout/Container.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
 import { fathomSignup } from "../lib/fathom-events.ts";
 import { hasDetailContent } from "../lib/product-page-data.ts";
+import { getFeatureCategories } from "../lib/feature-categories-data.ts";
+import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
+import "../styles/use-cases.css";
 
-const features = (await getCollection("features")).sort((a, b) => a.data.order - b.data.order);
-const items = await Promise.all(
-  features.map(async (f) => {
-    const { Content } = await render(f);
-    const detailHref =
-      !f.data.draft && hasDetailContent(f.data) ? `/features/${f.id}/` : undefined;
-    return { id: f.id, data: f.data, Content, detailHref };
-  })
+const categories = getFeatureCategories();
+
+const allFeatures = await getCollection("features");
+const publishedSlugs = new Set(
+  allFeatures.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id)
 );
+
+/** Each category with the short names of what it houses, for the card's pill rail. */
+type CategoryMember = { id: string; label: string; href?: string };
+
+const cards = categories.map((category) => ({
+  category,
+  members: category.featureIds
+    .map((id): CategoryMember | undefined => {
+      const soon = getComingSoonGridItem(id);
+      if (soon) return { id, label: soon.title, href: soon.href };
+      const feature = allFeatures.find((f) => f.id === id);
+      if (!feature) return undefined;
+      return {
+        id,
+        label: feature.data.tagline,
+        href: publishedSlugs.has(id) ? `/features/${id}/` : undefined,
+      };
+    })
+    .filter((m): m is CategoryMember => m !== undefined),
+}));
 
 const site = "https://harvous.com";
 const jsonLd = {
@@ -26,7 +55,7 @@ const jsonLd = {
       "@type": "WebPage",
       name: "Harvous Features",
       description:
-        "Harvous is a Bible study notes app — scripture pills, highlights, threads, @ mentions, recall, and a Bible reader that shares your highlights. Not a sermon transcription tool; built so you remember what you saved.",
+        "The five things Harvous is for — seeing your study accumulate, reading, writing, finding what you saved, and sharing it with a group.",
       url: `${site}/features/`,
       isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
     },
@@ -39,12 +68,11 @@ const jsonLd = {
     },
     {
       "@type": "ItemList",
-      name: "Harvous features",
-      itemListElement: features.map((f, i) => ({
+      itemListElement: categories.map((c, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        name: f.data.title,
-        description: f.data.tagline,
+        name: c.title,
+        item: `${site}${c.href}`,
       })),
     },
   ],
@@ -52,39 +80,43 @@ const jsonLd = {
 ---
 
 <BaseLayout
-  title="Features — Harvous"
-  description="Harvous is a Bible study notes app — scripture pills, highlights, threads, @ mentions, recall, and a Bible reader that shares your highlights. Not a sermon transcription tool; built so you remember what you saved."
+  title="Features — everything Harvous does | Harvous"
+  description="The five things Harvous is for: seeing your study accumulate, reading Scripture, writing what you find, getting back to it later, and sharing it with a group."
   jsonLd={jsonLd}
-  noindex
 >
-  <div class="draft-page-banner" role="status">
-    Draft — not indexed or deployed. Remove <code>noindex</code> and the build strip hook to publish.
-  </div>
-  <!-- Page header -->
-  <section class="border-b border-[var(--color-rule)]">
-    <PageIntro>
-      <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">Features</div>
-      <h1 class="section-title mt-3 text-pretty">
-        Everything you need to study. Nothing you don't.
-      </h1>
-      <p class="mx-auto mt-5 max-w-xl text-lg text-[var(--color-ink-soft)]">
-        The same features on every device — web, iOS, iPad, and Mac.
-      </p>
-    </PageIntro>
-  </section>
+  <PageIntro>
+    <span class="eyebrow-pill">Features</span>
+    <h1 class="section-title mt-4">Five things Harvous is for.</h1>
+    <p class="lead mt-4 max-w-2xl">
+      Everything in Harvous sits under one of these. Start wherever your study actually starts.
+    </p>
+  </PageIntro>
 
-  <section class="mx-auto max-w-6xl space-y-24 px-5 py-20" data-reveal style="--reveal-delay: 80ms;">
-    {items.map(({ data, Content, detailHref }) => (
-      <FeatureRow title={data.title} tagline={data.tagline} align={data.align} detailHref={detailHref}>
-        <Fragment slot="body">
-          <Content />
-        </Fragment>
-        <Fragment slot="visual">
-          <!-- Decorative tile per feature. Real screenshots can be dropped in later. -->
-          <div class="paper-grain aspect-[4/3] rounded-2xl"></div>
-        </Fragment>
-      </FeatureRow>
-    ))}
+  <section class="frame-divider">
+    <Container size="lg">
+      <ul class="cat-grid" data-reveal="stagger" role="list">
+        {
+          cards.map(({ category, members }) => (
+            <li class="cat-card" style={`--cat-ink: ${category.ink};`}>
+              <a class="cat-card__link" href={category.href} aria-label={`${category.title} — ${category.tagline}`} />
+              <span class="cat-card__icon">
+                <Icon name={category.icon} />
+              </span>
+              <h2 class="cat-card__title">{category.title}</h2>
+              <p class="cat-card__tagline">{category.tagline}</p>
+              {members.length > 0 && (
+                <ul class="cat-card__members" role="list">
+                  {members.map((m) => (
+                    <li class="cat-card__member">{m.label}</li>
+                  ))}
+                </ul>
+              )}
+              <span class="cat-card__more">Explore {category.title} →</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
   </section>
 
   <ComparePreview
@@ -94,23 +126,91 @@ const jsonLd = {
     showAllLink
   />
 
-  <!-- Closing CTA -->
-  <section class="border-t border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-24 text-center">
-      <h2 class="font-display text-4xl leading-[1.05] md:text-6xl">
-        Start your study Bible today.
-      </h2>
-      <div class="mt-8 flex justify-center">
-        <CTAButton
-          href="https://app.harvous.com/sign-up"
-          variant="primary"
-          size="lg"
-          external
-          fathomTrack={fathomSignup.features}
-        >
-          Sign up free
-        </CTAButton>
-      </div>
-    </div>
-  </section>
+  <PageClosingCTA
+    heading="Start your study Bible today."
+    lead="Everything here is on the free plan unless it says otherwise."
+    fathomTrack={fathomSignup.features}
+  />
 </BaseLayout>
+
+<style>
+  .cat-grid {
+    list-style: none;
+    margin: 0;
+    padding: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* Activity leads, so it takes the full row the way it does on the homepage. */
+    .cat-grid > li:first-child { grid-column: 1 / -1; }
+  }
+
+  .cat-card {
+    position: relative;
+    padding: clamp(1.5rem, 2.4vw, 2rem);
+    border-radius: clamp(18px, 2vw, 24px);
+    background: var(--color-warm);
+  }
+  /* One stretched link per card — same pattern as the homepage tour cards. */
+  .cat-card__link { position: absolute; inset: 0; }
+  .cat-card:has(.cat-card__link:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  .cat-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: color-mix(in oklab, var(--cat-ink) 14%, var(--color-paper));
+    color: var(--cat-ink);
+  }
+  .cat-card__icon :global(svg) { width: 1.05rem; height: 1.05rem; }
+
+  .cat-card__title {
+    margin-top: 0.9rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.375rem;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .cat-card__tagline {
+    margin-top: 0.35rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .cat-card__members {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .cat-card__member {
+    padding: 0.28rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-paper);
+    font-size: 0.8125rem;
+    color: var(--color-ink-soft);
+  }
+
+  .cat-card__more {
+    display: inline-block;
+    margin-top: 1.1rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+</style>

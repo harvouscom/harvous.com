@@ -15,10 +15,9 @@
  * The two features each card demonstrates sit above the visual, where there is
  * room for them, rather than below it where the bleed leaves none.
  *
- * The whole card is clickable, but it is not wrapped in an anchor — it holds the
- * per-feature links, and nesting anchors is invalid. A single empty anchor is
- * stretched across the card instead, with the feature links layered above it so
- * they still win their own clicks.
+ * The whole card is one link, to its category page. A single empty anchor is
+ * stretched across it; the features listed above the visual are captions, not
+ * destinations, which is what lets the card have exactly one.
  *
  * The arrow is decorative (aria-hidden) rather than the link itself. It has to
  * be, because it paints its hover gradient in a pseudo-element and therefore
@@ -32,21 +31,17 @@ import type { TourChapter } from "../lib/app-tour-chapters.ts";
 
 interface Props {
   chapter: TourChapter;
-  /** Per-item destinations, resolved by the parent against published pages. */
-  hrefs: (string | undefined)[];
+  /** The category page this card opens. */
+  href?: string;
   loading?: "lazy" | "eager";
 }
 
-const { chapter, hrefs, loading = "lazy" } = Astro.props;
+const { chapter, href, loading = "lazy" } = Astro.props;
 const { eyebrow, title, shot, items, size } = chapter;
-
-// The arrow points at the card's first real destination; a card whose features
-// have no published page yet simply doesn't get one, rather than a dead control.
-const primaryHref = hrefs.find(Boolean);
 ---
 
 <article class:list={["tcard", `tcard--${size}`]}>
-  {primaryHref && <a class="tcard__link" href={primaryHref} aria-label={`More about ${eyebrow}`} />}
+  {href && <a class="tcard__link" href={href} aria-label={`More about ${eyebrow}`} />}
 
   <div class="tcard__body">
     <div class="tcard__head">
@@ -55,7 +50,7 @@ const primaryHref = hrefs.find(Boolean);
         <h3 class="tcard__title">{title}</h3>
       </div>
       {
-        primaryHref && (
+        href && (
           <span class="tcard__arrow" aria-hidden="true">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 8h10M9 4l4 4-4 4" />
@@ -67,23 +62,19 @@ const primaryHref = hrefs.find(Boolean);
 
     <ul class="tcard__items" role="list">
       {
-        items.map((item, i) => {
-          const href = hrefs[i];
-          const Tag = href ? "a" : "div";
-          return (
-            <li>
-              <Tag class:list={["tcard__item", href && "tcard__item--link"]} href={href}>
-                <span class="tcard__icons">
-                  {item.icons.map((icon) => (
-                    <span class="tcard__icon"><Icon name={icon} /></span>
-                  ))}
-                </span>
-                <span class="tcard__item-title">{item.title}</span>
-                <span class="tcard__item-desc">{item.desc}</span>
-              </Tag>
-            </li>
-          );
-        })
+        items.map((item) => (
+          <li>
+            <div class="tcard__item">
+              <span class="tcard__icons">
+                {item.icons.map((icon) => (
+                  <span class="tcard__icon"><Icon name={icon} /></span>
+                ))}
+              </span>
+              <span class="tcard__item-title">{item.title}</span>
+              <span class="tcard__item-desc">{item.desc}</span>
+            </div>
+          </li>
+        ))
       }
     </ul>
   </div>
@@ -211,8 +202,6 @@ const primaryHref = hrefs.find(Boolean);
   }
 
   .tcard__items {
-    position: relative;
-    z-index: 1;
     list-style: none;
     margin: clamp(1.25rem, 2.2vw, 1.75rem) 0 0;
     padding: 0;
@@ -220,12 +209,7 @@ const primaryHref = hrefs.find(Boolean);
     gap: 1rem 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
   }
-  .tcard__item {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-  .tcard__item--link:hover .tcard__item-title { color: var(--color-accent); }
+  .tcard__item { display: block; }
 
   .tcard__icons { display: flex; align-items: center; gap: 0.3rem; }
   .tcard__icon {
