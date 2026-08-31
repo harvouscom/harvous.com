@@ -60,7 +60,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "activity",
     size: "wide",
     eyebrow: "Activity",
-    title: "Last week's study is still here. So is the month before it.",
+    title:
+      "Today, yesterday, or six weeks back — it’s all still here, and Recall brings back what’s worth another look.",
     lead:
       "Harvous starts on your study, not an empty page. Each day is its own sheet, and the days behind it are still there to flip back through.",
     shot: {
