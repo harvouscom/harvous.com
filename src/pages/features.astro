@@ -86,9 +86,11 @@ const jsonLd = {
 >
   <PageIntro>
     <span class="eyebrow-pill">Features</span>
-    <h1 class="section-title mt-4">Five things Harvous is for.</h1>
-    <p class="lead mt-4 max-w-2xl">
-      Everything in Harvous sits under one of these. Start wherever your study actually starts.
+    <h1 class="section-title mt-4">Everything Harvous does, in five parts.</h1>
+    <p class="lead page-intro-lead mt-4 max-w-2xl mx-auto">
+      The study you already did, reading Scripture, writing what you find, getting back to it
+      months later, and studying with other people. Every feature sits under
+      <mark>one of those five</mark>.
     </p>
   </PageIntro>
 
@@ -158,6 +160,10 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
+  /* A highlight split across a line break stops reading as one phrase. It is
+     short enough that holding it together cannot overflow the measure. */
+  .page-intro-lead mark { white-space: nowrap; }
+
   .cat-grid {
     list-style: none;
     margin: 0;
