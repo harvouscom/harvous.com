@@ -156,6 +156,10 @@ const { eyebrow, title, shot, items, size } = chapter;
   */
   .tcard--wide .tcard__title {
     font-size: clamp(1.5rem, 2.6vw, 2rem);
+    /* The card is twice as wide as its siblings, so a heading of the same length
+       fits on one line and leaves the reserved second line blank. Cap the measure
+       so it wraps like the others instead of stretching the copy to fill. */
+    max-width: 26ch;
   }
 
   .tcard__arrow {
