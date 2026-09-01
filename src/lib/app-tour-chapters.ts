@@ -76,12 +76,9 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         "At least one note card with readable words on it.",
       ],
     },
+    // Order follows the heading's own sequence — filed, threaded, brought back —
+    // so the row reads left to right in the same order the sentence above it does.
     items: [
-      {
-        icons: ["fa7-solid:clock-rotate-left"],
-        title: "Recall",
-        desc: "A fading note, a highlight, a passage — Recall resurfaces what's worth revisiting.",
-      },
       {
         icons: ["fa7-solid:folder-tree", "fa7-solid:thumbtack"],
         title: "Sorts itself & Pin",
@@ -91,6 +88,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:arrow-right-arrow-left"],
         title: "Threads",
         desc: "Connect notes into one line of thinking you can follow later, even across folders and months.",
+      },
+      {
+        icons: ["fa7-solid:clock-rotate-left"],
+        title: "Recall",
+        desc: "A fading note, a highlight, a passage — Recall resurfaces what's worth revisiting.",
       },
     ],
   },
