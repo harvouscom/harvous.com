@@ -13,7 +13,7 @@ import { getCategoryForFeature } from "../lib/feature-categories-data.ts";
 import { getCompareSeoPageBySlug } from "../lib/compare-seo-pages.ts";
 import type { ProductPage } from "../lib/product-page-data.ts";
 import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
-import { hasDetailContent, isLightFeatureInk } from "../lib/product-page-data.ts";
+import { hasDetailContent } from "../lib/product-page-data.ts";
 import {
   getRelatedBlogPosts,
   includeBlogDrafts,
@@ -75,7 +75,6 @@ const fathomTrack =
     : fathomSignup.addonDetail(page.slug);
 const defaultHeroImage =
   page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
-const lightAccent = page.kind === "feature" && isLightFeatureInk(page.ink);
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
 const ogImage =
   page.kind === "feature"
@@ -85,7 +84,7 @@ const ogImage =
 
 <BaseLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} jsonLd={jsonLd}>
   <article
-    class:list={["use-case-detail product-detail", lightAccent && "product-detail--light-accent"]}
+    class="use-case-detail product-detail"
     style={`--use-case-ink: ${page.ink};`}
   >
     <header class="border-b border-[var(--color-rule)]">

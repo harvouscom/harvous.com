@@ -361,6 +361,34 @@ export function getCategoryForFeature(featureId: string): FeatureCategory | unde
   return categories.find((c) => c.featureIds.includes(featureId));
 }
 
+/**
+ * A feature page's own colour — the category's ink, in a tier tied to the
+ * feature's position in the category's list. Not the raw pill colour: `ink` is
+ * rendered as solid text and icon fill on the detail page (title badge, hero
+ * badge, moment icons), and the raw pill palette is a highlighter palette —
+ * --pill-thread (green) measures 2.43:1 on white and --pill-highlight-ink
+ * (already once-adjusted) still only 2.16:1 at full strength. 55% mixed toward
+ * --color-ink clears 4.5:1 for the worst of the five with margin — measured in
+ * the browser via canvas, not derived from the sRGB math a first pass used,
+ * which put --pill-highlight-ink's true oklab mix at 4.32 rather than the ~4.8
+ * the approximation predicted. Every tier after the first only gets safer, so
+ * they exist for variety, not for accessibility.
+ *
+ * The result is a family: the first feature listed for a category reads as
+ * that category's colour, and each one after it is a visibly related, slightly
+ * deeper shade of the same hue — the way Write's note-templates should read as
+ * a version of Write's yellow, not an unrelated teal.
+ */
+const INK_VARIANT_TIERS = [55, 42, 32, 24];
+
+export function getFeatureInk(featureId: string): string {
+  const category = getCategoryForFeature(featureId);
+  if (!category) return "var(--color-accent)";
+  const index = category.featureIds.indexOf(featureId);
+  const tier = INK_VARIANT_TIERS[Math.min(Math.max(index, 0), INK_VARIANT_TIERS.length - 1)];
+  return `color-mix(in oklab, ${category.ink} ${tier}%, var(--color-ink))`;
+}
+
 export function getFeatureIdsForCategory(slug: string): string[] {
   return getFeatureCategoryBySlug(slug)?.featureIds ?? [];
 }

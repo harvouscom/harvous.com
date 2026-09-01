@@ -35,7 +35,6 @@ const features = defineCollection({
     seoDescription: z.string().optional(),
     heroTitle: z.string().optional(),
     heroLead: z.string().optional(),
-    ink: z.string().optional(),
     icon: z.string().optional(),
     image: z.string().optional(),
     comingSoon: z.boolean().optional(),
