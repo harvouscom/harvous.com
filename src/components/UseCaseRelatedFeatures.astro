@@ -109,23 +109,41 @@ const publishedSlugs = new Set(
     margin-inline: auto;
     text-wrap: pretty;
   }
+  /*
+    Flex-wrap, not grid. A fixed repeat(4, 1fr) reserves four tracks whether or
+    not four cards exist — a category with two housed features left two empty
+    columns as dead space at the row's end. Flex items keep the same per-card
+    width at each breakpoint (flex-basis matches the old column math) but only
+    take up as much row as there are actual cards; grow/shrink are both off so a
+    short row stays its natural width instead of stretching to fill it.
+  */
   .use-case-features__grid {
     margin-top: clamp(3rem, 7vw, 4.5rem);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    /*
+      Centered, not left-start. Flush-left with card widths unchanged looked
+      identical to the grid it replaced — both left an under-filled row pinned to
+      the left edge with the trailing space implying a card that never arrives.
+      Centering removes that implication; a full row is unaffected either way.
+    */
+    justify-content: center;
     gap: 2rem 1.5rem;
     list-style: none;
     padding: 0;
     margin-bottom: 0;
   }
+  .use-case-features__grid > li {
+    flex: 0 0 calc((100% - 1.5rem) / 2);
+  }
   @media (min-width: 720px) {
-    .use-case-features__grid {
-      grid-template-columns: repeat(3, 1fr);
+    .use-case-features__grid > li {
+      flex-basis: calc((100% - 2 * 1.5rem) / 3);
     }
   }
   @media (min-width: 1024px) {
-    .use-case-features__grid {
-      grid-template-columns: repeat(4, 1fr);
+    .use-case-features__grid > li {
+      flex-basis: calc((100% - 3 * 1.5rem) / 4);
     }
   }
   .use-case-features__card {
