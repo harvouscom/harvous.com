@@ -24,8 +24,8 @@ interface Props {
 
 const {
   id,
-  eyebrow = "A tour of Harvous",
-  title = "Here’s what using Harvous looks like day to day.",
+  eyebrow = "Meet Harvous",
+  title = "A notes app made for studying the Bible.",
 } = Astro.props;
 
 /**
@@ -44,9 +44,10 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
       <span class="eyebrow-pill">{eyebrow}</span>
       <h2 class="section-title">{title}</h2>
       <p class="lead tour__lead">
-        <strong>Activity</strong> opens on what you studied yesterday, <strong>scripture pills</strong>
-        link every reference you type, and the <strong>Library</strong> brings any of it back. Day after
-        day, it stops being a pile of notes and becomes <mark>your own study Bible</mark>.
+        Not a Bible reader, not a devotional — a place to write what you find and keep it linked
+        to Scripture. <strong>Activity</strong> opens on yesterday, <strong>scripture pills</strong>
+        connect every reference, and the <strong>Library</strong> brings any of it back — until it's
+        <mark>your own study Bible</mark>.
       </p>
     </div>
 
