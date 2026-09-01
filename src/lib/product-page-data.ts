@@ -1,4 +1,4 @@
-import { getCategoryForFeature } from "./feature-categories-data.ts";
+import { getCategoryForFeature, getFeatureInk } from "./feature-categories-data.ts";
 /** Shared types and helpers for feature + add-on detail pages. */
 
 export const SITE = "https://harvous.com";
@@ -63,7 +63,6 @@ export type FeatureDetailData = {
   seoDescription?: string;
   heroTitle?: string;
   heroLead?: string;
-  ink?: string;
   icon?: string;
   image?: string;
   comingSoon?: boolean;
@@ -83,16 +82,6 @@ export function hasDetailContent(data: FeatureDetailData): boolean {
   return Boolean(data.heroTitle && data.sections?.length);
 }
 
-/** Light accent inks need dark text on tinted badges and icons for WCAG contrast. */
-export const LIGHT_FEATURE_INKS = new Set([
-  "var(--study-dock-accent-warmAmber)",
-  "var(--study-dock-accent-mintGreen)",
-]);
-
-export function isLightFeatureInk(ink: string): boolean {
-  return LIGHT_FEATURE_INKS.has(ink);
-}
-
 export function featureToProductPage(slug: string, data: FeatureDetailData): ProductPage {
   return {
     kind: "feature",
@@ -103,7 +92,13 @@ export function featureToProductPage(slug: string, data: FeatureDetailData): Pro
     seoTitle: data.seoTitle ?? `${data.tagline} — Harvous`,
     seoDescription: data.seoDescription ?? data.title,
     icon: data.icon ?? "fa7-solid:note-sticky",
-    ink: data.ink ?? "var(--study-dock-accent-skyBlue)",
+    /*
+      Not from frontmatter — the category a feature is housed under decides its
+      colour, so a feature can't drift from the page that introduces it. See
+      getFeatureInk() for why this is always safe as solid text/icon colour,
+      which is why the old amber/mint light-accent CSS variant is gone with it.
+    */
+    ink: getFeatureInk(slug),
     image: data.image,
     comingSoon: data.comingSoon,
     comingSoonLine: data.comingSoonLine,
