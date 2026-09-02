@@ -36,6 +36,8 @@ export type ProductPage = {
   seoDescription: string;
   icon: string;
   ink: string;
+  /** Foreground text/icon colour, when it must differ from `ink` (the background-tint source). */
+  inkFg?: string;
   image?: string;
   comingSoon?: boolean;
   comingSoonLine?: string;
@@ -94,11 +96,18 @@ export function featureToProductPage(slug: string, data: FeatureDetailData): Pro
     icon: data.icon ?? "fa7-solid:note-sticky",
     /*
       Not from frontmatter — the category a feature is housed under decides its
-      colour, so a feature can't drift from the page that introduces it. See
-      getFeatureInk() for why this is always safe as solid text/icon colour,
-      which is why the old amber/mint light-accent CSS variant is gone with it.
+      colour, so a feature can't drift from the page that introduces it. `ink` is
+      the raw category colour and only ever meets the page as a light background
+      wash, so it stays vivid; `inkFg` is the accessibility-tiered mix from
+      getFeatureInk(), used only where the colour is rendered as solid text or a
+      small icon and needs real contrast. Using the tiered mix for BOTH once
+      produced a "highlights" hero that read as beige, not yellow — a pale tint
+      of an already-darkened colour reads as grey, not as a light version of the
+      original hue. That's also why the old amber/mint light-accent CSS variant
+      is gone: inkFg is already built to clear 4.5:1 wherever it lands.
     */
-    ink: getFeatureInk(slug),
+    ink: getCategoryForFeature(slug)?.ink ?? "var(--color-accent)",
+    inkFg: getFeatureInk(slug),
     image: data.image,
     comingSoon: data.comingSoon,
     comingSoonLine: data.comingSoonLine,

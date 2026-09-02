@@ -85,7 +85,7 @@ const ogImage =
 <BaseLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} jsonLd={jsonLd}>
   <article
     class="use-case-detail product-detail"
-    style={`--use-case-ink: ${page.ink};`}
+    style={`--use-case-ink: ${page.ink};${page.inkFg ? ` --use-case-ink-fg: ${page.inkFg};` : ""}`}
   >
     <header class="border-b border-[var(--color-rule)]">
       <div class="detail-content py-10 md:py-14">
