@@ -207,10 +207,19 @@ function calendarDayKey(dateKey: number): string {
   return new Date(dateKey).toISOString().slice(0, 10);
 }
 
-/** e.g. "2.0.6" → "2.0" so a major.minor cutover on the same day stays separate. */
-function majorMinor(version: string): string {
-  const [maj, min] = version.split(".");
-  return `${maj ?? "0"}.${min ?? "0"}`;
+/**
+ * e.g. "2.0.6" → "2" so a major cutover on the same day stays its own card.
+ *
+ * Deliberately the major only. This was major.minor, which sounds like the same
+ * idea and is not: `bump-version.js` bumps a **minor on every `feat:`**, so a
+ * minor marks "somebody shipped a feature" rather than any cutover a reader
+ * would recognise, and keying on it split half the feed. A major is still a real
+ * editorial event — Harvous 2.0 on July 6th deserves its own card next to that
+ * day's routine work, and it keeps one.
+ */
+function majorVersion(version: string): string {
+  const [maj] = version.split(".");
+  return maj ?? "0";
 }
 
 function recountRelease(release: ChangelogRelease): ChangelogRelease {
@@ -270,8 +279,12 @@ function dedupeReleases(releases: ChangelogRelease[]): {
 }
 
 /**
- * Collapse multiple patch releases on the same UTC day (same major.minor) into one card
+ * Collapse every release on the same UTC day (barring a major cutover) into one card
  * under the highest version, pooling entries and redirecting older slugs.
+ *
+ * A day is the unit a reader thinks in, and it is the unit the app repo's own
+ * `release-notes/` folder settled on for the same reason. Before this keyed on the
+ * day alone, one afternoon could appear as nineteen separate cards.
  */
 function mergeSameDayReleases(releases: ChangelogRelease[]): {
   releases: ChangelogRelease[];
@@ -281,7 +294,7 @@ function mergeSameDayReleases(releases: ChangelogRelease[]): {
 
   for (const release of releases) {
     const day = calendarDayKey(release.dateKey);
-    const key = day ? `${day}|${majorMinor(release.version)}` : `solo|${release.slug}`;
+    const key = day ? `${day}|${majorVersion(release.version)}` : `solo|${release.slug}`;
     const list = groups.get(key) ?? [];
     list.push(release);
     groups.set(key, list);
