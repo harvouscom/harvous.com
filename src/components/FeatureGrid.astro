@@ -8,9 +8,14 @@
  * that a screenshot can't usefully show — you can't photograph "works offline".
  *
  * At six tiles nothing has to be bundled to make the grid fit, so the old
- * two-destinations-in-one-tile workaround is gone: every tile is a single link
- * again, and the pairs that were combined only to stay at twelve ("Daily passage
- * & dictionary") are separate features with separate pages.
+ * two-destinations-in-one-tile workaround is gone: every linked tile is a
+ * single link, and the pairs that were combined only to stay at twelve ("Daily
+ * passage & dictionary") are separate features with separate pages.
+ *
+ * The one combined tile that remains is appearance + keyboard shortcuts —
+ * two things that live in Settings, have no page of their own, and are the
+ * same kind of thing: how you make the app yours. Same two-icon form the
+ * tour cards use for a pair.
  */
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
@@ -50,9 +55,9 @@ const items = [
     featureSlug: "offline-sync",
   },
   {
-    icon: "fa7-solid:palette",
-    title: "Make it yours",
-    desc: "Light or dark, a color or photo background — Harvous looks the way you want.",
+    icons: ["fa7-solid:palette", "fa7-solid:keyboard"],
+    title: "Make it yours & shortcuts",
+    desc: "Light or dark, a color or photo background — and keyboard shortcuts for the rest, all listed in Settings.",
   },
 ] as const;
 
@@ -91,9 +96,14 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
             ? `/features/${item.featureSlug}/`
             : undefined;
         const Tag = href ? "a" : "div";
+        const icons = "icons" in item ? item.icons : "icon" in item ? [item.icon] : [];
         return (
           <Tag class:list={["grid-band__item", href && "grid-band__item--link"]} href={href}>
-            <div class="grid-band__icon"><Icon name={item.icon} /></div>
+            <div class="grid-band__icons">
+              {icons.map((icon) => (
+                <div class="grid-band__icon"><Icon name={icon} /></div>
+              ))}
+            </div>
             <div class="grid-band__title">{item.title}</div>
             <p class="grid-band__desc">{item.desc}</p>
             {href && <span class="grid-band__more">Learn more →</span>}
@@ -146,6 +156,7 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
     .grid-band__grid { grid-template-columns: repeat(3, 1fr); }
   }
 
+  .grid-band__icons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .grid-band__icon {
     display: inline-flex;
     align-items: center;
