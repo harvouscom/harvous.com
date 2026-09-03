@@ -168,11 +168,6 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         title: "Note templates",
         desc: "Start from a template — lesson prep, study outline, or your own — then make it yours.",
       },
-      {
-        icons: ["fa7-solid:at"],
-        title: "@ mentions",
-        desc: "Type @ in a note to link a note, folder, thread, or resource as a pill you can open later.",
-      },
     ],
   },
   {
