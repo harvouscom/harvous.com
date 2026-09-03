@@ -96,12 +96,12 @@ const audiences: ForAudience[] = [
         body: "Whether it's a chapter a day or a theme for the month, a thread collects what you're noticing so it compounds.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall brings a note back",
-        body: "When the week gets loud, Recall can resurface a fading note or passage — so Monday's thought isn't gone by Thursday.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions bring a note back",
+        body: "When the week gets loud, Suggestions can resurface a fading note or passage — so Monday's thought isn't gone by Thursday.",
       },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "recall"],
+    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions"],
     featuresHeading: "What a daily rhythm asks of your notes",
     featuresLead:
       "Open a verse, save what stood out, and find it again later — the pieces people lean on most for everyday study.",
@@ -274,12 +274,12 @@ const audiences: ForAudience[] = [
         body: "Drop the passages that were read or referenced as pills — tapable later when you want the text again.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall finds what Monday buried",
-        body: "When half a phrase is all you have, Recall can resurface a fading sermon note — so October still has Sunday in it.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions find what Monday buried",
+        body: "When half a phrase is all you have, Suggestions can resurface a fading sermon note — so October still has Sunday in it.",
       },
     ],
-    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "recall"],
+    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "suggestions"],
     featuresHeading: "What Sunday notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you have — so Sunday doesn't disappear by Monday.",
@@ -356,7 +356,7 @@ const audiences: ForAudience[] = [
     image: "/images/auth-hero/ai_bg_076.webp",
     seoTitle: "For pastors — sermon prep notes that last — Harvous",
     seoDescription:
-      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Shared Spaces when a staff huddle or class needs the trail — host with Harvous Plus; joining is free.",
+      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Suggestions when last year’s work needs to show up again. Shared Spaces when a staff huddle or class needs the trail — host with Harvous Plus; joining is free.",
     heroTitle: "For people who prepare, then preach.",
     heroLead:
       "Sunday keeps coming. You’re digging into a text, shaping an outline, landing a line — then somehow next week starts from a blank page. The prep for a preaching calendar deserves a home that lasts years, not a folder of untitled docs.",
@@ -402,9 +402,9 @@ const audiences: ForAudience[] = [
         body: "Scripture pills keep every reference one tap away while you outline and while you revise.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall finds last year’s work",
-        body: "When you’ve preached something like this before, Recall can bring that prep forward — still linked to the passage.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions find last year’s work",
+        body: "When you’ve preached something like this before, Suggestions can bring that prep forward — still linked to the passage.",
       },
       {
         icon: "fa7-solid:lock",
@@ -412,10 +412,10 @@ const audiences: ForAudience[] = [
         body: "Your working notes are yours. Share into a Shared Space when a staff huddle or class needs the trail — hosting is Harvous Plus; joining is free. A church on Harvous sees how many people it reaches, never who wrote what.",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "note-templates", "recall", "shared-spaces"],
+    featureIds: ["scripture-pills", "threads", "note-templates", "suggestions", "shared-spaces"],
     featuresHeading: "What preaching asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, note templates when you want a starting shape — and Recall across the calendar year. Shared Spaces when a room needs the trail.",
+      "Series threads, scripture nearby, note templates when you want a starting shape — and Suggestions across the calendar year. Shared Spaces when a room needs the trail.",
     compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion", "obsidian"],
     useCaseSlugs: ["sermon-prep", "deep-study", "book-study", "small-group"],
   },
@@ -488,7 +488,7 @@ const audiences: ForAudience[] = [
     image: "/images/auth-hero/ai_bg_051.webp",
     seoTitle: "For seminary and Bible college students — Harvous",
     seoDescription:
-      "Seminary and Bible college notes that compound — deep sits, book and topical threads, scripture pills, and Recall when week 10 needs week 3.",
+      "Seminary and Bible college notes that compound — deep sits, book and topical threads, scripture pills, and Suggestions when week 10 needs week 3.",
     heroTitle: "For people whose study has to last a term.",
     heroLead:
       "You're not collecting inspirational snippets. You're sitting with texts for class, tracing themes for a paper, working a book for weeks — and you need notes that still make sense when midterms show up.",
@@ -503,7 +503,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Week 10 should still find week 3",
         paragraphs: [
-          "Search and threads help you dig on purpose. Recall helps when you weren't looking — a fading note from early in the term can resurface when you're writing later. The point is that your own work compounds instead of living in a graveyard of untitled docs.",
+          "Search and threads help you dig on purpose. Suggestions help when you weren't looking — a fading note from early in the term can resurface when you're writing later. The point is that your own work compounds instead of living in a graveyard of untitled docs.",
         ],
       },
     ],
@@ -524,15 +524,15 @@ const audiences: ForAudience[] = [
         body: "A topical thread can hold grace, covenant, or prayer notes from wherever they showed up — not only the syllabus order.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall mid-term",
-        body: "When you're drafting week 10, Recall can bring back a note from week 3 you meant to use — still linked to the passage.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions mid-term",
+        body: "When you're drafting week 10, Suggestions can bring back a note from week 3 you meant to use — still linked to the passage.",
       },
     ],
-    featureIds: ["scripture-pills", "dictionary", "recall", "highlights"],
+    featureIds: ["scripture-pills", "dictionary", "suggestions", "highlights"],
     featuresHeading: "What a term of study asks of your notes",
     featuresLead:
-      "Scripture nearby, a dictionary in reach, threads that last — and Recall when an earlier note needs to show up again.",
+      "Scripture nearby, a dictionary in reach, threads that last — and Suggestions when an earlier note needs to show up again.",
     compareSlugs: ["logos", "obsidian", "notion", "life-bible"],
     useCaseSlugs: ["deep-study", "book-study", "topical-study"],
   },
@@ -755,7 +755,7 @@ const audiences: ForAudience[] = [
     image: "/images/auth-hero/ai_bg_061.webp",
     seoTitle: "For YouVersion and Bible app users — Harvous",
     seoDescription:
-      "Keep YouVersion, Dwell, Logos, or your church app for reading. Harvous is the notes hub — scripture-linked, findable, with Recall when thoughts fade.",
+      "Keep YouVersion, Dwell, Logos, or your church app for reading. Harvous is the notes hub — scripture-linked, findable, with Suggestions when thoughts fade.",
     heroTitle: "For people who already have a Bible app.",
     heroLead:
       "You're not looking for another place to read Scripture. You already open YouVersion, Dwell, Logos, or your church's app. What you need is somewhere the thoughts stick — linked to the verse, findable later, not trapped in a reading plan streak.",
@@ -770,7 +770,7 @@ const audiences: ForAudience[] = [
       {
         heading: "What you saved shouldn't disappear",
         paragraphs: [
-          "A short note after a plan day. A longer sit with one passage. A line from Sunday. Harvous holds those across days — and Recall can bring a fading note back so last week's thought isn't gone just because the plan moved on.",
+          "A short note after a plan day. A longer sit with one passage. A line from Sunday. Harvous holds those across days — and Suggestions can bring a fading note back so last week's thought isn't gone just because the plan moved on.",
         ],
       },
     ],
@@ -791,12 +791,12 @@ const audiences: ForAudience[] = [
         body: "A plan, a book, a theme — a thread collects the notes so they compound instead of living as one-off plan checkmarks.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall when the plan has moved on",
-        body: "Plans keep going. Your notes shouldn't vanish with them. Recall resurfaces a fading note, highlight, or passage from your own study.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions when the plan has moved on",
+        body: "Plans keep going. Your notes shouldn't vanish with them. Suggestions resurface a fading note, highlight, or passage from your own study.",
       },
     ],
-    featureIds: ["scripture-pills", "bible-reader", "recall", "offline-sync"],
+    featureIds: ["scripture-pills", "bible-reader", "suggestions", "offline-sync"],
     featuresHeading: "What dual-app study asks of your notes",
     featuresLead:
       "Scripture that stays linked, a way back to what you saved, and capture that works when you're offline in the pew or on a plane.",

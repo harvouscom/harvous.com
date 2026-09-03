@@ -24,10 +24,21 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
     comingSoon: false,
   },
   {
-    id: "review-challenges",
-    icons: ["fa7-solid:clock-rotate-left", "fa7-solid:trophy"],
-    title: "Review & Challenges",
-    desc: "Spaced review and study seasons — included with Harvous Plus.",
+    id: "review",
+    icon: "fa7-solid:clock-rotate-left",
+    title: "Review",
+    desc: "Write an answer from memory, then see how it went — included with Harvous Plus.",
+    href: "/add-ons/review/",
+    comingSoon: false,
+  },
+  {
+    // Deliberately light on specifics — solo vs. group, in-app vs. guest, the
+    // exact cadence are all still moving. Nothing here should need rewriting
+    // again before the shape is locked; see the "may be Friday" plan note.
+    id: "challenges",
+    icon: "fa7-solid:trophy",
+    title: "Challenges",
+    desc: "Time-boxed challenges to build the habit — solo or with others.",
   },
   {
     id: "connector",

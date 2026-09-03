@@ -60,7 +60,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     categorySlug: "activity",
     size: "wide",
     eyebrow: "Activity",
-    title: "Filed for you, threaded by you, brought back by Recall.",
+    title: "Filed for you, threaded by you, brought back by Suggestions.",
     lead:
       "Harvous starts on your study, not an empty page. Each day is its own sheet, and the days behind it are still there to flip back through.",
     shot: {
@@ -90,9 +90,9 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         desc: "Connect notes into one line of thinking you can follow later, even across folders and months.",
       },
       {
-        icons: ["fa7-solid:clock-rotate-left"],
-        title: "Recall",
-        desc: "A fading note, a highlight, a passage — Recall resurfaces what's worth revisiting.",
+        icons: ["fa7-solid:lightbulb"],
+        title: "Suggestions",
+        desc: "A fading note, a highlight, a passage — Suggestions resurface what's worth revisiting.",
       },
     ],
   },

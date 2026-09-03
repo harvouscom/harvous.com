@@ -193,13 +193,13 @@ export function getBlogCategoryPage(
 
 /** Feature MDX ids (or coming-soon-grid ids) shown on the post closing bridge — keep to 3. */
 export const BLOG_CATEGORY_FEATURE_IDS: Record<BlogCategory, string[]> = {
-  "study-habits": ["scripture-pills", "highlights", "recall"],
+  "study-habits": ["scripture-pills", "highlights", "suggestions"],
   "how-we-think": ["scripture-pills", "threads", "highlights"],
   "scripture-study": ["scripture-pills", "dictionary", "highlights"],
   "using-harvous": ["threads", "scripture-pills", "highlights"],
   teaching: ["scripture-pills", "threads", "highlights"],
-  retention: ["recall", "daily-passage", "highlights"],
-  equipping: ["threads", "scripture-pills", "recall"],
+  retention: ["suggestions", "daily-passage", "highlights"],
+  equipping: ["threads", "scripture-pills", "suggestions"],
 };
 
 export type BlogProductBridgeCopy = {
@@ -228,7 +228,7 @@ export const BLOG_CATEGORY_PRODUCT_BRIDGE: Record<BlogCategory, BlogProductBridg
   "using-harvous": {
     eyebrow: "In Harvous",
     heading: "Where those pieces actually live.",
-    lead: "Open the app and see threads, scripture pills, and recall working in one note.",
+    lead: "Open the app and see threads, scripture pills, and suggestions working in one note.",
   },
   teaching: {
     eyebrow: "In Harvous",

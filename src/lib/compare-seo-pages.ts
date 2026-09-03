@@ -5,7 +5,7 @@ const SITE = "https://harvous.com";
 
 /** Default “Side note” copy when Harvous leads the shortlist. */
 export const DEFAULT_HONEST_NOTE_FIRST =
-  "We built Harvous — so of course we care how this list reads. We put it first because we believe scripture-linked study notes deserve their own home: not sermon transcription — a place to write, thread, and recall what you saved, with the passage right there when you need it.";
+  "We built Harvous — so of course we care how this list reads. We put it first because we believe scripture-linked study notes deserve their own home: not sermon transcription — a place to write, thread, and suggestions what you saved, with the passage right there when you need it.";
 
 /** Default when Harvous is on the list but not #1. */
 export const DEFAULT_HONEST_NOTE_NOT_FIRST =
@@ -304,7 +304,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       },
       {
         heading: "Choose a freemium transcription app if…",
-        body: "You want AI sermon capture on a free tier — Bible Note and similar tools — knowing the product is built around transcription, not long-term written recall.",
+        body: "You want AI sermon capture on a free tier — Bible Note and similar tools — knowing the product is built around transcription, not long-term written suggestions.",
       },
     ],
   },
@@ -440,7 +440,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       chooseHarvous("General Notes"),
       {
         heading: "Choose Apple Notes if…",
-        body: "You want frictionless capture on Apple devices and don’t need native scripture linking or study-specific recall.",
+        body: "You want frictionless capture on Apple devices and don’t need native scripture linking or study-specific suggestions.",
       },
     ],
   },
@@ -780,9 +780,9 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Resurface what you saved — not flashcards or plans",
     seoTitle: "Best apps to remember Bible study — Harvous",
     seoDescription:
-      "Compare apps that help you remember Bible study — Harvous Recall, Bible Memory, YouVersion, Obsidian, and more. Resurface your own notes and highlights — not only reading plans or verse flashcards.",
+      "Compare apps that help you remember Bible study — Harvous Suggestions, Bible Memory, YouVersion, Obsidian, and more. Resurface your own notes and highlights — not only reading plans or verse flashcards.",
     h1: "Best apps to remember Bible study",
-    lead: "Remembering what you studied is a different job than capturing it. Harvous Recall resurfaces fading notes, highlights, and passages from your own library.",
+    lead: "Remembering what you studied is a different job than capturing it. Harvous Suggestions resurface fading notes, highlights, and passages from your own library.",
     pickSlugs: [
       "bible-memory",
       "youversion",
@@ -792,7 +792,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "dwell",
     ],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We put it first because Recall brings back what you already wrote and highlighted — not a reading plan streak, not flashcards someone else authored.",
+      "We built Harvous — so of course we care how this list reads. We put it first because Suggestions bring back what you already wrote and highlighted — not a reading plan streak, not flashcards someone else authored.",
     whenToChoose: [
       chooseHarvous("Bible Notes"),
       {
@@ -915,7 +915,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "bible-note",
     ],
     honestNote:
-      "We built Harvous — so of course we care how this list reads. We put it first because highlights live in a notes-first home — in your writing and inside scripture pills — with a dedicated view and Recall, not only marks inside a reader.",
+      "We built Harvous — so of course we care how this list reads. We put it first because highlights live in a notes-first home — in your writing and inside scripture pills — with a dedicated view and Suggestions, not only marks inside a reader.",
     whenToChoose: [
       chooseHarvous("Bible Notes"),
       {
@@ -1252,7 +1252,7 @@ function entryToPick(entry: CompareEntry): ComparePick {
 
 function drawbackFor(entry: CompareEntry): string {
   if (entry.competitorType === "Bible Reader") {
-    return "Notes are secondary to reading — not built for long-term recall of your own study";
+    return "Notes are secondary to reading — not built for long-term suggestions of your own study";
   }
   if (entry.competitorType === "General Notes") {
     return "No native scripture linking — you build Bible study workflows yourself";

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T20:44:08.875Z",
+  "generatedAt": "2026-09-03T00:50:22.794Z",
   "size": "1200x630",
   "count": 42,
   "targets": [
@@ -185,11 +185,6 @@
     },
     {
       "kind": "feature",
-      "slug": "recall",
-      "out": "/images/features/og/recall.webp"
-    },
-    {
-      "kind": "feature",
       "slug": "resource-library",
       "out": "/images/features/og/resource-library.webp"
     },
@@ -202,6 +197,11 @@
       "kind": "feature",
       "slug": "sidebar-modes",
       "out": "/images/features/og/sidebar-modes.webp"
+    },
+    {
+      "kind": "feature",
+      "slug": "suggestions",
+      "out": "/images/features/og/suggestions.webp"
     },
     {
       "kind": "feature",
