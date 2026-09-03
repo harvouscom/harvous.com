@@ -50,10 +50,16 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
   <Container size="xl">
     <div class="tour__head section-head" data-reveal>
       <h2 class="section-title">{title}</h2>
+      <!--
+        The bridge: the five words are the hero's pills, which head the four
+        cards directly below; the second sentence is what the five category
+        cards under those do with them.
+      -->
       <p class="lead tour__lead">
-        Harvous turns every reference into a <strong>Scripture pill</strong>, keeps notes in
-        the chapter's margin, and files them as you write. When one fades,
-        <strong>Suggestions</strong> bring it back — into <mark>your own study Bible</mark>.
+        You write in <strong>notes</strong>, <strong>scripture</strong>,
+        <strong>highlights</strong>, <strong>folders</strong>, and <strong>threads</strong>.
+        Harvous keeps them together — and when one fades, brings it back beside
+        whatever you're writing next, into <mark>your own study Bible</mark>.
       </p>
       {
         /* The tour shows what 3.0 looks like; /3/ says what moved and why.
@@ -151,11 +157,12 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
      and the first lines up with the head's column. ~2.25 cards show at once,
      ~500px each at 1440 — the old bento's proportion, which the close-ups
      need to stay readable. */
+  /* Centered under the centered head, like this section's other controls. */
   .tour__pillcontrols {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 0.6rem;
-    margin-top: clamp(2rem, 4.5vw, 3rem);
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
   }
   .tour__pillwrap {
     --carousel-peek-slides: 2.25;
