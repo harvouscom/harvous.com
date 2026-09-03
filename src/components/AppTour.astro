@@ -75,21 +75,10 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
     The hero cycles through five content pills. These four cards are those
     pills, each with the close-up that shows it — the visual thread from the
     headline down into the tour. A scroll-snap row that bleeds to the frame
-    rails, the use-cases preview's pattern, with its own arrows so the
-    category slider's controls below stay next to their own track.
+    rails, the use-cases preview's pattern. Each slider's arrows sit below
+    its own track.
   -->
-  <Container size="xl">
-    <div class="tour__pillcontrols" data-reveal style="--reveal-delay: 100ms;">
-      <button type="button" class="tour__arrow" data-dir="prev" aria-label="Previous" disabled>
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
-      </button>
-      <button type="button" class="tour__arrow" data-dir="next" aria-label="Next">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
-      </button>
-    </div>
-  </Container>
-
-  <div class="tour__pillwrap carousel-track-wrap" data-reveal style="--reveal-delay: 120ms;">
+  <div class="tour__pillwrap carousel-track-wrap" data-reveal style="--reveal-delay: 100ms;">
     <ul class="tour__pilltrack" role="list" aria-label="What you write with" tabindex="0" data-reveal="stagger" style="--reveal-delay: 160ms;">
       {
         HOME_FEATURE_CARDS.map((card) => (
@@ -108,11 +97,11 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
   </div>
 
   <Container size="xl">
-    <div class="tour__controls">
-      <button type="button" class="tour__arrow" data-dir="prev" aria-label="Previous chapter" disabled>
+    <div class="tour__pillcontrols" data-reveal style="--reveal-delay: 160ms;">
+      <button type="button" class="tour__arrow" data-dir="prev" aria-label="Previous" disabled>
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
       </button>
-      <button type="button" class="tour__arrow" data-dir="next" aria-label="Next chapter">
+      <button type="button" class="tour__arrow" data-dir="next" aria-label="Next">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
       </button>
     </div>
@@ -129,6 +118,17 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
       }
     </ul>
   </div>
+
+  <Container size="xl">
+    <div class="tour__controls">
+      <button type="button" class="tour__arrow" data-dir="prev" aria-label="Previous chapter" disabled>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+      </button>
+      <button type="button" class="tour__arrow" data-dir="next" aria-label="Next chapter">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  </Container>
 </section>
 
 <style>
@@ -161,12 +161,12 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
      and the first lines up with the head's column. ~2.25 cards show at once,
      ~500px each at 1440 — the old bento's proportion, which the close-ups
      need to stay readable. */
-  /* Centered under the centered head, like this section's other controls. */
+  /* Arrows below the track, centred like this section's other controls. */
   .tour__pillcontrols {
     display: flex;
     justify-content: center;
     gap: 0.6rem;
-    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+    margin-top: 1.25rem;
   }
   .tour__pillwrap {
     --carousel-peek-slides: 2.25;
@@ -174,7 +174,7 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
     position: relative;
     overflow: hidden;
     margin-inline: var(--frame-inset);
-    margin-top: 0.9rem;
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
   }
   .tour__pilltrack {
     display: flex;
@@ -192,7 +192,11 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
       calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
     );
     list-style: none;
+    /* overflow-x: auto alone makes overflow-y auto too, and the reveal's
+       translateY pushes unrevealed slides past the box — the track itself
+       became a vertical scroller with mandatory snap. */
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -210,7 +214,7 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    margin-top: 1.75rem;
+    margin-top: 1.25rem;
   }
   .tour__arrow {
     display: inline-flex;
@@ -242,8 +246,12 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
     margin: 0;
     padding-block: 0.25rem;
     padding-inline: var(--frame-inset);
+    /* Without this the mandatory snap pulls the first slide under the
+       padding, so the track rests at scrollLeft 12 with "prev" enabled. */
+    scroll-padding-inline: var(--frame-inset);
     list-style: none;
     overflow-x: auto;
+    overflow-y: hidden; /* same reason as .tour__pilltrack */
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
