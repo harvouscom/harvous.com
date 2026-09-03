@@ -5,12 +5,15 @@
  * Written for people who already use Harvous 2, in three bands: what's new,
  * what changed, and why. Each band takes a different shape on purpose — a
  * gradient-numeral hero with a three-line TL;DR, a bleeding scroll-snap slider
- * of the new things (the use-cases preview's pattern), an inverted ink band
- * with a sticky intro beside the migration rows, and a left-stacked head over
- * the founder letter — so the page reads as a sequence, not a template.
+ * of the new things (the use-cases preview's pattern), a ruled list of what
+ * moved (About's list rhythm), and a left-stacked head over the founder letter
+ * — so the page reads as a sequence, not a template.
  *
- * Section / SectionHeader / Row are the site's layout primitives; this is the
- * first page to render them.
+ * Every band sits on paper so the page frame's vertical rails run the whole
+ * way down, and every band starts on a frame-divider hairline. Rows inside a
+ * band are separated by the same hairline, the way About and the feature grid
+ * do it. Section / Row are the site's layout primitives; this is the first
+ * page to render them.
  *
  * Draft-gated via src/lib/draft-pages.ts until launch — that one array controls
  * noindex, the banner, the sitemap, the production strip, and the two links
@@ -113,14 +116,13 @@ const newSlides = [
 ].filter((s): s is NonNullable<typeof s> => Boolean(s));
 
 /*
-  What changed, as a ledger: each row is Harvous 2 on the left, Harvous 3 on
-  the right. Links point at the category pages rather than
-  /features/sidebar-modes/, whose slug predates this release. Review is an
-  addition, not a move, so it lives in What's new.
+  What changed: what each thing was, what it is now, one line on why. Links
+  point at the category pages rather than /features/sidebar-modes/, whose slug
+  predates this release. Review is an addition, not a move, so it lives in
+  What's new.
 */
 const movedRows = [
   {
-    icon: "fa7-solid:layer-group",
     before: "The sidebar",
     after: "Activity and the Library",
     body: "Its four jobs got homes that fit them. Your study history became Activity, a view with room to show a week. Finding things became the Library — a spotlight you summon over the note you're already in.",
@@ -130,14 +132,12 @@ const movedRows = [
     ],
   },
   {
-    icon: "fa7-solid:lightbulb",
     before: "Recall",
     after: "Suggestions",
     body: "The same job under a truer name: some of these bring back a fading note, and some propose something new to make from what you already saved. Links to the old name still land in the right place.",
     links: [{ label: "Suggestions", href: "/features/suggestions/" }],
   },
   {
-    icon: "fa7-solid:calendar-day",
     before: "Streaks",
     after: "Rest days in the record",
     body: "A day you rested still gets its sheet, and the sheet says so plainly. Keeping the quiet stretches next to the heavy ones is what lets a few months show you the real shape of your study.",
@@ -267,11 +267,6 @@ const jsonLd = {
       <div class="v3-new__head v3-arrive" data-reveal>
         <div class="v3-new__head-text">
           <h2 class="section-title">What's new</h2>
-          <p class="lead">
-            Activity is a view now, with room to show a week. Review is here for Harvous Plus.
-            A rest day keeps its place in the record. And finding things is a spotlight you
-            summon, not a column that never leaves.
-          </p>
         </div>
         <div class="v3-new__controls">
           <button type="button" class="v3-new__arrow" data-dir="prev" aria-label="Previous" disabled>
@@ -320,49 +315,33 @@ const jsonLd = {
   </Section>
 
   <!--
-    The one inverted band, as a ledger: Harvous 2 on the left of every row,
-    Harvous 3 on the right. Section's .section--invert remaps the ink tokens
-    so the title, lead, headings and hairlines adapt on their own; what it
-    doesn't remap (chips, links, the strike) is restyled below. No
-    frame-divider here — the band's own edge is the seam, and .color-band
-    suppresses the next section's hairline.
+    What changed, as a ruled list — About's "What Harvous cares about" rhythm:
+    a left head, then rows on hairlines. One device per row: the old name
+    struck, an arrow, the new name. On paper, so the frame's rails run through
+    it and the next band's divider draws as normal.
   -->
-  <Section id="what-changed" tone="ink" space="lg">
+  <Section id="what-changed" tone="paper" space="md" class="frame-divider">
     <Container size="xl">
       <div class="v3-changed__head v3-arrive" data-reveal>
-        <div class="v3-changed__head-text">
-          <h2 class="section-title">What changed</h2>
-          <p class="lead v3-changed__lead">
-            Everything you wrote is where you left it. These are the parts that moved, and where
-            each one went.
-          </p>
-        </div>
-        <p class="v3-changed__legend" aria-hidden="true">
-          <span class="v3-changed__legend-item">Harvous 2</span>
-          <span class="v3-changed__legend-arrow">→</span>
-          <span class="v3-changed__legend-item v3-changed__legend-item--now">Harvous 3</span>
+        <h2 class="section-title">What changed</h2>
+        <p class="lead v3-changed__lead">
+          Everything you wrote is where you left it. These are the parts that moved, and where
+          each one went.
         </p>
       </div>
 
-      <ul class="v3-ledger" role="list" data-reveal="stagger" style="--reveal-stagger: 130ms;">
+      <ul class="v3-moved" role="list" data-reveal="stagger">
         {
           movedRows.map((row) => (
-            <li class="v3-ledger__row">
-              <div class="v3-ledger__then">
-                <span class="v3-ledger__label">In Harvous 2</span>
-                <span class="v3-ledger__name v3-ledger__name--then">{row.before}</span>
-              </div>
-              <span class="v3-ledger__arrow" aria-hidden="true">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
-              </span>
-              <div class="v3-ledger__now">
-                <span class="v3-ledger__label v3-ledger__label--now">
-                  <span class="v3-ledger__icon" aria-hidden="true"><Icon name={row.icon} /></span>
-                  In Harvous 3
-                </span>
-                <h3 class="v3-ledger__name">{row.after}</h3>
-                <p class="v3-ledger__body">{row.body}</p>
-                <p class="v3-ledger__links">
+            <li class="v3-moved__row">
+              <h3 class="v3-moved__head">
+                <span class="v3-moved__before">{row.before}</span>
+                <span class="v3-moved__arrow" aria-hidden="true">→</span>
+                <span class="v3-moved__after">{row.after}</span>
+              </h3>
+              <div class="v3-moved__body">
+                <p>{row.body}</p>
+                <p class="v3-moved__links">
                   {row.links.map((l) => (
                     <a href={l.href}>{l.label} →</a>
                   ))}
@@ -823,163 +802,91 @@ const jsonLd = {
     color: var(--color-accent);
   }
 
-  /* ---------- What changed: the ledger, on ink ---------- */
-  /* Head: text left, the 2 → 3 legend right, bottom-aligned. */
+  /* ---------- What changed: a ruled list ---------- */
   .v3-changed__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1.5rem 2rem;
-  }
-  .v3-changed__head-text {
-    max-width: 34rem;
+    max-width: 38rem;
   }
   .v3-changed__lead {
     margin-top: 0.85rem;
-  }
-  .v3-changed__legend {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin: 0;
-    flex: none;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-  .v3-changed__legend-item {
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-rule);
-    color: var(--color-ink-faint);
-  }
-  .v3-changed__legend-item--now {
-    background: var(--color-ink);
-    border-color: var(--color-ink);
-    color: #0d0e12; /* the band's ground — white pill, ink text, on ink */
-  }
-  .v3-changed__legend-arrow {
-    color: var(--color-ink-faint);
+    max-width: 32rem;
   }
 
-  /* Rows. Each is then → now; the arrow chip sits on the row's first line. */
-  .v3-ledger {
+  /* About's list: rows on hairlines, title cell left, body right. */
+  .v3-moved {
     list-style: none;
-    margin: clamp(2.25rem, 5vw, 3.25rem) 0 0;
+    margin: clamp(2rem, 4.5vw, 2.75rem) 0 0;
     padding: 0;
   }
-  .v3-ledger__row {
+  .v3-moved__row {
     display: grid;
-    gap: 0.9rem 0;
-    padding-block: clamp(1.5rem, 3vw, 2.25rem);
+    gap: 0.65rem 2rem;
+    padding-block: 1.5rem;
     border-top: 1px solid var(--color-rule);
   }
-  .v3-ledger__label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45em;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-ink-faint);
+  .v3-moved__row:last-child {
+    padding-bottom: 0;
   }
-  .v3-ledger__label--now {
-    color: var(--color-ink-soft);
-  }
-  /* --color-warm isn't remapped on the band; the chip uses the 10%-white card token. */
-  .v3-ledger__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 0.45rem;
-    background: var(--color-card);
-    border: 1px solid var(--color-rule);
-    color: var(--color-ink);
-  }
-  .v3-ledger__icon :global(svg) {
-    width: 0.75rem;
-    height: 0.75rem;
-  }
-  .v3-ledger__name {
-    display: block;
-    margin: 0.4rem 0 0;
+  .v3-moved__head {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
     font-family: var(--font-display);
-    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    font-size: 1.25rem;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
     letter-spacing: -0.02em;
     color: var(--color-ink);
   }
-  /* The old name: muted, and struck in its own colour — --color-rule is
-     invisible against ink at 18%. */
-  .v3-ledger__name--then {
-    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  .v3-moved__before {
+    font-size: 0.95rem;
     font-weight: 500;
     color: var(--color-ink-faint);
     text-decoration: line-through;
-    text-decoration-color: currentColor;
-    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-rule);
   }
-  .v3-ledger__arrow {
-    display: none;
+  .v3-moved__arrow {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-ink-faint);
   }
-  .v3-ledger__body {
-    margin: 0.75rem 0 0;
-    max-width: 36rem;
+  .v3-moved__body p {
+    margin: 0;
     font-size: 1rem;
     line-height: 1.65;
     color: var(--color-ink-soft);
   }
-  .v3-ledger__links {
-    margin: 0.75rem 0 0;
+  .v3-moved__links {
+    margin-top: 0.6rem !important;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     font-size: 0.9rem;
   }
-  /* --color-accent isn't remapped and is ~3.8:1 on ink. Links take the
-     white-with-rule-underline recipe instead. */
-  .v3-ledger__links a,
+  .v3-moved__links a,
   .v3-changed__foot a {
-    color: var(--color-ink);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .v3-moved__links a:hover,
+  .v3-changed__foot a:hover {
     text-decoration: underline;
-    text-decoration-color: var(--color-rule);
     text-underline-offset: 4px;
   }
-  .v3-ledger__links a:hover,
-  .v3-changed__foot a:hover {
-    text-decoration-color: currentColor;
-  }
   @media (min-width: 768px) {
-    .v3-ledger__row {
-      grid-template-columns: minmax(0, 0.8fr) 2.25rem minmax(0, 1.6fr);
-      gap: 0 clamp(1.25rem, 2.5vw, 2rem);
+    .v3-moved__row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
       align-items: start;
+      gap: 1.25rem 2rem;
+      padding-block: 1.75rem;
     }
-    .v3-ledger__arrow {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.25rem;
-      height: 2.25rem;
-      border-radius: 999px;
-      background: var(--color-card);
-      border: 1px solid var(--color-rule);
-      color: var(--color-ink);
-      /* Level with the two names, which sit one label-line below the row top. */
-      margin-top: 1.3rem;
-    }
-    .v3-ledger__arrow svg {
-      width: 0.9rem;
-      height: 0.9rem;
+    .v3-moved__head {
+      font-size: 1.35rem;
     }
   }
   .v3-changed__foot {
-    margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0;
+    margin: clamp(1.5rem, 3vw, 2rem) 0 0;
     padding-top: 1.5rem;
     border-top: 1px solid var(--color-rule);
     max-width: 44rem;
@@ -1000,8 +907,12 @@ const jsonLd = {
     margin: clamp(2rem, 5vw, 3rem) auto 0;
     max-width: 64rem;
   }
+  /* The essays sit under a rule, so the band reads as two parts the way the
+     research band on /about closes on one. */
   .v3-why__essays {
     margin-top: clamp(2.5rem, 6vw, 4rem);
+    padding-top: clamp(2rem, 4.5vw, 3rem);
+    border-top: 1px solid var(--color-rule);
   }
   .v3-why__label {
     margin: 0 0 1rem;
