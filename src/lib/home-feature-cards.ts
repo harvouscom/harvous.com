@@ -25,31 +25,33 @@ export type HomeFeatureCard = {
 };
 
 export const HOME_FEATURE_CARDS: HomeFeatureCard[] = [
+  /* Bodies stay under ~105 characters: three lines at the 512px desktop card
+     and still three at the 256px phone slide. */
   {
     pills: ["note"],
     title: "Take notes like Google Docs",
-    body: "Rich text is there — headings, bullets, dividers, links. Type @ to mention a note, folder, thread, or resource as a pill.",
+    body: "Rich text — headings, bullets, dividers, links. Type @ to drop in a note, folder, thread, or resource.",
     image: "/app-note.png",
     imageAlt: "Writing a note in Harvous with rich-text formatting",
   },
   {
     pills: ["scripture"],
     title: "Just type the reference",
-    body: "Type a reference and it becomes a pill in your note, in 11 translations. Open the chapter instead, and your notes and highlights for it are already there in the margin.",
+    body: "Type a reference — it becomes a pill in 11 translations. Open the chapter and your notes are there.",
     image: "/app-scripture.png",
     imageAlt: "A scripture reference opened inline with a translation picker",
   },
   {
     pills: ["highlight"],
     title: "Highlight text and annotate",
-    body: "Select text to highlight and add an annotation. You can even do this within the Scripture you add.",
+    body: "Select text to highlight and add an annotation — even inside the Scripture you add.",
     image: "/app-highlight.png",
     imageAlt: "A highlighted phrase with an annotation",
   },
   {
     pills: ["folder", "thread"],
     title: "Auto or manually organized",
-    body: "Notes file themselves into folders with tags as you write. Connect notes by hand to make a thread you can follow later.",
+    body: "Notes file themselves into folders with tags as you write. Connect notes by hand to make a thread.",
     image: "/tour/tour-organize.png",
     imageAlt: "A note in its auto-folder with its tags, and a thread connecting it to others",
   },
