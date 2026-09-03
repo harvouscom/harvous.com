@@ -82,7 +82,7 @@ export const PLUS_PLAN: PricingPlan = {
     "Up to 50 people per space",
     "Turn a thread into a study plan your group reads together",
     "Joining is always free",
-    "Review — write an answer from memory, then say how it went",
+    "Review — questions built from your own notes, answered from memory",
   ],
   comingSoonFeatures: ["Challenges — guided study seasons"],
   cta: {
