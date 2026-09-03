@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T06:03:03.418Z",
+  "generatedAt": "2026-09-03T16:29:36.177Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -136,29 +136,6 @@
     ]
   },
   "posts": {
-    "a-rest-day-belongs-in-the-record": {
-      "category": "retention",
-      "mood": "dark",
-      "shape": "plume",
-      "source": "ai_bg_059.webp",
-      "sourceMean": 157,
-      "pack": [
-        "ai_bg_045.webp",
-        "ai_bg_047.webp",
-        "ai_bg_059.webp",
-        "ai_bg_072.webp",
-        "ai_bg_050.webp",
-        "ai_bg_074.webp"
-      ],
-      "grade": {
-        "a": "#7a2810",
-        "b": "#fbc8ad",
-        "c": "#fff1e8"
-      },
-      "spot": "/blog-thumbs/a-rest-day-belongs-in-the-record-spot.webp",
-      "feat": "/blog-thumbs/a-rest-day-belongs-in-the-record-feat.webp",
-      "skipped": true
-    },
     "asking-better-questions-in-class-and-group": {
       "category": "teaching",
       "mood": "light",
@@ -595,6 +572,29 @@
       "spot": "/blog-thumbs/the-monday-retention-loop-spot.webp",
       "feat": "/blog-thumbs/the-monday-retention-loop-feat.webp",
       "skipped": true
+    },
+    "the-quiet-days-stay": {
+      "category": "retention",
+      "mood": "dark",
+      "shape": "arc",
+      "source": "ai_bg_050.webp",
+      "sourceMean": 199,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_074.webp"
+      ],
+      "grade": {
+        "a": "#7a2810",
+        "b": "#fbc8ad",
+        "c": "#fff1e8"
+      },
+      "spot": "/blog-thumbs/the-quiet-days-stay-spot.webp",
+      "feat": "/blog-thumbs/the-quiet-days-stay-feat.webp",
+      "skipped": false
     },
     "the-sidebar-did-too-much": {
       "category": "how-we-think",

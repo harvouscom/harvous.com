@@ -90,7 +90,7 @@ const extraShot = (name: string, alt: string): Shot => ({ src: `/tour/tour-${nam
 const SERIES = [
   "study-you-can-follow-and-return-to",
   "the-sidebar-did-too-much",
-  "a-rest-day-belongs-in-the-record",
+  "the-quiet-days-stay",
 ];
 const listedPosts = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
 const byId = new Map(listedPosts.map((p) => [p.id, p]));
@@ -99,7 +99,7 @@ const series = SERIES.map((id) => byId.get(id)).filter(
 );
 const [featuredEssay, ...restEssays] = series;
 
-const restDayEssay = byId.get("a-rest-day-belongs-in-the-record");
+const restDayEssay = byId.get("the-quiet-days-stay");
 const restHref = restDayEssay ? `/blog/${restDayEssay.id}` : "/features/activity/";
 const restLabel = restDayEssay ? "Read why" : "More about Activity";
 
@@ -108,7 +108,7 @@ const restLabel = restDayEssay ? "Read why" : "More about Activity";
   auth-hero image under an ink wash, its icon in a badge, a caption. Nothing
   here waits on a screenshot. The set and its order follow the release note
   sent to users: the three views first, then what's new to write with, then
-  the record. Rest days borrow the essay's own generated art, since that essay
+  the quiet days. They borrow the essay's own generated art, since that essay
   is the decision.
 */
 const newSlides = [
@@ -195,12 +195,12 @@ const newSlides = [
     cta: "See how it works",
   },
   {
-    title: "Rest days in the record",
+    title: "The quiet days stay",
     tagline: "A day you rested still gets its sheet, and the sheet says so plainly.",
     href: restHref,
     icon: "fa7-solid:calendar-day",
     ink: "var(--pill-note)",
-    image: blogThumbUrl("a-rest-day-belongs-in-the-record", "feat"),
+    image: blogThumbUrl("the-quiet-days-stay", "feat"),
     shot: extraShot("rest-day", "An empty day sheet in Activity, saying nothing happened, with the days behind it still visible."),
     cta: restLabel,
   },
@@ -233,7 +233,7 @@ const movedRows = [
   },
   {
     before: "Streaks",
-    after: "Rest days in the record",
+    after: "Rest days in Activity",
     body: "A day you rested still gets its sheet, and the sheet says so plainly. Keeping the quiet stretches next to the heavy ones is what lets a few months show you the real shape of your study.",
     links: [{ label: restLabel, href: restHref }],
   },
@@ -478,7 +478,7 @@ const jsonLd = {
       <div class="v3-why__head section-head v3-arrive" data-reveal>
         <h2 class="section-title">Why the change</h2>
         <p class="lead v3-why__lead">
-          From Derek, on what the sidebar was costing and what a record owes you.
+          From Derek, on what the sidebar was costing and why the quiet days stay.
         </p>
       </div>
 
@@ -500,8 +500,8 @@ const jsonLd = {
               summon from the top middle.
             </p>
             <p>
-              While I was in there I settled something else. The days you rest stay in the
-              record. A month that hides them would look better and tell you less.
+              While I was in there I settled something else. The days you rest stay. A month
+              that hides them would look better and tell you less.
             </p>
           </Fragment>
           <Fragment slot="right">

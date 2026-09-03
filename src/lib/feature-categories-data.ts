@@ -72,7 +72,7 @@ const categories: FeatureCategory[] = [
         heading: "A day at a time, not an endless feed",
         paragraphs: [
           "A feed says *here is everything, keep going*. A day says *here is what this one was*. Each day gets its own sheet with a sentence at the top — what you read, how much you wrote, the book you kept returning to.",
-          "Days you did not study still get a sheet. A rest day is part of the record, and a stack that quietly skipped it would rewrite your month into an unbroken streak you never had.",
+          "Days you did not study still get a sheet. The quiet days count too, and a stack that skipped them would rewrite your month into an unbroken streak you never had.",
         ],
       },
       {
@@ -104,19 +104,19 @@ const categories: FeatureCategory[] = [
       {
         icon: "fa7-solid:folder-tree",
         heading: "It sorts itself as you go",
-        body: "Auto-folders and auto-tags file each note by what it is actually about, so the record stays usable without you maintaining it.",
+        body: "Auto-folders and auto-tags file each note by what it is actually about, so everything stays findable without you maintaining it.",
       },
       {
         icon: "fa7-solid:arrow-right-arrow-left",
         heading: "Threads follow one study across days",
-        body: "Collect the notes that belong to the same line of thinking, however far apart in the record they were written.",
+        body: "Collect the notes that belong to the same line of thinking, however many weeks apart they were written.",
       },
     ],
     // "review" resolves via getComingSoonGridItem() to the addon page, the same
     // mechanism Share uses for "shared-spaces" — a Plus add-on housed inside a
     // free category's grid, not a fourth item on the homepage tour card.
     featureIds: ["suggestions", "daily-passage", "threads", "review"],
-    featuresHeading: "What keeps the record worth opening",
+    featuresHeading: "What keeps Activity worth opening",
     featuresLead:
       "Activity is built out of what Harvous already logs — nothing new to maintain, which is why it can show you a trail reaching back further than the feature itself.",
     useCaseSlugs: ["daily-journal", "deep-study"],
