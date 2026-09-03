@@ -2,6 +2,9 @@
 // Founder letter — the paper-stack + fan-in is a signature, kept intact and made
 // theme-aware (at night the sheet glows like a lit letter on a dark desk via the
 // app's --pds-paper-* tokens). Used by both the homepage (teaser) and /about (full).
+//
+// A page can also supply its own body through `left` / `right` slots — the /3/
+// release letter does — and keep the paper chrome and the sign-off block.
 import OptimizedImage from "./OptimizedImage.astro";
 
 interface Props {
@@ -11,6 +14,10 @@ interface Props {
 
 const { variant = "teaser" } = Astro.props;
 const isFull = variant === "full";
+const slotted = Astro.slots.has("left");
+/* The teaser's "More about Harvous" link belongs to the homepage letter, not to
+   a slotted one. */
+const showAboutLink = !isFull && !slotted;
 ---
 
 <div class="paper-stack relative">
@@ -46,6 +53,7 @@ const isFull = variant === "full";
 
     <div class="grid gap-8 md:grid-cols-2 md:gap-10 lg:gap-14">
       <div class="prose-letter">
+        {slotted ? <slot name="left" /> : (<>
         <p>Hey there,</p>
         <p>
           Since 2016 (when I got saved) I've been studying the Bible. Many highlights
@@ -76,8 +84,10 @@ const isFull = variant === "full";
             </>
           )
         }
+        </>)}
       </div>
       <div class="prose-letter letter-col letter-col--signoff">
+        {slotted ? <slot name="right" /> : (<>
         <p>
           It's named after Proverbs 25:2 — "It is the glory of God to conceal
           a matter; to search out a matter is the glory of kings." Studying
@@ -111,6 +121,7 @@ const isFull = variant === "full";
             </p>
           )
         }
+        </>)}
         <div class="letter-signoff">
           <OptimizedImage
             src="/derek-signiture.png"
@@ -133,7 +144,7 @@ const isFull = variant === "full";
             </div>
           </div>
           {
-            !isFull && (
+            showAboutLink && (
               <p class="mt-8 mb-0">
                 <a
                   href="/about/"

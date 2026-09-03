@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-03T00:50:22.794Z",
+  "generatedAt": "2026-09-03T06:03:10.028Z",
   "size": "1200x630",
-  "count": 42,
+  "count": 43,
   "targets": [
     {
       "kind": "use-case",
@@ -212,6 +212,11 @@
       "kind": "pricing",
       "slug": "pricing",
       "out": "/images/pricing/og.webp"
+    },
+    {
+      "kind": "release",
+      "slug": "3",
+      "out": "/images/3/og.webp"
     }
   ]
 }

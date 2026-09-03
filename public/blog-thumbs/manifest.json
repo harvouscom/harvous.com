@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T20:58:30.040Z",
+  "generatedAt": "2026-09-03T06:03:03.418Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -481,6 +481,29 @@
       "feat": "/blog-thumbs/start-with-threads-feat.webp",
       "skipped": true
     },
+    "study-you-can-follow-and-return-to": {
+      "category": "how-we-think",
+      "mood": "light",
+      "shape": "arc",
+      "source": "ai_bg_045.webp",
+      "sourceMean": 211,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_073.webp"
+      ],
+      "grade": {
+        "a": "#5a4116",
+        "b": "#f6ecd6",
+        "c": "#fff8e8"
+      },
+      "spot": "/blog-thumbs/study-you-can-follow-and-return-to-spot.webp",
+      "feat": "/blog-thumbs/study-you-can-follow-and-return-to-feat.webp",
+      "skipped": true
+    },
     "teaching-through-a-book": {
       "category": "teaching",
       "mood": "light",
@@ -594,7 +617,7 @@
       },
       "spot": "/blog-thumbs/the-sidebar-did-too-much-spot.webp",
       "feat": "/blog-thumbs/the-sidebar-did-too-much-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "tools-help-humans-teach": {
       "category": "how-we-think",

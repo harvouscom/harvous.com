@@ -15,6 +15,7 @@ import Container from "./layout/Container.astro";
 import AppTourChapter from "./AppTourChapter.astro";
 import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
 import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
+import { isDraftPageSlug } from "../lib/draft-pages.ts";
 
 interface Props {
   id?: string;
@@ -45,6 +46,13 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
         the chapter's margin, and files them as you write. When one fades,
         <strong>Suggestions</strong> bring it back — into <mark>your own study Bible</mark>.
       </p>
+      {
+        /* The tour shows what 3.0 looks like; /3/ says what moved and why.
+           Hidden while that page is still a draft. */
+        !isDraftPageSlug("3") && (
+          <a class="tour__whatsnew" href="/3/">New in Harvous 3 →</a>
+        )
+      }
     </div>
 
     <div class="tour__controls">
@@ -79,6 +87,17 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
   .tour::before { left: 0; right: 0; }
 
   .tour__lead { max-width: 38rem; }
+  .tour__whatsnew {
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 4px;
+  }
+  .tour__whatsnew:hover { text-decoration-color: var(--color-ink); }
 
   .tour__controls {
     display: flex;

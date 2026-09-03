@@ -1,0 +1,754 @@
+---
+/**
+ * /3/ — the Harvous 3 release page.
+ *
+ * Written for people who already use Harvous 2: what moved, what got renamed,
+ * and why. The homepage tour shows the result of 3.0; this page is the only
+ * place that explains it, and the only home for the essays that argue it.
+ *
+ * Draft-gated via src/lib/draft-pages.ts until launch — that one array controls
+ * noindex, the banner, the sitemap, the production strip, and the two links
+ * pointing here (footer + homepage tour).
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import PageClosingCTA from "../components/PageClosingCTA.astro";
+import HubSectionNav from "../components/HubSectionNav.astro";
+import TourShotFrame from "../components/TourShotFrame.astro";
+import FounderLetter from "../components/FounderLetter.astro";
+import BlogCard from "../components/BlogCard.astro";
+import CTAButton from "../components/CTAButton.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+import { getTourChapter } from "../lib/app-tour-chapters.ts";
+import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
+import { getAddonDetailHref } from "../lib/addons-data.ts";
+import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
+import { isDraftPageSlug } from "../lib/draft-pages.ts";
+import { fathomSignup } from "../lib/fathom-events.ts";
+
+const PAGE_SLUG = "3";
+const isDraft = isDraftPageSlug(PAGE_SLUG);
+const site = "https://harvous.com";
+const APP_URL = "https://app.harvous.com/";
+
+const activity = getTourChapter("activity");
+const read = getTourChapter("read");
+const write = getTourChapter("write");
+const find = getTourChapter("find");
+const reviewHref = getAddonDetailHref("review") ?? "/add-ons/review/";
+
+/** The three surfaces you land in. Activity gets its own band above these. */
+const views = [read, write, find]
+  .filter((c): c is NonNullable<typeof c> => c !== undefined)
+  .map((chapter) => ({ chapter, category: getFeatureCategoryBySlug(chapter.categorySlug) }));
+
+/*
+  Where each of the sidebar's jobs went, plus the two renames. Ordered heaviest
+  change first. Links point at the category pages rather than at
+  /features/sidebar-modes/, whose slug predates this release.
+*/
+const movedRows = [
+  {
+    icon: "fa7-solid:layer-group",
+    before: "The sidebar",
+    after: "Activity and the Library",
+    body: "Its four jobs got homes that fit them. Your study history became Activity, a view with room to show a week. Finding things became the Library — a spotlight you summon over the note you're already in.",
+    links: [
+      { label: "Activity", href: "/features/activity/" },
+      { label: "Find", href: "/features/find/" },
+    ],
+  },
+  {
+    icon: "fa7-solid:lightbulb",
+    before: "Recall",
+    after: "Suggestions",
+    body: "The same job under a truer name: some of these bring back a fading note, and some propose something new to make from what you already saved. Links to the old name still land in the right place.",
+    links: [{ label: "Suggestions", href: "/features/suggestions/" }],
+  },
+  {
+    icon: "fa7-solid:calendar-day",
+    before: "Streaks",
+    after: "Rest days in the record",
+    body: "A day you rested still gets its sheet, and the sheet says so plainly. Keeping the quiet stretches next to the heavy ones is what lets a few months show you the real shape of your study.",
+    links: [{ label: "Read why", href: "/blog/a-rest-day-belongs-in-the-record" }],
+  },
+  {
+    icon: "fa7-solid:clock-rotate-left",
+    // Not a migration — nothing was replaced, so this row skips the struck-through
+    // "before" and the arrow rather than pretending Review succeeded something.
+    isNew: true,
+    after: "Review",
+    body: "Practice drawn from your own notes, for anyone who wants something more deliberate than waiting to be reminded. Included with Harvous Plus.",
+    links: [{ label: "How Review works", href: reviewHref }],
+  },
+];
+
+const reviewSteps = [
+  "A short question comes from a note, highlight, or verse you already saved — never one invented about the text.",
+  "You write what you remember first. The source appears after.",
+  "You say how it went — held it, mostly had it, or needed the reminder. That decides when it comes back.",
+];
+
+/*
+  Hand-picked rather than scored: these three are the release's argument, in the
+  order it should be read. getRelatedBlogPosts is for affinity strips; a launch
+  series is a sequence. In production the drafts are excluded, so this is empty
+  until they are published — the section hides itself rather than showing a
+  heading with nothing under it.
+*/
+const SERIES = [
+  "study-you-can-follow-and-return-to",
+  "the-sidebar-did-too-much",
+  "a-rest-day-belongs-in-the-record",
+];
+const listedPosts = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
+const byId = new Map(listedPosts.map((p) => [p.id, p]));
+const series = SERIES.map((id) => byId.get(id)).filter(
+  (p): p is NonNullable<typeof p> => p !== undefined
+);
+
+const navItems = [
+  { id: "what-changed", label: "What changed" },
+  { id: "where-things-went", label: "Where things went" },
+  { id: "views", label: "The views" },
+  { id: "review", label: "Review" },
+  { id: "letter", label: "From Derek" },
+  ...(series.length > 0 ? [{ id: "reading", label: "The thinking" }] : []),
+];
+
+const pageUrl = `${site}/3/`;
+const pageDescription =
+  "What changed in Harvous 3, for people who already use it: Activity, the Library, Suggestions, Review — and why the sidebar went.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      name: "Harvous 3",
+      description: pageDescription,
+      url: pageUrl,
+      isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
+      about: {
+        "@type": "SoftwareApplication",
+        name: "Harvous",
+        softwareVersion: "3.0",
+        applicationCategory: "ProductivityApplication",
+        operatingSystem: "Web",
+        url: site,
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Harvous", item: `${site}/` },
+        { "@type": "ListItem", position: 2, name: "Harvous 3", item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Harvous 3 — study you can follow and return to"
+  description={pageDescription}
+  ogImage="/images/3/og.webp"
+  noindex={isDraft}
+  jsonLd={jsonLd}
+>
+  {
+    isDraft && (
+      <div class="draft-page-banner" role="status">
+        Draft — not indexed or deployed. Remove <code>"3"</code> from DRAFT_PAGE_SLUGS to publish.
+      </div>
+    )
+  }
+
+  <section>
+    <PageIntro flushBottom>
+      <span class="eyebrow-pill">Harvous 3</span>
+      <h1 class="section-title display-xl mt-4 text-pretty">
+        Study you can follow and return to.
+      </h1>
+      <p class="v3-hero__lead mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">
+        If you have been using Harvous, here is what moved, what got a new name, and why.
+        It now opens on the study you have already done.
+      </p>
+      <div class="v3-hero__actions mt-7">
+        <CTAButton href={APP_URL} size="lg" external fathomTrack={fathomSignup.v3}>
+          Open Harvous
+        </CTAButton>
+        <CTAButton href="/" variant="ghost" size="lg">New here? Start at the homepage</CTAButton>
+      </div>
+    </PageIntro>
+  </section>
+
+  <div class="v3-main" data-hub-section-nav-main>
+    <HubSectionNav
+      items={navItems}
+      ariaLabel="Harvous 3 sections"
+      selectLabel="Jump to section"
+      selectId="v3-section-select"
+    />
+
+    <section id="what-changed" class="v3-band frame-divider">
+      <div class="v3-content">
+        <div class="section-head" data-reveal>
+          <h2 class="section-title text-pretty">What changed</h2>
+          <p class="lead">
+            Four things. The sidebar's jobs got homes that fit them, rest days stay in the
+            record, Recall is now Suggestions, and Review ships for Harvous Plus.
+          </p>
+        </div>
+
+        {
+          activity && (
+            <div class="mt-10" data-reveal="scale" style="--reveal-delay: 80ms;">
+              <TourShotFrame
+                src={activity.shot.src}
+                alt={activity.shot.alt}
+                width={activity.shot.width}
+                height={activity.shot.height}
+                direction={activity.shot.direction}
+                loading="eager"
+              />
+              <p class="v3-caption">
+                Activity — one sheet per day, with the days behind it still there to look through.
+              </p>
+            </div>
+          )
+        }
+
+        <p class="v3-band__more">
+          <a href="/release-notes/">Every fix and improvement in the release notes →</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="where-things-went" class="v3-band frame-divider">
+      <div class="v3-content">
+        <div class="section-head" data-reveal>
+          <h2 class="section-title text-pretty">Where things went</h2>
+          <p class="lead">Everything you wrote is where you left it. These are the parts that moved.</p>
+        </div>
+
+        <ul class="v3-map" role="list" data-reveal="stagger">
+          {
+            movedRows.map((row) => (
+              <li class="v3-map__item">
+                <span class="v3-map__icon" aria-hidden="true">
+                  <Icon name={row.icon} />
+                </span>
+                <div class="v3-map__head">
+                  {"isNew" in row && row.isNew ? (
+                    <span class="v3-map__new">New</span>
+                  ) : (
+                    <>
+                      <span class="v3-map__before">{"before" in row ? row.before : ""}</span>
+                      <span class="v3-map__arrow" aria-hidden="true">→</span>
+                    </>
+                  )}
+                  <h3 class="v3-map__after">{row.after}</h3>
+                </div>
+                <div class="v3-map__body">
+                  <p>{row.body}</p>
+                  <p class="v3-map__links">
+                    {row.links.map((l) => (
+                      <a href={l.href}>{l.label}</a>
+                    ))}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section id="views" class="v3-band frame-divider">
+      <div class="v3-content v3-content--wide">
+        <div class="section-head" data-reveal>
+          <h2 class="section-title text-pretty">Three views, and a spotlight</h2>
+          <p class="lead">
+            Activity, the Bible reader, and a note. Everything else is a detour from one of
+            them — including the Library, which appears when you ask for it.
+          </p>
+        </div>
+
+        <ul class="v3-views" role="list" data-reveal="stagger">
+          {
+            views.map(({ chapter, category }) => (
+              <li class="v3-view">
+                {category && (
+                  <p class="v3-view__eyebrow" style={`--cat-ink: ${category.ink};`}>
+                    <span class="v3-view__eyebrow-icon">
+                      <Icon name={category.icon} />
+                    </span>
+                    {category.title}
+                  </p>
+                )}
+                <h3 class="v3-view__title">{chapter.title}</h3>
+                <p class="v3-view__lead">{chapter.lead}</p>
+                <div class="v3-view__shot">
+                  <TourShotFrame
+                    src={chapter.shot.src}
+                    alt={chapter.shot.alt}
+                    width={chapter.shot.width}
+                    height={chapter.shot.height}
+                    direction={chapter.shot.direction}
+                  />
+                </div>
+                {category && (
+                  <p class="v3-view__more">
+                    <a href={category.href}>More about {category.title} →</a>
+                  </p>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section id="review" class="v3-band frame-divider">
+      <div class="v3-content">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow-pill">Harvous Plus add-on</span>
+          <h2 class="section-title text-pretty">Review: practice from your own notes</h2>
+          <p class="lead">
+            For anyone who wants something more deliberate than waiting to be reminded. Write
+            an answer from memory, then say how it went. The gap before it returns widens as
+            you hold it.
+          </p>
+        </div>
+
+        <ol class="v3-steps" data-reveal="stagger">
+          {
+            reviewSteps.map((step, i) => (
+              <li class="v3-steps__item">
+                <span class="v3-steps__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <p>{step}</p>
+              </li>
+            ))
+          }
+        </ol>
+
+        <div class="v3-steps__cta">
+          <CTAButton href={reviewHref} variant="secondary">How Review works</CTAButton>
+        </div>
+      </div>
+    </section>
+
+    <section id="letter" class="v3-letter frame-divider">
+      <div class="v3-letter__head section-head" data-reveal>
+        <span class="eyebrow-pill">From the founder</span>
+        <h2 class="section-title text-pretty">Why 3.0 exists</h2>
+        <p class="v3-letter__lead">
+          From Derek, on what the sidebar was costing and what a record owes you.
+        </p>
+      </div>
+      <div class="v3-letter__inner">
+        <FounderLetter variant="full">
+          <Fragment slot="left">
+            <p>Hey there,</p>
+            <p>
+              You know how the sidebar was always there? It gave your recent study, the things
+              worth revisiting, every organised view, and search the same narrow column —
+              about 260 pixels, holding a quarter of your window open all day.
+            </p>
+            <p>
+              Each of those is a fair thing to want. Together they meant everything got a
+              glimpse, whether a glimpse was the right amount or not. So I asked a different
+              question: what is each of these worth in screen? Seeing what you have studied
+              wanted the whole thing, so it became Activity. Finding a note from months ago
+              wanted none of it until the moment you ask, so it became the Library you summon.
+            </p>
+            <p>
+              While I was in there I settled something else. The days you rest stay in the
+              record. A month that hides them would look better and tell you less.
+            </p>
+          </Fragment>
+          <Fragment slot="right">
+            <p>
+              Recall became Suggestions, because the name only covered half of what it does —
+              some bring a fading note back, and some propose something to make from what you
+              already have. And Review is here for the people who wrote to me asking how to
+              hold on to what they found. You answer from memory and say how it went yourself.
+              I left the scoring out on purpose.
+            </p>
+            <p>
+              What this means for you is smaller than it sounds: your notes, highlights,
+              threads, and folders are exactly where they were. Nothing to move or re-file.
+              Harvous simply opens on your study now instead of a blank page.
+            </p>
+            <p>
+              If something is off, write me at{" "}
+              <a
+                class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+                href="mailto:derek@harvous.com"
+              >
+                derek@harvous.com
+              </a>{" "}
+              and tell me what you were trying to do.
+            </p>
+          </Fragment>
+        </FounderLetter>
+      </div>
+    </section>
+
+    {
+      series.length > 0 && (
+        <section id="reading" class="v3-band frame-divider">
+          <div class="v3-content">
+            <div class="section-head" data-reveal>
+              <h2 class="section-title text-pretty">The thinking behind it</h2>
+              <p class="lead">The three essays that argue the release, in the order to read them.</p>
+            </div>
+            <div class="mt-8" data-reveal style="--reveal-delay: 40ms;">
+              {series.map((p) => (
+                <BlogCard
+                  title={p.data.title}
+                  description={p.data.description}
+                  publishDate={p.data.publishDate}
+                  category={p.data.category}
+                  slug={p.id}
+                  readingTime={blogReadingMinutes(p.body)}
+                  draft={p.data.draft}
+                  variant="story"
+                />
+              ))}
+            </div>
+            <div class="mt-8 flex justify-center">
+              <a href="/blog/how-we-think" class="btn-pill inline-flex items-center gap-1.5">
+                More from How we think
+              </a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </div>
+
+  <PageClosingCTA
+    heading="Open Harvous 3."
+    lead="Your notes, highlights, and threads are already there — filed, and waiting in Activity."
+    href={APP_URL}
+    label="Open Harvous"
+    fathomTrack={fathomSignup.v3}
+    secondaryHref="/"
+    secondaryLabel="New here? See what Harvous is"
+  />
+</BaseLayout>
+
+<style>
+  /* Sticky section nav needs a tall ancestor shared with the bands it tracks. */
+  .v3-main {
+    position: relative;
+  }
+
+  .v3-hero__lead {
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .v3-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .v3-band {
+    padding-block: clamp(3rem, 7vw, 4.5rem);
+  }
+
+  .v3-content {
+    margin-inline: auto;
+    max-width: 44rem;
+    padding-inline: var(--frame-content-pad);
+  }
+
+  .v3-content--wide {
+    max-width: 64rem;
+  }
+
+  .v3-caption {
+    margin: 0.9rem auto 0;
+    max-width: 30rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-ink-faint);
+    text-wrap: pretty;
+  }
+
+  .v3-band__more {
+    margin: 1.75rem 0 0;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .v3-band__more a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .v3-band__more a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* Where things went — the About page's numbered-row rhythm, with an icon. */
+  .v3-map {
+    list-style: none;
+    margin: clamp(2rem, 4.5vw, 2.75rem) 0 0;
+    padding: 0;
+  }
+
+  .v3-map__item {
+    display: grid;
+    gap: 0.7rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .v3-map__item:last-child {
+    padding-bottom: 0;
+  }
+
+  .v3-map__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.6rem;
+    background: var(--color-warm);
+    color: var(--color-ink-soft);
+  }
+
+  .v3-map__icon :global(svg) {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+
+  .v3-map__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .v3-map__before {
+    font-size: 0.9rem;
+    color: var(--color-ink-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--color-rule);
+  }
+
+  .v3-map__arrow {
+    font-size: 0.9rem;
+    color: var(--color-ink-faint);
+  }
+
+  .v3-map__new {
+    align-self: center;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--color-accent) 12%, var(--color-paper));
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .v3-map__after {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  .v3-map__body p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .v3-map__links {
+    margin-top: 0.6rem !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .v3-map__links a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .v3-map__links a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (min-width: 768px) {
+    .v3-map__item {
+      grid-template-columns: 2rem minmax(0, 1.15fr) minmax(0, 1.5fr);
+      align-items: start;
+      gap: 1rem 1.75rem;
+      padding-block: 1.75rem;
+    }
+  }
+
+  /* The three views */
+  .v3-views {
+    list-style: none;
+    margin: clamp(2rem, 4.5vw, 2.75rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2rem, 4vw, 2.75rem);
+  }
+
+  @media (min-width: 900px) {
+    .v3-views {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+
+  .v3-view__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--cat-ink, var(--color-accent));
+  }
+
+  .v3-view__eyebrow-icon {
+    display: inline-flex;
+    font-size: 1em;
+  }
+
+  .v3-view__eyebrow-icon :global(svg) {
+    width: 1em;
+    height: 1em;
+    display: block;
+  }
+
+  .v3-view__title {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  .v3-view__lead {
+    margin: 0.5rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .v3-view__shot {
+    margin-top: 1.1rem;
+  }
+
+  .v3-view__more {
+    margin: 0.9rem 0 0;
+    font-size: 0.875rem;
+  }
+
+  .v3-view__more a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .v3-view__more a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* Review steps */
+  .v3-steps {
+    list-style: none;
+    margin: clamp(2rem, 4.5vw, 2.5rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .v3-steps__item {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .v3-steps__index {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+    padding-top: 0.25rem;
+  }
+
+  .v3-steps__item p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .v3-steps__cta {
+    margin-top: 1.75rem;
+  }
+
+  /* Founder letter — full-bleed clip so the paper fan can't scroll the page. */
+  .v3-letter {
+    overflow-x: clip;
+  }
+
+  .v3-letter__head {
+    margin-inline: auto;
+    max-width: 40rem;
+    padding: clamp(3rem, 7vw, 4.5rem) var(--frame-content-pad) 0;
+    text-align: center;
+  }
+
+  .v3-letter__lead {
+    margin: 0.75rem auto 0;
+    max-width: 28rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .v3-letter__inner {
+    margin-inline: auto;
+    max-width: 64rem;
+    padding: clamp(2rem, 5vw, 3rem) var(--frame-content-pad) clamp(3.5rem, 7vw, 5rem);
+  }
+</style>

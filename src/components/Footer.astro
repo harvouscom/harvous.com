@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
 import OptimizedImage from "./OptimizedImage.astro";
+import { isDraftPageUrl } from "../lib/draft-pages.ts";
 
 const year = new Date().getFullYear();
 
@@ -22,6 +23,7 @@ const groups = [
       { label: "About", href: "/about/" },
       { label: "Blog", href: "/blog/" },
       { label: "Release Notes", href: "/release-notes/" },
+      { label: "Harvous 3", href: "/3/" },
       { label: "Support", href: "/support/" },
     ],
   },
@@ -76,7 +78,7 @@ const groups = [
                 {group.label}
               </h2>
               <ul class="m-0 flex list-none flex-col gap-3 p-0" role="list">
-                {group.links.map((l) => (
+                {group.links.filter((l) => !isDraftPageUrl(l.href)).map((l) => (
                   <li>
                     <a
                       href={l.href}
