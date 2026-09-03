@@ -300,6 +300,14 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
       padding-inline: var(--frame-content-pad);
       overflow: visible;
     }
+    /* carousel-track-wrap's redrawn rail exists to stand in for the page-frame's
+       own rail while a carousel bleeds past it. The grid no longer bleeds — its
+       box is inset from the true frame edge now — so the redraw just floats a
+       second, misaligned line over the real one underneath. */
+    .tour__pillwrap::before,
+    .tour__pillwrap::after {
+      display: none;
+    }
     .tour__pilltrack {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));

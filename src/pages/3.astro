@@ -25,6 +25,7 @@ import path from "node:path";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
+import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
 import CTAButton from "../components/CTAButton.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import BlogCard from "../components/BlogCard.astro";
@@ -423,6 +424,20 @@ const jsonLd = {
         </p>
       </div>
 
+      <div class="v3-changed__shotwrap" data-reveal="scale" style="--reveal-delay: 60ms;">
+        <div class="v3-changed__shot-frame">
+          <OptimizedImage
+            class="v3-changed__shot"
+            src="/harvous-3-comparison.png"
+            alt="Derek walking through Harvous 2 next to Harvous 3, comparing the sidebar-era My Home view with the new Activity view."
+            width={1366}
+            height={828}
+            loading="lazy"
+          />
+          <HeroVideoLightbox src="/harvous-3-tour.mp4" label="Watch the 10 min comparison" />
+        </div>
+      </div>
+
       <ul class="v3-moved" role="list" data-reveal="stagger">
         {
           movedRows.map((row) => (
@@ -748,12 +763,10 @@ const jsonLd = {
   }
 
   /* Track: bleeds past the framed column to the frame rails; the first slide
-     lines up with the contained head. These cards are the homepage tour's, whose
-     mobile slider gives them up to 30rem, so this row shows ~2.5 at a time rather
-     than the site default of 3.5 — four columns of tiles need the width. */
+     lines up with the contained head. Same peek as the use-cases preview — the
+     site default of 3.5, not a local override — these cards read closer to
+     square than the homepage tour's, so 2.5 sat them too large on wide screens. */
   .v3-new__track-wrap {
-    --carousel-peek-slides: 2.5;
-    --carousel-peek-gap-count: 2;
     position: relative;
     overflow: hidden;
     margin-inline: var(--frame-inset);
@@ -946,6 +959,31 @@ const jsonLd = {
   .v3-changed__lead {
     margin-top: 0.85rem;
     max-width: 32rem;
+  }
+
+  /* The comparison video — same frame recipe as the blog bridge's shot: a
+     bordered, shadowed panel with the play callout floating over it. Its own
+     recording (gradient ground, webcam corner) is already a finished
+     composition, so the frame just gives it an edge rather than cropping it. */
+  .v3-changed__shotwrap {
+    margin-top: clamp(2.25rem, 5vw, 3.25rem);
+    width: 100%;
+    max-width: 48rem;
+  }
+  .v3-changed__shot-frame {
+    position: relative;
+    width: 100%;
+    border-radius: clamp(16px, 2vw, 28px);
+    overflow: hidden;
+    border: 1px solid var(--color-rule);
+    box-shadow: var(--shadow-float);
+  }
+  .v3-changed__shot,
+  .v3-changed__shot-frame :global(picture),
+  .v3-changed__shot-frame :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   /* About's list: rows on hairlines, title cell left, body right. */
