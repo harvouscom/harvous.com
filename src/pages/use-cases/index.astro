@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageClosingCTA from "../../components/PageClosingCTA.astro";
-import { fathomSignup } from "../../lib/fathom-events.ts";
+import { fathomTry } from "../../lib/fathom-events.ts";
 import { Icon } from "astro-icon/components";
 import { getUseCases, getUseCaseDisplayTitle } from "../../lib/use-cases-data.ts";
 import { getAudiencesForUseCase } from "../../lib/for-audiences-data.ts";
@@ -91,7 +91,7 @@ const groups = getUseCases().map((useCase) => ({
 
   <PageClosingCTA
     heading="Whatever way you study, there's a place for it here."
-    fathomTrack={fathomSignup.useCasesHub}
+    fathomTrack={fathomTry.useCasesHub}
   />
 </BaseLayout>
 

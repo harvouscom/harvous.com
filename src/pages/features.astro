@@ -14,7 +14,7 @@ import ComparePreview from "../components/ComparePreview.astro";
 import Container from "../components/layout/Container.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
-import { fathomSignup } from "../lib/fathom-events.ts";
+import { fathomTry } from "../lib/fathom-events.ts";
 import { hasDetailContent } from "../lib/product-page-data.ts";
 import { getFeatureCategories } from "../lib/feature-categories-data.ts";
 import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
@@ -154,7 +154,7 @@ const jsonLd = {
   <PageClosingCTA
     heading="Start your study Bible today."
     lead="Everything here is on the free plan unless it says otherwise."
-    fathomTrack={fathomSignup.features}
+    fathomTrack={fathomTry.features}
   />
 </BaseLayout>
 

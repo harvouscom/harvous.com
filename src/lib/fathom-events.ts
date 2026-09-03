@@ -34,6 +34,17 @@ export const fathomSignup = {
 export const fathomTry = {
   hero: "try_hero",
   header: "try_header",
+  last: "try_last",
+  included: "try_included",
+  about: "try_about",
+  useCasesHub: "try_use_cases",
+  compareHub: "try_compare",
+  features: "try_features",
+  forHub: "try_for",
+  useCaseDetail: (slug: string) => `try_use_case_${slug}`,
+  forDetail: (slug: string) => `try_for_${slug}`,
+  compareDetail: (slug: string) => `try_compare_${slug}`,
+  featureDetail: (slug: string) => `try_feature_${slug}`,
 } as const;
 
 export const fathomSignin = {

@@ -17,8 +17,8 @@ import {
   includeBlogDrafts,
   isBlogPostListed,
 } from "../lib/blog.ts";
-import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
-import { buildSignupUrl } from "../lib/signup-url.ts";
+import { fathomTry, fathomCompare } from "../lib/fathom-events.ts";
+import { buildTryUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import "../styles/use-cases.css";
 
@@ -271,8 +271,8 @@ const jsonLd = {
   <PageClosingCTA
     heading={useCase.heroTitle}
     lead={useCase.tagline}
-    href={buildSignupUrl({ useCase: useCase.slug })}
-    fathomTrack={fathomSignup.useCaseDetail(useCase.slug)}
+    href={buildTryUrl({ useCase: useCase.slug })}
+    fathomTrack={fathomTry.useCaseDetail(useCase.slug)}
   />
 
   <RelatedBlogPosts posts={relatedBlogPosts} />

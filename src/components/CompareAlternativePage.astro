@@ -6,7 +6,8 @@ import CompareHonestBias from "./CompareHonestBias.astro";
 import type { CompareEntry } from "../lib/compare-data.ts";
 import type { CompareAlternativeSeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
 import { getHonestNoteForPage } from "../lib/compare-seo-pages.ts";
-import { fathomSignup } from "../lib/fathom-events.ts";
+import { fathomTry } from "../lib/fathom-events.ts";
+import { buildTryUrl } from "../lib/signup-url.ts";
 import "../styles/compare.css";
 
 interface Props {
@@ -85,13 +86,13 @@ const honestNote = getHonestNoteForPage(page, picks);
                 {
                   pick.isHarvous ? (
                     <CTAButton
-                      href="https://app.harvous.com/sign-up"
+                      href={buildTryUrl()}
                       variant="primary"
                       size="md"
-                      external
-                      fathomTrack={fathomSignup.compareDetail(page.slug)}
+                      tryCta
+                      fathomTrack={fathomTry.compareDetail(page.slug)}
                     >
-                      Sign up free
+                      Try it free
                     </CTAButton>
                   ) : (
                     <>
@@ -139,6 +140,6 @@ const honestNote = getHonestNoteForPage(page, picks);
     lead={target.worksBestAlongside}
     secondaryHref={`/compare/${target.slug}/`}
     secondaryLabel={`Harvous vs ${target.name}`}
-    fathomTrack={fathomSignup.compareDetail(page.slug)}
+    fathomTrack={fathomTry.compareDetail(page.slug)}
   />
 </BaseLayout>

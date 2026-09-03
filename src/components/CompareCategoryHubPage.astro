@@ -6,7 +6,8 @@ import { Icon } from "astro-icon/components";
 import CompareHonestBias from "./CompareHonestBias.astro";
 import type { CompareCategorySeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
 import { getHonestNoteForPage } from "../lib/compare-seo-pages.ts";
-import { fathomSignup } from "../lib/fathom-events.ts";
+import { fathomTry } from "../lib/fathom-events.ts";
+import { buildTryUrl } from "../lib/signup-url.ts";
 import "../styles/compare.css";
 
 interface Props {
@@ -79,13 +80,13 @@ const decisionRows = [
                 {
                   pick.isHarvous ? (
                     <CTAButton
-                      href="https://app.harvous.com/sign-up"
+                      href={buildTryUrl()}
                       variant="primary"
                       size="md"
-                      external
-                      fathomTrack={fathomSignup.compareDetail(page.slug)}
+                      tryCta
+                      fathomTrack={fathomTry.compareDetail(page.slug)}
                     >
-                      Sign up free
+                      Try it free
                     </CTAButton>
                   ) : (
                     <a href={pick.compareHref} class="btn-pill text-sm">
@@ -168,6 +169,6 @@ const decisionRows = [
   <PageClosingCTA
     heading="Try a notes-first Bible study app."
     lead="Harvous is free for personal study — unlimited notes, scripture pills, highlights, threads, and @ mentions."
-    fathomTrack={fathomSignup.compareDetail(page.slug)}
+    fathomTrack={fathomTry.compareDetail(page.slug)}
   />
 </BaseLayout>

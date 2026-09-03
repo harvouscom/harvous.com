@@ -21,8 +21,8 @@ import {
   includeBlogDrafts,
   isBlogPostListed,
 } from "../lib/blog.ts";
-import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
-import { buildSignupUrl } from "../lib/signup-url.ts";
+import { fathomTry, fathomCompare } from "../lib/fathom-events.ts";
+import { buildTryUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import "../styles/use-cases.css";
 
@@ -260,12 +260,12 @@ const jsonLd = {
     audience.interestForm ? (
       <PageClosingCTA
         heading="Give your study somewhere to live."
-        lead="Sign up free for personal Bible study — church features build on the same foundation."
-        href={buildSignupUrl({
+        lead="Try it free for personal Bible study — church features build on the same foundation."
+        href={buildTryUrl({
           audience: audience.slug,
           useCase: audience.useCaseSlugs[0],
         })}
-        fathomTrack={fathomSignup.forDetail(audience.slug)}
+        fathomTrack={fathomTry.forDetail(audience.slug)}
         secondaryHref="/for/churches/#interest"
         secondaryLabel="Share church interest"
       />
@@ -273,11 +273,11 @@ const jsonLd = {
       <PageClosingCTA
         heading={audience.heroTitle}
         lead={audience.tagline}
-        href={buildSignupUrl({
+        href={buildTryUrl({
           audience: audience.slug,
           useCase: audience.useCaseSlugs[0],
         })}
-        fathomTrack={fathomSignup.forDetail(audience.slug)}
+        fathomTrack={fathomTry.forDetail(audience.slug)}
       />
     )
   }

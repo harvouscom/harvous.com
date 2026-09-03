@@ -1,11 +1,16 @@
 ---
 import CTAButton from "./CTAButton.astro";
+import { APP_TRY_URL } from "../lib/signup-url.ts";
 
 interface Props {
   heading: string;
   lead?: string;
   href?: string;
   label?: string;
+  /** Set true for a link that leaves harvous.com — signup, upgrade — false (the default) for
+   *  the try-it-free handoff, which stays in the same tab so the transition into the app reads
+   *  as continuous rather than a jump to a new one. */
+  external?: boolean;
   fathomTrack?: string;
   secondaryHref?: string;
   secondaryLabel?: string;
@@ -15,8 +20,9 @@ interface Props {
 const {
   heading,
   lead,
-  href = "https://app.harvous.com/sign-up",
-  label = "Sign up free",
+  href = APP_TRY_URL,
+  label = "Try it free",
+  external = false,
   fathomTrack,
   secondaryHref,
   secondaryLabel,
@@ -29,7 +35,14 @@ const {
     <h2 class="section-title display-lg page-closing-cta__heading">{heading}</h2>
     {lead && <p class="page-closing-cta__lead">{lead}</p>}
     <div class="page-closing-cta__action">
-      <CTAButton href={href} variant="primary" size="lg" external fathomTrack={fathomTrack}>
+      <CTAButton
+        href={href}
+        variant="primary"
+        size="lg"
+        external={external}
+        tryCta={!external}
+        fathomTrack={fathomTrack}
+      >
         {label}
       </CTAButton>
       {

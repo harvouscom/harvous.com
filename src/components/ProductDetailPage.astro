@@ -19,7 +19,7 @@ import {
   includeBlogDrafts,
   isBlogPostListed,
 } from "../lib/blog.ts";
-import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
+import { fathomSignup, fathomTry, fathomCompare } from "../lib/fathom-events.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import "../styles/use-cases.css";
 
@@ -69,9 +69,14 @@ const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJs
 const category = page.kind === "feature" ? getCategoryForFeature(page.slug) : undefined;
 const backHref = page.kind === "feature" ? (category?.href ?? "/features/") : "/pricing/";
 const backLabel = page.kind === "feature" ? (category?.title ?? "Features") : "Pricing";
+/*
+  A feature page's closing CTA is the try-it-free handoff. An addon page's is the Plus-upgrade
+  button instead — Review and Shared Spaces both set closingHref/closingLabel below to send it
+  to APP_UPGRADE_URL — which isn't a guest visit, so it keeps the signup event.
+*/
 const fathomTrack =
   page.kind === "feature"
-    ? fathomSignup.featureDetail(page.slug)
+    ? fathomTry.featureDetail(page.slug)
     : fathomSignup.addonDetail(page.slug);
 const defaultHeroImage =
   page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
@@ -220,6 +225,7 @@ const ogImage =
     lead={page.closingLead}
     href={page.closingHref}
     label={page.closingLabel}
+    external={page.kind === "addon"}
     fathomTrack={fathomTrack}
     secondaryHref={page.kind === "addon" ? "/pricing/" : undefined}
     secondaryLabel={page.kind === "addon" ? "See all pricing" : undefined}
