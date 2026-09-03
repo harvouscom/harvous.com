@@ -74,9 +74,10 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
   <!--
     The hero cycles through five content pills. These four cards are those
     pills, each with the close-up that shows it — the visual thread from the
-    headline down into the tour. A scroll-snap row that bleeds to the frame
-    rails, the use-cases preview's pattern. Each slider's arrows sit below
-    its own track.
+    headline down into the tour. A fixed set of four, so it lands as a static
+    2×2 once there's room for one; below that it's a scroll-snap row that
+    bleeds to the frame rails, the use-cases preview's pattern, with its
+    arrows below the track.
   -->
   <div class="tour__pillwrap carousel-track-wrap" data-reveal style="--reveal-delay: 100ms;">
     <ul class="tour__pilltrack" role="list" aria-label="What you write with" tabindex="0" data-reveal="stagger" style="--reveal-delay: 160ms;">
@@ -156,11 +157,10 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
   }
   .tour__whatsnew:hover { text-decoration-color: var(--color-ink); }
 
-  /* The four pill cards as a slider. Arrows sit right, over the row; the track
-     bleeds past the framed column so the third card peeks in from the edge
-     and the first lines up with the head's column. ~2.25 cards show at once,
-     ~500px each at 1440 — the old bento's proportion, which the close-ups
-     need to stay readable. */
+  /* Below 720px, the four pill cards are a slider: the track bleeds past the
+     framed column so the third card peeks in from the edge and the first
+     lines up with the head's column, ~2.25 cards visible at once. At 720px
+     and up they land as a static 2×2 instead — see the desktop block below. */
   /* Arrows below the track, centred like this section's other controls. */
   .tour__pillcontrols {
     display: flex;
@@ -290,6 +290,26 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
     }
     .tour__slide { width: auto; scroll-snap-align: unset; }
     .tour__slide--wide { grid-column: 1 / -1; }
+
+    /* Four cards is a fixed set, not an open-ended row — a static 2×2 reads
+       that plainly, where a slider implied there was more to scroll to. */
+    .tour__pillcontrols { display: none; }
+    .tour__pillwrap {
+      max-width: 72rem;
+      margin-inline: auto;
+      padding-inline: var(--frame-content-pad);
+      overflow: visible;
+    }
+    .tour__pilltrack {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
+      gap: clamp(1rem, 1.6vw, 1.5rem);
+      overflow: visible;
+      padding: 0;
+      scroll-snap-type: none;
+    }
+    .tour__pillslide { width: auto; scroll-snap-align: unset; }
   }
 </style>
 
@@ -318,6 +338,7 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
         slideSelector: ".tour__pillslide",
         prevBtn: tour.querySelector<HTMLButtonElement>('.tour__pillcontrols .tour__arrow[data-dir="prev"]'),
         nextBtn: tour.querySelector<HTMLButtonElement>('.tour__pillcontrols .tour__arrow[data-dir="next"]'),
+        enabled: () => SLIDER_MQ.matches,
       });
     }
   });
