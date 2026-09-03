@@ -2,14 +2,14 @@
 /**
  * TestimonialCard — a single open quote: display-type blockquote text with
  * yellow mark highlights, then a quiet inline attribution row (small initials
- * circle + name · date). No card surface, border, or shadow.
+ * circle + name). No date — a quote that says "Apr 2026" starts ageing the
+ * day after; the name alone stays true. No card surface, border, or shadow.
  */
 interface Props {
   name: string;
-  when: string;
 }
 
-const { name, when } = Astro.props;
+const { name } = Astro.props;
 const initial = name.trim().charAt(0).toUpperCase();
 ---
 
@@ -20,8 +20,6 @@ const initial = name.trim().charAt(0).toUpperCase();
   <figcaption class="testimonial__attr">
     <span class="testimonial__avatar" aria-hidden="true">{initial}</span>
     <span class="testimonial__name">{name}</span>
-    <span class="testimonial__sep" aria-hidden="true">·</span>
-    <time class="testimonial__when" datetime={when}>{when}</time>
   </figcaption>
 </figure>
 
@@ -74,13 +72,5 @@ const initial = name.trim().charAt(0).toUpperCase();
   .testimonial__name {
     font-weight: 600;
     color: var(--color-ink-soft);
-  }
-
-  .testimonial__sep {
-    color: var(--color-ink-faint);
-  }
-
-  .testimonial__when {
-    color: var(--color-ink-faint);
   }
 </style>
