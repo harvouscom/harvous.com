@@ -259,10 +259,10 @@ const href = category?.href;
   /*
     auto-fit fits four 12rem columns across the wide card and leaves the last one
     empty, so three items sat left-weighted with a gap beside them. Fix the count
-    to what the card actually holds — but only once there is room for three.
+    to what the card actually holds — but only once there is room for it.
   */
   @media (min-width: 720px) {
-    .tcard--wide .tcard__items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tcard--wide .tcard__items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   .tcard__item { display: block; }
 
