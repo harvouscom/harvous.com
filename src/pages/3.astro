@@ -645,10 +645,17 @@ const jsonLd = {
     same 118px / 22vw / 248px the type occupied. The viewBox is padded by the
     stroke width so the outline is never clipped at the glyph's bounds.
   */
+  /*
+    Sized by width, not height, because the constraint that matters is the
+    heading beneath it: the numeral grows until it is nearly as wide as
+    "Harvous 3 is here." and stops. The h1 is one fixed line at
+    clamp(2rem, 4.6vw, 3.5rem), so its width tracks the same curve — the
+    numeral stays between 69% and 92% of it from 375px up.
+  */
   .v3-hero__numeral {
     display: block;
-    height: clamp(7.4rem, 22.1vw, 15.5rem);
-    width: auto;
+    width: clamp(8rem, 25vw, 25rem);
+    height: auto;
     overflow: visible;
   }
   /*
