@@ -192,7 +192,10 @@ const jsonLd = {
       selectId="v3-section-select"
     />
 
-    <section id="what-changed" class="v3-band frame-divider">
+    {/* No frame-divider on the first band: its rule would land 7px under the
+        section nav's pills and read as an underline for them. /for/ does the
+        same thing — only its groups after the first get a top border. */}
+    <section id="what-changed" class="v3-band v3-band--first">
       <div class="v3-content">
         <div class="section-head" data-reveal>
           <h2 class="section-title text-pretty">What changed</h2>
@@ -462,6 +465,12 @@ const jsonLd = {
 
   .v3-band {
     padding-block: clamp(3rem, 7vw, 4.5rem);
+  }
+
+  /* Sits directly under the floating section nav, so it needs the room the
+     removed divider was providing. */
+  .v3-band--first {
+    padding-top: clamp(3.5rem, 8vw, 5.5rem);
   }
 
   .v3-content {
