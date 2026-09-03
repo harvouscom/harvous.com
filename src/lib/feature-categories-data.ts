@@ -247,7 +247,7 @@ const categories: FeatureCategory[] = [
       "Browse by kind or search across notes, highlights, scripture and resources in one panel — and act on what comes back without leaving the note underneath.",
     heroTitle: "Browsing and searching stopped being two different places.",
     heroLead:
-      "Search is how you retrieve something you can already name. Browsing is how you rediscover the thing you had forgotten you wrote. Harvous needs both, so the Library does both: pick a kind, or type what you half-remember, in one panel over the note you are already in.",
+      "Searching is how you retrieve something you can already name. Browsing is how you rediscover the thing you had forgotten you wrote. Harvous needs both, so Search does both: pick a kind, or type what you half-remember, in one panel over the note you are already in.",
     tourKey: "find",
     sections: [
       {
@@ -260,7 +260,7 @@ const categories: FeatureCategory[] = [
       {
         heading: "Act on what you find, without losing your place",
         paragraphs: [
-          "The Library is not a modal. The note you were writing stays put underneath it, so looking something up is a thing you dip into rather than a place you go.",
+          "Search is not a modal. The note you were writing stays put underneath it, so looking something up is a thing you dip into rather than a place you go.",
           "Type a query and what you can *do* with a result appears above the results — move it to a folder, pin it, start a thread from it. The resource library sits in the same panel, holding the links and files your study leans on so you can pull one into a note with @ rather than hunting for it again.",
         ],
       },
