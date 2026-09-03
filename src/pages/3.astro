@@ -20,17 +20,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Section from "../components/layout/Section.astro";
 import Container from "../components/layout/Container.astro";
 import Row from "../components/layout/Row.astro";
-import AppTourChapter from "../components/AppTourChapter.astro";
 import CTAButton from "../components/CTAButton.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import BlogCard from "../components/BlogCard.astro";
 import PageClosingCTA from "../components/PageClosingCTA.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
-import { getTourChapter } from "../lib/app-tour-chapters.ts";
 import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
 import { getAddonBySlug, getAddonDetailHref } from "../lib/addons-data.ts";
-import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
+import { blogReadingMinutes, blogThumbUrl, isBlogPostListed } from "../lib/blog.ts";
 import { isDraftPageSlug } from "../lib/draft-pages.ts";
 import { fathomSignup } from "../lib/fathom-events.ts";
 
@@ -39,26 +37,10 @@ const isDraft = isDraftPageSlug(PAGE_SLUG);
 const site = "https://harvous.com";
 const APP_URL = "https://app.harvous.com/";
 
-/*
-  The slider reuses the homepage's cards. Activity is the release's headline;
-  the Library rides last because search existed in 2.0 — what's new is that it
-  is a spotlight summoned over the note, not a column. Both are rendered at
-  the half size: the wide variant's four-column tiles and larger title are
-  sized for a card spanning the page, not a slide.
-*/
-const activity = getTourChapter("activity");
-const find = getTourChapter("find");
 const activityCategory = getFeatureCategoryBySlug("activity");
 const findCategory = getFeatureCategoryBySlug("find");
-const activitySlide = activity ? { ...activity, size: "half" as const } : undefined;
-
 const review = getAddonBySlug("review");
 const reviewHref = getAddonDetailHref("review") ?? "/add-ons/review/";
-const reviewSteps = [
-  "A short question comes from a note, highlight, or verse you already saved — never one invented about the text.",
-  "You write what you remember first. The source appears after.",
-  "You say how it went — held it, mostly had it, or needed the reminder. That decides when it comes back.",
-];
 
 /*
   Hand-picked rather than scored: these three are the release's argument, in the
@@ -83,9 +65,58 @@ const restHref = restDayEssay ? `/blog/${restDayEssay.id}` : "/features/activity
 const restLabel = restDayEssay ? "Read why" : "More about Activity";
 
 /*
-  Where each of the sidebar's jobs went, plus the rename. Links point at the
-  category pages rather than /features/sidebar-modes/, whose slug predates this
-  release. Review is an addition, not a move, so it lives in What's new.
+  What's new, as art cards — the use-cases preview's slide: the thing's own
+  auth-hero image under an ink wash, its icon in a badge, a caption. Nothing
+  here waits on a screenshot. Activity leads; the Library rides last because
+  search existed in 2.0 and what's new is that it is summoned, not parked.
+  Rest days borrow the essay's own generated art, since that essay is the
+  decision.
+*/
+const newSlides = [
+  activityCategory && {
+    title: "Activity",
+    tagline: activityCategory.tagline,
+    href: activityCategory.href,
+    icon: activityCategory.icon,
+    ink: activityCategory.ink,
+    image: activityCategory.image,
+    cta: "See the view",
+  },
+  review && {
+    title: "Review",
+    plan: "Harvous Plus",
+    tagline: "Write an answer from memory, then say how it went.",
+    href: reviewHref,
+    icon: review.icon,
+    ink: review.ink,
+    image: review.image,
+    cta: "How it works",
+  },
+  {
+    title: "Rest days in the record",
+    tagline: "A day you rested still gets its sheet, and the sheet says so plainly.",
+    href: restHref,
+    icon: "fa7-solid:calendar-day",
+    ink: "var(--pill-note)",
+    image: blogThumbUrl("a-rest-day-belongs-in-the-record", "feat"),
+    cta: restLabel,
+  },
+  findCategory && {
+    title: "The Library",
+    tagline: "A spotlight you summon over the note you're in — not a column that never leaves.",
+    href: findCategory.href,
+    icon: findCategory.icon,
+    ink: findCategory.ink,
+    image: findCategory.image,
+    cta: "See how it works",
+  },
+].filter((s): s is NonNullable<typeof s> => Boolean(s));
+
+/*
+  What changed, as a ledger: each row is Harvous 2 on the left, Harvous 3 on
+  the right. Links point at the category pages rather than
+  /features/sidebar-modes/, whose slug predates this release. Review is an
+  addition, not a move, so it lives in What's new.
 */
 const movedRows = [
   {
@@ -199,19 +230,23 @@ const jsonLd = {
             d="M509 1474Q362 1474 261 1436Q161 1398 100 1337Q39 1276 14 1214Q-11 1156 9 1094Q30 1033 81 1008Q132 983 181 996Q231 1010 262 1058Q278 1092 302 1122Q327 1152 367 1170Q406 1188 471 1188Q545 1188 599 1142Q654 1096 654 1012Q654 936 598 889Q543 842 434 842H412Q361 842 327 805Q293 768 293 718Q293 668 327 631Q362 594 414 594H435Q534 594 580 552Q625 508 625 444Q625 370 582 330Q539 290 470 290Q420 290 389 302Q359 314 334 338Q310 362 291 395Q262 436 214 448Q166 462 116 439Q65 416 45 359Q25 301 55 242Q89 176 150 120Q212 64 298 32Q385 0 512 0Q703 0 825 96Q947 192 947 359Q947 468 889 552Q830 636 722 674Q849 702 927 796Q1006 889 1006 1026Q1006 1218 868 1346Q730 1474 509 1474Z"
           />
         </svg>
-        <h1 class="v3-hero__lead" data-reveal style="--reveal-delay: 160ms;">
+        <!--
+          The copy arrives after the numeral has filled (its fill starts at
+          1.25s), not while the outline is still tracing — one thing at a time.
+        -->
+        <h1 class="v3-hero__lead v3-arrive" data-reveal style="--reveal-delay: 1300ms;">
           Harvous 3 is here.
         </h1>
         <!--
           Names only what 3.0 added. Suggestions and the Library were both in
           2.0 (as Recall and the sidebar's search), so they don't get billed as new here.
         -->
-        <p class="v3-hero__sub lead" data-reveal style="--reveal-delay: 220ms;">
+        <p class="v3-hero__sub lead v3-arrive" data-reveal style="--reveal-delay: 1520ms;">
           The sidebar is gone. <strong>Activity</strong> opens on what you've already
           studied, rest days stay in the record, and <strong>Review</strong> turns your notes
           into practice — <mark>all of it right where you left it</mark>.
         </p>
-        <div class="v3-hero__cta" data-reveal style="--reveal-delay: 300ms;">
+        <div class="v3-hero__cta" data-reveal style="--reveal-delay: 1740ms;">
           <CTAButton href="#whats-new" size="lg">
             See what's new
             <svg class="v3-hero__cta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l5 5 5-5" /></svg>
@@ -229,7 +264,7 @@ const jsonLd = {
   -->
   <Section id="whats-new" tone="paper" space="md" class="frame-divider v3-new">
     <Container size="xl">
-      <div class="v3-new__head" data-reveal>
+      <div class="v3-new__head v3-arrive" data-reveal>
         <div class="v3-new__head-text">
           <h2 class="section-title">What's new</h2>
           <p class="lead">
@@ -249,140 +284,112 @@ const jsonLd = {
       </div>
     </Container>
 
-    <div class="v3-new__track-wrap carousel-track-wrap" data-reveal style="--reveal-delay: 80ms;">
-      <ul class="v3-new__track" role="list" aria-label="New in Harvous 3" tabindex="0">
+    <div class="v3-new__track-wrap carousel-track-wrap" data-reveal="scale" style="--reveal-delay: 120ms;">
+      <ul
+        class="v3-new__track"
+        role="list"
+        aria-label="New in Harvous 3"
+        tabindex="0"
+        data-reveal="stagger"
+        style="--reveal-stagger: 110ms; --reveal-delay: 200ms;"
+      >
         {
-          activitySlide && activityCategory && (
+          newSlides.map((s, i) => (
             <li class="v3-new__slide carousel-slide">
-              <AppTourChapter chapter={activitySlide} category={activityCategory} loading="eager" />
-            </li>
-          )
-        }
-        {
-          review && (
-            <li class="v3-new__slide carousel-slide">
-              <article class="v3-card" style={`--cat-ink: ${review.ink};`}>
-                <a class="v3-card__link" href={reviewHref} aria-label="More about Review"></a>
-                <div class="v3-card__head">
-                  <div>
-                    <p class="v3-card__eyebrow">
-                      <span class="v3-card__eyebrow-icon"><Icon name={review.icon} /></span>
-                      Review <span class="v3-card__plan">· Harvous Plus</span>
-                    </p>
-                    <h3 class="v3-card__title">{review.heroTitle}</h3>
-                  </div>
-                  <span class="v3-card__arrow" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+              <a href={s.href} class="v3-slide" style={`--cat-ink: ${s.ink};`}>
+                <span class="v3-slide__art" style={`--v3-art: url('${s.image}');`}>
+                  <span class="v3-slide__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <span class="v3-slide__badge">
+                    <Icon name={s.icon} />
                   </span>
-                </div>
-                <ol class="v3-card__steps">
-                  {reviewSteps.map((step, i) => (
-                    <li>
-                      <span class="v3-card__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                      <p>{step}</p>
-                    </li>
-                  ))}
-                </ol>
-              </article>
+                </span>
+                <span class="v3-slide__caption">
+                  <span class="v3-slide__title">
+                    {s.title}
+                    {"plan" in s && s.plan && <span class="v3-slide__plan">· {s.plan}</span>}
+                  </span>
+                  <span class="v3-slide__tagline">{s.tagline}</span>
+                  <span class="v3-slide__cta">{s.cta} →</span>
+                </span>
+              </a>
             </li>
-          )
-        }
-        <li class="v3-new__slide carousel-slide">
-          <article class="v3-card" style="--cat-ink: var(--pill-note);">
-            <a class="v3-card__link" href={restHref} aria-label={restLabel}></a>
-            <div class="v3-card__head">
-              <div>
-                <p class="v3-card__eyebrow">
-                  <span class="v3-card__eyebrow-icon"><Icon name="fa7-solid:calendar-day" /></span>
-                  Activity
-                </p>
-                <h3 class="v3-card__title">A rest day belongs in the record.</h3>
-              </div>
-              <span class="v3-card__arrow" aria-hidden="true">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
-              </span>
-            </div>
-            <p class="v3-card__body">
-              A day you rested still gets its sheet, and the sheet says so plainly. Keeping the
-              quiet stretches next to the heavy ones is what lets a few months show you the real
-              shape of your study — where the weight actually was.
-            </p>
-          </article>
-        </li>
-        {
-          find && findCategory && (
-            <li class="v3-new__slide carousel-slide">
-              <AppTourChapter chapter={find} category={findCategory} />
-            </li>
-          )
+          ))
         }
       </ul>
     </div>
   </Section>
 
   <!--
-    The one inverted band. Section's .section--invert remaps the ink tokens so
-    the title, lead, row headings and hairlines adapt on their own; the handful
-    of things it doesn't remap (icon chips, links, the strike) are restyled in
-    the page CSS. No frame-divider here — the band's own edge is the seam, and
-    .color-band suppresses the next section's hairline.
+    The one inverted band, as a ledger: Harvous 2 on the left of every row,
+    Harvous 3 on the right. Section's .section--invert remaps the ink tokens
+    so the title, lead, headings and hairlines adapt on their own; what it
+    doesn't remap (chips, links, the strike) is restyled below. No
+    frame-divider here — the band's own edge is the seam, and .color-band
+    suppresses the next section's hairline.
   -->
   <Section id="what-changed" tone="ink" space="lg">
     <Container size="xl">
-      <Row ratio="5-7" align="start" gap="lg">
-        <div class="v3-changed__intro">
+      <div class="v3-changed__head v3-arrive" data-reveal>
+        <div class="v3-changed__head-text">
           <h2 class="section-title">What changed</h2>
           <p class="lead v3-changed__lead">
             Everything you wrote is where you left it. These are the parts that moved, and where
             each one went.
           </p>
-          <p class="v3-changed__foot">
-            Notes, highlights, threads, and folders are exactly where they were — nothing to move
-            or re-file.
-          </p>
-          <p class="v3-changed__more">
-            <a href="/release-notes/">Every fix and improvement in the release notes →</a>
-          </p>
         </div>
+        <p class="v3-changed__legend" aria-hidden="true">
+          <span class="v3-changed__legend-item">Harvous 2</span>
+          <span class="v3-changed__legend-arrow">→</span>
+          <span class="v3-changed__legend-item v3-changed__legend-item--now">Harvous 3</span>
+        </p>
+      </div>
 
-        <ul class="v3-map" role="list" data-reveal="stagger">
-          {
-            movedRows.map((row) => (
-              <li class="v3-map__item">
-                <span class="v3-map__icon" aria-hidden="true">
-                  <Icon name={row.icon} />
+      <ul class="v3-ledger" role="list" data-reveal="stagger" style="--reveal-stagger: 130ms;">
+        {
+          movedRows.map((row) => (
+            <li class="v3-ledger__row">
+              <div class="v3-ledger__then">
+                <span class="v3-ledger__label">In Harvous 2</span>
+                <span class="v3-ledger__name v3-ledger__name--then">{row.before}</span>
+              </div>
+              <span class="v3-ledger__arrow" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+              </span>
+              <div class="v3-ledger__now">
+                <span class="v3-ledger__label v3-ledger__label--now">
+                  <span class="v3-ledger__icon" aria-hidden="true"><Icon name={row.icon} /></span>
+                  In Harvous 3
                 </span>
-                <div class="v3-map__head">
-                  <span class="v3-map__before">{row.before}</span>
-                  <span class="v3-map__arrow" aria-hidden="true">→</span>
-                  <h3 class="v3-map__after">{row.after}</h3>
-                </div>
-                <div class="v3-map__body">
-                  <p>{row.body}</p>
-                  <p class="v3-map__links">
-                    {row.links.map((l) => (
-                      <a href={l.href}>{l.label}</a>
-                    ))}
-                  </p>
-                </div>
-              </li>
-            ))
-          }
-        </ul>
-      </Row>
+                <h3 class="v3-ledger__name">{row.after}</h3>
+                <p class="v3-ledger__body">{row.body}</p>
+                <p class="v3-ledger__links">
+                  {row.links.map((l) => (
+                    <a href={l.href}>{l.label} →</a>
+                  ))}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="v3-changed__foot" data-reveal style="--reveal-delay: 120ms;">
+        Notes, highlights, threads, and folders are exactly where they were — nothing to move or
+        re-file. <a href="/release-notes/">Every fix and improvement is in the release notes →</a>
+      </p>
     </Container>
   </Section>
 
   <Section id="why" tone="paper" space="md" class="frame-divider">
     <Container size="xl">
-      <div class="v3-why__head" data-reveal>
+      <div class="v3-why__head v3-arrive" data-reveal>
         <h2 class="section-title">Why the change</h2>
         <p class="lead v3-why__lead">
           From Derek, on what the sidebar was costing and what a record owes you.
         </p>
       </div>
 
-      <div class="v3-why__letter">
+      <div class="v3-why__letter" data-reveal="scale" style="--reveal-delay: 100ms;">
         <FounderLetter variant="full">
           <Fragment slot="left">
             <p>Hey there,</p>
@@ -432,7 +439,7 @@ const jsonLd = {
 
       {
         featuredEssay && (
-          <div class="v3-why__essays" data-reveal style="--reveal-delay: 40ms;">
+          <div class="v3-why__essays" data-reveal="scale" style="--reveal-delay: 60ms;">
             <p class="eyebrow v3-why__label">The long version — three essays, in the order to read them</p>
             <BlogCard
               title={featuredEssay.data.title}
@@ -516,6 +523,10 @@ const jsonLd = {
        not wallpaper. The ::before inside paints the squares (global.css). */
     mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
     -webkit-mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
+  }
+  @keyframes v3-grid-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   .v3-hero__inner {
     position: relative;
@@ -692,284 +703,289 @@ const jsonLd = {
     outline-offset: 4px;
   }
 
-  /* A card on the tcard surface without a screenshot: same ground, radius, padding,
-     one stretched link, same arrow. Review puts its steps where the tiles would sit;
-     the rest-day card just says its piece. */
-  .v3-card {
-    /* 55% toward ink clears AA for the eyebrow; the raw pill colours are highlighter fills. */
-    --cat-text: color-mix(in oklab, var(--cat-ink) 55%, var(--color-ink));
-    position: relative;
+  /*
+    A slide: the use-cases preview's art card. The thing's own auth-hero image
+    under a wash that starts in its category ink and settles toward ink at the
+    foot, its icon in a white badge, and a large rounded index in the corner
+    that echoes the hero's numeral. Nothing here waits on a screenshot.
+  */
+  .v3-slide {
+    --cat-glyph: color-mix(in oklab, var(--cat-ink) 55%, var(--color-ink));
     display: flex;
     flex-direction: column;
+    gap: 0.95rem;
     height: 100%;
-    background: color-mix(in oklab, var(--color-warm) 60%, var(--color-paper));
-    border-radius: clamp(20px, 2.2vw, 28px);
-    padding: clamp(1.5rem, 2.4vw, 2rem);
-    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .v3-card__link {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+  .v3-slide:hover {
+    transform: translateY(-2px);
   }
-  .v3-card:has(.v3-card__link:focus-visible) {
+  .v3-slide:focus-visible {
     outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
+    outline-offset: 4px;
   }
-  .v3-card__head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1.25rem;
-  }
-  .v3-card__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.01em;
-    white-space: nowrap;
-    color: var(--cat-text);
-    font-variation-settings: "wdth" 100, "ROND" 0;
-  }
-  .v3-card__eyebrow-icon {
-    display: inline-flex;
-    font-size: 1em;
-  }
-  .v3-card__eyebrow-icon :global(svg) {
-    width: 1em;
-    height: 1em;
-    display: block;
-  }
-  .v3-card__plan {
-    font-weight: 500;
-    color: var(--color-ink-faint);
-  }
-  .v3-card__title {
-    margin: 0.35rem 0 0;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-variation-settings: "wdth" 100, "ROND" 0;
-    font-size: clamp(1.25rem, 2.1vw, 1.6rem);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-    text-wrap: balance;
-    min-height: 2.3em; /* two reserved lines, so heads line up across the row */
-  }
-  .v3-card__arrow {
+  .v3-slide__art {
     position: relative;
-    flex: none;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 999px;
-    background: var(--color-ink);
-    color: var(--color-paper);
+    aspect-ratio: 1 / 1.05;
+    border-radius: clamp(20px, 2.2vw, 28px);
     overflow: hidden;
-    transition: box-shadow 240ms ease;
+    background-color: var(--color-warm);
+    background-image: var(--v3-art);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .v3-card__arrow::before {
+  .v3-slide__art::before {
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: inherit;
-    background: var(--accent-btn-bg);
-    opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 220ms ease, transform 340ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--cat-ink) 14%, transparent) 0%,
+      transparent 45%,
+      color-mix(in oklab, var(--color-ink) 34%, transparent) 100%
+    );
+    pointer-events: none;
   }
-  .v3-card__arrow svg {
+  .v3-slide:hover .v3-slide__art {
+    transform: scale(1.02);
+  }
+  .v3-slide__index {
+    position: absolute;
+    top: 1rem;
+    left: 1.15rem;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    /* The hero's rounded cut, so the numbering and the "3" are one family. */
+    font-variation-settings: "ROND" 100, "wdth" 100;
+    color: color-mix(in oklab, var(--color-paper) 92%, transparent);
+    text-shadow: 0 1px 12px color-mix(in oklab, var(--color-ink) 22%, transparent);
+  }
+  .v3-slide__badge {
     position: relative;
     z-index: 1;
-    width: 0.9rem;
-    height: 0.9rem;
-  }
-  .v3-card:hover .v3-card__arrow::before,
-  .v3-card:has(.v3-card__link:focus-visible) .v3-card__arrow::before {
-    opacity: 1;
-    transform: scale(1);
-  }
-  .v3-card:hover .v3-card__arrow,
-  .v3-card:has(.v3-card__link:focus-visible) .v3-card__arrow {
-    box-shadow: var(--accent-btn-shadow-sm);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .v3-card__arrow::before { transform: none; transition: opacity 120ms ease; }
-    .v3-card:hover .v3-card__arrow::before { transform: none; }
-  }
-  .v3-card__steps {
-    list-style: none;
-    margin: clamp(1.25rem, 2.2vw, 1.75rem) 0 0;
-    padding: 0;
-    display: grid;
-    gap: 0.85rem;
-  }
-  .v3-card__steps li {
-    display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr);
-    gap: 0.6rem;
-    align-items: start;
-  }
-  .v3-card__index {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--cat-text);
-    padding-top: 0.2rem;
-  }
-  .v3-card__steps p,
-  .v3-card__body {
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    color: var(--color-ink-soft);
-  }
-  .v3-card__body {
-    margin-top: clamp(1.25rem, 2.2vw, 1.75rem);
-    font-size: 0.9375rem;
-    line-height: 1.6;
-  }
-
-  /* ---------- What changed: on ink ---------- */
-  .v3-changed__lead {
-    margin-top: 1rem;
-    max-width: 30rem;
-  }
-  .v3-changed__foot {
-    margin: 1.25rem 0 0;
-    max-width: 30rem;
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: var(--color-ink-soft);
-  }
-  .v3-changed__more {
-    margin: 1rem 0 0;
-    font-size: 0.9rem;
-  }
-  @media (min-width: 768px) {
-    /* Sticks while the rows scroll past; static when the Row stacks. */
-    .v3-changed__intro {
-      position: sticky;
-      top: 5.5rem;
-    }
-  }
-
-  /* --color-accent isn't remapped on the band and is ~3.8:1 on ink. Links
-     take the white-with-rule-underline recipe instead. */
-  .v3-changed__more a,
-  .v3-map__links a {
-    color: var(--color-ink);
-    text-decoration: underline;
-    text-decoration-color: var(--color-rule);
-    text-underline-offset: 4px;
-  }
-  .v3-changed__more a:hover,
-  .v3-map__links a:hover {
-    text-decoration-color: currentColor;
-  }
-
-  .v3-map {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .v3-map__item {
-    display: grid;
-    gap: 0.7rem;
-    padding-block: 1.5rem;
-    border-top: 1px solid var(--color-rule);
-  }
-  .v3-map__item:first-child {
-    padding-top: 0;
-    border-top: 0; /* the intro's title sits level with row one */
-  }
-  .v3-map__item:last-child {
-    padding-bottom: 0;
-  }
-  /* --color-warm isn't remapped either; a light chip would be a grey square on ink. */
-  .v3-map__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0.6rem;
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: 1rem;
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+    color: var(--cat-glyph);
+  }
+  .v3-slide__badge :global(svg) {
+    width: 1.65rem;
+    height: 1.65rem;
+  }
+  .v3-slide__caption {
+    display: block;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  .v3-slide__title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+  .v3-slide__plan {
+    margin-left: 0.35em;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--color-ink-faint);
+  }
+  .v3-slide__tagline {
+    display: block;
+    margin-top: 0.3rem;
+  }
+  .v3-slide__cta {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+
+  /* ---------- What changed: the ledger, on ink ---------- */
+  /* Head: text left, the 2 → 3 legend right, bottom-aligned. */
+  .v3-changed__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+  .v3-changed__head-text {
+    max-width: 34rem;
+  }
+  .v3-changed__lead {
+    margin-top: 0.85rem;
+  }
+  .v3-changed__legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    flex: none;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .v3-changed__legend-item {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    color: var(--color-ink-faint);
+  }
+  .v3-changed__legend-item--now {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: #0d0e12; /* the band's ground — white pill, ink text, on ink */
+  }
+  .v3-changed__legend-arrow {
+    color: var(--color-ink-faint);
+  }
+
+  /* Rows. Each is then → now; the arrow chip sits on the row's first line. */
+  .v3-ledger {
+    list-style: none;
+    margin: clamp(2.25rem, 5vw, 3.25rem) 0 0;
+    padding: 0;
+  }
+  .v3-ledger__row {
+    display: grid;
+    gap: 0.9rem 0;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem);
+    border-top: 1px solid var(--color-rule);
+  }
+  .v3-ledger__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .v3-ledger__label--now {
+    color: var(--color-ink-soft);
+  }
+  /* --color-warm isn't remapped on the band; the chip uses the 10%-white card token. */
+  .v3-ledger__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.45rem;
     background: var(--color-card);
     border: 1px solid var(--color-rule);
     color: var(--color-ink);
   }
-  .v3-map__icon :global(svg) {
-    width: 0.95rem;
-    height: 0.95rem;
+  .v3-ledger__icon :global(svg) {
+    width: 0.75rem;
+    height: 0.75rem;
   }
-  .v3-map__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.5rem;
+  .v3-ledger__name {
+    display: block;
+    margin: 0.4rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
   }
-  /* The strike used --color-rule, which is invisible against ink at 18%. */
-  .v3-map__before {
-    font-size: 0.9rem;
+  /* The old name: muted, and struck in its own colour — --color-rule is
+     invisible against ink at 18%. */
+  .v3-ledger__name--then {
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    font-weight: 500;
     color: var(--color-ink-faint);
     text-decoration: line-through;
     text-decoration-color: currentColor;
     text-decoration-thickness: 1px;
   }
-  .v3-map__arrow {
-    font-size: 0.9rem;
-    color: var(--color-ink-faint);
+  .v3-ledger__arrow {
+    display: none;
   }
-  .v3-map__after {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-  }
-  .v3-map__body p {
-    margin: 0;
+  .v3-ledger__body {
+    margin: 0.75rem 0 0;
+    max-width: 36rem;
     font-size: 1rem;
     line-height: 1.65;
     color: var(--color-ink-soft);
   }
-  .v3-map__links {
-    margin-top: 0.6rem !important;
+  .v3-ledger__links {
+    margin: 0.75rem 0 0;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     font-size: 0.9rem;
   }
-  @media (min-width: 768px) {
-    /* Inside the 7-col: icon | head + body stacked. */
-    .v3-map__item {
-      grid-template-columns: 2rem minmax(0, 1fr);
-      gap: 0.4rem 1.25rem;
-      padding-block: 1.75rem;
-    }
-    .v3-map__body {
-      grid-column: 2;
-    }
+  /* --color-accent isn't remapped and is ~3.8:1 on ink. Links take the
+     white-with-rule-underline recipe instead. */
+  .v3-ledger__links a,
+  .v3-changed__foot a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 4px;
   }
-  @media (min-width: 1100px) {
-    /* Room for three: icon | head | body. */
-    .v3-map__item {
-      grid-template-columns: 2rem minmax(0, 1.05fr) minmax(0, 1.4fr);
-      gap: 1rem 1.5rem;
+  .v3-ledger__links a:hover,
+  .v3-changed__foot a:hover {
+    text-decoration-color: currentColor;
+  }
+  @media (min-width: 768px) {
+    .v3-ledger__row {
+      grid-template-columns: minmax(0, 0.8fr) 2.25rem minmax(0, 1.6fr);
+      gap: 0 clamp(1.25rem, 2.5vw, 2rem);
       align-items: start;
     }
-    .v3-map__body {
-      grid-column: auto;
+    .v3-ledger__arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 999px;
+      background: var(--color-card);
+      border: 1px solid var(--color-rule);
+      color: var(--color-ink);
+      /* Level with the two names, which sit one label-line below the row top. */
+      margin-top: 1.3rem;
     }
+    .v3-ledger__arrow svg {
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+  }
+  .v3-changed__foot {
+    margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    max-width: 44rem;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
   }
 
   /* ---------- Why: letter + essays ---------- */
@@ -995,6 +1011,51 @@ const jsonLd = {
   }
   .v3-why__more {
     margin: 1.5rem 0 0;
+  }
+
+  /* ---------- Arrival ----------
+     A release page should feel like it's being presented, so everything on it
+     arrives with more deliberation than the site default: longer, further,
+     headings sharpening from a blur, surfaces settling from a hair larger. All
+     of it rides the site's own IntersectionObserver reveal and native scroll —
+     nothing here pins, snaps, or drives the scroll position. Gated on the user
+     not asking for reduced motion; under that preference the global rules
+     make every reveal instant and these never apply. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) [data-reveal] {
+      transform: translateY(28px);
+      transition-duration: 1000ms;
+    }
+    :global(html.js) [data-reveal="scale"] {
+      transform: translateY(24px) scale(0.985);
+      transition-duration: 1100ms;
+    }
+    :global(html.js) [data-reveal].revealed {
+      transform: none;
+    }
+    :global(html.js) [data-reveal="stagger"] > * {
+      transform: translateY(24px);
+      transition-duration: 900ms;
+    }
+    :global(html.js) [data-reveal="stagger"].revealed > * {
+      transform: none;
+    }
+    /* Headings: soft, then sharp. */
+    :global(html.js) .v3-arrive[data-reveal] {
+      filter: blur(10px);
+      transition:
+        opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--reveal-delay, 0ms);
+    }
+    :global(html.js) .v3-arrive[data-reveal].revealed {
+      filter: blur(0);
+    }
+    /* The ruled paper emerges after the page opens on clean white. */
+    .v3-hero__grid {
+      animation: v3-grid-in 1800ms ease-out 200ms both;
+    }
   }
 </style>
 
