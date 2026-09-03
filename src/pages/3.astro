@@ -41,9 +41,20 @@ const site = "https://harvous.com";
 const APP_URL = "https://app.harvous.com/";
 
 const activityCategory = getFeatureCategoryBySlug("activity");
+const readCategory = getFeatureCategoryBySlug("read");
+const writeCategory = getFeatureCategoryBySlug("write");
 const findCategory = getFeatureCategoryBySlug("find");
 const review = getAddonBySlug("review");
 const reviewHref = getAddonDetailHref("review") ?? "/add-ons/review/";
+const sharedSpaces = getAddonBySlug("shared-spaces");
+const sharedSpacesHref = getAddonDetailHref("shared-spaces") ?? "/add-ons/shared-spaces/";
+
+/* Feature pages carry their own icon and art; a slide borrows both. */
+const features = await getCollection("features");
+const feat = (id: string) => features.find((f) => f.id === id)?.data;
+const bibleReader = feat("bible-reader");
+const noteTemplates = feat("note-templates");
+const resourceLibrary = feat("resource-library");
 
 /*
   Hand-picked rather than scored: these three are the release's argument, in the
@@ -70,30 +81,85 @@ const restLabel = restDayEssay ? "Read why" : "More about Activity";
 /*
   What's new, as art cards — the use-cases preview's slide: the thing's own
   auth-hero image under an ink wash, its icon in a badge, a caption. Nothing
-  here waits on a screenshot. Activity leads; the Library rides last because
-  search existed in 2.0 and what's new is that it is summoned, not parked.
-  Rest days borrow the essay's own generated art, since that essay is the
-  decision.
+  here waits on a screenshot. The set and its order follow the release note
+  sent to users: the three views first, then what's new to write with, then
+  the record. Rest days borrow the essay's own generated art, since that essay
+  is the decision.
 */
 const newSlides = [
   activityCategory && {
     title: "Activity",
-    tagline: activityCategory.tagline,
+    tagline: "What was My Home in the sidebar is a view of its own — with room to show a week.",
     href: activityCategory.href,
     icon: activityCategory.icon,
     ink: activityCategory.ink,
     image: activityCategory.image,
     cta: "See the view",
   },
+  readCategory && {
+    title: "Bible reader",
+    tagline: "Eleven translations — NLT, ESV, NIV, CSB, KJV. Open it, or expand into it from a Scripture pill in a note.",
+    href: "/features/bible-reader/",
+    icon: bibleReader?.icon ?? readCategory.icon,
+    ink: readCategory.ink,
+    image: bibleReader?.image ?? readCategory.image,
+    cta: "See the reader",
+  },
+  findCategory && {
+    title: "Search",
+    tagline: "Top middle now. Search everything you've saved, or browse it by kind the way you could in the sidebar.",
+    href: findCategory.href,
+    icon: findCategory.icon,
+    ink: findCategory.ink,
+    image: findCategory.image,
+    cta: "See how it works",
+  },
+  sharedSpaces && {
+    title: "Shared spaces",
+    plan: "Harvous Plus",
+    tagline: "Share or create notes for a group, and turn a thread into a study plan. Free to join; it costs to start one.",
+    href: sharedSpacesHref,
+    icon: sharedSpaces.icon,
+    ink: sharedSpaces.ink,
+    image: sharedSpaces.image,
+    cta: "How spaces work",
+  },
   review && {
     title: "Review",
     plan: "Harvous Plus",
-    tagline: "Write an answer from memory, then say how it went.",
+    tagline: "Write an answer from memory, then say how it went — from your own notes and verses.",
     href: reviewHref,
     icon: review.icon,
     ink: review.ink,
     image: review.image,
     cta: "How it works",
+  },
+  noteTemplates && writeCategory && {
+    title: "Note templates",
+    tagline: "Start a note from SOAP or one of your own, from the right side panel.",
+    href: "/features/note-templates/",
+    icon: noteTemplates.icon,
+    ink: writeCategory.ink,
+    image: noteTemplates.image ?? writeCategory.image,
+    cta: "See templates",
+  },
+  resourceLibrary && findCategory && {
+    title: "Resources",
+    tagline: "A link from The Bible Project, or a PDF your church sent — kept where you can pull it into a note.",
+    href: "/features/resource-library/",
+    icon: resourceLibrary.icon,
+    ink: findCategory.ink,
+    image: resourceLibrary.image ?? findCategory.image,
+    cta: "See resources",
+  },
+  writeCategory && {
+    title: "@ mentions",
+    tagline: "Type @ in a note to drop in a note, folder, thread, or resource — and jump to it later.",
+    href: writeCategory.href,
+    icon: "fa7-solid:at",
+    ink: writeCategory.ink,
+    image: writeCategory.image,
+    cta: "See how it works",
   },
   {
     title: "Rest days in the record",
@@ -103,15 +169,6 @@ const newSlides = [
     ink: "var(--pill-note)",
     image: blogThumbUrl("a-rest-day-belongs-in-the-record", "feat"),
     cta: restLabel,
-  },
-  findCategory && {
-    title: "The Library",
-    tagline: "A spotlight you summon over the note you're in — not a column that never leaves.",
-    href: findCategory.href,
-    icon: findCategory.icon,
-    ink: findCategory.ink,
-    image: findCategory.image,
-    cta: "See how it works",
   },
 ].filter((s): s is NonNullable<typeof s> => Boolean(s));
 
@@ -123,13 +180,16 @@ const newSlides = [
 */
 const movedRows = [
   {
+    before: "My Home",
+    after: "Activity",
+    body: "What sat in the sidebar under My Home is a view of its own now, with room to actually show a week. Three views, left to right in the top left: Activity, the Bible reader, and a note.",
+    links: [{ label: "Activity", href: "/features/activity/" }],
+  },
+  {
     before: "The sidebar",
-    after: "Activity and the Library",
-    body: "Its four jobs got homes that fit them. Your study history became Activity, a view with room to show a week. Finding things became the Library — a spotlight you summon over the note you're already in.",
-    links: [
-      { label: "Activity", href: "/features/activity/" },
-      { label: "Find", href: "/features/find/" },
-    ],
+    after: "Search, top middle",
+    body: "You could search everything you'd saved from the sidebar. With the sidebar gone, search is in the top middle — and from there you can still just browse the lists of things, the way you could before.",
+    links: [{ label: "Find", href: "/features/find/" }],
   },
   {
     before: "Recall",
@@ -243,8 +303,8 @@ const jsonLd = {
         -->
         <p class="v3-hero__sub lead v3-arrive" data-reveal style="--reveal-delay: 1520ms;">
           The sidebar is gone. <strong>Activity</strong> opens on what you've already
-          studied, rest days stay in the record, and <strong>Review</strong> turns your notes
-          into practice — <mark>all of it right where you left it</mark>.
+          studied, the <strong>Bible reader</strong> keeps your notes beside the verse, and
+          <strong>Search</strong> sits top middle — <mark>all of it right where you left it</mark>.
         </p>
         <div class="v3-hero__cta" data-reveal style="--reveal-delay: 1740ms;">
           <CTAButton href="#whats-new" size="lg">
@@ -354,7 +414,9 @@ const jsonLd = {
 
       <p class="v3-changed__foot" data-reveal style="--reveal-delay: 120ms;">
         Notes, highlights, threads, and folders are exactly where they were — nothing to move or
-        re-file. <a href="/release-notes/">Every fix and improvement is in the release notes →</a>
+        re-file. Also in this release: more keyboard shortcuts (Settings, from your avatar) and
+        a better time of it on a phone.
+        <a href="/release-notes/">Every fix and improvement is in the release notes →</a>
       </p>
     </Container>
   </section>
@@ -390,6 +452,11 @@ const jsonLd = {
             </p>
           </Fragment>
           <Fragment slot="right">
+            <p>
+              For the longest time I pushed against a Bible reader. Then I kept noticing how
+              much I wanted to see which notes I'd linked to a verse, right there beside it.
+              So Harvous has one now, in eleven translations.
+            </p>
             <p>
               Recall became Suggestions, because the name only covered half of what it does —
               some bring a fading note back, and some propose something to make from what you
