@@ -18,14 +18,12 @@ import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
 
 interface Props {
   id?: string;
-  eyebrow?: string;
   title?: string;
 }
 
 const {
   id,
-  eyebrow = "Meet Harvous",
-  title = "A notes app made for studying the Bible.",
+  title = "Harvous is a notes app made for studying the Bible.",
 } = Astro.props;
 
 /**
@@ -41,13 +39,11 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
 <section class="tour frame-divider" id={id}>
   <Container size="xl">
     <div class="tour__head section-head" data-reveal>
-      <span class="eyebrow-pill">{eyebrow}</span>
       <h2 class="section-title">{title}</h2>
       <p class="lead tour__lead">
-        In a notes app, a verse is just text, and yesterday is already gone.
-        <strong>Activity</strong> brings it back, <strong>scripture pills</strong> connect every
-        reference, and <strong>threads</strong> tie notes together — into
-        <mark>your own study Bible</mark>.
+        Read a chapter, write what you find, get back to it later, and share it with your
+        group — <strong>Activity</strong>, <strong>Read</strong>, <strong>Write</strong>,
+        <strong>Find</strong>, and <strong>Share</strong> are <mark>the five things Harvous is for</mark>.
       </p>
     </div>
 
