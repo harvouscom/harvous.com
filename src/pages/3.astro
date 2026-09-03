@@ -9,18 +9,18 @@
  * moved (About's list rhythm), and a left-stacked head over the founder letter
  * — so the page reads as a sequence, not a template.
  *
- * Every band sits on paper so the page frame's vertical rails run the whole
- * way down, and every band starts on a frame-divider hairline. Rows inside a
- * band are separated by the same hairline, the way About and the feature grid
- * do it. Section / Row are the site's layout primitives; this is the first
- * page to render them.
+ * Every band is a plain <section> that paints nothing, so the page frame's
+ * vertical rails (z-index -1) run the whole way down, and every band starts
+ * on a frame-divider hairline. Rows inside a band are separated by the same
+ * hairline, the way About and the feature grid do it. Not layout/Section —
+ * it paints even tone="paper" as an opaque ground, which covers the rails.
+ * That is the reason no page on the site uses it.
  *
  * Draft-gated via src/lib/draft-pages.ts until launch — that one array controls
  * noindex, the banner, the sitemap, the production strip, and the two links
  * pointing here (footer + homepage tour).
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Section from "../components/layout/Section.astro";
 import Container from "../components/layout/Container.astro";
 import Row from "../components/layout/Row.astro";
 import CTAButton from "../components/CTAButton.astro";
@@ -262,7 +262,7 @@ const jsonLd = {
     column so the next card peeks in. The head lives inside the Container; the
     track sits beside it so it can run to the frame rails.
   -->
-  <Section id="whats-new" tone="paper" space="md" class="frame-divider v3-new">
+  <section id="whats-new" class="v3-band v3-new frame-divider">
     <Container size="xl">
       <div class="v3-new__head v3-arrive" data-reveal>
         <div class="v3-new__head-text">
@@ -312,7 +312,7 @@ const jsonLd = {
         }
       </ul>
     </div>
-  </Section>
+  </section>
 
   <!--
     What changed, as a ruled list — About's "What Harvous cares about" rhythm:
@@ -320,7 +320,7 @@ const jsonLd = {
     struck, an arrow, the new name. On paper, so the frame's rails run through
     it and the next band's divider draws as normal.
   -->
-  <Section id="what-changed" tone="paper" space="md" class="frame-divider">
+  <section id="what-changed" class="v3-band frame-divider">
     <Container size="xl">
       <div class="v3-changed__head v3-arrive" data-reveal>
         <h2 class="section-title">What changed</h2>
@@ -357,9 +357,9 @@ const jsonLd = {
         re-file. <a href="/release-notes/">Every fix and improvement is in the release notes →</a>
       </p>
     </Container>
-  </Section>
+  </section>
 
-  <Section id="why" tone="paper" space="md" class="frame-divider">
+  <section id="why" class="v3-band v3-why frame-divider">
     <Container size="xl">
       <div class="v3-why__head v3-arrive" data-reveal>
         <h2 class="section-title">Why the change</h2>
@@ -459,7 +459,7 @@ const jsonLd = {
         )
       }
     </Container>
-  </Section>
+  </section>
 
   <PageClosingCTA
     heading="Open Harvous 3."
@@ -474,21 +474,20 @@ const jsonLd = {
 
 <style>
   /*
-    Section / Row / SectionHeader don't spread ...rest, so page-scope attributes
-    never reach their root elements. Root-level rules on them go through :global.
+    A band: no background, ever — the page frame's rails sit at z-index -1 and
+    show only where nothing paints over them. Vertical rhythm matches the
+    use-cases preview's. The header is sticky (~57px, a floating pill when
+    scrolled) and the site sets no scroll-margin, so hash targets get one.
   */
-  :global(#whats-new),
-  :global(#what-changed),
-  :global(#why) {
-    /* The header is sticky (~57px, a floating pill when scrolled) and the site
-       sets no scroll-margin, so hash targets would land underneath it. */
+  .v3-band {
+    padding-block: clamp(3.5rem, 7vw, 5rem);
     scroll-margin-top: 5rem;
   }
-  :global(#why) {
+  .v3-why {
     /* The founder letter's paper fan is clipped at the band, not the 64rem wrapper. */
     overflow-x: clip;
   }
-  :global(#whats-new) {
+  .v3-new {
     /* The slider bleeds to the frame rails; nothing past them may widen the page. */
     overflow-x: hidden;
   }
