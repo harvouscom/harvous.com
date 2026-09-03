@@ -28,8 +28,8 @@ import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
 import { getUseCaseBySlug, getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
 import type { UseCase } from "../lib/use-cases-data.ts";
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
-import { fathomSignup, fathomCompare } from "../lib/fathom-events.ts";
-import { buildSignupUrl } from "../lib/signup-url.ts";
+import { fathomTry, fathomCompare } from "../lib/fathom-events.ts";
+import { buildTryUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import "../styles/use-cases.css";
 
@@ -251,8 +251,8 @@ const jsonLd = {
   <PageClosingCTA
     heading={category.heroTitle}
     lead={category.tagline}
-    href={buildSignupUrl({ useCase: category.useCaseSlugs[0], source: `feature_${category.slug}` })}
-    fathomTrack={fathomSignup.featureDetail(category.slug)}
+    href={buildTryUrl({ useCase: category.useCaseSlugs[0], source: `feature_${category.slug}` })}
+    fathomTrack={fathomTry.featureDetail(category.slug)}
   />
 
   <RelatedBlogPosts posts={relatedBlogPosts} />

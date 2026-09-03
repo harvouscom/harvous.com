@@ -3,7 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageIntro from "../../components/PageIntro.astro";
 import PageClosingCTA from "../../components/PageClosingCTA.astro";
 import HubSectionNav from "../../components/HubSectionNav.astro";
-import { fathomSignup } from "../../lib/fathom-events.ts";
+import { fathomTry } from "../../lib/fathom-events.ts";
 import { Icon } from "astro-icon/components";
 import {
   getAudiencesGroupedByUseCase,
@@ -112,7 +112,7 @@ const navItems = groups.map((group) => ({
 
   <PageClosingCTA
     heading="Whether you're just starting or continuing, there's space for you here."
-    fathomTrack={fathomSignup.forHub}
+    fathomTrack={fathomTry.forHub}
   />
 </BaseLayout>
 

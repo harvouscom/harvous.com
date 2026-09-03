@@ -4,7 +4,8 @@
  * Defaults match the homepage; pages can override heading / copy via props + slot.
  */
 import OptimizedImage from "./OptimizedImage.astro";
-import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
+import { fathomCta, fathomTry } from "../lib/fathom-events.ts";
+import { APP_TRY_URL } from "../lib/signup-url.ts";
 
 interface Props {
   heading?: string;
@@ -56,12 +57,11 @@ const { heading = "One last thing" } = Astro.props;
       <div class="cta-btn-row">
         <a
           class="cta-btn"
-          href="https://app.harvous.com/sign-up"
-          target="_blank"
-          rel="noopener"
-          data-fathom-track={fathomSignup.last}
+          href={APP_TRY_URL}
+          data-try-cta
+          data-fathom-track={fathomTry.last}
         >
-          Sign up free
+          Try it free
         </a>
         <a
           class="cta-btn cta-btn--secondary"

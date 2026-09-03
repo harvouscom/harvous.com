@@ -7,7 +7,7 @@ import PageClosingCTA from "../../components/PageClosingCTA.astro";
 import IntroChip from "../../components/IntroChip.astro";
 import { getCompareTypes, getCompareByType, compareTypeToId, getCompareEntries } from "../../lib/compare-data.ts";
 import { getHarvousHubLane } from "../../lib/compare-harvous-positioning.ts";
-import { fathomCompare, fathomSignup } from "../../lib/fathom-events.ts";
+import { fathomCompare, fathomTry } from "../../lib/fathom-events.ts";
 import "../../styles/compare.css";
 
 const types = getCompareTypes();
@@ -85,8 +85,8 @@ const jsonLd = {
 
   <PageClosingCTA
     heading="You've seen how Harvous compares."
-    lead="Sign up free and try a notes-first Bible study app built to help you remember what you saved."
-    fathomTrack={fathomSignup.compareHub}
+    lead="Try it free — a notes-first Bible study app built to help you remember what you saved."
+    fathomTrack={fathomTry.compareHub}
   />
 </BaseLayout>
 

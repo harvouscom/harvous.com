@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
 import CompareHeroArt from "./CompareHeroArt.astro";
 import CompareCarousel from "./CompareCarousel.astro";
-import { fathomCompare, fathomSignup } from "../lib/fathom-events.ts";
+import { fathomCompare, fathomTry } from "../lib/fathom-events.ts";
 import type { CompareEntry } from "../lib/compare-data.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
 import {
@@ -195,7 +195,7 @@ const ctaHeading = getCompareCtaHeading(entry.name, entry.competitorType);
   <PageClosingCTA
     heading={ctaHeading}
     lead={entry.worksBestAlongside}
-    fathomTrack={fathomSignup.compareDetail(entry.slug)}
+    fathomTrack={fathomTry.compareDetail(entry.slug)}
   />
 </BaseLayout>
 

@@ -13,7 +13,7 @@ import FounderLetterSection from "../components/FounderLetterSection.astro";
 import DownloadCTA from "../components/DownloadCTA.astro";
 import { getCollection } from "astro:content";
 import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
-import { fathomSignup, fathomCta } from "../lib/fathom-events.ts";
+import { fathomTry, fathomCta } from "../lib/fathom-events.ts";
 import { includeBlogDrafts, isBlogPostListed } from "../lib/blog";
 
 const homeJsonLd = await buildHomeJsonLd();
@@ -39,7 +39,7 @@ const homeBlogPosts = (await getCollection("blog"))
   <PageClosingCTA
     heading="Ready to try it?"
     lead="Everything above is free — unlimited notes, scripture pills, highlights, and offline sync. No credit card."
-    fathomTrack={fathomSignup.included}
+    fathomTrack={fathomTry.included}
     secondaryHref="/#faq"
     secondaryLabel="Read the FAQs"
     secondaryFathomTrack={fathomCta.faqAnchor}

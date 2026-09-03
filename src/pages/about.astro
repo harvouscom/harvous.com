@@ -7,7 +7,7 @@ import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
 import WordCycle from "../components/WordCycle.astro";
 import AboutResearchGap from "../components/AboutResearchGap.astro";
-import { fathomSignup } from "../lib/fathom-events.ts";
+import { fathomTry } from "../lib/fathom-events.ts";
 
 const site = "https://harvous.com";
 
@@ -198,8 +198,8 @@ const jsonLd = {
 
   <PageClosingCTA
     heading="Give your study somewhere to live."
-    lead="Sign up free and start writing notes that stay with Scripture."
-    fathomTrack={fathomSignup.about}
+    lead="Try it free and start writing notes that stay with Scripture."
+    fathomTrack={fathomTry.about}
   />
 </BaseLayout>
 

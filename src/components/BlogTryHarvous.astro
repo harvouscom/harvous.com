@@ -18,7 +18,8 @@ import {
   blogProductBridgeCopy,
   type BlogCategory,
 } from "../lib/blog";
-import { fathomCta, fathomSignup } from "../lib/fathom-events.ts";
+import { fathomCta, fathomTry } from "../lib/fathom-events.ts";
+import { APP_TRY_URL } from "../lib/signup-url.ts";
 
 interface Props {
   category: BlogCategory;
@@ -122,13 +123,13 @@ const cards: RelatedFeatureCard[] = ids
 
     <div class="blog-bridge__cta" data-reveal style="--reveal-delay: 140ms;">
       <CTAButton
-        href="https://app.harvous.com/sign-up"
+        href={APP_TRY_URL}
         variant="primary"
         size="lg"
-        external
-        fathomTrack={fathomSignup.last}
+        tryCta
+        fathomTrack={fathomTry.last}
       >
-        Sign up free
+        Try it free
       </CTAButton>
       <CTAButton
         href="/#features"
