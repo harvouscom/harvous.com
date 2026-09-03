@@ -64,7 +64,9 @@ const testimonials = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/testimonials" }),
   schema: z.object({
     name: z.string(),
-    when: z.string(),
+    /** When the quote was given. Kept for provenance; no page renders it —
+        a dated quote starts ageing the day after. */
+    when: z.string().optional(),
     order: z.number(),
   }),
 });
