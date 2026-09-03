@@ -11,11 +11,20 @@
  * Stacked on desktop; a scroll-snap slider below 720px, the same pattern and the
  * same carousel-fit binding the other homepage carousels use.
  */
+import { existsSync } from "node:fs";
+import path from "node:path";
 import Container from "./layout/Container.astro";
 import AppTourChapter from "./AppTourChapter.astro";
+import ProductCard from "./ProductCard.astro";
 import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
+import { HOME_FEATURE_CARDS } from "../lib/home-feature-cards.ts";
 import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
 import { isDraftPageSlug } from "../lib/draft-pages.ts";
+
+/* A card's close-up only renders if the file is on disk; otherwise the card
+   shows its pills. Same build-time check TourShotFrame uses. */
+const shotExists = (src: string) =>
+  existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 
 interface Props {
   id?: string;
@@ -54,7 +63,45 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
         )
       }
     </div>
+  </Container>
 
+  <!--
+    The hero cycles through five content pills. These four cards are those
+    pills, each with the close-up that shows it — the visual thread from the
+    headline down into the tour. A scroll-snap row that bleeds to the frame
+    rails, the use-cases preview's pattern, with its own arrows so the
+    category slider's controls below stay next to their own track.
+  -->
+  <Container size="xl">
+    <div class="tour__pillcontrols" data-reveal style="--reveal-delay: 100ms;">
+      <button type="button" class="tour__arrow" data-dir="prev" aria-label="Previous" disabled>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+      </button>
+      <button type="button" class="tour__arrow" data-dir="next" aria-label="Next">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  </Container>
+
+  <div class="tour__pillwrap carousel-track-wrap" data-reveal style="--reveal-delay: 120ms;">
+    <ul class="tour__pilltrack" role="list" aria-label="What you write with" tabindex="0" data-reveal="stagger" style="--reveal-delay: 160ms;">
+      {
+        HOME_FEATURE_CARDS.map((card) => (
+          <li class="tour__pillslide carousel-slide">
+            <ProductCard
+              pills={card.pills}
+              title={card.title}
+              body={card.body}
+              image={card.image && shotExists(card.image) ? card.image : undefined}
+              imageAlt={card.imageAlt}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <Container size="xl">
     <div class="tour__controls">
       <button type="button" class="tour__arrow" data-dir="prev" aria-label="Previous chapter" disabled>
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
@@ -98,6 +145,54 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
     text-underline-offset: 4px;
   }
   .tour__whatsnew:hover { text-decoration-color: var(--color-ink); }
+
+  /* The four pill cards as a slider. Arrows sit right, over the row; the track
+     bleeds past the framed column so the third card peeks in from the edge
+     and the first lines up with the head's column. ~2.25 cards show at once,
+     ~500px each at 1440 — the old bento's proportion, which the close-ups
+     need to stay readable. */
+  .tour__pillcontrols {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: clamp(2rem, 4.5vw, 3rem);
+  }
+  .tour__pillwrap {
+    --carousel-peek-slides: 2.25;
+    --carousel-peek-gap-count: 2;
+    position: relative;
+    overflow: hidden;
+    margin-inline: var(--frame-inset);
+    margin-top: 0.9rem;
+  }
+  .tour__pilltrack {
+    display: flex;
+    align-items: stretch;
+    gap: var(--carousel-slide-gap);
+    margin: 0;
+    padding-block: 0.25rem;
+    padding-left: max(
+      var(--frame-inset),
+      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
+    );
+    padding-right: var(--frame-inset);
+    scroll-padding-left: max(
+      var(--frame-inset),
+      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
+    );
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .tour__pilltrack::-webkit-scrollbar { display: none; }
+  .tour__pilltrack:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+  .tour__pillslide { min-width: 0; }
+  .tour__pillslide :global(.pcard) { height: 100%; }
 
   .tour__controls {
     display: flex;
@@ -185,14 +280,26 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
   const SLIDER_MQ = window.matchMedia("(max-width: 719px)");
 
   document.querySelectorAll<HTMLElement>(".tour").forEach((tour) => {
+    // Two sliders share the .tour__arrow style; each binds only its own controls.
     const track = tour.querySelector<HTMLElement>(".tour__track");
-    if (!track) return;
-    bindCarouselFit({
-      track,
-      slideSelector: ".tour__slide",
-      prevBtn: tour.querySelector<HTMLButtonElement>('.tour__arrow[data-dir="prev"]'),
-      nextBtn: tour.querySelector<HTMLButtonElement>('.tour__arrow[data-dir="next"]'),
-      enabled: () => SLIDER_MQ.matches,
-    });
+    if (track) {
+      bindCarouselFit({
+        track,
+        slideSelector: ".tour__slide",
+        prevBtn: tour.querySelector<HTMLButtonElement>('.tour__controls .tour__arrow[data-dir="prev"]'),
+        nextBtn: tour.querySelector<HTMLButtonElement>('.tour__controls .tour__arrow[data-dir="next"]'),
+        enabled: () => SLIDER_MQ.matches,
+      });
+    }
+
+    const pillTrack = tour.querySelector<HTMLElement>(".tour__pilltrack");
+    if (pillTrack) {
+      bindCarouselFit({
+        track: pillTrack,
+        slideSelector: ".tour__pillslide",
+        prevBtn: tour.querySelector<HTMLButtonElement>('.tour__pillcontrols .tour__arrow[data-dir="prev"]'),
+        nextBtn: tour.querySelector<HTMLButtonElement>('.tour__pillcontrols .tour__arrow[data-dir="next"]'),
+      });
+    }
   });
 </script>
