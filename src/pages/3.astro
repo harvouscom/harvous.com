@@ -33,7 +33,7 @@ import PageClosingCTA from "../components/PageClosingCTA.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getTourChapter } from "../lib/app-tour-chapters.ts";
-import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
+import { getFeatureCategoryBySlug, getFeatureInk } from "../lib/feature-categories-data.ts";
 import { getAddonBySlug, getAddonDetailHref } from "../lib/addons-data.ts";
 import { blogReadingMinutes, blogThumbUrl, isBlogPostListed } from "../lib/blog.ts";
 import { isDraftPageSlug } from "../lib/draft-pages.ts";
@@ -127,7 +127,10 @@ const newSlides = [
     tagline: "Eleven translations — NLT, ESV, NIV, CSB, KJV. Open it, or expand into it from a Scripture pill in a note.",
     href: "/features/bible-reader/",
     icon: bibleReader?.icon ?? readCategory.icon,
-    ink: readCategory.ink,
+    /* Links to the feature page, not the category hub, so its ink is the
+       tiered variant that page actually renders — same rule as note
+       templates and resources below. */
+    ink: getFeatureInk("bible-reader"),
     image: bibleReader?.image ?? readCategory.image,
     shot: tourShot("read"),
     cta: "See the reader",
@@ -169,7 +172,10 @@ const newSlides = [
     tagline: "Start a note from SOAP or one of your own, from the right side panel.",
     href: "/features/note-templates/",
     icon: noteTemplates.icon,
-    ink: writeCategory.ink,
+    /* Its own feature page's ink — a tiered variant of Write's, not Write's
+       raw colour. The stale frontmatter image (Share's photo) is fixed at
+       the source now, so this just inherits it. */
+    ink: getFeatureInk("note-templates"),
     image: noteTemplates.image ?? writeCategory.image,
     shot: extraShot("note-templates", "The right side panel in Harvous open on the note templates, with SOAP listed."),
     cta: "See templates",
@@ -179,7 +185,10 @@ const newSlides = [
     tagline: "A link from The Bible Project, or a PDF your church sent — kept where you can pull it into a note.",
     href: "/features/resource-library/",
     icon: resourceLibrary.icon,
-    ink: findCategory.ink,
+    /* Its own feature page's ink — a tiered, green variant of Find's, not
+       Find's raw colour. The stale frontmatter image (an orphaned orange)
+       is fixed at the source now, so this inherits Find's green photo. */
+    ink: getFeatureInk("resource-library"),
     image: resourceLibrary.image ?? findCategory.image,
     shot: extraShot("resources", "A resource saved in Harvous — a PDF — with its pill placed in a note beside it."),
     cta: "See resources",
