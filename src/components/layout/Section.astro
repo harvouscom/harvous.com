@@ -86,7 +86,10 @@ const dividerClass =
   .section--tone-pink { background: var(--color-pink); }
   .section--tone-cream { background: var(--color-cream); }
   .section--tone-accent { background: var(--color-accent); }
-  .section--tone-ink { background: var(--color-ink); }
+  /* Literal, not var(--color-ink): .section--invert below remaps that token to
+     white on this same element, so the token would resolve to the remapped
+     value and the band would paint white on white. */
+  .section--tone-ink { background: #0d0e12; }
 
   /* Inverted ground — remap the ink tokens locally so children adapt. */
   .section--invert {

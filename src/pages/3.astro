@@ -2,27 +2,33 @@
 /**
  * /3/ — the Harvous 3 release page.
  *
- * Written for people who already use Harvous 2: what moved, what got renamed,
- * and why. The homepage tour shows the result of 3.0; this page is the only
- * place that explains it, and the only home for the essays that argue it.
+ * Written for people who already use Harvous 2, in three bands: what's new,
+ * what changed, and why. Each band takes a different shape on purpose — a
+ * numeral hero, a two-column header over the homepage bento, an inverted ink
+ * band with a sticky intro beside the migration rows, and a left-stacked head
+ * over the founder letter — so the page reads as a sequence, not a template.
+ *
+ * Section / SectionHeader / Row are the site's layout primitives; this is the
+ * first page to render them.
  *
  * Draft-gated via src/lib/draft-pages.ts until launch — that one array controls
  * noindex, the banner, the sitemap, the production strip, and the two links
  * pointing here (footer + homepage tour).
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageIntro from "../components/PageIntro.astro";
-import PageClosingCTA from "../components/PageClosingCTA.astro";
-import HubSectionNav from "../components/HubSectionNav.astro";
-import TourShotFrame from "../components/TourShotFrame.astro";
+import Section from "../components/layout/Section.astro";
+import Container from "../components/layout/Container.astro";
+import Row from "../components/layout/Row.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import AppTourChapter from "../components/AppTourChapter.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import BlogCard from "../components/BlogCard.astro";
-import CTAButton from "../components/CTAButton.astro";
+import PageClosingCTA from "../components/PageClosingCTA.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getTourChapter } from "../lib/app-tour-chapters.ts";
 import { getFeatureCategoryBySlug } from "../lib/feature-categories-data.ts";
-import { getAddonDetailHref } from "../lib/addons-data.ts";
+import { getAddonBySlug, getAddonDetailHref } from "../lib/addons-data.ts";
 import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
 import { isDraftPageSlug } from "../lib/draft-pages.ts";
 import { fathomSignup } from "../lib/fathom-events.ts";
@@ -32,21 +38,47 @@ const isDraft = isDraftPageSlug(PAGE_SLUG);
 const site = "https://harvous.com";
 const APP_URL = "https://app.harvous.com/";
 
+/* The bento reuses the homepage's cards: Activity is the release's headline
+   and gets the wide slot; the Library is the other thing that's genuinely new. */
 const activity = getTourChapter("activity");
-const read = getTourChapter("read");
-const write = getTourChapter("write");
 const find = getTourChapter("find");
-const reviewHref = getAddonDetailHref("review") ?? "/add-ons/review/";
+const activityCategory = getFeatureCategoryBySlug("activity");
+const findCategory = getFeatureCategoryBySlug("find");
 
-/** The three surfaces you land in. Activity gets its own band above these. */
-const views = [read, write, find]
-  .filter((c): c is NonNullable<typeof c> => c !== undefined)
-  .map((chapter) => ({ chapter, category: getFeatureCategoryBySlug(chapter.categorySlug) }));
+const review = getAddonBySlug("review");
+const reviewHref = getAddonDetailHref("review") ?? "/add-ons/review/";
+const reviewSteps = [
+  "A short question comes from a note, highlight, or verse you already saved — never one invented about the text.",
+  "You write what you remember first. The source appears after.",
+  "You say how it went — held it, mostly had it, or needed the reminder. That decides when it comes back.",
+];
 
 /*
-  Where each of the sidebar's jobs went, plus the two renames. Ordered heaviest
-  change first. Links point at the category pages rather than at
-  /features/sidebar-modes/, whose slug predates this release.
+  Hand-picked rather than scored: these three are the release's argument, in the
+  order it should be read. In production the drafts are excluded, so this is
+  empty until they publish — the essays block hides itself, and the rest-days
+  link below falls back to the category page instead of a 404.
+*/
+const SERIES = [
+  "study-you-can-follow-and-return-to",
+  "the-sidebar-did-too-much",
+  "a-rest-day-belongs-in-the-record",
+];
+const listedPosts = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
+const byId = new Map(listedPosts.map((p) => [p.id, p]));
+const series = SERIES.map((id) => byId.get(id)).filter(
+  (p): p is NonNullable<typeof p> => p !== undefined
+);
+const [featuredEssay, ...restEssays] = series;
+
+const restDayEssay = byId.get("a-rest-day-belongs-in-the-record");
+const restHref = restDayEssay ? `/blog/${restDayEssay.id}` : "/features/activity/";
+const restLabel = restDayEssay ? "Read why" : "More about Activity";
+
+/*
+  Where each of the sidebar's jobs went, plus the rename. Links point at the
+  category pages rather than /features/sidebar-modes/, whose slug predates this
+  release. Review is an addition, not a move, so it lives in What's new.
 */
 const movedRows = [
   {
@@ -71,50 +103,8 @@ const movedRows = [
     before: "Streaks",
     after: "Rest days in the record",
     body: "A day you rested still gets its sheet, and the sheet says so plainly. Keeping the quiet stretches next to the heavy ones is what lets a few months show you the real shape of your study.",
-    links: [{ label: "Read why", href: "/blog/a-rest-day-belongs-in-the-record" }],
+    links: [{ label: restLabel, href: restHref }],
   },
-  {
-    icon: "fa7-solid:clock-rotate-left",
-    // Not a migration — nothing was replaced, so this row skips the struck-through
-    // "before" and the arrow rather than pretending Review succeeded something.
-    isNew: true,
-    after: "Review",
-    body: "Practice drawn from your own notes, for anyone who wants something more deliberate than waiting to be reminded. Included with Harvous Plus.",
-    links: [{ label: "How Review works", href: reviewHref }],
-  },
-];
-
-const reviewSteps = [
-  "A short question comes from a note, highlight, or verse you already saved — never one invented about the text.",
-  "You write what you remember first. The source appears after.",
-  "You say how it went — held it, mostly had it, or needed the reminder. That decides when it comes back.",
-];
-
-/*
-  Hand-picked rather than scored: these three are the release's argument, in the
-  order it should be read. getRelatedBlogPosts is for affinity strips; a launch
-  series is a sequence. In production the drafts are excluded, so this is empty
-  until they are published — the section hides itself rather than showing a
-  heading with nothing under it.
-*/
-const SERIES = [
-  "study-you-can-follow-and-return-to",
-  "the-sidebar-did-too-much",
-  "a-rest-day-belongs-in-the-record",
-];
-const listedPosts = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
-const byId = new Map(listedPosts.map((p) => [p.id, p]));
-const series = SERIES.map((id) => byId.get(id)).filter(
-  (p): p is NonNullable<typeof p> => p !== undefined
-);
-
-const navItems = [
-  { id: "what-changed", label: "What changed" },
-  { id: "where-things-went", label: "Where things went" },
-  { id: "views", label: "The views" },
-  { id: "review", label: "Review" },
-  { id: "letter", label: "From Derek" },
-  ...(series.length > 0 ? [{ id: "reading", label: "The thinking" }] : []),
 ];
 
 const pageUrl = `${site}/3/`;
@@ -165,75 +155,124 @@ const jsonLd = {
     )
   }
 
-  <section>
-    <PageIntro flushBottom>
-      <span class="eyebrow-pill">Harvous 3</span>
-      <h1 class="section-title display-xl mt-4 text-pretty">
-        Study you can follow and return to.
-      </h1>
-      <p class="v3-hero__lead mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">
-        If you have been using Harvous, here is what moved, what got a new name, and why.
-        It now opens on the study you have already done.
-      </p>
-      <div class="v3-hero__actions mt-7">
-        <CTAButton href={APP_URL} size="lg" external fathomTrack={fathomSignup.v3}>
-          Open Harvous
-        </CTAButton>
-        <CTAButton href="/" variant="ghost" size="lg">New here? Start at the homepage</CTAButton>
+  <!--
+    Hero. "Harvous" in the site's cut of the variable font, the numeral in the
+    app's rounded display cut (ROND 100) — two faces of the same font, and the
+    contrast between them is the design. The square grid behind it is the
+    ground /release-notes/ sits on, masked so it fades before the frame rails.
+  -->
+  <section class="v3-hero">
+    <div class="release-notes-frame__grid v3-hero__grid" aria-hidden="true"></div>
+    <Container size="xl">
+      <div class="v3-hero__inner">
+        <h1 class="v3-hero__title">
+          <span class="v3-hero__brand" data-reveal>Harvous</span>
+          <span class="v3-hero__numeral">3</span>
+        </h1>
+        <p class="v3-hero__lead" data-reveal style="--reveal-delay: 160ms;">
+          Study you can follow and return to.
+        </p>
+        <p class="v3-hero__sub" data-reveal style="--reveal-delay: 220ms;">
+          For people already using Harvous: what moved, what got a new name, and why.
+        </p>
+        <a class="v3-hero__cue" href="#whats-new" data-reveal style="--reveal-delay: 300ms;">
+          See what's new
+          <span class="v3-hero__cue-arrow" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l5 5 5-5" /></svg>
+          </span>
+        </a>
       </div>
-    </PageIntro>
+    </Container>
   </section>
 
-  <div class="v3-main" data-hub-section-nav-main>
-    <HubSectionNav
-      items={navItems}
-      ariaLabel="Harvous 3 sections"
-      selectLabel="Jump to section"
-      selectId="v3-section-select"
-    />
+  <Section id="whats-new" tone="paper" space="md" class="frame-divider">
+    <Container size="xl">
+      <SectionHeader
+        title="What's new"
+        lead="Three views and a spotlight. Activity is a view now, with room to show a week. The Library is the spotlight, summoned over the note you're in. Review is here for Harvous Plus, and a rest day keeps its place in the record."
+      />
 
-    {/* No frame-divider on the first band: its rule would land 7px under the
-        section nav's pills and read as an underline for them. /for/ does the
-        same thing — only its groups after the first get a top border. */}
-    <section id="what-changed" class="v3-band v3-band--first">
-      <div class="v3-content">
-        <div class="section-head" data-reveal>
-          <h2 class="section-title text-pretty">What changed</h2>
-          <p class="lead">
-            Four things. The sidebar's jobs got homes that fit them, rest days stay in the
-            record, Recall is now Suggestions, and Review ships for Harvous Plus.
-          </p>
-        </div>
-
+      <ul class="v3-bento" role="list" aria-label="New in Harvous 3">
         {
-          activity && (
-            <div class="mt-10" data-reveal="scale" style="--reveal-delay: 80ms;">
-              <TourShotFrame
-                src={activity.shot.src}
-                alt={activity.shot.alt}
-                width={activity.shot.width}
-                height={activity.shot.height}
-                direction={activity.shot.direction}
-                loading="eager"
-              />
-              <p class="v3-caption">
-                Activity — one sheet per day, with the days behind it still there to look through.
-              </p>
-            </div>
+          activity && activityCategory && (
+            <li class="v3-bento__slide v3-bento__slide--wide" data-reveal>
+              <AppTourChapter chapter={activity} category={activityCategory} loading="eager" />
+            </li>
           )
         }
+        {
+          find && findCategory && (
+            <li class="v3-bento__slide" data-reveal style="--reveal-delay: 60ms;">
+              <AppTourChapter chapter={find} category={findCategory} />
+            </li>
+          )
+        }
+        {
+          review && (
+            <li class="v3-bento__slide" data-reveal style="--reveal-delay: 120ms;">
+              <article class="v3-review" style={`--cat-ink: ${review.ink};`}>
+                <a class="v3-review__link" href={reviewHref} aria-label="More about Review"></a>
+                <div class="v3-review__head">
+                  <div>
+                    <p class="v3-review__eyebrow">
+                      <span class="v3-review__eyebrow-icon"><Icon name={review.icon} /></span>
+                      Review <span class="v3-review__plan">· Harvous Plus</span>
+                    </p>
+                    <h3 class="v3-review__title">{review.heroTitle}</h3>
+                  </div>
+                  <span class="v3-review__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+                  </span>
+                </div>
+                <ol class="v3-review__steps">
+                  {reviewSteps.map((step, i) => (
+                    <li>
+                      <span class="v3-review__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                      <p>{step}</p>
+                    </li>
+                  ))}
+                </ol>
+              </article>
+            </li>
+          )
+        }
+      </ul>
 
-        <p class="v3-band__more">
-          <a href="/release-notes/">Every fix and improvement in the release notes →</a>
+      <div class="v3-rest" data-reveal style="--reveal-delay: 80ms;">
+        <span class="v3-rest__icon" aria-hidden="true"><Icon name="fa7-solid:calendar-day" /></span>
+        <p class="v3-rest__body">
+          <strong>Rest days stay in the record.</strong> A day you rested still gets its sheet, and
+          the sheet says so plainly — which is what lets a few months show you the real shape of
+          your study.
         </p>
+        <a class="v3-rest__link" href={restHref}>{restLabel} →</a>
       </div>
-    </section>
+    </Container>
+  </Section>
 
-    <section id="where-things-went" class="v3-band frame-divider">
-      <div class="v3-content">
-        <div class="section-head" data-reveal>
-          <h2 class="section-title text-pretty">Where things went</h2>
-          <p class="lead">Everything you wrote is where you left it. These are the parts that moved.</p>
+  <!--
+    The one inverted band. Section's .section--invert remaps the ink tokens so
+    the title, lead, row headings and hairlines adapt on their own; the handful
+    of things it doesn't remap (icon chips, links, the strike) are restyled in
+    the page CSS. No frame-divider here — the band's own edge is the seam, and
+    .color-band suppresses the next section's hairline.
+  -->
+  <Section id="what-changed" tone="ink" space="lg">
+    <Container size="xl">
+      <Row ratio="5-7" align="start" gap="lg">
+        <div class="v3-changed__intro">
+          <h2 class="section-title">What changed</h2>
+          <p class="lead v3-changed__lead">
+            Everything you wrote is where you left it. These are the parts that moved, and where
+            each one went.
+          </p>
+          <p class="v3-changed__foot">
+            Notes, highlights, threads, and folders are exactly where they were — nothing to move
+            or re-file.
+          </p>
+          <p class="v3-changed__more">
+            <a href="/release-notes/">Every fix and improvement in the release notes →</a>
+          </p>
         </div>
 
         <ul class="v3-map" role="list" data-reveal="stagger">
@@ -244,14 +283,8 @@ const jsonLd = {
                   <Icon name={row.icon} />
                 </span>
                 <div class="v3-map__head">
-                  {"isNew" in row && row.isNew ? (
-                    <span class="v3-map__new">New</span>
-                  ) : (
-                    <>
-                      <span class="v3-map__before">{"before" in row ? row.before : ""}</span>
-                      <span class="v3-map__arrow" aria-hidden="true">→</span>
-                    </>
-                  )}
+                  <span class="v3-map__before">{row.before}</span>
+                  <span class="v3-map__arrow" aria-hidden="true">→</span>
                   <h3 class="v3-map__after">{row.after}</h3>
                 </div>
                 <div class="v3-map__body">
@@ -266,92 +299,20 @@ const jsonLd = {
             ))
           }
         </ul>
-      </div>
-    </section>
+      </Row>
+    </Container>
+  </Section>
 
-    <section id="views" class="v3-band frame-divider">
-      <div class="v3-content v3-content--wide">
-        <div class="section-head" data-reveal>
-          <h2 class="section-title text-pretty">Three views, and a spotlight</h2>
-          <p class="lead">
-            Activity, the Bible reader, and a note. Everything else is a detour from one of
-            them — including the Library, which appears when you ask for it.
-          </p>
-        </div>
-
-        <ul class="v3-views" role="list" data-reveal="stagger">
-          {
-            views.map(({ chapter, category }) => (
-              <li class="v3-view">
-                {category && (
-                  <p class="v3-view__eyebrow" style={`--cat-ink: ${category.ink};`}>
-                    <span class="v3-view__eyebrow-icon">
-                      <Icon name={category.icon} />
-                    </span>
-                    {category.title}
-                  </p>
-                )}
-                <h3 class="v3-view__title">{chapter.title}</h3>
-                <p class="v3-view__lead">{chapter.lead}</p>
-                <div class="v3-view__shot">
-                  <TourShotFrame
-                    src={chapter.shot.src}
-                    alt={chapter.shot.alt}
-                    width={chapter.shot.width}
-                    height={chapter.shot.height}
-                    direction={chapter.shot.direction}
-                  />
-                </div>
-                {category && (
-                  <p class="v3-view__more">
-                    <a href={category.href}>More about {category.title} →</a>
-                  </p>
-                )}
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </section>
-
-    <section id="review" class="v3-band frame-divider">
-      <div class="v3-content">
-        <div class="section-head" data-reveal>
-          <span class="eyebrow-pill">Harvous Plus add-on</span>
-          <h2 class="section-title text-pretty">Review: practice from your own notes</h2>
-          <p class="lead">
-            For anyone who wants something more deliberate than waiting to be reminded. Write
-            an answer from memory, then say how it went. The gap before it returns widens as
-            you hold it.
-          </p>
-        </div>
-
-        <ol class="v3-steps" data-reveal="stagger">
-          {
-            reviewSteps.map((step, i) => (
-              <li class="v3-steps__item">
-                <span class="v3-steps__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                <p>{step}</p>
-              </li>
-            ))
-          }
-        </ol>
-
-        <div class="v3-steps__cta">
-          <CTAButton href={reviewHref} variant="secondary">How Review works</CTAButton>
-        </div>
-      </div>
-    </section>
-
-    <section id="letter" class="v3-letter frame-divider">
-      <div class="v3-letter__head section-head" data-reveal>
-        <span class="eyebrow-pill">From the founder</span>
-        <h2 class="section-title text-pretty">Why 3.0 exists</h2>
-        <p class="v3-letter__lead">
+  <Section id="why" tone="paper" space="md" class="frame-divider">
+    <Container size="xl">
+      <div class="v3-why__head" data-reveal>
+        <h2 class="section-title">Why the change</h2>
+        <p class="lead v3-why__lead">
           From Derek, on what the sidebar was costing and what a record owes you.
         </p>
       </div>
-      <div class="v3-letter__inner">
+
+      <div class="v3-why__letter">
         <FounderLetter variant="full">
           <Fragment slot="left">
             <p>Hey there,</p>
@@ -398,40 +359,51 @@ const jsonLd = {
           </Fragment>
         </FounderLetter>
       </div>
-    </section>
 
-    {
-      series.length > 0 && (
-        <section id="reading" class="v3-band frame-divider">
-          <div class="v3-content">
-            <div class="section-head" data-reveal>
-              <h2 class="section-title text-pretty">The thinking behind it</h2>
-              <p class="lead">The three essays that argue the release, in the order to read them.</p>
-            </div>
-            <div class="mt-8" data-reveal style="--reveal-delay: 40ms;">
-              {series.map((p) => (
-                <BlogCard
-                  title={p.data.title}
-                  description={p.data.description}
-                  publishDate={p.data.publishDate}
-                  category={p.data.category}
-                  slug={p.id}
-                  readingTime={blogReadingMinutes(p.body)}
-                  draft={p.data.draft}
-                  variant="story"
-                />
-              ))}
-            </div>
-            <div class="mt-8 flex justify-center">
+      {
+        featuredEssay && (
+          <div class="v3-why__essays" data-reveal style="--reveal-delay: 40ms;">
+            <p class="eyebrow v3-why__label">The long version — three essays, in the order to read them</p>
+            <BlogCard
+              title={featuredEssay.data.title}
+              description={featuredEssay.data.description}
+              publishDate={featuredEssay.data.publishDate}
+              category={featuredEssay.data.category}
+              slug={featuredEssay.id}
+              readingTime={blogReadingMinutes(featuredEssay.body)}
+              draft={featuredEssay.data.draft}
+              variant="featured"
+            />
+            {restEssays.length > 0 && (
+              <div class="v3-why__pair">
+                <Row cols={2} align="start" gap="lg">
+                  {restEssays.map((p) => (
+                    <div>
+                      <BlogCard
+                        title={p.data.title}
+                        description={p.data.description}
+                        publishDate={p.data.publishDate}
+                        category={p.data.category}
+                        slug={p.id}
+                        readingTime={blogReadingMinutes(p.body)}
+                        draft={p.data.draft}
+                        variant="story"
+                      />
+                    </div>
+                  ))}
+                </Row>
+              </div>
+            )}
+            <p class="v3-why__more">
               <a href="/blog/how-we-think" class="btn-pill inline-flex items-center gap-1.5">
                 More from How we think
               </a>
-            </div>
+            </p>
           </div>
-        </section>
-      )
-    }
-  </div>
+        )
+      }
+    </Container>
+  </Section>
 
   <PageClosingCTA
     heading="Open Harvous 3."
@@ -445,198 +417,202 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
-  /* Sticky section nav needs a tall ancestor shared with the bands it tracks. */
-  .v3-main {
+  /*
+    Section / Row / SectionHeader don't spread ...rest, so page-scope attributes
+    never reach their root elements. Root-level rules on them go through :global.
+  */
+  :global(#whats-new),
+  :global(#what-changed),
+  :global(#why) {
+    /* The header is sticky (~57px, a floating pill when scrolled) and the site
+       sets no scroll-margin, so hash targets would land underneath it. */
+    scroll-margin-top: 5rem;
+  }
+  :global(#why) {
+    /* The founder letter's paper fan is clipped at the band, not the 64rem wrapper. */
+    overflow-x: clip;
+  }
+
+  /* ---------- Hero ---------- */
+  .v3-hero {
     position: relative;
   }
-
-  .v3-hero__lead {
-    max-width: 34rem;
-    margin-inline: auto;
+  .v3-hero__grid {
+    /* Dissolve toward the edges so it reads as ruled paper under the numeral,
+       not wallpaper. The ::before inside paints the squares (global.css). */
+    mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
   }
-
-  .v3-hero__actions {
+  .v3-hero__inner {
+    position: relative;
+    z-index: 1;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
+    text-align: center;
+    padding-top: clamp(3rem, 7vw, 5.5rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
   }
-
-  .v3-band {
-    padding-block: clamp(3rem, 7vw, 4.5rem);
+  .v3-hero__title {
+    margin: 0;
   }
-
-  /* Sits directly under the floating section nav, so it needs the room the
-     removed divider was providing. */
-  .v3-band--first {
-    padding-top: clamp(3.5rem, 8vw, 5.5rem);
+  .v3-hero__brand {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    /* The site's cut, stated explicitly so the contrast with the numeral is deliberate. */
+    font-variation-settings: "ROND" 0, "wdth" 100;
+    color: var(--color-ink-soft);
   }
-
-  .v3-content {
-    margin-inline: auto;
-    max-width: 44rem;
-    padding-inline: var(--frame-content-pad);
+  .v3-hero__numeral {
+    display: block;
+    font-family: var(--font-display);
+    /* 160px at 375, 30vw between, 336px from 1120 up. The largest type on the
+       site today is /blog's 72px; .display-xl caps at 4.5rem. */
+    font-size: clamp(10rem, 30vw, 21rem);
+    font-weight: 700;
+    /* The app's display cut (prototype-tokens.css: --pds-font-display-variation). */
+    font-variation-settings: "ROND" 100, "wdth" 100;
+    font-optical-sizing: auto;
+    line-height: 0.82; /* a digit has no descender; crop the line box */
+    letter-spacing: 0; /* one glyph — trailing tracking would skew centering */
+    margin-top: clamp(0.25rem, 1vw, 0.75rem);
+    color: var(--color-ink);
+    animation: v3-numeral-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
   }
-
-  .v3-content--wide {
-    max-width: 64rem;
+  /* Entrance: fades and settles in, and rounds from the site cut into the app's.
+     font-variation-settings interpolates when both keyframes list the same axes
+     in the same order. */
+  @keyframes v3-numeral-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.05em) scale(0.94);
+      font-variation-settings: "ROND" 0, "wdth" 100;
+    }
+    55% {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      font-variation-settings: "ROND" 100, "wdth" 100;
+    }
   }
-
-  .v3-caption {
+  .v3-hero__lead {
+    margin: clamp(1.25rem, 3vw, 2rem) 0 0;
+    max-width: 18ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .v3-hero__sub {
     margin: 0.9rem auto 0;
-    max-width: 30rem;
-    text-align: center;
-    font-size: 0.8125rem;
-    line-height: 1.5;
-    color: var(--color-ink-faint);
-    text-wrap: pretty;
+    max-width: 34rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  @media (min-width: 768px) {
+    .v3-hero__sub { font-size: 1.125rem; }
   }
 
-  .v3-band__more {
-    margin: 1.75rem 0 0;
-    text-align: center;
+  /* Scroll cue: the site's round arrow control, pointing down. Nudges on hover, never loops. */
+  .v3-hero__cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
     font-size: 0.9rem;
-  }
-
-  .v3-band__more a {
-    color: var(--color-accent);
+    font-weight: 500;
+    color: var(--color-ink-soft);
     text-decoration: none;
+    border-radius: 999px;
   }
-
-  .v3-band__more a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  /* Where things went — the About page's numbered-row rhythm, with an icon. */
-  .v3-map {
-    list-style: none;
-    margin: clamp(2rem, 4.5vw, 2.75rem) 0 0;
-    padding: 0;
-  }
-
-  .v3-map__item {
-    display: grid;
-    gap: 0.7rem;
-    padding-block: 1.5rem;
-    border-top: 1px solid var(--color-rule);
-  }
-
-  .v3-map__item:last-child {
-    padding-bottom: 0;
-  }
-
-  .v3-map__icon {
+  .v3-hero__cue-arrow {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0.6rem;
-    background: var(--color-warm);
-    color: var(--color-ink-soft);
-  }
-
-  .v3-map__icon :global(svg) {
-    width: 0.95rem;
-    height: 0.95rem;
-  }
-
-  .v3-map__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.5rem;
-  }
-
-  .v3-map__before {
-    font-size: 0.9rem;
-    color: var(--color-ink-faint);
-    text-decoration: line-through;
-    text-decoration-color: var(--color-rule);
-  }
-
-  .v3-map__arrow {
-    font-size: 0.9rem;
-    color: var(--color-ink-faint);
-  }
-
-  .v3-map__new {
-    align-self: center;
-    padding: 0.15rem 0.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 999px;
-    background: color-mix(in oklab, var(--color-accent) 12%, var(--color-paper));
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-  }
-
-  .v3-map__after {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-    text-wrap: pretty;
-  }
-
-  .v3-map__body p {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.65;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
     color: var(--color-ink-soft);
-    text-wrap: pretty;
+    transition: color 150ms ease, background-color 150ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .v3-hero__cue-arrow svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  .v3-hero__cue:hover { color: var(--color-ink); }
+  .v3-hero__cue:hover .v3-hero__cue-arrow {
+    background: var(--color-warm);
+    color: var(--color-ink);
+    transform: translateY(2px);
+  }
+  .v3-hero__cue:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v3-hero__numeral { animation: none; }
+    .v3-hero__cue-arrow { transition: none; }
+    .v3-hero__cue:hover .v3-hero__cue-arrow { transform: none; }
   }
 
-  .v3-map__links {
-    margin-top: 0.6rem !important;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    font-size: 0.9rem;
-  }
-
-  .v3-map__links a {
-    color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .v3-map__links a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  @media (min-width: 768px) {
-    .v3-map__item {
-      grid-template-columns: 2rem minmax(0, 1.15fr) minmax(0, 1.5fr);
-      align-items: start;
-      gap: 1rem 1.75rem;
-      padding-block: 1.75rem;
-    }
-  }
-
-  /* The three views */
-  .v3-views {
+  /* ---------- What's new: the bento ---------- */
+  /* AppTour's desktop grid, without the mobile slider — the cards just stack. */
+  .v3-bento {
     list-style: none;
-    margin: clamp(2rem, 4.5vw, 2.75rem) 0 0;
+    margin: clamp(2rem, 4.5vw, 3rem) 0 0;
     padding: 0;
     display: grid;
-    gap: clamp(2rem, 4vw, 2.75rem);
+    gap: clamp(1rem, 1.6vw, 1.5rem);
   }
-
-  @media (min-width: 900px) {
-    .v3-views {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-items: start;
+  @media (min-width: 720px) {
+    .v3-bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch; /* .tcard is height:100% and needs a definite height */
     }
+    .v3-bento__slide--wide { grid-column: 1 / -1; }
   }
 
-  .v3-view__eyebrow {
+  /* Review — the tcard surface without a screenshot. Same ground, radius, padding,
+     one stretched link, same arrow; the steps sit where the feature tiles would. */
+  .v3-review {
+    /* 55% toward ink clears AA for the eyebrow; the raw violet is a highlighter fill. */
+    --cat-text: color-mix(in oklab, var(--cat-ink) 55%, var(--color-ink));
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: color-mix(in oklab, var(--color-warm) 60%, var(--color-paper));
+    border-radius: clamp(20px, 2.2vw, 28px);
+    padding: clamp(1.5rem, 2.4vw, 2rem);
+    overflow: hidden;
+  }
+  .v3-review__link {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .v3-review:has(.v3-review__link:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .v3-review__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .v3-review__eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
@@ -646,118 +622,318 @@ const jsonLd = {
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.01em;
-    color: var(--cat-ink, var(--color-accent));
+    white-space: nowrap;
+    color: var(--cat-text);
+    font-variation-settings: "wdth" 100, "ROND" 0;
   }
-
-  .v3-view__eyebrow-icon {
+  .v3-review__eyebrow-icon {
     display: inline-flex;
     font-size: 1em;
   }
-
-  .v3-view__eyebrow-icon :global(svg) {
+  .v3-review__eyebrow-icon :global(svg) {
     width: 1em;
     height: 1em;
     display: block;
   }
-
-  .v3-view__title {
-    margin: 0.5rem 0 0;
+  .v3-review__plan {
+    font-weight: 500;
+    color: var(--color-ink-faint);
+  }
+  .v3-review__title {
+    margin: 0.35rem 0 0;
     font-family: var(--font-display);
-    font-size: 1.2rem;
     font-weight: 600;
-    line-height: 1.2;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    font-size: clamp(1.25rem, 2.1vw, 1.6rem);
+    line-height: 1.15;
     letter-spacing: -0.02em;
     color: var(--color-ink);
-    text-wrap: pretty;
+    text-wrap: balance;
+    min-height: 2.3em; /* two reserved lines, so it lines up with the Library card beside it */
+  }
+  .v3-review__arrow {
+    position: relative;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    overflow: hidden;
+    transition: box-shadow 240ms ease;
+  }
+  .v3-review__arrow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--accent-btn-bg);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 220ms ease, transform 340ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .v3-review__arrow svg {
+    position: relative;
+    z-index: 1;
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .v3-review:hover .v3-review__arrow::before,
+  .v3-review:has(.v3-review__link:focus-visible) .v3-review__arrow::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .v3-review:hover .v3-review__arrow,
+  .v3-review:has(.v3-review__link:focus-visible) .v3-review__arrow {
+    box-shadow: var(--accent-btn-shadow-sm);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .v3-review__arrow::before { transform: none; transition: opacity 120ms ease; }
+    .v3-review:hover .v3-review__arrow::before { transform: none; }
+  }
+  .v3-review__steps {
+    list-style: none;
+    margin: clamp(1.25rem, 2.2vw, 1.75rem) 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .v3-review__steps li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.6rem;
+    align-items: start;
+  }
+  .v3-review__index {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--cat-text);
+    padding-top: 0.2rem;
+  }
+  .v3-review__steps p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
   }
 
-  .v3-view__lead {
-    margin: 0.5rem 0 0;
-    font-size: 0.9375rem;
+  /* Rest days — the band's conclusion, on a full rule. */
+  .v3-rest {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    display: grid;
+    grid-template-columns: 1.85rem minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+    align-items: start;
+  }
+  .v3-rest__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.85rem;
+    height: 1.85rem;
+    border-radius: 0.55rem;
+    background: color-mix(in oklab, var(--pill-note) 16%, var(--color-paper));
+    color: var(--pill-note);
+  }
+  .v3-rest__icon :global(svg) {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+  .v3-rest__body {
+    margin: 0;
+    max-width: 40rem;
+    font-size: 1rem;
     line-height: 1.6;
     color: var(--color-ink-soft);
-    text-wrap: pretty;
   }
-
-  .v3-view__shot {
-    margin-top: 1.1rem;
+  .v3-rest__body strong {
+    color: var(--color-ink);
+    font-weight: 600;
   }
-
-  .v3-view__more {
-    margin: 0.9rem 0 0;
-    font-size: 0.875rem;
-  }
-
-  .v3-view__more a {
+  .v3-rest__link {
+    grid-column: 2;
+    font-size: 0.9rem;
     color: var(--color-accent);
     text-decoration: none;
   }
-
-  .v3-view__more a:hover {
+  .v3-rest__link:hover {
     text-decoration: underline;
     text-underline-offset: 4px;
   }
+  @media (min-width: 720px) {
+    .v3-rest {
+      grid-template-columns: 1.85rem minmax(0, 1fr) auto;
+      align-items: center;
+    }
+    .v3-rest__link {
+      grid-column: auto;
+      white-space: nowrap;
+    }
+  }
 
-  /* Review steps */
-  .v3-steps {
+  /* ---------- What changed: on ink ---------- */
+  .v3-changed__lead {
+    margin-top: 1rem;
+    max-width: 30rem;
+  }
+  .v3-changed__foot {
+    margin: 1.25rem 0 0;
+    max-width: 30rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .v3-changed__more {
+    margin: 1rem 0 0;
+    font-size: 0.9rem;
+  }
+  @media (min-width: 768px) {
+    /* Sticks while the rows scroll past; static when the Row stacks. */
+    .v3-changed__intro {
+      position: sticky;
+      top: 5.5rem;
+    }
+  }
+
+  /* --color-accent isn't remapped on the band and is ~3.8:1 on ink. Links
+     take the white-with-rule-underline recipe instead. */
+  .v3-changed__more a,
+  .v3-map__links a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 4px;
+  }
+  .v3-changed__more a:hover,
+  .v3-map__links a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .v3-map {
     list-style: none;
-    margin: clamp(2rem, 4.5vw, 2.5rem) 0 0;
+    margin: 0;
     padding: 0;
-    display: grid;
-    gap: 1.25rem;
   }
-
-  .v3-steps__item {
+  .v3-map__item {
     display: grid;
-    grid-template-columns: 2.25rem minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: start;
+    gap: 0.7rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--color-rule);
   }
-
-  .v3-steps__index {
-    font-size: 0.75rem;
+  .v3-map__item:first-child {
+    padding-top: 0;
+    border-top: 0; /* the intro's title sits level with row one */
+  }
+  .v3-map__item:last-child {
+    padding-bottom: 0;
+  }
+  /* --color-warm isn't remapped either; a light chip would be a grey square on ink. */
+  .v3-map__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.6rem;
+    background: var(--color-card);
+    border: 1px solid var(--color-rule);
+    color: var(--color-ink);
+  }
+  .v3-map__icon :global(svg) {
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+  .v3-map__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  /* The strike used --color-rule, which is invisible against ink at 18%. */
+  .v3-map__before {
+    font-size: 0.9rem;
+    color: var(--color-ink-faint);
+    text-decoration: line-through;
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 1px;
+  }
+  .v3-map__arrow {
+    font-size: 0.9rem;
+    color: var(--color-ink-faint);
+  }
+  .v3-map__after {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
     font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--color-accent);
-    padding-top: 0.25rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
   }
-
-  .v3-steps__item p {
+  .v3-map__body p {
     margin: 0;
     font-size: 1rem;
     line-height: 1.65;
     color: var(--color-ink-soft);
-    text-wrap: pretty;
+  }
+  .v3-map__links {
+    margin-top: 0.6rem !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+  @media (min-width: 768px) {
+    /* Inside the 7-col: icon | head + body stacked. */
+    .v3-map__item {
+      grid-template-columns: 2rem minmax(0, 1fr);
+      gap: 0.4rem 1.25rem;
+      padding-block: 1.75rem;
+    }
+    .v3-map__body {
+      grid-column: 2;
+    }
+  }
+  @media (min-width: 1100px) {
+    /* Room for three: icon | head | body. */
+    .v3-map__item {
+      grid-template-columns: 2rem minmax(0, 1.05fr) minmax(0, 1.4fr);
+      gap: 1rem 1.5rem;
+      align-items: start;
+    }
+    .v3-map__body {
+      grid-column: auto;
+    }
   }
 
-  .v3-steps__cta {
-    margin-top: 1.75rem;
+  /* ---------- Why: letter + essays ---------- */
+  .v3-why__head {
+    max-width: 38rem;
   }
-
-  /* Founder letter — full-bleed clip so the paper fan can't scroll the page. */
-  .v3-letter {
-    overflow-x: clip;
+  .v3-why__lead {
+    margin-top: 1rem;
+    max-width: 32rem;
   }
-
-  .v3-letter__head {
-    margin-inline: auto;
-    max-width: 40rem;
-    padding: clamp(3rem, 7vw, 4.5rem) var(--frame-content-pad) 0;
-    text-align: center;
-  }
-
-  .v3-letter__lead {
-    margin: 0.75rem auto 0;
-    max-width: 28rem;
-    font-size: 1.05rem;
-    line-height: 1.55;
-    color: var(--color-ink-soft);
-    text-wrap: pretty;
-  }
-
-  .v3-letter__inner {
-    margin-inline: auto;
+  .v3-why__letter {
+    margin: clamp(2rem, 5vw, 3rem) auto 0;
     max-width: 64rem;
-    padding: clamp(2rem, 5vw, 3rem) var(--frame-content-pad) clamp(3.5rem, 7vw, 5rem);
+  }
+  .v3-why__essays {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+  .v3-why__label {
+    margin: 0 0 1rem;
+  }
+  .v3-why__pair {
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+  }
+  .v3-why__more {
+    margin: 1.5rem 0 0;
   }
 </style>
