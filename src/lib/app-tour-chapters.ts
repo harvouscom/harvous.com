@@ -128,7 +128,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
       {
         icons: ["fa7-solid:book-bible", "fa7-solid:book-open"],
         title: "Scripture pills & Bible reader",
-        desc: "Type a reference and it becomes a pill, in 11 translations — or open the chapter and read, with your notes and highlights already there.",
+        desc: "Type a reference — it becomes a pill in 11 translations. Open the chapter with your notes right there.",
       },
       {
         icons: ["fa7-solid:table-columns"],
@@ -194,7 +194,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
       {
         icons: ["fa7-solid:magnifying-glass"],
         title: "Search",
-        desc: "Notes, folders, threads, highlights, scripture, and resources — browse by kind or search across all of it, in one panel top middle.",
+        desc: "Search everything you've saved, or browse it by kind, from one panel top middle.",
       },
       {
         icons: ["fa7-solid:newspaper"],
