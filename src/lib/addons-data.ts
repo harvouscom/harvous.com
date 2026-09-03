@@ -167,9 +167,10 @@ const ADDON_PAGES: AddonPage[] = [
     slug: "challenges",
     href: "/add-ons/challenges/",
     title: "Challenges",
-    tagline: "Themed study seasons with guides, leaderboards, and more.",
+    tagline: "Time-boxed study to build the habit, solo or with others.",
     seoTitle: "Challenges — Harvous add-on",
-    seoDescription: "Themed study seasons with guides, leaderboards, and more.",
+    seoDescription:
+      "Time-boxed study to build the habit, solo or with others. Included with Harvous Plus when it ships.",
     icon: "fa7-solid:trophy",
     ink: "var(--study-dock-accent-warmAmber)",
     heroTitle: "Challenges",
