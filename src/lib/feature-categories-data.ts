@@ -85,7 +85,7 @@ const categories: FeatureCategory[] = [
       {
         heading: "What is worth coming back to finds you",
         paragraphs: [
-          "Recall watches for the note that is fading, the highlight you never returned to, the passage you have circled three times without writing anything down. It brings them back when they are worth another look.",
+          "Suggestions watch for the note that is fading, the highlight you never returned to, the passage you have circled three times without writing anything down. They come back when they are worth another look.",
           "There is no streak to protect and no queue of cards waiting to be cleared. The point is that your study stays reachable, not that you keep a scoreboard alive.",
         ],
       },
@@ -97,8 +97,8 @@ const categories: FeatureCategory[] = [
         body: "Today's sheet on top, the days behind it peeking above it. Tap the date to jump back to any day you have studied.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall resurfaces what is fading",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions resurface what is fading",
         body: "A note you have not opened in a while, a highlight without a thought attached — brought back at the point it is still worth having.",
       },
       {
@@ -112,7 +112,10 @@ const categories: FeatureCategory[] = [
         body: "Collect the notes that belong to the same line of thinking, however far apart in the record they were written.",
       },
     ],
-    featureIds: ["recall", "daily-passage", "threads"],
+    // "review" resolves via getComingSoonGridItem() to the addon page, the same
+    // mechanism Share uses for "shared-spaces" — a Plus add-on housed inside a
+    // free category's grid, not a fourth item on the homepage tour card.
+    featureIds: ["suggestions", "daily-passage", "threads", "review"],
     featuresHeading: "What keeps the record worth opening",
     featuresLead:
       "Activity is built out of what Harvous already logs — nothing new to maintain, which is why it can show you a trail reaching back further than the feature itself.",

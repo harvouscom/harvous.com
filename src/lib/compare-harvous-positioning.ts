@@ -34,7 +34,7 @@ export type HarvousPosition = {
 export const COMPARE_FEATURE_LABELS: Record<string, string> = {
   "scripture-pills": "Scripture pills",
   threads: "Threads",
-  recall: "Recall",
+  suggestions: "Suggestions",
   highlights: "Highlights",
   "note-templates": "Note templates",
   // The Share category, not a feature page — /features/sharing/ was folded into it.
@@ -45,15 +45,15 @@ export const COMPARE_FEATURE_LABELS: Record<string, string> = {
 const POSITIONS: Record<string, HarvousPosition> = {
   "Bible Reader": {
     chooseIf:
-      "You like your Bible app for reading plans and community, and you want a separate home for what you write — scripture pills, threads, and Recall — without switching your whole reading habit.",
+      "You like your Bible app for reading plans and community, and you want a separate home for what you write — scripture pills, threads, and Suggestions — without switching your whole reading habit.",
     bestAt: "Long-term study notes that sit beside your Bible reader",
     primaryUse: "Scripture-linked notes, highlights, and threads you’ll reopen later",
     idealFor: "People who already have a reader and need notes that outgrow it",
     tradeoff: "No reading plans, audio Bible, or in-app community feed — reading here feeds your notes, not a daily habit tracker.",
     introHalf:
-      "is the notes home that sits beside your reader — scripture pills, threads, and Recall for what you write.",
+      "is the notes home that sits beside your reader — scripture pills, threads, and Suggestions for what you write.",
     pickIntro:
-      "Notes beside your Bible reader — scripture pills, threads, and Recall. Keep reading where you already do.",
+      "Notes beside your Bible reader — scripture pills, threads, and Suggestions. Keep reading where you already do.",
     ctaMode: "alongside",
     hubLane: "In this lane, Harvous is the notes home beside your reader — not a replacement for plans or audio.",
     tableRows: [
@@ -73,20 +73,20 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Primary place to read Scripture",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "recall"],
+    featureIds: ["scripture-pills", "threads", "suggestions"],
   },
 
   "Bible Study Suite": {
     chooseIf:
       "You use a research suite for commentaries and languages, and you want a lighter place for the personal notes you actually reopen — scripture-linked, threaded, findable without the full library tax.",
     bestAt: "Personal scripture-linked notes beside a research library",
-    primaryUse: "Study notes, series threads, and Recall next to Logos-class tools",
+    primaryUse: "Study notes, series threads, and Suggestions next to Logos-class tools",
     idealFor: "People who keep a suite for research and need notes that stay light",
     tradeoff: "Not a research library — no commentaries, original-language tools, or purchased modules.",
     introHalf:
       "keeps the personal notes trail beside your research suite — scripture-linked, lighter, findable later.",
     pickIntro:
-      "Personal scripture-linked notes beside a study suite — pills, threads, and Recall without the full library.",
+      "Personal scripture-linked notes beside a study suite — pills, threads, and Suggestions without the full library.",
     ctaMode: "alongside",
     hubLane: "In this lane, Harvous holds personal notes beside the suite — research stays where it is.",
     tableRows: [
@@ -97,7 +97,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Personal notes trail",
-        harvous: "Primary job — pills, threads, Recall",
+        harvous: "Primary job — pills, threads, Suggestions",
         competitorHint: "Notes exist, but the suite leads",
       },
       {
@@ -106,20 +106,20 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Heavier scholarly platform",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "recall"],
+    featureIds: ["scripture-pills", "threads", "suggestions"],
   },
 
   "General Notes": {
     chooseIf:
-      "You want scripture-native linking and study recall without building a Bible study system in Obsidian, Notion, or a general notes app — pills, threads, and highlights that understand references.",
+      "You want scripture-native linking and study suggestions without building a Bible study system in Obsidian, Notion, or a general notes app — pills, threads, and highlights that understand references.",
     bestAt: "Scripture-native notes without a custom PKM setup",
-    primaryUse: "Bible study notes with pills, highlights, threads, and Recall out of the box",
+    primaryUse: "Bible study notes with pills, highlights, threads, and Suggestions out of the box",
     idealFor: "People who tried general notes for Bible study and don’t want to maintain the system",
     tradeoff: "Not a general PKM — weaker if you need one vault for every life domain and custom plugins.",
     introHalf:
-      "ships scripture-native pills, threads, and Recall — without building a Bible study system yourself.",
+      "ships scripture-native pills, threads, and Suggestions — without building a Bible study system yourself.",
     pickIntro:
-      "Purpose-built scripture notes — pills, threads, and Recall without a custom vault or workspace.",
+      "Purpose-built scripture notes — pills, threads, and Suggestions without a custom vault or workspace.",
     ctaMode: "peer",
     hubLane: "In this lane, Harvous is scripture-native notes — not a blank PKM you configure for Bible study.",
     tableRows: [
@@ -129,8 +129,8 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "You wire references up yourself",
       },
       {
-        label: "Study-oriented recall",
-        harvous: "Recall across what you saved from Scripture",
+        label: "Study-oriented suggestions",
+        harvous: "Suggestions across what you saved from Scripture",
         competitorHint: "Search/backlinks, not study-specific",
       },
       {
@@ -139,22 +139,22 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Flexible — you design the system",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "recall"],
+    featureIds: ["scripture-pills", "threads", "suggestions"],
   },
 
   "Bible Notes": {
     chooseIf:
-      "You want a dedicated Bible notes app built around threading, scripture pills, highlights, and Recall — not live sermon transcription, SOAP-plus-reader bundles, or handwriting-first journals.",
-    bestAt: "Threading and recalling written scripture-linked study notes",
-    primaryUse: "Bible study notes with pills, highlights, threads, @ mentions, and Recall",
+      "You want a dedicated Bible notes app built around threading, scripture pills, highlights, and Suggestions — not live sermon transcription, SOAP-plus-reader bundles, or handwriting-first journals.",
+    bestAt: "Threading and resurfacing written scripture-linked study notes",
+    primaryUse: "Bible study notes with pills, highlights, threads, @ mentions, and Suggestions",
     idealFor: "People choosing among Bible notes apps who care most about finding what they wrote later",
     tradeoff: "No live transcription or handwriting canvas — reading here is built to feed your notes, not stand alone.",
     introHalf:
-      "focuses on threading and Recall for notes you write — pills, highlights, and a reader that shares your notes, not transcription.",
+      "focuses on threading and Suggestions for notes you write — pills, highlights, and a reader that shares your notes, not transcription.",
     pickIntro:
-      "Bible study notes with scripture pills, highlights, threads, Recall, and a reader that shares your highlights — not a transcription app.",
+      "Bible study notes with scripture pills, highlights, threads, Suggestions, and a reader that shares your highlights — not a transcription app.",
     ctaMode: "peer",
-    hubLane: "In this lane, Harvous competes on threads, pills, and Recall — not transcription or a reader bundle.",
+    hubLane: "In this lane, Harvous competes on threads, pills, and Suggestions — not transcription or a reader bundle.",
     tableRows: [
       {
         label: "Transcription / live capture",
@@ -162,8 +162,8 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Some apps lead with this",
       },
       {
-        label: "Threading & recall",
-        harvous: "Threads, @ mentions, and Recall",
+        label: "Threading & suggestions",
+        harvous: "Threads, @ mentions, and Suggestions",
         competitorHint: "Varies by product",
       },
       {
@@ -172,14 +172,14 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Some include a reader or SOAP flow",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "recall", "highlights"],
+    featureIds: ["scripture-pills", "threads", "suggestions", "highlights"],
   },
 
   "Sermon Prep": {
     chooseIf:
       "You want scripture-linked prep notes and series threads that last across the preaching year — beside an outline suite or research tool, not instead of podium mode or an illustration library.",
     bestAt: "Series memory and scripture-linked prep you’ll find next year",
-    primaryUse: "Outline notes, series threads, and Recall across years of preaching",
+    primaryUse: "Outline notes, series threads, and Suggestions across years of preaching",
     idealFor: "Pastors and teachers who need prep notes to compound, not only this week’s manuscript",
     tradeoff: "Not a podium/outline suite, AI sermon coach, or illustration marketplace.",
     introHalf:
@@ -201,16 +201,16 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Prep memory across years",
-        harvous: "Recall when a text comes around again",
+        harvous: "Suggestions when a text comes around again",
         competitorHint: "Varies — often this week’s draft",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "recall", "note-templates"],
+    featureIds: ["scripture-pills", "threads", "suggestions", "note-templates"],
   },
 
   "AI Guided Bible": {
     chooseIf:
-      "You want a human-authored record of what you studied — scripture pills, threads, and Recall — more than AI-led reading, chat, or generated journeys.",
+      "You want a human-authored record of what you studied — scripture pills, threads, and Suggestions — more than AI-led reading, chat, or generated journeys.",
     bestAt: "Keeping your own written reflections findable later",
     primaryUse: "Notes you write and revisit, linked to Scripture",
     idealFor: "People who use AI guides for prompts but want their own notes to last",
@@ -229,7 +229,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Your written record",
-        harvous: "Primary — pills, threads, Recall",
+        harvous: "Primary — pills, threads, Suggestions",
         competitorHint: "Secondary to AI guidance",
       },
       {
@@ -238,7 +238,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Session- or journey-oriented",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "recall"],
+    featureIds: ["scripture-pills", "threads", "suggestions"],
   },
 
   "Prayer & Meditation": {
@@ -262,7 +262,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Study notes trail",
-        harvous: "Yes — pills, highlights, Recall",
+        harvous: "Yes — pills, highlights, Suggestions",
         competitorHint: "Usually light or journal-only",
       },
       {
@@ -271,12 +271,12 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Daily prayer and meditation habits",
       },
     ],
-    featureIds: ["scripture-pills", "highlights", "recall"],
+    featureIds: ["scripture-pills", "highlights", "suggestions"],
   },
 
   "Bible Education": {
     chooseIf:
-      "You’re in a course, curriculum, or teaching context and want personal scripture-linked notes that last after the lesson ends — pills, threads, and Recall beside the content.",
+      "You’re in a course, curriculum, or teaching context and want personal scripture-linked notes that last after the lesson ends — pills, threads, and Suggestions beside the content.",
     bestAt: "Personal notes that outlast a course or curriculum module",
     primaryUse: "Scripture-linked study notes alongside teaching content",
     idealFor: "Learners and teachers who want notes that aren’t trapped in a course player",
@@ -295,7 +295,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Personal notes",
-        harvous: "Primary — pills, threads, Recall",
+        harvous: "Primary — pills, threads, Suggestions",
         competitorHint: "Notes inside the course, if any",
       },
       {
@@ -304,7 +304,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
         competitorHint: "Content access may end with the course",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "recall"],
+    featureIds: ["scripture-pills", "threads", "suggestions"],
   },
 
   /**

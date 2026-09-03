@@ -88,12 +88,12 @@ const useCases: UseCase[] = [
         body: "Whether you're working through a chapter a day or a whole book in a week, a thread collects all your thoughts on the same topic. The thread becomes your record.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall brings a note back",
-        body: "When the habit thins out, Recall resurfaces a fading note, highlight, or passage — so last week's thought isn't gone just because Tuesday got loud.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions bring a note back",
+        body: "When the habit thins out, Suggestions resurface a fading note, highlight, or passage — so last week's thought isn't gone just because Tuesday got loud.",
       },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "recall"],
+    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions"],
     featuresHeading: "What daily study asks of your notes",
     featuresLead:
       "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
@@ -153,12 +153,12 @@ const useCases: UseCase[] = [
         body: "That line the pastor said that you underlined — it's a highlight now, with a color and an annotation you can add later. Your highlighted phrases stay linked to the note they came from.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall finds October for you",
-        body: "When half a phrase is all you have, Recall can resurface a fading sermon note — so Sunday's thought isn't buried under two months of life.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions find October for you",
+        body: "When half a phrase is all you have, Suggestions can resurface a fading sermon note — so Sunday's thought isn't buried under two months of life.",
       },
     ],
-    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "recall"],
+    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "suggestions"],
     featuresHeading: "What sermon notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
@@ -176,7 +176,7 @@ const useCases: UseCase[] = [
     image: "/images/auth-hero/ai_bg_076.webp",
     seoTitle: "Sermon prep notes app — Harvous",
     seoDescription:
-      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Recall when last year’s work needs to show up again. Notes-first, not a sermon-writing suite.",
+      "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Suggestions when last year’s work needs to show up again. Notes-first, not a sermon-writing suite.",
     heroTitle: "Sunday keeps coming. Prep should leave a trail.",
     heroLead:
       "You’re not taking notes on someone else’s sermon. You’re preparing the one you’ll preach — outlines, exegesis, cross-references, the line you want to land — and next week’s blank page shouldn’t erase what you already built.",
@@ -192,7 +192,7 @@ const useCases: UseCase[] = [
         heading: "Outline notes, not a transcript of Sunday",
         paragraphs: [
           "Drop the text as scripture pills. Sketch the moves of the message. Highlight the sentence that has to land. Thread a whole series so Advent week four still sits next to week one.",
-          "When you’re drafting again next year on a familiar text, Recall can resurface what you already studied — still linked to the passage — instead of hoping a folder of untitled docs still makes sense.",
+          "When you’re drafting again next year on a familiar text, Suggestions can resurface what you already studied — still linked to the passage — instead of hoping a folder of untitled docs still makes sense.",
         ],
       },
       {
@@ -226,15 +226,15 @@ const useCases: UseCase[] = [
         body: "Highlights keep the phrases and applications you don’t want to lose between Thursday’s draft and Sunday’s pulpit.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
-        heading: "Recall finds last year’s work",
-        body: "When you’re back on a familiar text, Recall can bring forward prep you already did — still linked to the passage.",
+        icon: "fa7-solid:lightbulb",
+        heading: "Suggestions find last year’s work",
+        body: "When you’re back on a familiar text, Suggestions can bring forward prep you already did — still linked to the passage.",
       },
     ],
-    featureIds: ["scripture-pills", "threads", "note-templates", "recall"],
+    featureIds: ["scripture-pills", "threads", "note-templates", "suggestions"],
     featuresHeading: "What sermon prep asks of your notes",
     featuresLead:
-      "Series threads, scripture nearby, note templates when you want a starting shape — and Recall across the preaching year.",
+      "Series threads, scripture nearby, note templates when you want a starting shape — and Suggestions across the preaching year.",
     compareSlugs: ["sermonary", "sermons-app", "sermons-com", "pulpit-ai", "logos", "notion"],
     relatedUseCaseSlugs: ["deep-study", "book-study", "sermon-notes"],
   },
@@ -378,7 +378,7 @@ const useCases: UseCase[] = [
       {
         heading: "Leave with a record, not a fog",
         paragraphs: [
-          "When the sit ends, you shouldn't have to reconstruct what you found from memory. Threads hold the notes from that stretch. Highlights mark the lines that mattered. Weeks later, Recall can bring a fading note back — so the morning wasn't only for the morning.",
+          "When the sit ends, you shouldn't have to reconstruct what you found from memory. Threads hold the notes from that stretch. Highlights mark the lines that mattered. Weeks later, Suggestions can bring a fading note back — so the morning wasn't only for the morning.",
         ],
       },
     ],
@@ -399,12 +399,12 @@ const useCases: UseCase[] = [
         body: "Highlight a phrase in your note or inside the passage. The annotation stays attached — so the line that stopped you is findable later.",
       },
       {
-        icon: "fa7-solid:clock-rotate-left",
+        icon: "fa7-solid:lightbulb",
         heading: "The sit isn't lost",
-        body: "Weeks later, Recall can resurface a fading note from that morning — or search finds it when half a phrase is all you remember.",
+        body: "Weeks later, Suggestions can resurface a fading note from that morning — or search finds it when half a phrase is all you remember.",
       },
     ],
-    featureIds: ["scripture-pills", "dictionary", "highlights", "recall"],
+    featureIds: ["scripture-pills", "dictionary", "highlights", "suggestions"],
     featuresHeading: "What a long sit asks of your notes",
     featuresLead:
       "Scripture nearby, a dictionary in reach, highlights that stick — and a way for the sit to come back when life has moved on.",

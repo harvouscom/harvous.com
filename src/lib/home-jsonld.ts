@@ -46,7 +46,7 @@ export async function buildHomeJsonLd() {
         operatingSystem: "Web",
         url: SITE,
         description:
-          "Bible study notes app with scripture pills, highlights, threads, recall, and a built-in Bible reader — built to help you remember what you saved.",
+          "Bible study notes app with scripture pills, highlights, threads, suggestions, and a built-in Bible reader — built to help you remember what you saved.",
         offers: {
           "@type": "Offer",
           price: "0",

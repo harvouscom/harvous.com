@@ -21,6 +21,16 @@
   status = 301
 
 [[redirects]]
+  from = "/features/recall"
+  to = "/features/suggestions/"
+  status = 301
+
+[[redirects]]
+  from = "/features/recall/"
+  to = "/features/suggestions/"
+  status = 301
+
+[[redirects]]
   from = "/updates"
   to = "/release-notes/"
   status = 301

@@ -59,7 +59,7 @@ export const FREE_PLAN: PricingPlan = {
     "Built-in dictionary and daily passage",
     "Offline sync across devices",
     "Sharable notes via link",
-    "Built-in Recall (automatically resurfaces the past)",
+    "Built-in Suggestions (automatically resurfaces the past)",
   ],
   cta: {
     label: "Sign up free",
@@ -82,11 +82,9 @@ export const PLUS_PLAN: PricingPlan = {
     "Up to 50 people per space",
     "Turn a thread into a study plan your group reads together",
     "Joining is always free",
+    "Review — write an answer from memory, then see how it went",
   ],
-  comingSoonFeatures: [
-    "Review — practice from your notes",
-    "Challenges — guided study seasons",
-  ],
+  comingSoonFeatures: ["Challenges — guided study seasons"],
   cta: {
     label: "Get Harvous Plus",
     href: APP_UPGRADE_URL,
@@ -98,13 +96,6 @@ export const PLUS_PLAN: PricingPlan = {
 
 /** Roadmap items shown under Free + Plus (not for sale yet as separate products). */
 export const PRICING_ROADMAP: PricingRoadmapItem[] = [
-  {
-    id: "review",
-    icon: "fa7-solid:clock-rotate-left",
-    name: "Review",
-    tagline: "Spaced practice from your notes, highlights, and passages. Included with Plus when it ships.",
-    soonLabel: "Coming later",
-  },
   {
     id: "challenges",
     icon: "fa7-solid:trophy",
