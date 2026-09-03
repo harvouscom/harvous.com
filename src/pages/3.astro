@@ -4,9 +4,10 @@
  *
  * Written for people who already use Harvous 2, in three bands: what's new,
  * what changed, and why. Each band takes a different shape on purpose — a
- * numeral hero, a two-column header over the homepage bento, an inverted ink
- * band with a sticky intro beside the migration rows, and a left-stacked head
- * over the founder letter — so the page reads as a sequence, not a template.
+ * gradient-numeral hero with a three-line TL;DR, a two-column header over the
+ * homepage bento, an inverted ink band with a sticky intro beside the
+ * migration rows, and a left-stacked head over the founder letter — so the
+ * page reads as a sequence, not a template.
  *
  * Section / SectionHeader / Row are the site's layout primitives; this is the
  * first page to render them.
@@ -156,24 +157,24 @@ const jsonLd = {
   }
 
   <!--
-    Hero. "Harvous" in the site's cut of the variable font, the numeral in the
-    app's rounded display cut (ROND 100) — two faces of the same font, and the
-    contrast between them is the design. The square grid behind it is the
-    ground /release-notes/ sits on, masked so it fades before the frame rails.
+    Hero. The numeral is set in the app's rounded display cut (ROND 100) and
+    filled with the site's accent gradient — the same one the primary button
+    wears — so it reads as Harvous without a wordmark above it. It's decorative;
+    the h1 is the line beneath it. The square grid behind is the ground
+    /release-notes/ sits on, masked so it fades before the frame rails.
   -->
   <section class="v3-hero">
     <div class="release-notes-frame__grid v3-hero__grid" aria-hidden="true"></div>
     <Container size="xl">
       <div class="v3-hero__inner">
-        <h1 class="v3-hero__title">
-          <span class="v3-hero__brand" data-reveal>Harvous</span>
-          <span class="v3-hero__numeral">3</span>
+        <span class="v3-hero__numeral" aria-hidden="true">3</span>
+        <h1 class="v3-hero__lead" data-reveal style="--reveal-delay: 160ms;">
+          Harvous 3 is here.
         </h1>
-        <p class="v3-hero__lead" data-reveal style="--reveal-delay: 160ms;">
-          Study you can follow and return to.
-        </p>
-        <p class="v3-hero__sub" data-reveal style="--reveal-delay: 220ms;">
-          For people already using Harvous: what moved, what got a new name, and why.
+        <p class="v3-hero__sub lead" data-reveal style="--reveal-delay: 220ms;">
+          <strong>Activity</strong> opens on what you've already studied, the
+          <strong>Library</strong> finds anything you saved, and <strong>Suggestions</strong>
+          bring back what's fading — <mark>all of it right where you left it</mark>.
         </p>
         <a class="v3-hero__cue" href="#whats-new" data-reveal style="--reveal-delay: 300ms;">
           See what's new
@@ -453,21 +454,9 @@ const jsonLd = {
     padding-top: clamp(3rem, 7vw, 5.5rem);
     padding-bottom: clamp(2.5rem, 5vw, 4rem);
   }
-  .v3-hero__title {
-    margin: 0;
-  }
-  .v3-hero__brand {
-    display: block;
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    /* The site's cut, stated explicitly so the contrast with the numeral is deliberate. */
-    font-variation-settings: "ROND" 0, "wdth" 100;
-    color: var(--color-ink-soft);
-  }
   .v3-hero__numeral {
-    display: block;
+    /* inline-block so the gradient box hugs the glyph instead of spanning the row. */
+    display: inline-block;
     font-family: var(--font-display);
     /* 160px at 375, 30vw between, 336px from 1120 up. The largest type on the
        site today is /blog's 72px; .display-xl caps at 4.5rem. */
@@ -478,8 +467,13 @@ const jsonLd = {
     font-optical-sizing: auto;
     line-height: 0.82; /* a digit has no descender; crop the line box */
     letter-spacing: 0; /* one glyph — trailing tracking would skew centering */
-    margin-top: clamp(0.25rem, 1vw, 0.75rem);
-    color: var(--color-ink);
+    /* The primary button's gradient, as a text fill. Cropped to the glyph via
+       background-clip; the transparent fill lets the gradient show through. */
+    background: var(--accent-btn-bg);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
     animation: v3-numeral-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
   }
   /* Entrance: fades and settles in, and rounds from the site cut into the app's.
@@ -511,15 +505,15 @@ const jsonLd = {
     color: var(--color-ink);
     text-wrap: balance;
   }
+  /* The TL;DR — the homepage tour lead's shape: bolded names, a highlight to close,
+     three lines at most (verified with the Range API, not scrollHeight). */
   .v3-hero__sub {
     margin: 0.9rem auto 0;
-    max-width: 34rem;
-    font-size: 1.0625rem;
-    line-height: 1.6;
-    color: var(--color-ink-soft);
+    max-width: 36rem;
   }
-  @media (min-width: 768px) {
-    .v3-hero__sub { font-size: 1.125rem; }
+  .v3-hero__sub strong {
+    color: var(--color-ink);
+    font-weight: 600;
   }
 
   /* Scroll cue: the site's round arrow control, pointing down. Nudges on hover, never loops. */
