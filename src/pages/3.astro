@@ -677,9 +677,13 @@ const jsonLd = {
   }
   .v3-hero__lead {
     margin: clamp(1.25rem, 3vw, 2rem) 0 0;
-    max-width: 18ch;
+    /* Wide enough that the line never breaks — it's four short words, and a
+       wrapped "is here." reads as an accident. */
+    max-width: 20ch;
     font-family: var(--font-display);
-    font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+    /* Was capped at 34px, under the 48px of an ordinary .section-title. This is
+       the page's h1 under a 248px numeral, so it takes the hero scale. */
+    font-size: clamp(2rem, 4.6vw, 3.5rem);
     font-weight: 600;
     line-height: 1.12;
     letter-spacing: -0.02em;
