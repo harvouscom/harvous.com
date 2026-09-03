@@ -248,19 +248,22 @@ const href = category?.href;
     .tcard:hover .tcard__arrow::before { transform: none; }
   }
 
+  /*
+    One column: a half card holds exactly two items, and auto-fit was flipping
+    them to two narrow columns once the card's own width crossed ~408px — wider
+    than the card looks at 900px viewport width, narrower than it is at 1440px,
+    so the standard-desktop case wrapped worse than the narrow one it was
+    supposedly sized for. Fixed to the count each card actually holds, the way
+    the wide card already pins itself to four instead of trusting auto-fit.
+  */
   .tcard__items {
     list-style: none;
     margin: clamp(1.25rem, 2.2vw, 1.75rem) 0 0;
     padding: 0;
     display: grid;
     gap: 1rem 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    grid-template-columns: 1fr;
   }
-  /*
-    auto-fit fits four 12rem columns across the wide card and leaves the last one
-    empty, so three items sat left-weighted with a gap beside them. Fix the count
-    to what the card actually holds — but only once there is room for it.
-  */
   @media (min-width: 720px) {
     .tcard--wide .tcard__items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
