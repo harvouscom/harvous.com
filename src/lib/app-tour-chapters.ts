@@ -223,11 +223,19 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         "Use a demo space if a real one has anything private in it.",
       ],
     },
+    // Split to match the other half cards, which each carry two. They are also
+    // the category's own two sections — a link for one note, and a space for a
+    // group — and the only pair here where one is free and the other is Plus.
     items: [
       {
-        icons: ["fa7-solid:share-nodes", "fa7-solid:user-group"],
-        title: "Sharing & Shared spaces",
-        desc: "Share a note by link, or host a group space with Harvous Plus — joining is always free.",
+        icons: ["fa7-solid:share-nodes"],
+        title: "Shared notes",
+        desc: "Send a note by link. No account needed to open it, and the scripture and highlights come with it.",
+      },
+      {
+        icons: ["fa7-solid:user-group"],
+        title: "Shared spaces",
+        desc: "Host a room for your group with Harvous Plus — its own cover, its own threads. Joining is always free.",
       },
     ],
   },
