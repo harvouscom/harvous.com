@@ -139,7 +139,11 @@ const chapterCategories = APP_TOUR_CHAPTERS.map((chapter) =>
   /* Full-bleed top hairline, matching the other homepage bands. */
   .tour::before { left: 0; right: 0; }
 
-  .tour__lead { max-width: 38rem; }
+  /* The shared 38rem head measure breaks this title onto two lines at 48px
+     (it needs ~640px). The head widens so the title holds one line; the
+     lead keeps the shared measure. */
+  .tour__head { max-width: 44rem; }
+  .tour__lead { max-width: 38rem; margin-inline: auto; }
   .tour__whatsnew {
     display: inline-block;
     margin-top: 0.9rem;
