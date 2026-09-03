@@ -1,4 +1,13 @@
 ---
+/**
+ * A <picture> with a WebP source over the original, when the WebP sibling
+ * exists under public/ — checked on disk at build time. A <source> that 404s
+ * does not fall back to the <img>; the browser shows a broken image. So a
+ * raster whose WebP hasn't been generated yet (scripts/compress-images.sh)
+ * renders as a plain <img> instead. Unoptimized beats broken.
+ */
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { isRasterPublicImage, webpSrc } from "../lib/image-assets.ts";
 
 interface Props {
@@ -23,7 +32,12 @@ const {
   class: className,
 } = Astro.props;
 
-const webp = isRasterPublicImage(src) ? webpSrc(src) : null;
+const webpCandidate = isRasterPublicImage(src) ? webpSrc(src) : null;
+const webp =
+  webpCandidate &&
+  existsSync(path.join(process.cwd(), "public", webpCandidate.replace(/^\//, "")))
+    ? webpCandidate
+    : null;
 ---
 
 {
