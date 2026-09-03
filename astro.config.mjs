@@ -5,7 +5,7 @@ import icon from "astro-icon";
 import remarkGfm from "remark-gfm";
 import tailwindcss from "@tailwindcss/vite";
 import { getReleaseNoteSlugRedirects } from "./src/lib/release-notes-data.ts";
-import { DRAFT_PAGE_SLUGS } from "./src/lib/draft-pages.ts";
+import { DRAFT_PAGE_SLUGS, isDraftPageUrl } from "./src/lib/draft-pages.ts";
 import { rmSync } from "node:fs";
 import { join } from "node:path";
 
@@ -22,6 +22,11 @@ function stripDraftPages() {
     name: "strip-draft-pages",
     hooks: {
       "astro:build:done": ({ dir }) => {
+        // Netlify previews keep draft pages so they can be reviewed before
+        // launch. They are still noindex, still bannered, and still out of the
+        // sitemap — only production strips the directory.
+        const context = process.env.CONTEXT;
+        if (context === "deploy-preview" || context === "branch-deploy") return;
         for (const slug of DRAFT_PAGE_SLUGS) {
           rmSync(join(dir.pathname, slug), { recursive: true, force: true });
         }
@@ -43,6 +48,8 @@ export default defineConfig({
     }),
     sitemap({
       filter: (page) => {
+        // Draft marketing pages (src/lib/draft-pages.ts) never enter the sitemap.
+        if (isDraftPageUrl(page)) return false;
         // Blog hub, categories, and posts are indexed; search, index JSON, RSS, and pagination stay out.
         if (page.includes("/blog/search")) return false;
         if (page.includes("/blog/rss")) return false;

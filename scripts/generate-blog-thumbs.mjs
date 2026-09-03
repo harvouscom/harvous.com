@@ -48,6 +48,9 @@ const SHAPE_BY_SLUG = {
   "start-with-threads": "streak",
   "the-five-minute-capture": "bars",
   "the-sidebar-did-too-much": "split",
+  // Continuity — the same motif handoff-without-amnesia uses. Keywords would
+  // otherwise miss this one entirely ("fading"/"return" have no rule).
+  "study-you-can-follow-and-return-to": "arc",
   "the-monday-retention-loop": "rings",
   "why-church-education-evaporates-by-monday": "plume",
   "why-bible-study-thoughts-disappear": "plume",

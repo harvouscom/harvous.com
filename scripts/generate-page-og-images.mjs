@@ -228,6 +228,15 @@ targets.push({
   outRel: "/images/pricing/og.webp",
 });
 
+// Harvous 3 release page — Activity's own ink, since that's the release's headline change
+targets.push({
+  kind: "release",
+  slug: "3",
+  image: "/images/auth-hero/ai_bg_053.webp",
+  ink: "var(--pill-note)",
+  outRel: "/images/3/og.webp",
+});
+
 const results = [];
 for (const t of targets) {
   results.push(await renderTarget(t));

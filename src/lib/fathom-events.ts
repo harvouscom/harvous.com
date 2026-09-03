@@ -21,6 +21,8 @@ export const fathomSignup = {
   compareDetail: (slug: string) => `signup_compare_${slug}`,
   featureDetail: (slug: string) => `signup_feature_${slug}`,
   addonDetail: (slug: string) => `signup_addon_${slug}`,
+  /** The /3/ release page — returning users opening the app, not new sign-ups. */
+  v3: "signup_v3",
 } as const;
 
 /**
