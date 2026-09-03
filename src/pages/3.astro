@@ -25,7 +25,6 @@ import path from "node:path";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
-import Row from "../components/layout/Row.astro";
 import CTAButton from "../components/CTAButton.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import BlogCard from "../components/BlogCard.astro";
@@ -35,7 +34,7 @@ import { getCollection } from "astro:content";
 import { getTourChapter } from "../lib/app-tour-chapters.ts";
 import { getFeatureCategoryBySlug, getFeatureInk } from "../lib/feature-categories-data.ts";
 import { getAddonBySlug, getAddonDetailHref } from "../lib/addons-data.ts";
-import { blogReadingMinutes, blogThumbUrl, isBlogPostListed } from "../lib/blog.ts";
+import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
 import { isDraftPageSlug } from "../lib/draft-pages.ts";
 import { fathomSignup } from "../lib/fathom-events.ts";
 
@@ -64,7 +63,7 @@ const resourceLibrary = feat("resource-library");
   Each slide carries a screenshot slot, TourShotFrame's way: a build-time
   filesystem check, so dropping the PNG into public/tour/ is the whole step.
   Until then the slide keeps its icon badge — a tile with a loud placeholder
-  in it would read as unfinished, where a badge reads as a choice. Five slides
+  in it would read as unfinished, where a badge reads as a choice. Four slides
   reuse the homepage tour's own shots, so one file feeds the tour card, the
   category page, and this tile.
 */
@@ -77,21 +76,15 @@ const HALF = { width: 1600, height: 1150 };
    review — a Review question with the answer box, source still hidden.
    note-templates — the right side panel open on the template list, SOAP visible.
    resources — a resource (a PDF or a link) with its @ pill in a note beside it.
-   mentions — a note mid-sentence with the @ picker open.
-   rest-day — an empty day sheet, its "nothing happened" line, days behind it. */
+   mentions — a note mid-sentence with the @ picker open. */
 const extraShot = (name: string, alt: string): Shot => ({ src: `/tour/tour-${name}.png`, alt, ...HALF });
 
 /*
-  Hand-picked rather than scored: these three are the release's argument, in the
-  order it should be read. In production the drafts are excluded, so this is
-  empty until they publish — the essays block hides itself, and the rest-days
-  link below falls back to the category page instead of a 404.
+  Hand-picked rather than scored: these two are the release's argument, in the
+  order it should be read. In production drafts are excluded, so this is empty
+  until they publish — the essays block hides itself.
 */
-const SERIES = [
-  "study-you-can-follow-and-return-to",
-  "the-sidebar-did-too-much",
-  "the-quiet-days-stay",
-];
+const SERIES = ["study-you-can-follow-and-return-to", "the-sidebar-did-too-much"];
 const listedPosts = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
 const byId = new Map(listedPosts.map((p) => [p.id, p]));
 const series = SERIES.map((id) => byId.get(id)).filter(
@@ -99,17 +92,11 @@ const series = SERIES.map((id) => byId.get(id)).filter(
 );
 const [featuredEssay, ...restEssays] = series;
 
-const restDayEssay = byId.get("the-quiet-days-stay");
-const restHref = restDayEssay ? `/blog/${restDayEssay.id}` : "/features/activity/";
-const restLabel = restDayEssay ? "Read why" : "More about Activity";
-
 /*
   What's new, as art cards — the use-cases preview's slide: the thing's own
   auth-hero image under an ink wash, its icon in a badge, a caption. Nothing
   here waits on a screenshot. The set and its order follow the release note
-  sent to users: the three views first, then what's new to write with, then
-  the quiet days. They borrow the essay's own generated art, since that essay
-  is the decision.
+  sent to users: the three views first, then what's new to write with.
 */
 const newSlides = [
   activityCategory && {
@@ -147,7 +134,7 @@ const newSlides = [
   },
   sharedSpaces && {
     title: "Shared spaces",
-    plan: "Harvous Plus",
+    plan: "Plus",
     tagline: "Share or create notes for a group, and turn a thread into a study plan. Free to join; it costs to start one.",
     href: sharedSpacesHref,
     icon: sharedSpaces.icon,
@@ -158,7 +145,7 @@ const newSlides = [
   },
   review && {
     title: "Review",
-    plan: "Harvous Plus",
+    plan: "Plus",
     tagline: "Write an answer from memory, then say how it went — from your own notes and verses.",
     href: reviewHref,
     icon: review.icon,
@@ -203,16 +190,6 @@ const newSlides = [
     shot: extraShot("mentions", "A note in Harvous mid-sentence, with the @ picker open listing notes, folders, threads, and resources."),
     cta: "See how it works",
   },
-  {
-    title: "The quiet days stay",
-    tagline: "A day you rested still gets its sheet, and the sheet says so plainly.",
-    href: restHref,
-    icon: "fa7-solid:calendar-day",
-    ink: "var(--pill-note)",
-    image: blogThumbUrl("the-quiet-days-stay", "feat"),
-    shot: extraShot("rest-day", "An empty day sheet in Activity, saying nothing happened, with the days behind it still visible."),
-    cta: restLabel,
-  },
 ].filter((s): s is NonNullable<typeof s> => Boolean(s));
 
 /*
@@ -239,12 +216,6 @@ const movedRows = [
     after: "Suggestions",
     body: "The same job under a truer name: some of these bring back a fading note, and some propose something new to make from what you already saved. Links to the old name still land in the right place.",
     links: [{ label: "Suggestions", href: "/features/suggestions/" }],
-  },
-  {
-    before: "Streaks",
-    after: "Rest days in Activity",
-    body: "A day you rested still gets its sheet, and the sheet says so plainly. Keeping the quiet stretches next to the heavy ones is what lets a few months show you the real shape of your study.",
-    links: [{ label: restLabel, href: restHref }],
   },
 ];
 
@@ -423,7 +394,7 @@ const jsonLd = {
                 <span class="v3-slide__caption">
                   <span class="v3-slide__title">
                     {s.title}
-                    {"plan" in s && s.plan && <span class="v3-slide__plan">· {s.plan}</span>}
+                    {"plan" in s && s.plan && <span class="v3-slide__plan">{s.plan}</span>}
                   </span>
                   <span class="v3-slide__tagline">{s.tagline}</span>
                   <span class="v3-slide__cta">{s.cta} →</span>
@@ -487,9 +458,6 @@ const jsonLd = {
     <Container size="xl">
       <div class="v3-why__head section-head v3-arrive" data-reveal>
         <h2 class="section-title">Why the change</h2>
-        <p class="lead v3-why__lead">
-          From Derek, on what the sidebar was costing and why the quiet days stay.
-        </p>
       </div>
 
       <div class="v3-why__letter" data-reveal="scale" style="--reveal-delay: 100ms;">
@@ -551,7 +519,7 @@ const jsonLd = {
           <div class="v3-why__essays" data-reveal="scale" style="--reveal-delay: 60ms;">
             <div class="v3-why__essays-head">
               <h3 class="v3-why__essays-title">The long version</h3>
-              <p class="v3-why__essays-lead">Three essays, in the order to read them.</p>
+              <p class="v3-why__essays-lead">Two essays, in the order to read them.</p>
             </div>
             <BlogCard
               title={featuredEssay.data.title}
@@ -563,24 +531,18 @@ const jsonLd = {
               draft={featuredEssay.data.draft}
               variant="featured"
             />
-            {restEssays.length > 0 && (
+            {restEssays[0] && (
               <div class="v3-why__pair">
-                <Row cols={2} align="start" gap="lg">
-                  {restEssays.map((p) => (
-                    <div>
-                      <BlogCard
-                        title={p.data.title}
-                        description={p.data.description}
-                        publishDate={p.data.publishDate}
-                        category={p.data.category}
-                        slug={p.id}
-                        readingTime={blogReadingMinutes(p.body)}
-                        draft={p.data.draft}
-                        variant="story"
-                      />
-                    </div>
-                  ))}
-                </Row>
+                <BlogCard
+                  title={restEssays[0].data.title}
+                  description={restEssays[0].data.description}
+                  publishDate={restEssays[0].data.publishDate}
+                  category={restEssays[0].data.category}
+                  slug={restEssays[0].id}
+                  readingTime={blogReadingMinutes(restEssays[0].body)}
+                  draft={restEssays[0].data.draft}
+                  variant="story"
+                />
               </div>
             )}
             <p class="v3-why__more">
@@ -951,12 +913,18 @@ const jsonLd = {
     color: var(--color-ink);
   }
   .v3-slide__plan {
-    margin-left: 0.35em;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.45em;
+    padding: 0.15em 0.6em;
+    border-radius: 999px;
+    background: var(--color-warm);
+    vertical-align: middle;
     font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    font-weight: 500;
+    font-size: 0.6875rem;
+    font-weight: 600;
     letter-spacing: 0;
-    color: var(--color-ink-faint);
+    color: var(--color-ink-soft);
   }
   .v3-slide__tagline {
     display: block;
@@ -1062,12 +1030,6 @@ const jsonLd = {
   }
 
   /* ---------- Why: letter + essays ---------- */
-  /* The head is the site's .section-head (38rem, centered); the lead just
-     takes a tighter measure inside it. */
-  .v3-why__lead {
-    max-width: 32rem;
-    margin-inline: auto;
-  }
   .v3-why__letter {
     margin: clamp(2rem, 5vw, 3rem) auto 0;
     max-width: 64rem;
@@ -1109,8 +1071,11 @@ const jsonLd = {
   .v3-why__essays :global(.blog-featured:hover) {
     background: color-mix(in oklab, var(--color-warm) 85%, var(--color-paper));
   }
+  /* One story left once the third essay dropped out — centered at roughly
+     the width its column held in the old two-up row, not stretched full. */
   .v3-why__pair {
-    margin-top: clamp(1rem, 2vw, 1.5rem);
+    max-width: 26rem;
+    margin: clamp(1rem, 2vw, 1.5rem) auto 0;
   }
   .v3-why__more {
     margin: 1.5rem 0 0;
