@@ -100,7 +100,7 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
       {
         icons: ["fa7-solid:clock-rotate-left"],
         title: "Review",
-        desc: "Write an answer from memory, then see how it went — included with Harvous Plus.",
+        desc: "Write an answer from memory, then say how it went — from your own notes and verses, with Harvous Plus.",
       },
     ],
   },

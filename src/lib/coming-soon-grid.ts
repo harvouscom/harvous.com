@@ -27,7 +27,7 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
     id: "review",
     icon: "fa7-solid:clock-rotate-left",
     title: "Review",
-    desc: "Write an answer from memory, then see how it went — included with Harvous Plus.",
+    desc: "Write an answer from memory, then say how it went — from your own notes, never an invented question. Included with Harvous Plus.",
     href: "/add-ons/review/",
     comingSoon: false,
   },
