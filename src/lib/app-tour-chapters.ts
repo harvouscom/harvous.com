@@ -76,8 +76,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         "At least one note card with readable words on it.",
       ],
     },
-    // Order follows the heading's own sequence — filed, threaded, brought back —
-    // so the row reads left to right in the same order the sentence above it does.
+    // The first three follow the heading's own sequence — filed, threaded,
+    // brought back — so the row reads left to right in the same order the
+    // sentence above it does. Review is a fourth, appended rather than folded
+    // into that sentence: it's a Harvous Plus add-on (see /add-ons/review/),
+    // not one of the three free-tier behaviors the headline is naming.
     items: [
       {
         icons: ["fa7-solid:folder-tree", "fa7-solid:thumbtack"],
@@ -93,6 +96,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:lightbulb"],
         title: "Suggestions",
         desc: "A fading note, a highlight, a passage — Suggestions resurface what's worth revisiting.",
+      },
+      {
+        icons: ["fa7-solid:clock-rotate-left"],
+        title: "Review",
+        desc: "Write an answer from memory, then see how it went — included with Harvous Plus.",
       },
     ],
   },
