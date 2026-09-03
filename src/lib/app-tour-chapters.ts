@@ -177,14 +177,14 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     eyebrow: "Find",
     title: "Find the note you wrote months ago.",
     lead:
-      "Browsing and searching stopped being two different places. Open the Library, pick a kind or type what you remember, and act on what comes back without leaving the note underneath.",
+      "Browsing and searching stopped being two different places. Open Search, pick a kind or type what you remember, and act on what comes back without leaving the note underneath.",
     shot: {
       src: "/tour/tour-library.png",
-      alt: "The Harvous Library panel open over a note, showing tabs for each kind of saved thing and a list of results.",
+      alt: "Harvous's Search panel open over a note, showing tabs for each kind of saved thing and a list of results.",
       width: HALF_W,
       height: HALF_H,
       direction: [
-        "The Library panel open OVER a note, note still visible behind.",
+        "The Search panel open OVER a note, note still visible behind.",
         "The kind tabs showing (may need a wider window than 1280).",
         "A query typed, so the actions row appears above results.",
         "Results that look like real study — no scratch or test rows.",
@@ -193,8 +193,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     items: [
       {
         icons: ["fa7-solid:magnifying-glass"],
-        title: "The Library",
-        desc: "Notes, folders, threads, highlights, scripture, and resources — browse by kind or search across all of it in one panel.",
+        title: "Search",
+        desc: "Notes, folders, threads, highlights, scripture, and resources — browse by kind or search across all of it, in one panel top middle.",
       },
       {
         icons: ["fa7-solid:newspaper"],

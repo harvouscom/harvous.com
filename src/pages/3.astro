@@ -241,7 +241,7 @@ const movedRows = [
 
 const pageUrl = `${site}/3/`;
 const pageDescription =
-  "What changed in Harvous 3, for people who already use it: Activity, the Library, Suggestions, Review — and why the sidebar went.";
+  "What changed in Harvous 3, for people who already use it: Activity, Search, Suggestions, Review — and why the sidebar went.";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -332,8 +332,9 @@ const jsonLd = {
           Harvous 3 is here.
         </h1>
         <!--
-          Names only what 3.0 added. Suggestions and the Library were both in
-          2.0 (as Recall and the sidebar's search), so they don't get billed as new here.
+          Names only what 3.0 added. Suggestions and search were both in 2.0
+          (as Recall, and in the sidebar), so they aren't billed as new here — only
+          where search moved to.
         -->
         <p class="v3-hero__sub lead v3-arrive" data-reveal style="--reveal-delay: 1520ms;">
           The sidebar is gone. <strong>Activity</strong> opens on what you've already
@@ -495,7 +496,8 @@ const jsonLd = {
               glimpse, whether a glimpse was the right amount or not. So I asked a different
               question: what is each of these worth in screen? Seeing what you have studied
               wanted the whole thing, so it became Activity. Finding a note from months ago
-              wanted none of it until the moment you ask, so it became the Library you summon.
+              wanted none of it until the moment you ask, so it became Search — a spotlight you
+              summon from the top middle.
             </p>
             <p>
               While I was in there I settled something else. The days you rest stay in the
