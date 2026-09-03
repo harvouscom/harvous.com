@@ -84,7 +84,7 @@ export const PLUS_PLAN: PricingPlan = {
     "Joining is always free",
     "Review — questions built from your own notes, answered from memory",
   ],
-  comingSoonFeatures: ["Challenges — guided study seasons"],
+  comingSoonFeatures: ["Challenges — time-boxed studies to build the habit, solo or with others"],
   cta: {
     label: "Get Harvous Plus",
     href: APP_UPGRADE_URL,
@@ -100,7 +100,7 @@ export const PRICING_ROADMAP: PricingRoadmapItem[] = [
     id: "challenges",
     icon: "fa7-solid:trophy",
     name: "Challenges",
-    tagline: "Themed study seasons with guides, leaderboards, and more. Included with Plus when it ships.",
+    tagline: "Time-boxed study to build the habit, solo or with others. Included with Plus when it ships.",
     soonLabel: "Coming later",
   },
   {
