@@ -4,13 +4,14 @@
  *
  * Was WhatsIncluded, a twelve-tile wall that carried the whole feature argument
  * without showing the product once. Nine of those tiles now sit under the
- * screenshot that demonstrates them (see AppTour); what's left here are the six
- * that a screenshot can't usefully show — you can't photograph "works offline".
+ * screenshot that demonstrates them (see AppTour); most of what's left here is
+ * the six a screenshot can't usefully show — you can't photograph "works
+ * offline". @ mentions is the exception: it's repeated from the Write tour
+ * card because it's easy to miss as one bullet among that card's others.
  *
- * At six tiles nothing has to be bundled to make the grid fit, so the old
- * two-destinations-in-one-tile workaround is gone: every linked tile is a
- * single link, and the pairs that were combined only to stay at twelve ("Daily
- * passage & dictionary") are separate features with separate pages.
+ * The old two-destinations-in-one-tile workaround is gone: every linked tile
+ * is a single link, and the pairs that were combined only to stay at twelve
+ * ("Daily passage & dictionary") are separate features with separate pages.
  *
  * Resource library isn't here: the Find tour card above already carries it.
  * Its slot went to keyboard shortcuts, pitched at the power users — a thing
@@ -23,6 +24,11 @@ import { hasDetailContent } from "../lib/product-page-data.ts";
 import { COMING_SOON_GRID_ITEMS } from "../lib/coming-soon-grid.ts";
 
 const items = [
+  {
+    icon: "fa7-solid:at",
+    title: "@ mentions",
+    desc: "Type @ in a note to drop in a note, folder, thread, or resource — and jump to it later.",
+  },
   {
     icon: "fa7-solid:list-check",
     title: "Note templates",
@@ -138,15 +144,27 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
   .grid-band { padding-block: clamp(3.5rem, 8vw, 6.5rem); }
   .grid-band__lead { max-width: 36rem; }
 
+  /*
+    Flex-wrap, not grid — seven tiles at three columns leaves a trailing row of
+    one. A fixed repeat(3, 1fr) would pin that lone tile flush left with two
+    empty tracks beside it, implying a card that never arrives; centering it
+    (the same fix as the housed-features row) reads as a deliberate close
+    instead. A full row is unaffected either way.
+  */
   .grid-band__grid {
     margin-top: clamp(3rem, 7vw, 4.5rem);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 2rem 1.5rem;
   }
-  /* Six tiles land as 3×2 — a shape you can take in, unlike the 4×3 it replaced. */
+  .grid-band__grid > .grid-band__item {
+    flex: 0 0 calc((100% - 1.5rem) / 2);
+  }
   @media (min-width: 720px) {
-    .grid-band__grid { grid-template-columns: repeat(3, 1fr); }
+    .grid-band__grid > .grid-band__item {
+      flex-basis: calc((100% - 2 * 1.5rem) / 3);
+    }
   }
 
   .grid-band__icon {

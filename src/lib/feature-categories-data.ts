@@ -216,14 +216,14 @@ const categories: FeatureCategory[] = [
         body: "Colour-code a phrase and attach the thought to it. Both stay findable in the highlights view later.",
       },
       {
-        icon: "fa7-solid:at",
-        heading: "@ to link what you have already saved",
-        body: "Mention a note, folder, thread or resource inline. It becomes a pill you can open without losing your place.",
-      },
-      {
         icon: "fa7-solid:list-check",
         heading: "Templates for the work that repeats",
         body: "Lesson prep and study outlines you can start from, then bend to whatever this week actually needs.",
+      },
+      {
+        icon: "fa7-solid:at",
+        heading: "@ to link what you have already saved",
+        body: "Mention a note, folder, thread or resource inline. It becomes a pill you can open without losing your place.",
       },
     ],
     featureIds: ["highlights", "note-templates"],

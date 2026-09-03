@@ -164,6 +164,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         desc: "Color-code phrases, leave annotations, and find them again in the highlights view.",
       },
       {
+        icons: ["fa7-solid:list-check"],
+        title: "Note templates",
+        desc: "Start from a template — lesson prep, study outline, or your own — then make it yours.",
+      },
+      {
         icons: ["fa7-solid:at"],
         title: "@ mentions",
         desc: "Type @ in a note to link a note, folder, thread, or resource as a pill you can open later.",
@@ -223,9 +228,9 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         "Use a demo space if a real one has anything private in it.",
       ],
     },
-    // Split to match the other half cards, which each carry two. They are also
-    // the category's own two sections — a link for one note, and a space for a
-    // group — and the only pair here where one is free and the other is Plus.
+    // Split in two: the category's own two sections, a link for one note and
+    // a space for a group — and the only pair here where one is free and the
+    // other is Plus.
     items: [
       {
         icons: ["fa7-solid:share-nodes"],
