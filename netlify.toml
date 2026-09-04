@@ -9,6 +9,18 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# Retired /features/ hub → the homepage tour, which lists the five categories.
+# Exact paths only: a wildcard here would swallow every category and feature page.
+[[redirects]]
+  from = "/features"
+  to = "/#features"
+  status = 301
+
+[[redirects]]
+  from = "/features/"
+  to = "/#features"
+  status = 301
+
 # Legacy Webflow paths → Astro marketing site
 [[redirects]]
   from = "/features/sharing"
