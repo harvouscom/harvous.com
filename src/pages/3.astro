@@ -26,7 +26,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
 import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
-import Row from "../components/layout/Row.astro";
 import CTAButton from "../components/CTAButton.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import BlogCard from "../components/BlogCard.astro";
@@ -417,29 +416,13 @@ const jsonLd = {
   -->
   <section id="what-changed" class="v3-band frame-divider">
     <Container size="xl">
-      <Row ratio="7-5" align="center" gap="lg" class="v3-changed__intro">
-        <div class="v3-changed__head v3-arrive" data-reveal>
-          <h2 class="section-title">What changed</h2>
-          <p class="lead v3-changed__lead">
-            Everything you wrote is where you left it. These are the parts that moved, and where
-            each one went.
-          </p>
-        </div>
-
-        <div class="v3-changed__shotwrap" data-reveal="scale" style="--reveal-delay: 60ms;">
-          <div class="v3-changed__shot-frame">
-            <OptimizedImage
-              class="v3-changed__shot"
-              src="/harvous-3-comparison.png"
-              alt="Derek walking through Harvous 2 next to Harvous 3, comparing the sidebar-era My Home view with the new Activity view."
-              width={1366}
-              height={828}
-              loading="lazy"
-            />
-            <HeroVideoLightbox src="/harvous-3-tour.mp4" label="Watch the 10 min comparison" />
-          </div>
-        </div>
-      </Row>
+      <div class="v3-changed__head v3-arrive" data-reveal>
+        <h2 class="section-title">What changed</h2>
+        <p class="lead v3-changed__lead">
+          Everything you wrote is where you left it. These are the parts that moved, and where
+          each one went.
+        </p>
+      </div>
 
       <ul class="v3-moved" role="list" data-reveal="stagger">
         {
@@ -476,6 +459,27 @@ const jsonLd = {
     <Container size="xl">
       <div class="v3-why__head section-head v3-arrive" data-reveal>
         <h2 class="section-title">Why the change</h2>
+      </div>
+
+      {/*
+        The walkthrough opens this band rather than What changed. Both are the
+        same register — Derek explaining the release in his own voice — where
+        What changed is a ledger you scan, and a personal video floated beside
+        a lookup table read as decoration attached to it. Watch it, read the
+        letter, or read the essays: three depths of the same answer.
+      */}
+      <div class="v3-why__watch" data-reveal="scale" style="--reveal-delay: 60ms;">
+        <div class="v3-why__shot-frame">
+          <OptimizedImage
+            class="v3-why__shot"
+            src="/harvous-3-comparison.png"
+            alt="Derek talking through Harvous 3, with the new Activity view and Search open behind him."
+            width={1112}
+            height={720}
+            loading="lazy"
+          />
+          <HeroVideoLightbox youtubeId="ns8bcyTSCBw" label="Watch the 8 min walkthrough" />
+        </div>
       </div>
 
       <div class="v3-why__letter" data-reveal="scale" style="--reveal-delay: 100ms;">
@@ -791,7 +795,11 @@ const jsonLd = {
       calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
     );
     list-style: none;
+    /* overflow-x: auto makes overflow-y auto too, and the reveal's translateY
+       pushes unrevealed slides past the box — the track becomes its own
+       vertical scroller and swallows page scroll as you pass over it. */
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -964,35 +972,15 @@ const jsonLd = {
     max-width: 32rem;
   }
 
-  /* A thumbnail beside the head, not a hero below it — same frame recipe as
-     the blog bridge's shot (bordered, shadowed, the play callout floating
-     over it), sized down so it reads as "here's proof" next to the words
-     rather than a second headline moment competing with the section above. */
-  .v3-changed__shotwrap {
-    width: 100%;
-    max-width: 22rem;
-  }
-  .v3-changed__shot-frame {
-    position: relative;
-    width: 100%;
-    border-radius: clamp(16px, 2vw, 28px);
-    overflow: hidden;
-    border: 1px solid var(--color-rule);
-    box-shadow: var(--shadow-float);
-  }
-  .v3-changed__shot,
-  .v3-changed__shot-frame :global(picture),
-  .v3-changed__shot-frame :global(img) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  /* About's list: rows on hairlines, title cell left, body right. */
+  /* About's list: rows on hairlines, title cell left, body right. Capped well
+     inside the 72rem column — at full width a three-word "My Home → Activity"
+     sat marooned from its own sentence, which is what made the section read
+     as unfinished rather than as a deliberate ledger. */
   .v3-moved {
     list-style: none;
     margin: clamp(2rem, 4.5vw, 2.75rem) 0 0;
     padding: 0;
+    max-width: 58rem;
   }
   .v3-moved__row {
     display: grid;
@@ -1070,7 +1058,30 @@ const jsonLd = {
     color: var(--color-ink-soft);
   }
 
-  /* ---------- Why: letter + essays ---------- */
+  /* ---------- Why: walkthrough + letter + essays ---------- */
+  /* The blog bridge's shot recipe — bordered, shadowed, play callout floating
+     over it — centred under the centred head at the letter's own measure, so
+     the two read as one column of "Derek explains it". */
+  .v3-why__watch {
+    margin: clamp(2rem, 5vw, 3rem) auto 0;
+    width: 100%;
+    max-width: 40rem;
+  }
+  .v3-why__shot-frame {
+    position: relative;
+    width: 100%;
+    border-radius: clamp(16px, 2vw, 28px);
+    overflow: hidden;
+    border: 1px solid var(--color-rule);
+    box-shadow: var(--shadow-float);
+  }
+  .v3-why__shot,
+  .v3-why__shot-frame :global(picture),
+  .v3-why__shot-frame :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
   .v3-why__letter {
     margin: clamp(2rem, 5vw, 3rem) auto 0;
     max-width: 64rem;
