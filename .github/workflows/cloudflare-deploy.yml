@@ -47,10 +47,17 @@ jobs:
         run: echo "name=${{ (github.event_name == 'workflow_dispatch' && inputs.target) || 'production' }}" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@v4
-        with:
-          # public/*.mp4 are Git LFS. Without this the checkout yields pointer
-          # files and the site ships a few hundred bytes of text as its video.
-          lfs: true
+
+      - name: Fetch the site's videos from LFS
+        # Deliberately not `lfs: true` on the checkout above: that pulls every
+        # LFS object, including video/footage/ — 371 MB of Remotion source that
+        # never reaches the build. Only public/ ships, so only public/ is
+        # fetched, and a run costs ~80 MB against the LFS bandwidth allowance
+        # rather than ~469 MB.
+        #
+        # Without this the checkout leaves pointer files and the site would
+        # serve a few hundred bytes of text as its video.
+        run: git lfs pull --include="public/*.mp4"
 
       - uses: actions/setup-node@v4
         with:
