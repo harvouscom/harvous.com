@@ -1094,8 +1094,6 @@ const jsonLd = {
   .v3-why__essays :global(.blog-featured:hover) {
     background: color-mix(in oklab, var(--color-warm) 85%, var(--color-paper));
   }
-  /* One story left once the third essay dropped out — centered at roughly
-     the width its column held in the old two-up row, not stretched full. */
   /* Two essays, equal weight — the "featured" card doing double duty rather
      than one large card plus a small one underneath it. */
   .v3-why__pair {
@@ -1105,6 +1103,14 @@ const jsonLd = {
   }
   @media (min-width: 768px) {
     .v3-why__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  /* Title only, no preview line — the card's own description column is
+     dropped rather than left empty beside the title. */
+  .v3-why__pair :global(.blog-featured .grid) {
+    grid-template-columns: 1fr;
+  }
+  .v3-why__pair :global(.blog-featured .grid > p) {
+    display: none;
   }
   .v3-why__more {
     margin: 1.5rem 0 0;
