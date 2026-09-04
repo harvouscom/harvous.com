@@ -21,6 +21,27 @@ Only `public/` ships. The founder tour's source footage lives in [`video/footage
 
 **Node:** Use Node 22 locally (see `.nvmrc` and `netlify.toml`). Netlify sets `NODE_VERSION = "22"`.
 
+## Church interest form
+
+`/for/churches/` carries the one form on the site. It posts to its own URL —
+Netlify Forms' convention — and both hosts honour that: Netlify scrapes and
+stores it as it always has, and on Cloudflare the Worker intercepts the POST
+before the asset router can answer it with the page.
+
+Cloudflare has no equivalent of Netlify Forms, so submissions go to a D1 table
+instead. Only what the visitor typed is stored — no IP, no user agent.
+
+```bash
+npx wrangler d1 execute harvous-com --remote \
+  --command "select created_at, name, email, church_name, interests from church_interest order by created_at desc limit 20"
+```
+
+Schema lives in [`cloudflare/migrations/`](cloudflare/migrations/); CI applies
+pending migrations before each deploy. Validation is in
+[`src/lib/church-interest.ts`](src/lib/church-interest.ts) — a submission that
+fails it is rejected with a reason rather than stored half-formed, and a
+honeypot hit is answered like a success and stored nowhere.
+
 ## Data files
 
 Release notes and compare pages read from CSV at build time:
