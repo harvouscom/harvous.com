@@ -2,12 +2,24 @@
 import "plyr/dist/plyr.css";
 import { fathomCta } from "../lib/fathom-events.ts";
 
+/*
+  Two sources, one lightbox. `src` is a self-hosted mp4; `youtubeId` is a
+  YouTube video, which Plyr wraps in its own chrome so both look identical
+  once open. Nothing YouTube-owned loads until the trigger is clicked —
+  Plyr builds the iframe when ensurePlayer() first runs — so the page costs
+  no third-party request for a video most visitors never open.
+*/
 interface Props {
-  src: string;
+  src?: string;
+  youtubeId?: string;
   label?: string;
 }
 
-const { src, label = "Watch the 5 min tour" } = Astro.props;
+const { src, youtubeId, label = "Watch the 5 min tour" } = Astro.props;
+
+if (!src && !youtubeId) {
+  throw new Error("HeroVideoLightbox needs either `src` or `youtubeId`.");
+}
 ---
 
 <div class="hero-video" data-hero-video-root>
@@ -41,14 +53,25 @@ const { src, label = "Watch the 5 min tour" } = Astro.props;
           <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"></path>
         </svg>
       </button>
-      <video
-        class="hero-video-lightbox__video"
-        playsinline
-        preload="metadata"
-        data-hero-video-player
-      >
-        <source src={src} type="video/mp4" />
-      </video>
+      {
+        youtubeId ? (
+          <div
+            class="hero-video-lightbox__video"
+            data-hero-video-player
+            data-plyr-provider="youtube"
+            data-plyr-embed-id={youtubeId}
+          />
+        ) : (
+          <video
+            class="hero-video-lightbox__video"
+            playsinline
+            preload="metadata"
+            data-hero-video-player
+          >
+            <source src={src} type="video/mp4" />
+          </video>
+        )
+      }
     </div>
   </div>
 </div>
@@ -221,7 +244,8 @@ const { src, label = "Watch the 5 min tour" } = Astro.props;
     const lightbox = root.querySelector<HTMLElement>("[data-hero-video-lightbox]");
     if (!trigger || !lightbox) return;
 
-    const video = lightbox.querySelector<HTMLVideoElement>("[data-hero-video-player]");
+    // A <video> for a self-hosted file, a <div> for a YouTube embed — Plyr takes either.
+    const video = lightbox.querySelector<HTMLElement>("[data-hero-video-player]");
     const closeEls = lightbox.querySelectorAll<HTMLElement>("[data-hero-video-close]");
     const closeBtn = lightbox.querySelector<HTMLButtonElement>(".hero-video-lightbox__close");
 
@@ -254,6 +278,8 @@ const { src, label = "Watch the 5 min tour" } = Astro.props;
         hideControls: true,
         keyboard: { focused: true, global: false },
         tooltips: { controls: true, seek: true },
+        // youtube-nocookie, and none of YouTube's own chrome competing with Plyr's.
+        youtube: { noCookie: true, rel: 0, modestbranding: 1, iv_load_policy: 3 },
       });
       return player;
     };
