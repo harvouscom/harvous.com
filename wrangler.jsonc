@@ -27,7 +27,19 @@
     // this the asset router would answer that POST with the page itself, 200,
     // and the submission would vanish with the visitor none the wiser. The
     // cost is one Worker invocation per view of that single page.
-    "run_worker_first": ["/api/*", "/for/churches", "/for/churches/"]
+    //
+    // The two videos: they are no longer assets, but `not_found_handling`
+    // means the asset router answers an unmatched path with the 404 page
+    // rather than falling through to the Worker — so "not an asset" is not
+    // enough to reach serveMedia. Measured: without these two lines the
+    // videos 404.
+    "run_worker_first": [
+      "/api/*",
+      "/for/churches",
+      "/for/churches/",
+      "/touring-harvous-short.mp4",
+      "/harvous-3-walkthrough.mp4"
+    ]
   },
 
   // Church interest submissions (replaces Netlify Forms).
@@ -40,6 +52,20 @@
       "database_name": "harvous-com",
       "database_id": "e8ec3027-a343-465d-8a14-0660d3d02c17",
       "migrations_dir": "cloudflare/migrations"
+    }
+  ],
+
+  // Video. Static assets cannot do byte ranges, so these two files are served
+  // from R2 by the Worker instead — see serveMedia in cloudflare/worker.ts.
+  // Unlike D1 this bucket IS shared with staging: it holds read-only published
+  // media, so there is nothing for staging to pollute and no reason to upload
+  // the same files twice.
+  //   npx wrangler r2 bucket create harvous-com-media
+  //   npm run media:upload
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "harvous-com-media"
     }
   ],
 
@@ -63,6 +89,14 @@
           "database_name": "harvous-com-staging",
           "database_id": "3da3247a-6189-4be7-b5f6-854e771d33d3",
           "migrations_dir": "cloudflare/migrations"
+        }
+      ],
+
+      // Same bucket as production, for the reason given above.
+      "r2_buckets": [
+        {
+          "binding": "MEDIA",
+          "bucket_name": "harvous-com-media"
         }
       ]
     }

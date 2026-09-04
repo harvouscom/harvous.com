@@ -27,7 +27,7 @@ npm run render:site
 ```
 
 Renders to `out/tour-full.mp4`, then compresses that into
-`../public/touring-harvous-short.mp4` (Git LFS) via
+`../media/touring-harvous-short.mp4` (Git LFS) via
 [`scripts/compress-tour-video.sh`](../scripts/compress-tour-video.sh).
 
 The compression step is not optional polish. Cloudflare Workers static assets

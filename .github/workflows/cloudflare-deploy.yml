@@ -48,16 +48,14 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Fetch the site's videos from LFS
-        # Deliberately not `lfs: true` on the checkout above: that pulls every
-        # LFS object, including video/footage/ — 371 MB of Remotion source that
-        # never reaches the build. Only public/ ships, so only public/ is
-        # fetched, and a run costs ~80 MB against the LFS bandwidth allowance
-        # rather than ~469 MB.
-        #
-        # Without this the checkout leaves pointer files and the site would
-        # serve a few hundred bytes of text as its video.
-        run: git lfs pull --include="public/*.mp4"
+      # No LFS fetch at all. Every LFS object in this repo is video, and no
+      # video ships in dist/ any more: the two the site plays are served from
+      # R2 (see serveMedia in cloudflare/worker.ts) and the Remotion source
+      # footage was never a site asset. A run costs 0 MB of LFS bandwidth,
+      # down from ~469 MB when checkout fetched everything.
+      #
+      # Uploading a changed video to R2 is `npm run media:upload`, deliberately
+      # not part of the deploy — it is a rare, heavy, manual act.
 
       - uses: actions/setup-node@v4
         with:
