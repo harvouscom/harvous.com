@@ -73,25 +73,25 @@ export const PLUS_PLAN: PricingPlan = {
   id: "plus",
   icon: "fa7-solid:plus",
   name: "Harvous Plus",
-  priceDisplay: "$5/mo",
-  priceDisplaySecondary: "$30/yr*",
-  tagline: "More than a private study Bible",
+  priceDisplay: "$7/mo",
+  priceDisplaySecondary: "$49/yr*",
+  tagline: "For study you return to, together",
   features: [
     "Everything in free",
+    "Review — questions built from your own notes, answered from memory",
     "Unlimited shared spaces",
     "Up to 50 people per space",
     "Turn a thread into a study plan your group reads together",
     "Joining is always free",
-    "Review — questions built from your own notes, answered from memory",
   ],
-  comingSoonFeatures: ["Challenges — time-boxed studies to build the habit, solo or with others"],
+  comingSoonFeatures: ["Challenges — time-based quizzes, solo, with a group, or open to the public"],
   cta: {
     label: "Get Harvous Plus",
     href: APP_UPGRADE_URL,
     external: true,
     fathomTrack: fathomSignup.pricingPlus,
   },
-  finePrint: "*founding price for the first 99. Then $45/yr",
+  finePrint: "*$35 for the first 99, first year only. Then $49/yr",
 };
 
 /** Roadmap items shown under Free + Plus (not for sale yet as separate products). */
