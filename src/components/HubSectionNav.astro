@@ -108,9 +108,15 @@ const defaultId = items[0]?.id ?? "";
     justify-content: center;
     gap: 0.45rem 0.55rem;
     box-sizing: border-box;
-    /* Hug pills when they fit; cap to the slot so the row can scroll when they don't. */
+    /*
+      Hug pills when they fit; cap to the measure the sections below it use so
+      the float lines up with their headings instead of running past them —
+      72rem is Container's xl and .for-hub__group-inner's own max-width, less
+      the same content padding. Past that the pill row scrolls (overflow-x on
+      .hub-section-nav__pills), which is what the cap is for.
+    */
     width: max-content;
-    max-width: calc(100% - 2 * var(--frame-content-pad));
+    max-width: calc(min(72rem, 100%) - 2 * var(--frame-content-pad));
     min-width: 0;
     /* Vertical only when pills are showing — horizontal padding lives on the scroll row. */
     padding: 0.4rem 0.55rem;
