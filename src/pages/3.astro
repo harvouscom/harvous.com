@@ -204,19 +204,19 @@ const movedRows = [
     before: "My Home",
     after: "Activity",
     body: "What sat in the sidebar under My Home is a view of its own now, with room to actually show a week. Three views, left to right in the top left: Activity, the Bible reader, and a note.",
-    links: [{ label: "Activity", href: "/features/activity/" }],
+    link: { label: "See Activity", href: "/features/activity/" },
   },
   {
     before: "The sidebar",
     after: "Search, top middle",
     body: "You could search everything you'd saved from the sidebar. With the sidebar gone, search is in the top middle — and from there you can still just browse the lists of things, the way you could before.",
-    links: [{ label: "Find", href: "/features/find/" }],
+    link: { label: "See Search", href: "/features/find/" },
   },
   {
     before: "Recall",
     after: "Suggestions",
     body: "The same job under a truer name: some of these bring back a fading note, and some propose something new to make from what you already saved. Links to the old name still land in the right place.",
-    links: [{ label: "Suggestions", href: "/features/suggestions/" }],
+    link: { label: "See Suggestions", href: "/features/suggestions/" },
   },
 ];
 
@@ -444,12 +444,9 @@ const jsonLd = {
                 <span class="v3-moved__after">{row.after}</span>
               </h3>
               <div class="v3-moved__body">
-                <p>{row.body}</p>
-                <div class="v3-moved__actions">
-                  {row.links.map((l) => (
-                    <CTAButton href={l.href} variant="secondary">{l.label}</CTAButton>
-                  ))}
-                </div>
+                <p>
+                  {row.body} <a href={row.link.href}>{row.link.label} →</a>
+                </p>
               </div>
             </li>
           ))
@@ -1012,17 +1009,17 @@ const jsonLd = {
     line-height: 1.65;
     color: var(--color-ink-soft);
   }
-  /* Secondary buttons rather than text links: the rows were all prose. */
-  .v3-moved__actions {
-    margin-top: 0.9rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
+  /* A word in the sentence, not a button under it — the row was already
+     prose, and a bordered pill beneath three lines of text is what made
+     each row run tall. Shares the foot note's own link recipe below. */
+  .v3-moved__body a,
   .v3-changed__foot a {
     color: var(--color-accent);
+    font-weight: 500;
     text-decoration: none;
+    white-space: nowrap;
   }
+  .v3-moved__body a:hover,
   .v3-changed__foot a:hover {
     text-decoration: underline;
     text-underline-offset: 4px;
