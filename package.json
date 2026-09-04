@@ -10,6 +10,7 @@
     "dev:netlify": "netlify dev",
     "cf:dev": "npm run build && wrangler dev",
     "cf:deploy": "npm run build && wrangler deploy",
+    "cf:deploy:staging": "KEEP_DRAFT_PAGES=1 npm run build && wrangler deploy --env staging",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",

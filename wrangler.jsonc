@@ -8,6 +8,14 @@
   // fetch/URL/URLSearchParams/Response. Keep it that way — the whole point of
   // this Worker is that it is nearly empty.
 
+  // Production serves on harvous.com and nowhere else. Left at their defaults
+  // both of these are ON, which puts the whole marketing site on a public
+  // workers.dev URL and gives every future version its own public preview URL
+  // — duplicates of a site whose canonical is https://harvous.com/.
+  // Staging re-enables workers_dev below; it is the only way to reach it.
+  "workers_dev": false,
+  "preview_urls": false,
+
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -78,6 +86,11 @@
     // Keeps the draft pages; the build stamps them noindex via dist/_headers.
     "staging": {
       "name": "harvous-com-staging",
+
+      // The whole point of staging is a URL to look at. Safe here in a way it
+      // is not in production: every staging response carries X-Robots-Tag
+      // noindex, stamped into dist/_headers by the build.
+      "workers_dev": true,
 
       // Bindings are not inherited by named environments the way `assets` is,
       // so this has to be restated — without it staging answers every
