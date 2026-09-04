@@ -328,6 +328,16 @@ const jsonLd = {
             See what's new
             <svg class="v3-hero__cta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l5 5 5-5" /></svg>
           </CTAButton>
+          {/*
+            Read it or watch it, offered together at the top. The walkthrough
+            has no screenshot to sit on here, so it takes the inline trigger
+            and opens the same lightbox.
+          */}
+          <HeroVideoLightbox
+            src="/harvous-3-walkthrough.mp4"
+            label="Watch the 8 min walkthrough"
+            variant="inline"
+          />
         </div>
       </div>
     </Container>
@@ -459,27 +469,6 @@ const jsonLd = {
     <Container size="xl">
       <div class="v3-why__head section-head v3-arrive" data-reveal>
         <h2 class="section-title">Why the change</h2>
-      </div>
-
-      {/*
-        The walkthrough opens this band rather than What changed. Both are the
-        same register — Derek explaining the release in his own voice — where
-        What changed is a ledger you scan, and a personal video floated beside
-        a lookup table read as decoration attached to it. Watch it, read the
-        letter, or read the essays: three depths of the same answer.
-      */}
-      <div class="v3-why__watch" data-reveal="scale" style="--reveal-delay: 60ms;">
-        <div class="v3-why__shot-frame">
-          <OptimizedImage
-            class="v3-why__shot"
-            src="/harvous-3-comparison.png"
-            alt="Derek talking through Harvous 3, with the new Activity view and Search open behind him."
-            width={1112}
-            height={720}
-            loading="lazy"
-          />
-          <HeroVideoLightbox youtubeId="ns8bcyTSCBw" label="Watch the 8 min walkthrough" />
-        </div>
       </div>
 
       <div class="v3-why__letter" data-reveal="scale" style="--reveal-delay: 100ms;">
@@ -706,6 +695,11 @@ const jsonLd = {
   /* The cue is the primary button — the same gradient the numeral wears. */
   .v3-hero__cta {
     margin-top: clamp(1.75rem, 4vw, 2.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
   }
   .v3-hero__cta-icon {
     width: 0.85rem;
@@ -1058,30 +1052,7 @@ const jsonLd = {
     color: var(--color-ink-soft);
   }
 
-  /* ---------- Why: walkthrough + letter + essays ---------- */
-  /* The blog bridge's shot recipe — bordered, shadowed, play callout floating
-     over it — centred under the centred head at the letter's own measure, so
-     the two read as one column of "Derek explains it". */
-  .v3-why__watch {
-    margin: clamp(2rem, 5vw, 3rem) auto 0;
-    width: 100%;
-    max-width: 40rem;
-  }
-  .v3-why__shot-frame {
-    position: relative;
-    width: 100%;
-    border-radius: clamp(16px, 2vw, 28px);
-    overflow: hidden;
-    border: 1px solid var(--color-rule);
-    box-shadow: var(--shadow-float);
-  }
-  .v3-why__shot,
-  .v3-why__shot-frame :global(picture),
-  .v3-why__shot-frame :global(img) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
+  /* ---------- Why: letter + essays ---------- */
   .v3-why__letter {
     margin: clamp(2rem, 5vw, 3rem) auto 0;
     max-width: 64rem;
