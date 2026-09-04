@@ -24,12 +24,13 @@ import Container from "./layout/Container.astro";
 import { hasDetailContent } from "../lib/product-page-data.ts";
 import { COMING_SOON_GRID_ITEMS } from "../lib/coming-soon-grid.ts";
 
+/*
+  Ordered casual-to-pro: what shows up for you with no effort (Daily passage),
+  through what everyone can enjoy but has to reach for (Make it yours, Offline
+  & sync, Dictionary), to what takes learning a mechanic (@ mentions), ending
+  on the tile that names its own audience — "for the power users."
+*/
 const items = [
-  {
-    icon: "fa7-solid:at",
-    title: "@ mentions",
-    desc: "Type @ in a note to drop in a note, folder, thread, or resource — and jump to it later.",
-  },
   {
     icon: "fa7-solid:calendar-day",
     title: "Daily passage",
@@ -37,10 +38,9 @@ const items = [
     featureSlug: "daily-passage",
   },
   {
-    icon: "fa7-solid:lines-leaning",
-    title: "Dictionary",
-    desc: "Select a name or term in a note for its Easton's entry and cross-references.",
-    featureSlug: "dictionary",
+    icon: "fa7-solid:palette",
+    title: "Make it yours",
+    desc: "Light or dark, a color or photo background — Harvous looks the way you want.",
   },
   {
     icon: "fa7-solid:arrows-rotate",
@@ -49,9 +49,15 @@ const items = [
     featureSlug: "offline-sync",
   },
   {
-    icon: "fa7-solid:palette",
-    title: "Make it yours",
-    desc: "Light or dark, a color or photo background — Harvous looks the way you want.",
+    icon: "fa7-solid:lines-leaning",
+    title: "Dictionary",
+    desc: "Select a name or term in a note for its Easton's entry and cross-references.",
+    featureSlug: "dictionary",
+  },
+  {
+    icon: "fa7-solid:at",
+    title: "@ mentions",
+    desc: "Type @ in a note to drop in a note, folder, thread, or resource — and jump to it later.",
   },
   {
     icon: "fa7-solid:keyboard",
