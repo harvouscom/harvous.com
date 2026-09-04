@@ -8,6 +8,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "dev:netlify": "netlify dev",
+    "cf:dev": "npm run build && wrangler dev",
+    "cf:deploy": "npm run build && wrangler deploy",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -37,7 +39,8 @@
     "@iconify-json/fa7-regular": "^1.2.3",
     "@iconify-json/fa7-solid": "^1.2.5",
     "netlify-cli": "^27.0.1",
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.3",
+    "wrangler": "^4.129.0"
   },
   "overrides": {
     "sharp": "^0.35.3"

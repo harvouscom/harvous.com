@@ -1,0 +1,29 @@
+# Cloudflare (and Netlify) redirect rules — the port of netlify.toml's
+# [[redirects]] blocks, kept in the same order because both hosts take the
+# first match. Netlify's own toml rules still win while it deploys the
+# rollback, so the two must stay identical until cleanup deletes netlify.toml.
+#
+# Exact paths, not wildcards, wherever a category sits under the same prefix:
+# `/features/*` here would swallow every feature and category page.
+#
+# Cloudflare has no trailing-slash normalization, so each path is listed both
+# ways — the same shape netlify.toml already used.
+
+# Retired /features/ hub → the homepage tour, which lists the five categories.
+/features                /#features               301
+/features/               /#features               301
+
+# Legacy Webflow paths → Astro marketing site
+/features/sharing        /features/share/         301
+/features/sharing/       /features/share/         301
+/features/recall         /features/suggestions/   301
+/features/recall/        /features/suggestions/   301
+
+/updates                 /release-notes/          301
+/updates/*               /release-notes/          301
+/changelog               /release-notes/          301
+/changelog/              /release-notes/          301
+/changelog/*             /release-notes/:splat    301
+
+/release-notes/page/1    /release-notes/          301
+/release-notes/page/1/   /release-notes/          301

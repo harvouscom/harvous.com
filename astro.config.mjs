@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import tailwindcss from "@tailwindcss/vite";
 import { getReleaseNoteSlugRedirects } from "./src/lib/release-notes-data.ts";
 import { DRAFT_PAGE_SLUGS, isDraftPageUrl } from "./src/lib/draft-pages.ts";
-import { rmSync } from "node:fs";
+import { appendFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
 const releaseNoteRedirects = Object.fromEntries(
@@ -16,20 +16,61 @@ const releaseNoteRedirects = Object.fromEntries(
   ])
 );
 
+/**
+ * Whether this build keeps draft marketing pages (src/lib/draft-pages.ts).
+ *
+ * Preview builds keep them so they can be reviewed before launch; production
+ * strips the directory. They are noindex, bannered, and out of the sitemap
+ * either way — the strip is the last line of defence, not the only one.
+ *
+ * The two hosts answer this differently while both are live:
+ *  - Netlify sets CONTEXT itself (deploy-preview | branch-deploy | production).
+ *  - Cloudflare deploys run from GitHub Actions, which sets nothing of the
+ *    kind, so .github/workflows/cloudflare-deploy.yml passes KEEP_DRAFT_PAGES
+ *    explicitly on staging and leaves it unset on production.
+ *
+ * Unset on both — a local `npm run build` — strips, which is the safe default
+ * and the behaviour this has always had.
+ */
+function keepsDraftPages() {
+  if (process.env.KEEP_DRAFT_PAGES === "1") return true;
+  const netlifyContext = process.env.CONTEXT;
+  return netlifyContext === "deploy-preview" || netlifyContext === "branch-deploy";
+}
+
 /** Remove draft marketing pages from the production static output. */
 function stripDraftPages() {
   return {
     name: "strip-draft-pages",
     hooks: {
       "astro:build:done": ({ dir }) => {
-        // Netlify previews keep draft pages so they can be reviewed before
-        // launch. They are still noindex, still bannered, and still out of the
-        // sitemap — only production strips the directory.
-        const context = process.env.CONTEXT;
-        if (context === "deploy-preview" || context === "branch-deploy") return;
+        if (keepsDraftPages()) return;
         for (const slug of DRAFT_PAGE_SLUGS) {
           rmSync(join(dir.pathname, slug), { recursive: true, force: true });
         }
+      },
+    },
+  };
+}
+
+/**
+ * Stamp preview builds noindex.
+ *
+ * Netlify did this for its deploy previews on our behalf. Cloudflare does not,
+ * and the staging Worker serves the whole marketing site on a public
+ * workers.dev URL — the one build that still carries the draft pages. It has
+ * to be baked into the output rather than added by the Worker, because the
+ * asset router answers page requests before the Worker is ever invoked.
+ */
+function stagingNoindexHeaders() {
+  return {
+    name: "staging-noindex-headers",
+    hooks: {
+      "astro:build:done": ({ dir }) => {
+        if (!keepsDraftPages()) return;
+        const file = join(dir.pathname, "_headers");
+        const rule = "/*\n  X-Robots-Tag: noindex, nofollow\n";
+        appendFileSync(file, existsSync(file) ? `\n${rule}` : rule);
       },
     },
   };
@@ -62,6 +103,7 @@ export default defineConfig({
     }),
     icon(),
     stripDraftPages(),
+    stagingNoindexHeaders(),
   ],
   redirects: releaseNoteRedirects,
   vite: {

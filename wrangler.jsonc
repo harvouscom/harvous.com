@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "harvous-com",
+  "main": "cloudflare/worker.ts",
+  "compatibility_date": "2026-09-01",
+
+  // No nodejs_compat: the Worker and src/lib/church-search.ts use only
+  // fetch/URL/URLSearchParams/Response. Keep it that way — the whole point of
+  // this Worker is that it is nearly empty.
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+
+    // Astro builds directory-style (`/about/index.html`), and the site's own
+    // links are trailing-slash. This serves both spellings, as Netlify did.
+    "html_handling": "auto-trailing-slash",
+
+    // dist/404.html, from src/pages/404.astro.
+    "not_found_handling": "404-page",
+
+    // The typeahead has no asset behind it, so the Worker would be reached
+    // anyway — this states it, and keeps a future `public/api/` directory from
+    // quietly shadowing the endpoint.
+    "run_worker_first": ["/api/*"]
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  "env": {
+    // Manual preview deploys (see .github/workflows/cloudflare-deploy.yml).
+    // Keeps the draft pages; the build stamps them noindex via dist/_headers.
+    "staging": {
+      "name": "harvous-com-staging"
+    }
+  }
+
+  // Secrets (wrangler secret put, never committed — same values as .env):
+  //   HERESMYCHURCH_API_BASE
+  //   HERESMYCHURCH_ANON_KEY
+  //   HERESMYCHURCH_PARTNER_API_KEY
+}

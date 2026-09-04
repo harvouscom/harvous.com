@@ -1,0 +1,74 @@
+# Builds the Astro site and deploys it to Cloudflare Workers.
+#
+# Two targets, both from this one file:
+#   production — every push to main. Draft pages stripped.
+#   staging    — manual only (Actions → Run workflow). Keeps draft pages so
+#                /3/ can be reviewed before launch, and the Worker stamps
+#                X-Robots-Tag: noindex on everything it serves.
+#
+# Netlify keeps deploying main in parallel as the rollback during the soak
+# week; nothing here touches netlify.toml.
+#
+# Repository secrets required:
+#   CLOUDFLARE_API_TOKEN   — Workers Scripts:Edit on the account
+#   CLOUDFLARE_ACCOUNT_ID
+#
+# The three HERESMYCHURCH_* values are Worker secrets (`wrangler secret put`),
+# not build inputs — `wrangler deploy` leaves existing secrets alone, so they
+# are set once per Worker and never travel through CI.
+
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - "docs/**"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Which Worker to deploy"
+        type: choice
+        options: [staging, production]
+        default: staging
+
+concurrency:
+  group: cloudflare-deploy-${{ github.event.inputs.target || 'production' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve target
+        id: target
+        run: echo "name=${{ (github.event_name == 'workflow_dispatch' && inputs.target) || 'production' }}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          # public/*.mp4 are Git LFS. Without this the checkout yields pointer
+          # files and the site ships a few hundred bytes of text as its video.
+          lfs: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci --prefer-offline --no-audit
+
+      - name: Build
+        run: npm run build
+        env:
+          # astro.config.mjs keepsDraftPages(): "1" keeps them, unset strips.
+          KEEP_DRAFT_PAGES: ${{ steps.target.outputs.name == 'staging' && '1' || '' }}
+
+      - name: Deploy
+        # npx, not wrangler-action, so the deploy uses the wrangler version
+        # pinned in package.json rather than whatever the action resolves.
+        run: npx wrangler deploy ${{ steps.target.outputs.name == 'staging' && '--env staging' || '' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
