@@ -15,9 +15,17 @@ Output is written to `dist/`. Preview locally with `npm run preview`.
 
 Netlify builds from the repo root (`netlify.toml` at project root). Connect this repo in the Netlify dashboard and point the `harvous.com` domain to the site.
 
-**Git LFS:** `*.mp4` is tracked with Git LFS, and the build must fetch it — a checkout that skips LFS ships pointer files, so the site would serve a few hundred bytes of text as its video. Netlify needs [Git LFS support](https://docs.netlify.com/git/large-media/setup/) enabled; the Cloudflare workflow runs `git lfs pull --include="public/*.mp4"`.
+**Video:** the two videos the site plays are **not** site assets. They live in `media/` (Git LFS) and are served from the R2 bucket `harvous-com-media` by the Worker — see `serveMedia` in [`cloudflare/worker.ts`](cloudflare/worker.ts). Their URLs are unchanged (`/touring-harvous-short.mp4`).
 
-Only `public/` ships. The founder tour's source footage lives in [`video/footage/`](video/) because it is a render input, not a site asset — and at 371 MB it is well past Cloudflare's 25 MiB per-asset limit. The site tour CTA uses `public/touring-harvous-short.mp4`, the Remotion cut of it (see [`video/`](video/)).
+This is not a size workaround, it is a correctness one. Workers static assets sets `Accept-Ranges` on nothing and answers every Range request with the whole file, which leaves `video.seekable` empty in the browser — a viewer cannot skip ahead in the five-minute tour. R2 does ranged reads, so the Worker passes the Range header through and returns a real `206`.
+
+After changing a video, upload it and then deploy:
+
+```bash
+npm run media:upload
+```
+
+Nothing in Git LFS ships in `dist/` any more — the videos are in R2 and the Remotion source footage never was a site asset — so CI does no LFS fetch at all.
 
 **Node:** Use Node 22 locally (see `.nvmrc` and `netlify.toml`). Netlify sets `NODE_VERSION = "22"`.
 

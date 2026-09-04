@@ -14,6 +14,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "images:compress": "bash scripts/compress-images.sh",
+    "media:upload": "bash scripts/upload-media.sh",
     "blog:thumbs": "node scripts/generate-blog-thumbs.mjs",
     "og:pages": "node scripts/generate-page-og-images.mjs",
     "og:compare": "node scripts/generate-compare-og-images.mjs",

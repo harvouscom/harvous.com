@@ -23,11 +23,34 @@ type D1PreparedStatement = {
 };
 type D1Database = { prepare(query: string): D1PreparedStatement };
 
+type R2Object = {
+  size: number;
+  httpEtag: string;
+  /** Present only for a ranged read. */
+  range?: { offset: number; length: number };
+  /**
+   * Absent when the request was conditional and the object had not changed.
+   * R2 leaves it undefined rather than null in that case — a `=== null` check
+   * silently falls through and answers 200 with an empty body, which a browser
+   * caches over its good copy of the video.
+   */
+  body?: ReadableStream | null;
+  writeHttpMetadata(headers: Headers): void;
+};
+type R2Bucket = {
+  get(
+    key: string,
+    options?: { range?: Headers; onlyIf?: Headers }
+  ): Promise<R2Object | null>;
+};
+
 type Env = {
   /** Static assets binding — `dist/`, with `_redirects` and `_headers` applied. */
   ASSETS: { fetch(request: Request): Promise<Response> };
   /** Church interest submissions. See cloudflare/migrations/. */
   DB?: D1Database;
+  /** Video, served from R2 rather than static assets — see serveMedia. */
+  MEDIA?: R2Bucket;
   HERESMYCHURCH_API_BASE?: string;
   HERESMYCHURCH_ANON_KEY?: string;
   HERESMYCHURCH_PARTNER_API_KEY?: string;
@@ -44,6 +67,94 @@ function isChurchInterest(pathname: string): boolean {
 }
 
 const SUCCESS_PATH = '/for/churches/?submitted=1#interest';
+
+/**
+ * Video served out of R2 instead of static assets.
+ *
+ * Workers static assets sets `Accept-Ranges` on nothing and answers every
+ * Range request with the whole file — measured against this Worker's own
+ * staging deploy, and against Netlify, which returns a proper 206. The effect
+ * in a browser is not subtle: `video.seekable` comes back empty and a seek
+ * lands nowhere, so a viewer cannot skip ahead in the five-minute tour until
+ * the file has streamed that far on its own.
+ *
+ * R2 does ranged reads, so the fix is to serve these two files from a bucket
+ * and pass the Range header through. The URLs are unchanged — the components
+ * still link `/touring-harvous-short.mp4` — because the files simply stopped
+ * being assets, which is enough for the request to reach the Worker.
+ */
+const MEDIA_KEYS = new Set(['touring-harvous-short.mp4', 'harvous-3-walkthrough.mp4']);
+
+function mediaKey(pathname: string): string | null {
+  const key = pathname.slice(1);
+  return MEDIA_KEYS.has(key) ? key : null;
+}
+
+async function serveMedia(request: Request, env: Env, key: string): Promise<Response> {
+  if (!env.MEDIA) {
+    return new Response('Media bucket not configured', { status: 503 });
+  }
+
+  // R2 parses Range and If-None-Match/If-Modified-Since off the headers itself,
+  // but `range` is only passed when the request actually carried one: handed
+  // the headers unconditionally it reports a range for a plain GET too, and
+  // the response comes back 206 for a request that asked for the whole file.
+  const rangeHeader = request.headers.get('range');
+
+  let object: R2Object | null;
+  try {
+    object = await env.MEDIA.get(key, {
+      ...(rangeHeader ? { range: request.headers } : {}),
+      onlyIf: request.headers,
+    });
+  } catch {
+    // R2 throws, rather than returning a status, on two kinds of input we do
+    // not control: a malformed If-None-Match, and a range starting past the end
+    // of the object. Both answered 500 until this existed. Re-read plainly to
+    // learn the size, then say something true about which it was.
+    object = await env.MEDIA.get(key).catch(() => null);
+    if (object === null) return new Response('Not Found', { status: 404 });
+
+    const start = Number(/^bytes=(\d+)-/.exec(rangeHeader ?? '')?.[1] ?? NaN);
+    if (Number.isFinite(start) && start >= object.size) {
+      return new Response(null, {
+        status: 416,
+        headers: { 'content-range': `bytes */${object.size}`, 'accept-ranges': 'bytes' },
+      });
+    }
+    // Otherwise the conditional header was the bad part — serve the whole file.
+  }
+
+  if (object === null) {
+    return new Response('Not Found', { status: 404 });
+  }
+
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set('etag', object.httpEtag);
+  // The whole point of the move.
+  headers.set('accept-ranges', 'bytes');
+  // Matches what Netlify sends today. These filenames are not content-hashed,
+  // so a re-render replaces the file at the same URL — revalidation, not a
+  // long max-age, is what keeps that honest.
+  headers.set('cache-control', 'public, max-age=0, must-revalidate');
+
+  // A conditional request that matched: nothing to send.
+  if (!object.body) {
+    return new Response(null, { status: 304, headers });
+  }
+
+  if (rangeHeader && object.range) {
+    const start = object.range.offset;
+    const end = start + object.range.length - 1;
+    headers.set('content-range', `bytes ${start}-${end}/${object.size}`);
+    headers.set('content-length', String(object.range.length));
+    return new Response(object.body, { status: 206, headers });
+  }
+
+  headers.set('content-length', String(object.size));
+  return new Response(object.body, { status: 200, headers });
+}
 
 /** A form navigation asks for HTML; the form's own fetch() does not. */
 function wantsHtml(request: Request): boolean {
@@ -141,6 +252,11 @@ export default {
     // Only POST is intercepted here; a GET is the page itself, below.
     if (request.method === 'POST' && isChurchInterest(pathname)) {
       return handleChurchInterest(request, env);
+    }
+
+    const media = mediaKey(pathname);
+    if (media) {
+      return serveMedia(request, env, media);
     }
 
     if (isChurchSearch(pathname)) {
