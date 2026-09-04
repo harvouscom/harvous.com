@@ -67,7 +67,8 @@ const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJs
   at other features.
 */
 const category = page.kind === "feature" ? getCategoryForFeature(page.slug) : undefined;
-const backHref = page.kind === "feature" ? (category?.href ?? "/features/") : "/pricing/";
+/* Fallback is the homepage tour, not the old /features/ hub, which is gone. */
+const backHref = page.kind === "feature" ? (category?.href ?? "/#features") : "/pricing/";
 const backLabel = page.kind === "feature" ? (category?.title ?? "Features") : "Pricing";
 /*
   A feature page's closing CTA is the try-it-free handoff. An addon page's is the Plus-upgrade

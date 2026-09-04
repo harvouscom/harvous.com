@@ -89,9 +89,10 @@ const jsonLd = {
     {
       "@type": "BreadcrumbList",
       itemListElement: [
+        /* No "Features" crumb between them — the hub it pointed at is gone, and
+           a breadcrumb naming a page that 404s is worse than a shorter trail. */
         { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
-        { "@type": "ListItem", position: 2, name: "Features", item: "https://harvous.com/features/" },
-        { "@type": "ListItem", position: 3, name: category.title, item: pageUrl },
+        { "@type": "ListItem", position: 2, name: category.title, item: pageUrl },
       ],
     },
   ],
@@ -109,7 +110,9 @@ const jsonLd = {
       <div class="detail-content py-10 md:py-14">
         <div data-reveal>
           <div class="use-case-detail__nav">
-            <a href="/features/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
+            {/* The /features/ hub is gone; the homepage tour is where the five
+                categories are listed together now. */}
+            <a href="/#features" class="btn-pill inline-flex items-center gap-1.5 text-sm">
               <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path
                   fill-rule="evenodd"

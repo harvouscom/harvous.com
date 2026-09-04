@@ -144,12 +144,12 @@ export function buildFeatureJsonLd(page: ProductPage) {
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Harvous", item: SITE },
-          { "@type": "ListItem", position: 2, name: "Features", item: `${SITE}/features/` },
-          // Categories give features a real parent, so the trail is four deep now.
+          // The category IS the parent — the /features/ hub that used to sit
+          // above it is gone, so the trail runs straight through the category.
           ...(category
-            ? [{ "@type": "ListItem", position: 3, name: category.title, item: `${SITE}${category.href}` }]
+            ? [{ "@type": "ListItem", position: 2, name: category.title, item: `${SITE}${category.href}` }]
             : []),
-          { "@type": "ListItem", position: category ? 4 : 3, name: page.title, item: pageUrl },
+          { "@type": "ListItem", position: category ? 3 : 2, name: page.title, item: pageUrl },
         ],
       },
       {
