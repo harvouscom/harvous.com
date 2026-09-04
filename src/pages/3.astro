@@ -26,6 +26,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
 import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
+import Row from "../components/layout/Row.astro";
 import CTAButton from "../components/CTAButton.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import BlogCard from "../components/BlogCard.astro";
@@ -416,27 +417,29 @@ const jsonLd = {
   -->
   <section id="what-changed" class="v3-band frame-divider">
     <Container size="xl">
-      <div class="v3-changed__head v3-arrive" data-reveal>
-        <h2 class="section-title">What changed</h2>
-        <p class="lead v3-changed__lead">
-          Everything you wrote is where you left it. These are the parts that moved, and where
-          each one went.
-        </p>
-      </div>
-
-      <div class="v3-changed__shotwrap" data-reveal="scale" style="--reveal-delay: 60ms;">
-        <div class="v3-changed__shot-frame">
-          <OptimizedImage
-            class="v3-changed__shot"
-            src="/harvous-3-comparison.png"
-            alt="Derek walking through Harvous 2 next to Harvous 3, comparing the sidebar-era My Home view with the new Activity view."
-            width={1366}
-            height={828}
-            loading="lazy"
-          />
-          <HeroVideoLightbox src="/harvous-3-tour.mp4" label="Watch the 10 min comparison" />
+      <Row ratio="7-5" align="center" gap="lg" class="v3-changed__intro">
+        <div class="v3-changed__head v3-arrive" data-reveal>
+          <h2 class="section-title">What changed</h2>
+          <p class="lead v3-changed__lead">
+            Everything you wrote is where you left it. These are the parts that moved, and where
+            each one went.
+          </p>
         </div>
-      </div>
+
+        <div class="v3-changed__shotwrap" data-reveal="scale" style="--reveal-delay: 60ms;">
+          <div class="v3-changed__shot-frame">
+            <OptimizedImage
+              class="v3-changed__shot"
+              src="/harvous-3-comparison.png"
+              alt="Derek walking through Harvous 2 next to Harvous 3, comparing the sidebar-era My Home view with the new Activity view."
+              width={1366}
+              height={828}
+              loading="lazy"
+            />
+            <HeroVideoLightbox src="/harvous-3-tour.mp4" label="Watch the 10 min comparison" />
+          </div>
+        </div>
+      </Row>
 
       <ul class="v3-moved" role="list" data-reveal="stagger">
         {
@@ -533,21 +536,21 @@ const jsonLd = {
         featuredEssay && (
           <div class="v3-why__essays" data-reveal="scale" style="--reveal-delay: 60ms;">
             <div class="v3-why__essays-head">
-              <h3 class="v3-why__essays-title">The long version</h3>
+              <h3 class="v3-why__essays-title">Read the reasoning in full</h3>
               <p class="v3-why__essays-lead">Two essays, in the order to read them.</p>
             </div>
-            <BlogCard
-              title={featuredEssay.data.title}
-              description={featuredEssay.data.description}
-              publishDate={featuredEssay.data.publishDate}
-              category={featuredEssay.data.category}
-              slug={featuredEssay.id}
-              readingTime={blogReadingMinutes(featuredEssay.body)}
-              draft={featuredEssay.data.draft}
-              variant="featured"
-            />
-            {restEssays[0] && (
-              <div class="v3-why__pair">
+            <div class="v3-why__pair">
+              <BlogCard
+                title={featuredEssay.data.title}
+                description={featuredEssay.data.description}
+                publishDate={featuredEssay.data.publishDate}
+                category={featuredEssay.data.category}
+                slug={featuredEssay.id}
+                readingTime={blogReadingMinutes(featuredEssay.body)}
+                draft={featuredEssay.data.draft}
+                variant="featured"
+              />
+              {restEssays[0] && (
                 <BlogCard
                   title={restEssays[0].data.title}
                   description={restEssays[0].data.description}
@@ -556,10 +559,10 @@ const jsonLd = {
                   slug={restEssays[0].id}
                   readingTime={blogReadingMinutes(restEssays[0].body)}
                   draft={restEssays[0].data.draft}
-                  variant="story"
+                  variant="featured"
                 />
-              </div>
-            )}
+              )}
+            </div>
             <p class="v3-why__more">
               <a href="/blog/how-we-think" class="btn-pill inline-flex items-center gap-1.5">
                 More from How we think
@@ -886,7 +889,7 @@ const jsonLd = {
     left: 1.15rem;
     z-index: 2;
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
     font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
@@ -961,14 +964,13 @@ const jsonLd = {
     max-width: 32rem;
   }
 
-  /* The comparison video — same frame recipe as the blog bridge's shot: a
-     bordered, shadowed panel with the play callout floating over it. Its own
-     recording (gradient ground, webcam corner) is already a finished
-     composition, so the frame just gives it an edge rather than cropping it. */
+  /* A thumbnail beside the head, not a hero below it — same frame recipe as
+     the blog bridge's shot (bordered, shadowed, the play callout floating
+     over it), sized down so it reads as "here's proof" next to the words
+     rather than a second headline moment competing with the section above. */
   .v3-changed__shotwrap {
-    margin-top: clamp(2.25rem, 5vw, 3.25rem);
     width: 100%;
-    max-width: 48rem;
+    max-width: 22rem;
   }
   .v3-changed__shot-frame {
     position: relative;
@@ -1112,9 +1114,15 @@ const jsonLd = {
   }
   /* One story left once the third essay dropped out — centered at roughly
      the width its column held in the old two-up row, not stretched full. */
+  /* Two essays, equal weight — the "featured" card doing double duty rather
+     than one large card plus a small one underneath it. */
   .v3-why__pair {
-    max-width: 26rem;
-    margin: clamp(1rem, 2vw, 1.5rem) auto 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .v3-why__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   .v3-why__more {
     margin: 1.5rem 0 0;
