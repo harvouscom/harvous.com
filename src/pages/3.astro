@@ -293,17 +293,31 @@ const jsonLd = {
               <stop offset="7%" stop-color="#2bb5ff" />
               <stop offset="93%" stop-color="#006eff" />
             </linearGradient>
+            <!--
+              The same two blues on a different axis. Cross-fading to this and
+              back is what makes the light look like it is moving: SVG gradient
+              geometry is attributes, not CSS, so gradientTransform and x1/y1/
+              x2/y2 cannot be animated by a stylesheet — but the opacity of a
+              second copy of the glyph wearing it can be, and two smooth
+              gradients blended give another smooth gradient.
+            -->
+            <linearGradient id="v3-numeral-grad-drift" x1="0.42" y1="0.06" x2="0" y2="1">
+              <stop offset="7%" stop-color="#2bb5ff" />
+              <stop offset="93%" stop-color="#006eff" />
+            </linearGradient>
+            <!--
+              The glyph itself, defined once and worn twice. Carries no fill or
+              stroke of its own so each `use` can set them in CSS; a
+              presentation attribute here would beat anything inherited and both
+              copies would look identical. pathLength normalises the draw's dash
+              maths.
+            -->
+            <path id="v3-numeral-glyph" pathLength="1" d="M509 1474Q362 1474 261 1436Q161 1398 100 1337Q39 1276 14 1214Q-11 1156 9 1094Q30 1033 81 1008Q132 983 181 996Q231 1010 262 1058Q278 1092 302 1122Q327 1152 367 1170Q406 1188 471 1188Q545 1188 599 1142Q654 1096 654 1012Q654 936 598 889Q543 842 434 842H412Q361 842 327 805Q293 768 293 718Q293 668 327 631Q362 594 414 594H435Q534 594 580 552Q625 508 625 444Q625 370 582 330Q539 290 470 290Q420 290 389 302Q359 314 334 338Q310 362 291 395Q262 436 214 448Q166 462 116 439Q65 416 45 359Q25 301 55 242Q89 176 150 120Q212 64 298 32Q385 0 512 0Q703 0 825 96Q947 192 947 359Q947 468 889 552Q830 636 722 674Q849 702 927 796Q1006 889 1006 1026Q1006 1218 868 1346Q730 1474 509 1474Z" />
           </defs>
-          <path
-            class="v3-hero__numeral-path"
-            pathLength="1"
-            fill="url(#v3-numeral-grad)"
-            stroke="url(#v3-numeral-grad)"
-            stroke-width="28"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M509 1474Q362 1474 261 1436Q161 1398 100 1337Q39 1276 14 1214Q-11 1156 9 1094Q30 1033 81 1008Q132 983 181 996Q231 1010 262 1058Q278 1092 302 1122Q327 1152 367 1170Q406 1188 471 1188Q545 1188 599 1142Q654 1096 654 1012Q654 936 598 889Q543 842 434 842H412Q361 842 327 805Q293 768 293 718Q293 668 327 631Q362 594 414 594H435Q534 594 580 552Q625 508 625 444Q625 370 582 330Q539 290 470 290Q420 290 389 302Q359 314 334 338Q310 362 291 395Q262 436 214 448Q166 462 116 439Q65 416 45 359Q25 301 55 242Q89 176 150 120Q212 64 298 32Q385 0 512 0Q703 0 825 96Q947 192 947 359Q947 468 889 552Q830 636 722 674Q849 702 927 796Q1006 889 1006 1026Q1006 1218 868 1346Q730 1474 509 1474Z"
-          />
+
+          <use class="v3-hero__numeral-path" href="#v3-numeral-glyph" />
+          <!-- The same glyph again, lit from elsewhere, fading over the one below. -->
+          <use class="v3-hero__numeral-drift" href="#v3-numeral-glyph" />
         </svg>
         <!--
           The copy arrives after the numeral has filled (its fill starts at
@@ -601,6 +615,30 @@ const jsonLd = {
        not wallpaper. The ::before inside paints the squares (global.css). */
     mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
     -webkit-mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
+    /* So the shifted mask below tiles nothing. */
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+  /*
+    The pool of visible ruling drifts on the numeral's fourteen seconds, so the
+    two read as one light source. The ruling itself never moves — travelling
+    lines are conspicuous, which would undo the point of it.
+
+    mask-position, not the gradient's own `at`: gradient images interpolate
+    discretely, so animating mask-image snaps between the two halfway through
+    instead of drifting. Pixels rather than percentages, because the mask is
+    exactly the size of its box and percentage offsets would resolve against
+    zero free space.
+  */
+  @keyframes v3-grid-drift {
+    0%, 100% {
+      mask-position: -14px 10px;
+      -webkit-mask-position: -14px 10px;
+    }
+    50% {
+      mask-position: 14px -10px;
+      -webkit-mask-position: 14px -10px;
+    }
   }
   @keyframes v3-grid-in {
     from { opacity: 0; }
@@ -642,6 +680,12 @@ const jsonLd = {
     fades out with it, so nothing sits outside the glyph's true edge at rest.
   */
   .v3-hero__numeral-path {
+    /* On the element rather than the glyph in defs, so the drift can wear its own. */
+    fill: url(#v3-numeral-grad);
+    stroke: url(#v3-numeral-grad);
+    stroke-width: 28;
+    stroke-linecap: round;
+    stroke-linejoin: round;
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
     fill-opacity: 0;
@@ -658,6 +702,27 @@ const jsonLd = {
       fill-opacity: 1;
       stroke-opacity: 0;
     }
+  }
+  /*
+    The light on the numeral keeps moving, very slowly, once it has arrived.
+
+    A second copy lit along a different axis, fading in and back out over
+    fourteen seconds. What the eye reads is not a second object but the light on
+    the first one swinging — nothing arrives or leaves, so it runs continuously
+    with no rest gap and nothing to follow.
+
+    Matches the welcome sheet in the app (.proto-welcome3__numeral-drift). If one
+    moves, move both.
+  */
+  .v3-hero__numeral-drift {
+    fill: url(#v3-numeral-grad-drift);
+    fill-opacity: 0;
+    /* Starts once the draw and fill have finished and had a beat to settle. */
+    animation: v3-numeral-drift 14000ms ease-in-out 2400ms infinite;
+  }
+  @keyframes v3-numeral-drift {
+    0%, 100% { fill-opacity: 0; }
+    50% { fill-opacity: 1; }
   }
   .v3-hero__lead {
     margin: clamp(1.25rem, 3vw, 2rem) 0 0;
@@ -705,6 +770,11 @@ const jsonLd = {
       stroke-dashoffset: 0;
       fill-opacity: 1;
       stroke-opacity: 0;
+    }
+    /* Settles on the first lighting and stays there. */
+    .v3-hero__numeral-drift {
+      animation: none;
+      fill-opacity: 0;
     }
   }
 
@@ -1149,9 +1219,13 @@ const jsonLd = {
     :global(html.js) .v3-arrive[data-reveal].revealed {
       filter: blur(0);
     }
-    /* The ruled paper emerges after the page opens on clean white. */
+    /* The ruled paper emerges after the page opens on clean white, then keeps
+       drifting. Two animations on one declaration — separate properties
+       (opacity, mask-position), so they do not fight. */
     .v3-hero__grid {
-      animation: v3-grid-in 1800ms ease-out 200ms both;
+      animation:
+        v3-grid-in 1800ms ease-out 200ms both,
+        v3-grid-drift 14000ms ease-in-out 2400ms infinite;
     }
   }
 </style>
