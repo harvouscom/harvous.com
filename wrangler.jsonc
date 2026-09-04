@@ -31,13 +31,14 @@
   },
 
   // Church interest submissions (replaces Netlify Forms).
-  // Create once, then paste the id here:  npx wrangler d1 create harvous-com
-  // Apply the schema:                     npx wrangler d1 migrations apply harvous-com --remote
+  // Schema lives in cloudflare/migrations/; CI applies pending ones before
+  // each deploy. To apply by hand:
+  //   npx wrangler d1 migrations apply harvous-com --remote
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "harvous-com",
-      "database_id": "PLACEHOLDER_RUN_WRANGLER_D1_CREATE",
+      "database_id": "e8ec3027-a343-465d-8a14-0660d3d02c17",
       "migrations_dir": "cloudflare/migrations"
     }
   ],
@@ -60,7 +61,7 @@
         {
           "binding": "DB",
           "database_name": "harvous-com-staging",
-          "database_id": "PLACEHOLDER_RUN_WRANGLER_D1_CREATE",
+          "database_id": "3da3247a-6189-4be7-b5f6-854e771d33d3",
           "migrations_dir": "cloudflare/migrations"
         }
       ]
