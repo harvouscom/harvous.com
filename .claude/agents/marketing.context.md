@@ -47,4 +47,4 @@ Quick recall:
 - How we think field note shipped 2026-07-26: `remembering-is-the-point` (notes ≠ goal; own study Bible; today + church-education direction)
 - Retention deep dive shipped 2026-07-28: `why-scripture-engagement-stalls` (CBE 4-day wall, ABS Bible Disengaged, Barna young-adult rebound; no uncitable 79.5% app-download claim). Lives on About via `AboutResearchGap` (stats + essay + links to `/#included` and `/features/`) — not on the homepage.
 - 25 blog posts total; thumbs via `npm run blog:thumbs`
-- Feature tour: Remotion project in `video/` renders `media/touring-harvous-short.mp4` (~5 min, served from R2); chronological cut with folders/search/share; Google Sans labels; Plyr lightbox CTA “Watch the tour”
+- Feature tour: Remotion project in `video/` renders `public/touring-harvous-short.mp4` (~5 min; Cloudflare serves it from R2); chronological cut with folders/search/share; Google Sans labels; Plyr lightbox CTA “Watch the tour”

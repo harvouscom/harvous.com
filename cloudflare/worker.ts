@@ -80,8 +80,13 @@ const SUCCESS_PATH = '/for/churches/?submitted=1#interest';
  *
  * R2 does ranged reads, so the fix is to serve these two files from a bucket
  * and pass the Range header through. The URLs are unchanged — the components
- * still link `/touring-harvous-short.mp4` — because the files simply stopped
- * being assets, which is enough for the request to reach the Worker.
+ * still link `/touring-harvous-short.mp4`.
+ *
+ * The files are ALSO in public/, and so in dist/, which looks redundant and is:
+ * that copy exists only for Netlify, which serves them as ordinary files (with
+ * its own byte-range support) for as long as it is the rollback. Cloudflare
+ * never reads it, because `run_worker_first` names these paths and runs ahead
+ * of the asset router. After the DNS cutover the copy in public/ should go.
  */
 const MEDIA_KEYS = new Set(['touring-harvous-short.mp4', 'harvous-3-walkthrough.mp4']);
 

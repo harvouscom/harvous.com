@@ -15,9 +15,9 @@ Output is written to `dist/`. Preview locally with `npm run preview`.
 
 Netlify builds from the repo root (`netlify.toml` at project root). Connect this repo in the Netlify dashboard and point the `harvous.com` domain to the site.
 
-**Video:** the two videos the site plays are **not** site assets. They live in `media/` (Git LFS) and are served from the R2 bucket `harvous-com-media` by the Worker — see `serveMedia` in [`cloudflare/worker.ts`](cloudflare/worker.ts). Their URLs are unchanged (`/touring-harvous-short.mp4`).
+**Video:** the two videos ship in `public/` (Git LFS) **and** live in the R2 bucket `harvous-com-media`. That duplication is deliberate and temporary.
 
-This is not a size workaround, it is a correctness one. Workers static assets sets `Accept-Ranges` on nothing and answers every Range request with the whole file, which leaves `video.seekable` empty in the browser — a viewer cannot skip ahead in the five-minute tour. R2 does ranged reads, so the Worker passes the Range header through and returns a real `206`.
+Netlify serves them as ordinary files, with byte-range support, and can only serve what is in the build. Cloudflare cannot: Workers static assets sets `Accept-Ranges` on nothing and answers every Range request with the whole file, which leaves `video.seekable` empty in the browser — a viewer cannot skip ahead in the five-minute tour. So on Cloudflare the Worker claims those paths via `run_worker_first` and serves them from R2 with the Range header passed through, and the copy in `dist/` is never read. See `serveMedia` in [`cloudflare/worker.ts`](cloudflare/worker.ts).
 
 After changing a video, upload it and then deploy:
 
@@ -25,7 +25,7 @@ After changing a video, upload it and then deploy:
 npm run media:upload
 ```
 
-Nothing in Git LFS ships in `dist/` any more — the videos are in R2 and the Remotion source footage never was a site asset — so CI does no LFS fetch at all.
+**After the DNS cutover:** delete the videos from `public/`, drop the LFS step from the deploy workflow, and the duplication goes with them.
 
 **Node:** Use Node 22 locally (see `.nvmrc` and `netlify.toml`). Netlify sets `NODE_VERSION = "22"`.
 

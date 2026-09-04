@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 # Push media/ into the R2 bucket the Worker serves it from.
 #
-# These files are not site assets any more — they never enter dist/. The repo
-# is still where they are versioned (Git LFS); R2 is only where they are
-# served from, because static assets cannot do byte ranges and video without
-# ranges cannot be seeked. See serveMedia in cloudflare/worker.ts.
+# The videos live in public/ AND in R2, on purpose, for as long as Netlify is
+# the rollback. Netlify can only serve what is in the build, and it does byte
+# ranges natively. Cloudflare cannot — static assets have no range support —
+# so its Worker intercepts these paths ahead of the asset router and serves
+# them from R2 instead. See serveMedia in cloudflare/worker.ts.
+#
+# AFTER THE DNS CUTOVER: delete them from public/, drop the LFS fetch from
+# .github/workflows/cloudflare-deploy.yml, and point this script at wherever
+# they end up living. The copy in dist/ is dead weight the moment Netlify is
+# retired.
 #
 # Run after changing a video, then deploy. Uploading is idempotent.
 #
@@ -23,7 +29,7 @@ TARGET="--remote"
 [ "${1:-}" = "--local" ] && TARGET="--local"
 
 for name in "${FILES[@]}"; do
-  path="$ROOT/media/$name"
+  path="$ROOT/public/$name"
   [ -f "$path" ] || { echo "missing: $path" >&2; exit 1; }
   # A Git LFS pointer is a few hundred bytes of text; uploading one would
   # replace the video with gibberish and the failure would be silent.
