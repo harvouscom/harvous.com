@@ -1,6 +1,6 @@
 # Harvous feature tour (Remotion)
 
-Polished cut of the long founder tour (`../public/touring-new-harvous-share.mp4`) for the marketing site lightbox.
+Polished cut of the long founder tour (`footage/touring-new-harvous-share.mp4`) for the marketing site lightbox.
 
 Target length: **~3–5 minutes** of feature-focused footage with intro/outro cards and soft crossfades.
 
@@ -9,7 +9,7 @@ Target length: **~3–5 minutes** of feature-focused footage with intro/outro ca
 ```bash
 cd video
 npm i
-# Footage: ../public/touring-new-harvous-share.mp4 (via remotion.config publicDir)
+# Footage: footage/touring-new-harvous-share.mp4 (via remotion.config publicDir)
 ```
 
 ## Preview

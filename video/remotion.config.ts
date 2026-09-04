@@ -12,5 +12,7 @@ import { enableTailwind } from "@remotion/tailwind-v4";
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
 Config.overrideWebpackConfig(enableTailwind);
-// Use the marketing site public/ so the long tour LFS asset is available without copying.
-Config.setPublicDir(path.join(process.cwd(), "..", "public"));
+// The source footage lives here, not in the site's public/ — it is a render
+// input, not a site asset, and at 371 MB it exceeds Cloudflare's 25 MiB
+// per-asset limit. staticFile() resolves against this directory.
+Config.setPublicDir(path.join(process.cwd(), "footage"));

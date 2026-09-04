@@ -2,7 +2,7 @@ import type { IconName } from "./icons";
 
 /**
  * Feature-focused edit of the long Harvous tour.
- * Source times are seconds in `../public/touring-new-harvous-share.mp4`.
+ * Source times are seconds in `../footage/touring-new-harvous-share.mp4`.
  * Ends land on complete sentences; END_PAD_SEC holds after the last word.
  */
 

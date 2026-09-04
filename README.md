@@ -15,7 +15,9 @@ Output is written to `dist/`. Preview locally with `npm run preview`.
 
 Netlify builds from the repo root (`netlify.toml` at project root). Connect this repo in the Netlify dashboard and point the `harvous.com` domain to the site.
 
-**Git LFS:** `public/*.mp4` is tracked with Git LFS. The site tour CTA uses `touring-harvous-short.mp4` (Remotion cut of the long tour — see [`video/`](video/)). Enable [Netlify Git LFS support](https://docs.netlify.com/git/large-media/setup/) (or ensure LFS files are fetched at build time) so the video is present in `dist/`.
+**Git LFS:** `*.mp4` is tracked with Git LFS, and the build must fetch it — a checkout that skips LFS ships pointer files, so the site would serve a few hundred bytes of text as its video. Netlify needs [Git LFS support](https://docs.netlify.com/git/large-media/setup/) enabled; the Cloudflare workflow runs `git lfs pull --include="public/*.mp4"`.
+
+Only `public/` ships. The founder tour's source footage lives in [`video/footage/`](video/) because it is a render input, not a site asset — and at 371 MB it is well past Cloudflare's 25 MiB per-asset limit. The site tour CTA uses `public/touring-harvous-short.mp4`, the Remotion cut of it (see [`video/`](video/)).
 
 **Node:** Use Node 22 locally (see `.nvmrc` and `netlify.toml`). Netlify sets `NODE_VERSION = "22"`.
 
