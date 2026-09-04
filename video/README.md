@@ -26,7 +26,16 @@ Opens Remotion Studio for the `HarvousTour` composition.
 npm run render:site
 ```
 
-Writes `../public/touring-harvous-short.mp4` (Git LFS).
+Renders to `out/tour-full.mp4`, then compresses that into
+`../public/touring-harvous-short.mp4` (Git LFS) via
+[`scripts/compress-tour-video.sh`](../scripts/compress-tour-video.sh).
+
+The compression step is not optional polish. Cloudflare Workers static assets
+refuses to upload — or serve, under `wrangler dev` — any file over 25 MiB, and
+a straight Remotion render of this cut lands around 63 MB. The script does a
+two-pass x264 encode at a bitrate computed from a 23 MiB target (headroom under
+the limit) and exits non-zero if the result still crosses 25 MiB. Requires
+`ffmpeg`.
 
 Or render locally only:
 
