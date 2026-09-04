@@ -1,0 +1,127 @@
+---
+/**
+ * Harvous3Numeral — the "3" from /3/'s hero: the outline of Google Sans Flex
+ * at ROND 100 / weight 700, extracted with fontTools so it is the same shape
+ * the text rendering would be, drawn as an SVG so it can trace in on load —
+ * the stroke draws the outline, the accent gradient fills in behind it, and
+ * the stroke fades so the final weight is exactly the glyph's. A second copy
+ * lit along a different axis keeps a slow light drift once it has arrived.
+ *
+ * Shared so every reuse of the numeral (the /3/ hero, the homepage's callout
+ * card into it) wears the exact same glyph and motion, just resized — not a
+ * lookalike redrawn per caller. Sized by the `size` prop rather than a class,
+ * since a caller reaching into an SVG this deeply would need `:global()` on
+ * every rule; a CSS length on the root sidesteps that entirely.
+ */
+interface Props {
+  size: string;
+}
+const { size } = Astro.props;
+---
+
+<svg
+  class="h3-numeral"
+  viewBox="-24 -24 1054 1522"
+  style={`width: ${size};`}
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <!-- --accent-btn-bg: linear-gradient(171deg, #2bb5ff 7%, #006eff 93%). -->
+    <linearGradient id="h3-numeral-grad" x1="0" y1="0" x2="0.16" y2="1">
+      <stop offset="7%" stop-color="#2bb5ff" />
+      <stop offset="93%" stop-color="#006eff" />
+    </linearGradient>
+    <!--
+      The same two blues on a different axis. Cross-fading to this and back is
+      what makes the light look like it is moving: SVG gradient geometry is
+      attributes, not CSS, so gradientTransform and x1/y1/x2/y2 cannot be
+      animated by a stylesheet — but the opacity of a second copy of the glyph
+      wearing it can be, and two smooth gradients blended give another smooth
+      gradient.
+    -->
+    <linearGradient id="h3-numeral-grad-drift" x1="0.42" y1="0.06" x2="0" y2="1">
+      <stop offset="7%" stop-color="#2bb5ff" />
+      <stop offset="93%" stop-color="#006eff" />
+    </linearGradient>
+    <!--
+      The glyph itself, defined once and worn twice. Carries no fill or stroke
+      of its own so each `use` can set them in CSS; a presentation attribute
+      here would beat anything inherited and both copies would look identical.
+      pathLength normalises the draw's dash maths.
+    -->
+    <path id="h3-numeral-glyph" pathLength="1" d="M509 1474Q362 1474 261 1436Q161 1398 100 1337Q39 1276 14 1214Q-11 1156 9 1094Q30 1033 81 1008Q132 983 181 996Q231 1010 262 1058Q278 1092 302 1122Q327 1152 367 1170Q406 1188 471 1188Q545 1188 599 1142Q654 1096 654 1012Q654 936 598 889Q543 842 434 842H412Q361 842 327 805Q293 768 293 718Q293 668 327 631Q362 594 414 594H435Q534 594 580 552Q625 508 625 444Q625 370 582 330Q539 290 470 290Q420 290 389 302Q359 314 334 338Q310 362 291 395Q262 436 214 448Q166 462 116 439Q65 416 45 359Q25 301 55 242Q89 176 150 120Q212 64 298 32Q385 0 512 0Q703 0 825 96Q947 192 947 359Q947 468 889 552Q830 636 722 674Q849 702 927 796Q1006 889 1006 1026Q1006 1218 868 1346Q730 1474 509 1474Z" />
+  </defs>
+
+  <use class="h3-numeral__path" href="#h3-numeral-glyph" />
+  <!-- The same glyph again, lit from elsewhere, fading over the one below. -->
+  <use class="h3-numeral__drift" href="#h3-numeral-glyph" />
+</svg>
+
+<style>
+  .h3-numeral {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+  /*
+    Draw, then fill. pathLength="1" normalises the dash math so the offset is a
+    fraction rather than the real length. The fill starts while the stroke is
+    still finishing — the two overlap rather than hand off — and the stroke
+    fades out with it, so nothing sits outside the glyph's true edge at rest.
+  */
+  .h3-numeral__path {
+    /* On the element rather than the glyph in defs, so the drift can wear its own. */
+    fill: url(#h3-numeral-grad);
+    stroke: url(#h3-numeral-grad);
+    stroke-width: 28;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    fill-opacity: 0;
+    stroke-opacity: 1;
+    animation:
+      h3-numeral-draw 1400ms cubic-bezier(0.65, 0, 0.35, 1) 150ms both,
+      h3-numeral-fill 800ms cubic-bezier(0.22, 1, 0.36, 1) 1250ms both;
+  }
+  @keyframes h3-numeral-draw {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes h3-numeral-fill {
+    to {
+      fill-opacity: 1;
+      stroke-opacity: 0;
+    }
+  }
+  /*
+    The light on the numeral keeps moving, very slowly, once it has arrived.
+    A second copy lit along a different axis, fading in and back out over
+    fourteen seconds. What the eye reads is not a second object but the light
+    on the first one swinging — nothing arrives or leaves, so it runs
+    continuously with no rest gap and nothing to follow.
+  */
+  .h3-numeral__drift {
+    fill: url(#h3-numeral-grad-drift);
+    fill-opacity: 0;
+    animation: h3-numeral-drift 14000ms ease-in-out 2400ms infinite;
+  }
+  @keyframes h3-numeral-drift {
+    0%, 100% { fill-opacity: 0; }
+    50% { fill-opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* Arrive filled. No trace, no fade. */
+    .h3-numeral__path {
+      animation: none;
+      stroke-dashoffset: 0;
+      fill-opacity: 1;
+      stroke-opacity: 0;
+    }
+    /* Settles on the first lighting and stays there. */
+    .h3-numeral__drift {
+      animation: none;
+      fill-opacity: 0;
+    }
+  }
+</style>
