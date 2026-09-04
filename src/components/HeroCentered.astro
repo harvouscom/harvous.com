@@ -9,13 +9,37 @@ import Container from "./layout/Container.astro";
 import HeroPillCycle from "./HeroPillCycle.astro";
 import HeroVideoLightbox from "./HeroVideoLightbox.astro";
 import OptimizedImage from "./OptimizedImage.astro";
+import Harvous3Numeral from "./Harvous3Numeral.astro";
 import { fathomCta, fathomTry } from "../lib/fathom-events.ts";
 import { buildTryUrl } from "../lib/signup-url.ts";
+import { isDraftPageSlug } from "../lib/draft-pages.ts";
 ---
 
 <section class="hero">
   <Container size="xl">
     <div class="hero__inner">
+      {
+        /* Points at /3/ — hidden while that page is still a draft (same guard
+           AppTour's own link uses), since it's stripped from the build until then. */
+        !isDraftPageSlug("3") && (
+          <a class="hero__announce" href="/3/" data-reveal data-fathom-track={fathomCta.v3Announce}>
+            <span class="hero__announce-grid" aria-hidden="true" />
+            <span class="hero__announce-copy">
+              Harvous{" "}
+              <span class="hero__announce-numeral">
+                {/* The exact numeral from /3/'s hero, standing in for the digit
+                    itself — same glyph, same trace-in and drift, not a second
+                    "3" beside a plain one. Decorative; the sr-only text carries
+                    the character for anyone not seeing it drawn. */}
+                <Harvous3Numeral size="0.8em" />
+                <span class="sr-only">3</span>
+              </span>{" "}
+              is here. See what's new
+            </span>
+            <svg class="hero__announce-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+          </a>
+        )
+      }
       <h1 class="hero__title" data-reveal>
         <span class="hero__line">Make a study Bible</span>
         <span class="hero__line hero__line--with-pill">
@@ -80,6 +104,83 @@ import { buildTryUrl } from "../lib/signup-url.ts";
     text-align: center;
     padding-top: clamp(3rem, 7vw, 5.5rem);
     padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  /* A small entry point into /3/, styled after that page's own hero: the
+     numeral in the app's rounded cut, and the same square-ruled ground
+     /release-notes/ and /3/'s hero sit on — scaled down and self-contained
+     instead of bleeding to the frame rails. */
+  .hero__announce {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 150ms ease, border-color 150ms ease;
+  }
+  .hero__announce:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-rule));
+  }
+  .hero__announce:hover .hero__announce-arrow {
+    transform: translateX(2px);
+  }
+  .hero__announce-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    container-type: inline-size;
+    mask-image: radial-gradient(90% 140% at 12% 50%, #000 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(90% 140% at 12% 50%, #000 30%, transparent 100%);
+  }
+  .hero__announce-grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* Same ratio /3/'s own grid uses (--color-rule at 38%) — gray ruling, not
+       an accent tint. */
+    --announce-grid-size: calc(100cqw / round(nearest, 100cqw / 14px, 1));
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--color-rule) 38%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--color-rule) 38%, transparent) 1px, transparent 1px);
+    background-size: var(--announce-grid-size) var(--announce-grid-size);
+  }
+  .hero__announce-numeral {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -0.1em;
+  }
+  .hero__announce-copy {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+  .hero__announce-arrow {
+    position: relative;
+    z-index: 1;
+    width: 0.7rem;
+    height: 0.7rem;
+    flex-shrink: 0;
+    color: var(--color-ink-faint);
+    transition: transform 150ms ease;
+  }
+  @media (max-width: 479px) {
+    .hero__announce-copy {
+      white-space: normal;
+    }
   }
 
   .hero__title {

@@ -62,4 +62,6 @@ export const fathomCta = {
   featuresAnchor: "cta_features",
   faqAnchor: "cta_faq",
   videoTour: "video_tour_click",
+  /** Homepage hero — the small "Harvous 3 is here" callout linking to /3/. */
+  v3Announce: "cta_v3_announce",
 } as const;

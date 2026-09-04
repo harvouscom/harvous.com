@@ -26,6 +26,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
 import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
+import Harvous3Numeral from "../components/Harvous3Numeral.astro";
 import CTAButton from "../components/CTAButton.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import BlogCard from "../components/BlogCard.astro";
@@ -269,56 +270,16 @@ const jsonLd = {
   }
 
   <!--
-    Hero. The numeral is the font's own "3" — the outline of Google Sans Flex
-    at ROND 100 / weight 700, extracted with fontTools so it is the same shape
-    the text rendering was — drawn as an SVG so it can trace in on load: the
-    stroke draws the outline, the accent gradient fills in behind it, and the
-    stroke fades so the final weight is exactly the glyph's. Decorative; the
-    h1 is the line beneath it. The square grid behind is the ground
-    /release-notes/ sits on, masked so it fades before the frame rails.
+    Hero. The numeral is Harvous3Numeral — the font's own "3", traced in as an
+    SVG. Decorative; the h1 is the line beneath it. The square grid behind is
+    the ground /release-notes/ sits on, masked so it fades before the frame
+    rails.
   -->
   <section class="v3-hero">
     <div class="release-notes-frame__grid v3-hero__grid" aria-hidden="true"></div>
     <Container size="xl">
       <div class="v3-hero__inner">
-        <svg
-          class="v3-hero__numeral"
-          viewBox="-24 -24 1054 1522"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <defs>
-            <!-- --accent-btn-bg: linear-gradient(171deg, #2bb5ff 7%, #006eff 93%). -->
-            <linearGradient id="v3-numeral-grad" x1="0" y1="0" x2="0.16" y2="1">
-              <stop offset="7%" stop-color="#2bb5ff" />
-              <stop offset="93%" stop-color="#006eff" />
-            </linearGradient>
-            <!--
-              The same two blues on a different axis. Cross-fading to this and
-              back is what makes the light look like it is moving: SVG gradient
-              geometry is attributes, not CSS, so gradientTransform and x1/y1/
-              x2/y2 cannot be animated by a stylesheet — but the opacity of a
-              second copy of the glyph wearing it can be, and two smooth
-              gradients blended give another smooth gradient.
-            -->
-            <linearGradient id="v3-numeral-grad-drift" x1="0.42" y1="0.06" x2="0" y2="1">
-              <stop offset="7%" stop-color="#2bb5ff" />
-              <stop offset="93%" stop-color="#006eff" />
-            </linearGradient>
-            <!--
-              The glyph itself, defined once and worn twice. Carries no fill or
-              stroke of its own so each `use` can set them in CSS; a
-              presentation attribute here would beat anything inherited and both
-              copies would look identical. pathLength normalises the draw's dash
-              maths.
-            -->
-            <path id="v3-numeral-glyph" pathLength="1" d="M509 1474Q362 1474 261 1436Q161 1398 100 1337Q39 1276 14 1214Q-11 1156 9 1094Q30 1033 81 1008Q132 983 181 996Q231 1010 262 1058Q278 1092 302 1122Q327 1152 367 1170Q406 1188 471 1188Q545 1188 599 1142Q654 1096 654 1012Q654 936 598 889Q543 842 434 842H412Q361 842 327 805Q293 768 293 718Q293 668 327 631Q362 594 414 594H435Q534 594 580 552Q625 508 625 444Q625 370 582 330Q539 290 470 290Q420 290 389 302Q359 314 334 338Q310 362 291 395Q262 436 214 448Q166 462 116 439Q65 416 45 359Q25 301 55 242Q89 176 150 120Q212 64 298 32Q385 0 512 0Q703 0 825 96Q947 192 947 359Q947 468 889 552Q830 636 722 674Q849 702 927 796Q1006 889 1006 1026Q1006 1218 868 1346Q730 1474 509 1474Z" />
-          </defs>
-
-          <use class="v3-hero__numeral-path" href="#v3-numeral-glyph" />
-          <!-- The same glyph again, lit from elsewhere, fading over the one below. -->
-          <use class="v3-hero__numeral-drift" href="#v3-numeral-glyph" />
-        </svg>
+        <Harvous3Numeral size="clamp(8rem, 25vw, 25rem)" />
         <!--
           The copy arrives after the numeral has filled (its fill starts at
           1.25s), not while the outline is still tracing — one thing at a time.
@@ -655,75 +616,12 @@ const jsonLd = {
     padding-bottom: clamp(2.5rem, 5vw, 4rem);
   }
   /*
-    The glyph is 1474 units tall on a 2000 em, so the text "3" at
-    clamp(10rem, 30vw, 21rem) stood 0.737 of that: this keeps the SVG at the
-    same 118px / 22vw / 248px the type occupied. The viewBox is padded by the
-    stroke width so the outline is never clipped at the glyph's bounds.
-  */
-  /*
-    Sized by width, not height, because the constraint that matters is the
-    heading beneath it: the numeral grows until it is nearly as wide as
-    "Harvous 3 is here." and stops. The h1 is one fixed line at
+    Harvous3Numeral is sized by width, not height, because the constraint that
+    matters is the heading beneath it: the numeral grows until it is nearly as
+    wide as "Harvous 3 is here." and stops. The h1 is one fixed line at
     clamp(2rem, 4.6vw, 3.5rem), so its width tracks the same curve — the
     numeral stays between 69% and 92% of it from 375px up.
   */
-  .v3-hero__numeral {
-    display: block;
-    width: clamp(8rem, 25vw, 25rem);
-    height: auto;
-    overflow: visible;
-  }
-  /*
-    Draw, then fill. pathLength="1" normalises the dash math so the offset is a
-    fraction rather than the real length. The fill starts while the stroke is
-    still finishing — the two overlap rather than hand off — and the stroke
-    fades out with it, so nothing sits outside the glyph's true edge at rest.
-  */
-  .v3-hero__numeral-path {
-    /* On the element rather than the glyph in defs, so the drift can wear its own. */
-    fill: url(#v3-numeral-grad);
-    stroke: url(#v3-numeral-grad);
-    stroke-width: 28;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    fill-opacity: 0;
-    stroke-opacity: 1;
-    animation:
-      v3-numeral-draw 1400ms cubic-bezier(0.65, 0, 0.35, 1) 150ms both,
-      v3-numeral-fill 800ms cubic-bezier(0.22, 1, 0.36, 1) 1250ms both;
-  }
-  @keyframes v3-numeral-draw {
-    to { stroke-dashoffset: 0; }
-  }
-  @keyframes v3-numeral-fill {
-    to {
-      fill-opacity: 1;
-      stroke-opacity: 0;
-    }
-  }
-  /*
-    The light on the numeral keeps moving, very slowly, once it has arrived.
-
-    A second copy lit along a different axis, fading in and back out over
-    fourteen seconds. What the eye reads is not a second object but the light on
-    the first one swinging — nothing arrives or leaves, so it runs continuously
-    with no rest gap and nothing to follow.
-
-    Matches the welcome sheet in the app (.proto-welcome3__numeral-drift). If one
-    moves, move both.
-  */
-  .v3-hero__numeral-drift {
-    fill: url(#v3-numeral-grad-drift);
-    fill-opacity: 0;
-    /* Starts once the draw and fill have finished and had a beat to settle. */
-    animation: v3-numeral-drift 14000ms ease-in-out 2400ms infinite;
-  }
-  @keyframes v3-numeral-drift {
-    0%, 100% { fill-opacity: 0; }
-    50% { fill-opacity: 1; }
-  }
   .v3-hero__lead {
     margin: clamp(1.25rem, 3vw, 2rem) 0 0;
     /* Wide enough that the line never breaks — it's four short words, and a
@@ -762,20 +660,6 @@ const jsonLd = {
   .v3-hero__cta-icon {
     width: 0.85rem;
     height: 0.85rem;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    /* Arrive filled. No trace, no fade. */
-    .v3-hero__numeral-path {
-      animation: none;
-      stroke-dashoffset: 0;
-      fill-opacity: 1;
-      stroke-opacity: 0;
-    }
-    /* Settles on the first lighting and stays there. */
-    .v3-hero__numeral-drift {
-      animation: none;
-      fill-opacity: 0;
-    }
   }
 
   /* ---------- What's new: the slider ---------- */
