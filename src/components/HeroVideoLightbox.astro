@@ -2,40 +2,35 @@
 import "plyr/dist/plyr.css";
 import { fathomCta } from "../lib/fathom-events.ts";
 
-/*
-  Two sources, one lightbox. `src` is a self-hosted mp4; `youtubeId` is a
-  YouTube video, which Plyr wraps in its own chrome so both look identical
-  once open. Nothing YouTube-owned loads until the trigger is clicked —
-  Plyr builds the iframe when ensurePlayer() first runs — so the page costs
-  no third-party request for a video most visitors never open.
-*/
 interface Props {
-  src?: string;
-  youtubeId?: string;
+  src: string;
   label?: string;
+  /**
+   * "overlay" floats the trigger over a product shot (its parent must be
+   * positioned). "inline" puts it in normal flow as a secondary button, for
+   * places with no screenshot to sit on — a CTA row, say.
+   */
+  variant?: "overlay" | "inline";
 }
 
-const { src, youtubeId, label = "Watch the 5 min tour" } = Astro.props;
-
-if (!src && !youtubeId) {
-  throw new Error("HeroVideoLightbox needs either `src` or `youtubeId`.");
-}
+const { src, label = "Watch the 5 min tour", variant = "overlay" } = Astro.props;
+const isInline = variant === "inline";
 ---
 
-<div class="hero-video" data-hero-video-root>
+<div class:list={["hero-video", isInline && "hero-video--inline"]} data-hero-video-root>
   <button
     type="button"
-    class="hero-video-callout"
+    class:list={[isInline ? "hero-video-inline" : "hero-video-callout"]}
     aria-label={`${label} — opens video in a lightbox`}
     data-hero-video-trigger
     data-fathom-track={fathomCta.videoTour}
   >
-    <span class="hero-video-callout__play" aria-hidden="true">
+    <span class:list={[isInline ? "hero-video-inline__play" : "hero-video-callout__play"]} aria-hidden="true">
       <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
         <path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.2-5.2c.5-.3.5-1 0-1.3L5.7 2.1c-.5-.3-1.2.1-1.2.7z"></path>
       </svg>
     </span>
-    <span class="hero-video-callout__label">{label}</span>
+    <span class:list={[isInline ? "hero-video-inline__label" : "hero-video-callout__label"]}>{label}</span>
   </button>
 
   <div
@@ -53,25 +48,14 @@ if (!src && !youtubeId) {
           <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"></path>
         </svg>
       </button>
-      {
-        youtubeId ? (
-          <div
-            class="hero-video-lightbox__video"
-            data-hero-video-player
-            data-plyr-provider="youtube"
-            data-plyr-embed-id={youtubeId}
-          />
-        ) : (
-          <video
-            class="hero-video-lightbox__video"
-            playsinline
-            preload="metadata"
-            data-hero-video-player
-          >
-            <source src={src} type="video/mp4" />
-          </video>
-        )
-      }
+      <video
+        class="hero-video-lightbox__video"
+        playsinline
+        preload="metadata"
+        data-hero-video-player
+      >
+        <source src={src} type="video/mp4" />
+      </video>
     </div>
   </div>
 </div>
@@ -84,6 +68,62 @@ if (!src && !youtubeId) {
     inset: 0;
     z-index: 2;
     pointer-events: none;
+  }
+  /* In flow, not floating over anything. */
+  .hero-video--inline {
+    position: static;
+    inset: auto;
+    display: contents;
+  }
+
+  /* The site's secondary CTA recipe (CTAButton variant="secondary", size="lg")
+     as a <button>, since this opens a dialog rather than following a link. */
+  .hero-video-inline {
+    /* The root sets pointer-events:none for the overlay case; this is a real
+       button in flow, so it takes them back. */
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    /* CTAButton size="lg" is px-5 py-3 with no border on the primary variant,
+       so its box is 48px. Give the border back its 2px here or this sits a
+       hair taller than the button beside it. */
+    padding: calc(0.75rem - 1px) 1.25rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-rule);
+    background: var(--color-card);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+  .hero-video-inline:hover {
+    background: var(--color-warm);
+    border-color: color-mix(in srgb, var(--color-ink) 16%, var(--color-rule));
+  }
+  .hero-video-inline:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .hero-video-inline__play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    color: #fff;
+    background: var(--accent-btn-bg);
+  }
+  .hero-video-inline__play svg {
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-left: 0.08em;
   }
 
   .hero-video-callout {
@@ -312,7 +352,14 @@ if (!src && !youtubeId) {
       document.body.style.overflow = "hidden";
       closeBtn.focus();
       const plyr = ensurePlayer();
-      void plyr.play().catch(() => {});
+      /*
+        Plyr only returns a Promise once the underlying player is ready; called
+        before that it queues the request and returns nothing, so an
+        unconditional .catch() threw a TypeError on every open. Playback was
+        fine either way — the error was pure console noise, but it was real.
+      */
+      const played = plyr.play();
+      if (played && typeof played.catch === "function") played.catch(() => {});
     };
 
     const close = () => {
