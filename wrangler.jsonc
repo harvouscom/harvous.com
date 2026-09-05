@@ -46,11 +46,9 @@
     // cost is one Worker invocation per view of that single page.
     //
     // The two videos: these lines are what make serveMedia reachable at all.
-    // They matter twice over. `not_found_handling` means the asset router
-    // answers an unmatched path with the 404 page rather than falling through,
-    // so "not an asset" was never enough; and the files are currently IN
-    // dist/ for Netlify's sake, so without these the asset router would serve
-    // them itself — 200, no ranges, the exact bug R2 is here to fix.
+    // `not_found_handling` means the asset router answers an unmatched path
+    // with the 404 page rather than falling through to the Worker, so "not an
+    // asset" is not enough on its own to reach serveMedia.
     "run_worker_first": [
       "/api/*",
       "/for/churches",

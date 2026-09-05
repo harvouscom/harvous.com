@@ -3,15 +3,10 @@
  * form (src/components/ChurchInterestForm.astro) can offer a real typeahead
  * without shipping the partner key to the browser.
  *
- * Runtime-neutral on purpose. The logic lives here; the two entry points are
- * thin shims that differ only in where they read config from:
- *
- *  - cloudflare/worker.ts        — Workers, config from the `env` binding
- *  - netlify/functions/church-search.mts — Netlify, config from `process.env`
- *
- * Both exist through the Cloudflare soak week, when Netlify keeps deploying
- * `main` as the rollback. One of them dies at cleanup; until then neither may
- * hold logic of its own.
+ * Runtime-neutral: the logic lives here and cloudflare/worker.ts is a thin
+ * entry point that supplies config from its `env` binding. It was shared with a
+ * Netlify function until that host was retired, which is why the split exists —
+ * and it is worth keeping, since nothing here needs a runtime to be tested.
  *
  * Two upstream HMC surfaces, chosen by whether a region is given:
  *  - No `state`: the open site search (`/churches/search?q&country&limit`),

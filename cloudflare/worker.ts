@@ -92,11 +92,10 @@ const SUCCESS_PATH = '/for/churches/?submitted=1#interest';
  * and pass the Range header through. The URLs are unchanged — the components
  * still link `/touring-harvous-short.mp4`.
  *
- * The files are ALSO in public/, and so in dist/, which looks redundant and is:
- * that copy exists only for Netlify, which serves them as ordinary files (with
- * its own byte-range support) for as long as it is the rollback. Cloudflare
- * never reads it, because `run_worker_first` names these paths and runs ahead
- * of the asset router. After the DNS cutover the copy in public/ should go.
+ * They are not in dist/ at all — `run_worker_first` names these paths so the
+ * request reaches the Worker, which would otherwise never see them: the asset
+ * router answers before it, and `not_found_handling` means even an unmatched
+ * path gets the 404 page rather than falling through.
  */
 const MEDIA_KEYS = new Set(['touring-harvous-short.mp4', 'harvous-3-walkthrough.mp4']);
 

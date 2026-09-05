@@ -23,19 +23,12 @@ const releaseNoteRedirects = Object.fromEntries(
  * strips the directory. They are noindex, bannered, and out of the sitemap
  * either way — the strip is the last line of defence, not the only one.
  *
- * The two hosts answer this differently while both are live:
- *  - Netlify sets CONTEXT itself (deploy-preview | branch-deploy | production).
- *  - Cloudflare deploys run from GitHub Actions, which sets nothing of the
- *    kind, so .github/workflows/cloudflare-deploy.yml passes KEEP_DRAFT_PAGES
- *    explicitly on staging and leaves it unset on production.
- *
- * Unset on both — a local `npm run build` — strips, which is the safe default
- * and the behaviour this has always had.
+ * .github/workflows/cloudflare-deploy.yml passes KEEP_DRAFT_PAGES on staging
+ * and leaves it unset on production. Unset — which is also a local
+ * `npm run build` — strips, the safe default and what this has always done.
  */
 function keepsDraftPages() {
-  if (process.env.KEEP_DRAFT_PAGES === "1") return true;
-  const netlifyContext = process.env.CONTEXT;
-  return netlifyContext === "deploy-preview" || netlifyContext === "branch-deploy";
+  return process.env.KEEP_DRAFT_PAGES === "1";
 }
 
 /** Remove draft marketing pages from the production static output. */

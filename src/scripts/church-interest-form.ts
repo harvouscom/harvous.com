@@ -1,6 +1,6 @@
 /**
  * Church interest form (src/components/ChurchInterestForm.astro): directory
- * typeahead over Here's My Church (via netlify/functions/church-search.mts),
+ * typeahead over Here's My Church (via /api/church-search),
  * plus the pre-existing role/interests/submit behavior.
  */
 import { HMC_COUNTRIES, getHmcRegionsForCountry, type HmcRegionOption } from "../lib/hmc-directory";

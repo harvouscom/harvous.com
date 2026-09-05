@@ -6,9 +6,6 @@
 #                /3/ can be reviewed before launch, and the Worker stamps
 #                X-Robots-Tag: noindex on everything it serves.
 #
-# Netlify keeps deploying main in parallel as the rollback during the soak
-# week; nothing here touches netlify.toml.
-#
 # Repository secrets required:
 #   CLOUDFLARE_API_TOKEN   — Workers Scripts:Edit and D1:Edit on the account
 #   CLOUDFLARE_ACCOUNT_ID
@@ -48,16 +45,10 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Fetch the site's videos from LFS
-        # Only public/, never video/footage/ — that is 371 MB of Remotion
-        # source which is not a site asset. ~37 MB a run, not ~469 MB.
-        #
-        # Cloudflare does not actually serve these from dist/; its Worker
-        # takes those paths ahead of the asset router and reads R2, because
-        # static assets cannot do byte ranges. They are in the build for
-        # Netlify's sake, which serves them as files and can only serve what
-        # it was given. AFTER THE DNS CUTOVER this step and the files both go.
-        run: git lfs pull --include="public/*.mp4"
+      # No LFS fetch. Every LFS object here is video and none of it ships: the
+      # two the site plays are served from R2 (serveMedia in
+      # cloudflare/worker.ts) and video/footage/ is Remotion source, never a
+      # site asset. 0 MB a run, against ~469 MB when this branch started.
 
       - uses: actions/setup-node@v4
         with:

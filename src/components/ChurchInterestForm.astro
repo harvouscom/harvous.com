@@ -12,9 +12,8 @@ function regionOptionLabel(code: string, label: string): string {
   return code.length <= 3 ? `${code} — ${label}` : label;
 }
 
-// Server-rendered so the no-JS path (and Netlify's static form scrape) has a
-// real default-country region list; the client script rebuilds this select
-// when the visitor changes country.
+// Server-rendered so the no-JS path has a real default-country region list;
+// the client script rebuilds this select when the visitor changes country.
 const defaultCountry = "US";
 const defaultCountryConfig = HMC_COUNTRIES.find((c) => c.code === defaultCountry);
 const defaultNoun = defaultCountryConfig?.regionNoun.one ?? "state";
@@ -42,12 +41,11 @@ const defaultRegions = getHmcRegionsForCountry(defaultCountry);
         class="church-interest-form__form"
         name="church-interest"
         method="POST"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
         action="/for/churches/"
         data-church-interest-form
       >
-        <input type="hidden" name="form-name" value="church-interest" />
+        <!-- Hidden from people, irresistible to bots. parseChurchInterest treats a
+             filled bot-field as spam: answered like a success, stored nowhere. -->
         <p class="church-interest-form__honeypot" aria-hidden="true">
           <label>
             Don’t fill this out if you’re human

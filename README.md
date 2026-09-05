@@ -13,11 +13,9 @@ Output is written to `dist/`. Preview locally with `npm run preview`.
 
 ## Deploy
 
-Netlify builds from the repo root (`netlify.toml` at project root). Connect this repo in the Netlify dashboard and point the `harvous.com` domain to the site.
+Cloudflare Workers serves `harvous.com`. [`.github/workflows/cloudflare-deploy.yml`](.github/workflows/cloudflare-deploy.yml) builds and deploys on every push to `main`; the same workflow deploys staging on manual dispatch. Config is [`wrangler.jsonc`](wrangler.jsonc) — static assets from `dist/`, plus D1 and R2 for the two paths that need a server.
 
-**Video:** the two videos ship in `public/` (Git LFS) **and** live in the R2 bucket `harvous-com-media`. That duplication is deliberate and temporary.
-
-Netlify serves them as ordinary files, with byte-range support, and can only serve what is in the build. Cloudflare cannot: Workers static assets sets `Accept-Ranges` on nothing and answers every Range request with the whole file, which leaves `video.seekable` empty in the browser — a viewer cannot skip ahead in the five-minute tour. So on Cloudflare the Worker claims those paths via `run_worker_first` and serves them from R2 with the Range header passed through, and the copy in `dist/` is never read. See `serveMedia` in [`cloudflare/worker.ts`](cloudflare/worker.ts).
+**Video:** the two videos the site plays live in `media/` (Git LFS) and are served from the R2 bucket `harvous-com-media`, not from the build — see `serveMedia` in [`cloudflare/worker.ts`](cloudflare/worker.ts). Workers static assets sets `Accept-Ranges` on nothing and answers every Range request with the whole file, which leaves `video.seekable` empty in the browser; R2 does ranged reads, so the Worker passes the header through and returns a real `206`.
 
 After changing a video, upload it and then deploy:
 
@@ -25,19 +23,18 @@ After changing a video, upload it and then deploy:
 npm run media:upload
 ```
 
-**After the DNS cutover:** delete the videos from `public/`, drop the LFS step from the deploy workflow, and the duplication goes with them.
+Nothing in Git LFS ships, so CI does no LFS fetch.
 
-**Node:** Use Node 22 locally (see `.nvmrc` and `netlify.toml`). Netlify sets `NODE_VERSION = "22"`.
+**Node:** Use Node 22 locally (see `.nvmrc`, which CI reads via `node-version-file`).
 
 ## Church interest form
 
-`/for/churches/` carries the one form on the site. It posts to its own URL —
-Netlify Forms' convention — and both hosts honour that: Netlify scrapes and
-stores it as it always has, and on Cloudflare the Worker intercepts the POST
-before the asset router can answer it with the page.
+`/for/churches/` carries the one form on the site. It posts to its own URL, and
+the Worker intercepts that POST before the asset router can answer it with the
+page — which is why `/for/churches/` is named in `run_worker_first`.
 
-Cloudflare has no equivalent of Netlify Forms, so submissions go to a D1 table
-instead. Only what the visitor typed is stored — no IP, no user agent.
+Submissions go to a D1 table. Only what the visitor typed is stored — no IP,
+no user agent.
 
 ```bash
 npx wrangler d1 execute harvous-com --remote \
