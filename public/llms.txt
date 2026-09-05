@@ -7,14 +7,18 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 ## Key differentiators
 
 - Notes-first: scripture pills, highlights, and references linked to your writing
-- Built-in Bible reader that feeds your notes — browse or type a reference, open the chapter, and your notes/highlights for it are right there
+- Opens on Activity — the study you already did, a sheet per day, rather than a blank page
+- Built-in Bible reader that feeds your notes — browse or type a reference in one of 11 translations, open the chapter, and your notes/highlights for it are right there
 - No sermon transcription focus — capture what matters to you, not auto-generated transcripts
-- Recall and review: resurface notes, highlights, and passages worth revisiting
-- Spaces, threads, and folders that organize themselves around what you study
+- Suggestions: resurface notes, highlights, and passages worth revisiting (called Recall before Harvous 3)
+- Review (Harvous Plus): answer a question about your own notes from memory, then say how it went — no AI-written questions, no score
+- Search from the top middle finds anything you have saved
+- Shared Spaces, threads, and folders that organize themselves around what you study — hosting a space is Plus, joining is always free
 
 ## Links
 
 - Homepage: https://harvous.com/
+- What's new in Harvous 3: https://harvous.com/3/
 - Bright Enough (blog): https://harvous.com/blog/
 - Blog RSS: https://harvous.com/blog/rss.xml
 - Compare Harvous to other apps: https://harvous.com/compare/
@@ -48,6 +52,12 @@ Hub: https://harvous.com/blog/
 - Handoff without amnesia: https://harvous.com/blog/handoff-without-amnesia/
 - What church education systems need: https://harvous.com/blog/what-church-education-systems-need/
 - When you've taught it before: https://harvous.com/blog/when-youve-taught-it-before/
+
+### Why Harvous 3 is shaped the way it is
+
+- Study you can follow and return to: https://harvous.com/blog/study-you-can-follow-and-return-to/
+- The sidebar did too much: https://harvous.com/blog/the-sidebar-did-too-much/
+- The quiet days stay: https://harvous.com/blog/the-quiet-days-stay/
 
 ## Compare guides
 
