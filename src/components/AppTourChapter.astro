@@ -308,6 +308,20 @@ const href = category?.href;
      past a shot the eye had already finished with. */
   .tcard--wide .tcard__items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
+  /*
+    Stacked, the shot goes back to the shape the other cards use. The 1:1 is
+    there to sit beside the features in two columns; with everything in one
+    column it only makes this card ~80px taller than its neighbours, and the
+    slider stretches every slide to the tallest one, so the whole row pays for
+    it. The image is object-fit: cover, so this crops rather than squashes.
+  */
+  @media (max-width: 719px) {
+    .tcard--wide .tcard__shot :global(.tourshot) { aspect-ratio: 1600 / 1150; }
+    /* The display-scale title is for the card at full width; in a 330px slide
+       it costs four lines. Same scale as the half cards here. */
+    .tcard--wide .tcard__title { font-size: clamp(1.25rem, 2.1vw, 1.6rem); }
+  }
+
   .tcard__item { display: block; }
 
   .tcard__icons { display: flex; align-items: center; gap: 0.3rem; }
