@@ -23,6 +23,15 @@ if [[ -z "$DINKY" || ! -x "$DINKY" ]]; then
   exit 1
 fi
 
+# Pixel width, or empty if nothing here can read it. sips ships with macOS;
+# ffprobe is the fallback for anyone without it.
+image_width() {
+  local w
+  w="$(sips -g pixelWidth "$1" 2>/dev/null | awk '/pixelWidth:/ { print $2 }')"
+  [ -n "$w" ] || w="$(ffprobe -v error -show_entries stream=width -of csv=p=0 "$1" 2>/dev/null | head -1)"
+  printf '%s' "$w"
+}
+
 compress() {
   # Output beside the source, not at the top of public/. Every call passes
   # files from one directory, so the first argument decides where they land —
@@ -73,7 +82,25 @@ compress \
   -w 256 --content-hint graphic
 
 echo "→ Use-case hero backgrounds"
-compress "$PUB"/images/auth-hero/*.webp -w 1920
+# Only the ones still wider than 1920. These are already WebP, so handing the
+# whole glob to the compressor re-encodes them in place on every run — lossy
+# each time, and not even reliably smaller: one 36K file came back 316K,
+# because re-encoding an already-compressed image at a higher quality inflates
+# it without recovering any detail. All eighteen are at 1920 now, so with this
+# filter the pass correctly does nothing until someone drops in a bigger one.
+auth_wide=()
+for shot in "$PUB"/images/auth-hero/*.webp; do
+  [ -f "$shot" ] || continue
+  w="$(image_width "$shot")"
+  # Unknown width: leave it alone. Skipping costs nothing; re-encoding does.
+  [ -n "$w" ] || { echo "  skip (cannot read width): $(basename "$shot")"; continue; }
+  (( w > 1920 )) && auth_wide+=("$shot")
+done
+if (( ${#auth_wide[@]} )); then
+  compress "${auth_wide[@]}" -w 1920
+else
+  echo "  all within 1920 — nothing to do"
+fi
 
 # Tour screenshots land here at the 3.0 cutover (see src/lib/app-tour-chapters.ts
 # and the extra shots in src/pages/3.astro). OptimizedImage serves the WebP
