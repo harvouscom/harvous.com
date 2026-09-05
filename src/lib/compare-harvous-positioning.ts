@@ -31,6 +31,12 @@ export type HarvousPosition = {
   featureIds: string[];
 };
 
+/*
+  Ids here become proof links under "Choose Harvous if…", rendered as
+  /features/<id>/. Categories are fair game (they live at that path); addons are
+  NOT — Review sits at /add-ons/review/, so it is named in prose only, never
+  added here, or all 59 pages would carry the same broken link.
+*/
 export const COMPARE_FEATURE_LABELS: Record<string, string> = {
   "scripture-pills": "Scripture pills",
   threads: "Threads",
@@ -40,12 +46,14 @@ export const COMPARE_FEATURE_LABELS: Record<string, string> = {
   // The Share category, not a feature page — /features/sharing/ was folded into it.
   share: "Sharing",
   dictionary: "Dictionary",
+  // The Activity category — 3.0's answer to opening on a blank page.
+  activity: "Activity",
 };
 
 const POSITIONS: Record<string, HarvousPosition> = {
   "Bible Reader": {
     chooseIf:
-      "You like your Bible app for reading plans and community, and you want a separate home for what you write — scripture pills, threads, and Suggestions — without switching your whole reading habit.",
+      "You like your Bible app for reading plans and community, and you want a separate home for what you write — scripture pills, threads, and Suggestions — without switching your whole reading habit. Harvous opens on Activity: the passages, highlights, and notes from your own week, rather than today’s plan slot.",
     bestAt: "Long-term study notes that sit beside your Bible reader",
     primaryUse: "Scripture-linked notes, highlights, and threads you’ll reopen later",
     idealFor: "People who already have a reader and need notes that outgrow it",
@@ -72,13 +80,18 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Complements the reader you already use",
         competitorHint: "Primary place to read Scripture",
       },
+      {
+        label: "What you open to",
+        harvous: "Activity — your own week of study",
+        competitorHint: "Today’s reading or plan streak",
+      },
     ],
-    featureIds: ["scripture-pills", "threads", "suggestions"],
+    featureIds: ["activity", "scripture-pills", "threads", "suggestions"],
   },
 
   "Bible Study Suite": {
     chooseIf:
-      "You use a research suite for commentaries and languages, and you want a lighter place for the personal notes you actually reopen — scripture-linked, threaded, findable without the full library tax.",
+      "You use a research suite for commentaries and languages, and you want a lighter place for the personal notes you actually reopen — scripture-linked, threaded, findable without the full library tax. Activity keeps that trail visible: what you studied this week, without opening a workspace to go looking for it.",
     bestAt: "Personal scripture-linked notes beside a research library",
     primaryUse: "Study notes, series threads, and Suggestions next to Logos-class tools",
     idealFor: "People who keep a suite for research and need notes that stay light",
@@ -105,13 +118,18 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Lightweight notes app",
         competitorHint: "Heavier scholarly platform",
       },
+      {
+        label: "What you open to",
+        harvous: "Activity — this week’s study, already there",
+        competitorHint: "A workspace you set up per session",
+      },
     ],
-    featureIds: ["scripture-pills", "threads", "suggestions"],
+    featureIds: ["activity", "scripture-pills", "threads", "suggestions"],
   },
 
   "General Notes": {
     chooseIf:
-      "You want scripture-native linking and study suggestions without building a Bible study system in Obsidian, Notion, or a general notes app — pills, threads, and highlights that understand references.",
+      "You want scripture-native linking and study suggestions without building a Bible study system in Obsidian, Notion, or a general notes app — pills, threads, and highlights that understand references. Harvous also opens on Activity, the study you already did, instead of the blank page a vault greets you with.",
     bestAt: "Scripture-native notes without a custom PKM setup",
     primaryUse: "Bible study notes with pills, highlights, threads, and Suggestions out of the box",
     idealFor: "People who tried general notes for Bible study and don’t want to maintain the system",
@@ -138,13 +156,18 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Ready for Bible study on day one",
         competitorHint: "Flexible — you design the system",
       },
+      {
+        label: "What you open to",
+        harvous: "Activity — the study you already did",
+        competitorHint: "A blank note or your file tree",
+      },
     ],
-    featureIds: ["scripture-pills", "threads", "suggestions"],
+    featureIds: ["activity", "scripture-pills", "threads", "suggestions"],
   },
 
   "Bible Notes": {
     chooseIf:
-      "You want a dedicated Bible notes app built around threading, scripture pills, highlights, and Suggestions — not live sermon transcription, SOAP-plus-reader bundles, or handwriting-first journals.",
+      "You want a dedicated Bible notes app built around threading, scripture pills, highlights, and Suggestions — not live sermon transcription, SOAP-plus-reader bundles, or handwriting-first journals. It opens on Activity, a week of what you actually studied, and Review (on Plus) asks you about your own notes afterwards.",
     bestAt: "Threading and resurfacing written scripture-linked study notes",
     primaryUse: "Bible study notes with pills, highlights, threads, @ mentions, and Suggestions",
     idealFor: "People choosing among Bible notes apps who care most about finding what they wrote later",
@@ -171,13 +194,18 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Yes — built for notes, not a separate SOAP flow",
         competitorHint: "Some include a reader or SOAP flow",
       },
+      {
+        label: "What you open to",
+        harvous: "Activity — a week of your own study",
+        competitorHint: "Usually a note list or blank page",
+      },
     ],
-    featureIds: ["scripture-pills", "threads", "suggestions", "highlights"],
+    featureIds: ["activity", "scripture-pills", "threads", "suggestions", "highlights"],
   },
 
   "Sermon Prep": {
     chooseIf:
-      "You want scripture-linked prep notes and series threads that last across the preaching year — beside an outline suite or research tool, not instead of podium mode or an illustration library.",
+      "You want scripture-linked prep notes and series threads that last across the preaching year — beside an outline suite or research tool, not instead of podium mode or an illustration library. Activity opens on the prep you were mid-way through, so picking a series back up doesn’t start with hunting for last week’s file.",
     bestAt: "Series memory and scripture-linked prep you’ll find next year",
     primaryUse: "Outline notes, series threads, and Suggestions across years of preaching",
     idealFor: "Pastors and teachers who need prep notes to compound, not only this week’s manuscript",
@@ -204,13 +232,18 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Suggestions when a text comes around again",
         competitorHint: "Varies — often this week’s draft",
       },
+      {
+        label: "Picking a series back up",
+        harvous: "Activity opens on where you left off",
+        competitorHint: "Find last week’s file yourself",
+      },
     ],
-    featureIds: ["scripture-pills", "threads", "suggestions", "note-templates"],
+    featureIds: ["activity", "scripture-pills", "threads", "suggestions", "note-templates"],
   },
 
   "AI Guided Bible": {
     chooseIf:
-      "You want a human-authored record of what you studied — scripture pills, threads, and Suggestions — more than AI-led reading, chat, or generated journeys.",
+      "You want a human-authored record of what you studied — scripture pills, threads, and Suggestions — more than AI-led reading, chat, or generated journeys. Review (on Plus) asks you about your own notes and you answer from memory: no AI-written question, no generated answer, no score.",
     bestAt: "Keeping your own written reflections findable later",
     primaryUse: "Notes you write and revisit, linked to Scripture",
     idealFor: "People who use AI guides for prompts but want their own notes to last",
@@ -237,13 +270,18 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Built to find what you saved",
         competitorHint: "Session- or journey-oriented",
       },
+      {
+        label: "Testing what stuck",
+        harvous: "Review (Plus) — you answer from memory",
+        competitorHint: "AI supplies the answer",
+      },
     ],
-    featureIds: ["scripture-pills", "threads", "suggestions"],
+    featureIds: ["activity", "scripture-pills", "threads", "suggestions"],
   },
 
   "Prayer & Meditation": {
     chooseIf:
-      "You use a prayer or meditation app for daily rhythms, and you want somewhere else for study notes and scripture connections you’ll revisit — not another guided audio feed.",
+      "You use a prayer or meditation app for daily rhythms, and you want somewhere else for study notes and scripture connections you’ll revisit — not another guided audio feed. What you noticed is still on the page tomorrow: Activity keeps the week visible, and the quiet days stay in it rather than breaking a streak.",
     bestAt: "Study notes you’ll reopen after the quiet time ends",
     primaryUse: "Scripture-linked notes and highlights from what you noticed in prayer or reading",
     idealFor: "People whose prayer app owns the rhythm and who still want lasting study notes",
@@ -270,13 +308,18 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Remember what you saved from study",
         competitorHint: "Daily prayer and meditation habits",
       },
+      {
+        label: "Days you miss",
+        harvous: "Activity keeps them — no streak to break",
+        competitorHint: "Often a streak or daily goal",
+      },
     ],
-    featureIds: ["scripture-pills", "highlights", "suggestions"],
+    featureIds: ["activity", "scripture-pills", "highlights", "suggestions"],
   },
 
   "Bible Education": {
     chooseIf:
-      "You’re in a course, curriculum, or teaching context and want personal scripture-linked notes that last after the lesson ends — pills, threads, and Suggestions beside the content.",
+      "You’re in a course, curriculum, or teaching context and want personal scripture-linked notes that last after the lesson ends — pills, threads, and Suggestions beside the content. Review (on Plus) turns those notes back into questions you answer from memory, which is the part a finished course stops doing for you.",
     bestAt: "Personal notes that outlast a course or curriculum module",
     primaryUse: "Scripture-linked study notes alongside teaching content",
     idealFor: "Learners and teachers who want notes that aren’t trapped in a course player",
@@ -303,8 +346,13 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Notes stay in your study home",
         competitorHint: "Content access may end with the course",
       },
+      {
+        label: "Holding onto it",
+        harvous: "Review (Plus) — recall from your own notes",
+        competitorHint: "Quizzes scoped to the course, if any",
+      },
     ],
-    featureIds: ["scripture-pills", "threads", "suggestions"],
+    featureIds: ["activity", "scripture-pills", "threads", "suggestions"],
   },
 
   /**
