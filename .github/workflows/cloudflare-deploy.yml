@@ -72,21 +72,6 @@ jobs:
           # astro.config.mjs keepsDraftPages(): "1" keeps them, unset strips.
           KEEP_DRAFT_PAGES: ${{ steps.target.outputs.name == 'staging' && '1' || '' }}
 
-      - name: Probe which services the CI token can reach
-        # Temporary. Each probe is a read; continue-on-error so we see all three
-        # rather than stopping at the first refusal. Prints no secret values.
-        continue-on-error: true
-        run: |
-          echo "--- D1 (needs D1) ---"
-          npx wrangler d1 list           && echo "D1 OK"      || echo "D1 DENIED"
-          echo "--- R2 (needs Workers R2 Storage) ---"
-          npx wrangler r2 bucket list    && echo "R2 OK"      || echo "R2 DENIED"
-          echo "--- Workers (needs Workers Scripts) ---"
-          npx wrangler deployments list  && echo "WORKERS OK" || echo "WORKERS DENIED"
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
       - name: Apply D1 migrations
         # Before the deploy, so new code never meets an old schema. Wrangler
         # only runs migrations the target database has not recorded, so this is
