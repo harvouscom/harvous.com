@@ -86,21 +86,22 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
             fetchpriority="high"
           />
           <HeroVideoLightbox src="/touring-harvous-short.mp4" label="Watch the 5 min tour" />
+
+          {/*
+            TEMPORARY — delete this whole block once the 3.0 shot and
+            walkthrough replace /app-full.png and /touring-harvous-short.mp4.
+            Both still show 2.x (the sidebar, "My Home"), which is exactly what
+            the page above them announces is gone, so this says so before a
+            visitor has to work it out. On the shot rather than under it: the
+            caveat belongs to the image, and the hero had enough stacked in it
+            already. Opposite corner from the tour trigger.
+          */}
+          <a class="hero__shotnote" href="/3/">
+            <span class="hero__shotnote-strong">Showing Harvous 2</span>
+            <span class="hero__shotnote-rest">— see what's new in 3 →</span>
+          </a>
         </div>
       </div>
-
-      {/*
-        TEMPORARY — delete this whole block once the 3.0 shot and walkthrough
-        replace /app-full.png and /touring-harvous-short.mp4. Both still show
-        2.x (the sidebar, "My Home"), which is exactly what the page above them
-        now announces is gone, so the note says so before a visitor has to work
-        it out. It points at /3/ rather than just apologising, since that page
-        does show the new views.
-      */}
-      <p class="hero__shotnote" data-reveal style="--reveal-delay: 240ms;">
-        Heads up — this screenshot and tour still show Harvous 2. The 3.0 walkthrough is
-        on its way; <a href="/3/">see what's new in Harvous 3</a> in the meantime.
-      </p>
 
       <p class="hero__platforms" data-reveal style="--reveal-delay: 280ms;">
         Available on Web. Mac, iPad, and iPhone apps coming later.
@@ -384,29 +385,52 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
   }
 
   /*
-    TEMPORARY, with the block in the markup — remove both together. Quieter
-    than the platforms line below it and set on the warm ground so it reads as
-    a note about the image rather than a claim the page is making.
+    TEMPORARY, with the block in the markup — remove both together. The tour
+    trigger's own chrome, mirrored into the opposite corner: same offsets, same
+    translucent dark pill, so the two read as one pair rather than a caveat
+    bolted on. Above the frame's ::after wash (z-index 1), which is why it sits
+    at 2 like the trigger does.
   */
   .hero__shotnote {
-    margin-top: 0.9rem;
-    max-width: 34rem;
-    padding: 0.45rem 0.9rem;
-    border-radius: 0.75rem;
-    background: var(--color-warm);
+    position: absolute;
+    bottom: clamp(1rem, 3vw, 1.75rem);
+    right: clamp(1rem, 3vw, 1.75rem);
+    z-index: 2;
+    max-width: calc(100% - 2 * clamp(1rem, 3vw, 1.75rem));
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.375rem 0.875rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid color-mix(in srgb, #fff 35%, transparent);
+    background: color-mix(in srgb, #0d0e12 58%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
     font-family: var(--font-sans);
     font-size: 0.8125rem;
-    line-height: 1.5;
-    color: var(--color-ink-soft);
-    text-wrap: pretty;
+    line-height: 1.3;
+    text-decoration: none;
+    transition: background-color 150ms ease, border-color 150ms ease;
   }
-  .hero__shotnote a {
-    color: var(--color-ink);
-    text-decoration: underline;
-    text-decoration-color: var(--color-rule);
-    text-underline-offset: 3px;
+  .hero__shotnote:hover {
+    background: color-mix(in srgb, #0d0e12 72%, transparent);
+    border-color: color-mix(in srgb, #fff 55%, transparent);
   }
-  .hero__shotnote a:hover { text-decoration-color: currentColor; }
+  .hero__shotnote-strong { font-weight: 600; }
+  .hero__shotnote-rest { color: color-mix(in srgb, #fff 78%, transparent); }
+  /*
+    Below 640px the frame is a portrait crop and the tour trigger already owns
+    the bottom edge — the two would sit on top of each other. Move to the top
+    corner, where the shot has nothing to say.
+  */
+  @media (max-width: 639px) {
+    .hero__shotnote {
+      bottom: auto;
+      top: clamp(1rem, 3vw, 1.75rem);
+    }
+  }
 
   /* Platform availability — quiet footnote under the hero shot. */
   .hero__platforms {
