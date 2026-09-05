@@ -183,6 +183,20 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
     color: var(--color-ink-faint);
     transition: transform 150ms ease;
   }
+  /* The hero's own breakpoint: below it the title drops to its stacked
+     three-line setting, and the callout comes down with it so it stays a
+     footnote above the headline instead of a bar nearly as wide as the screen.
+     Only the type is set here — the numeral is em-sized, so it follows. */
+  @media (max-width: 639px) {
+    .hero__announce {
+      gap: 0.5rem;
+      padding: 0.4rem 0.8rem;
+    }
+    .hero__announce-copy {
+      font-size: 0.875rem;
+    }
+  }
+
   @media (max-width: 479px) {
     .hero__announce-copy {
       white-space: normal;
