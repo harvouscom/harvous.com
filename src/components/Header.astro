@@ -223,7 +223,17 @@ const SCROLL_THRESHOLD = 16;
     gap: 1.25rem;
     white-space: nowrap;
   }
-  @media (min-width: 640px) {
+  /*
+    900px, not 640. The row needs 638px of content before any breathing room —
+    logo 32, five nav links 341, Sign in + the CTA 193, plus gaps and padding —
+    so at the old breakpoint it turned the menu off the moment the parts had
+    nothing but zero slack between them, and "Pricing" sat under "Sign in" from
+    640 to about 815. 900 clears with ~66px between the nav and the actions.
+
+    The two blocks below and the innerWidth check in the script are the same
+    breakpoint; move all four together.
+  */
+  @media (min-width: 900px) {
     .site-header__inner {
       display: flex;
       flex-wrap: nowrap;
@@ -322,7 +332,7 @@ const SCROLL_THRESHOLD = 16;
   .site-header.is-menu-open .site-header__menu-icon--close {
     display: block;
   }
-  @media (min-width: 640px) {
+  @media (min-width: 900px) {
     .site-header__menu-toggle {
       display: none;
     }
@@ -412,7 +422,7 @@ const SCROLL_THRESHOLD = 16;
       transition: none;
     }
   }
-  @media (min-width: 640px) {
+  @media (min-width: 900px) {
     .site-header__mobile-nav {
       display: none;
     }
@@ -542,7 +552,7 @@ const SCROLL_THRESHOLD = 16;
         resizeTicking = true;
         requestAnimationFrame(() => {
           measurePillWidth();
-          if (window.innerWidth >= 640 && header.classList.contains("is-menu-open")) closeMenu();
+          if (window.innerWidth >= 900 && header.classList.contains("is-menu-open")) closeMenu();
           resizeTicking = false;
         });
       },
