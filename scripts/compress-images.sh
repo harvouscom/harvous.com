@@ -24,7 +24,31 @@ if [[ -z "$DINKY" || ! -x "$DINKY" ]]; then
 fi
 
 compress() {
-  "$DINKY" compress-image "$@" -f webp --smart-quality --strip-metadata -o "$PUB" --json
+  # Output beside the source, not at the top of public/. Every call passes
+  # files from one directory, so the first argument decides where they land —
+  # with a flat -o "$PUB" the WebP for public/tour/x.png was written to
+  # public/x.webp, where OptimizedImage (which looks for a sibling) never
+  # finds it, and the PNG ships unoptimized.
+  local outdir
+  outdir="$(cd "$(dirname "$1")" && pwd)"
+
+  # Dinky does not overwrite. Handed an existing target it writes "name
+  # copy.webp", then "name copy 2.webp", then "copy 3" — so every re-run of this
+  # script left another full set behind. That had reached 52 files and 5.7 MB of
+  # unreferenced duplicates before anyone noticed. Clear the target first.
+  local arg base target
+  for arg in "$@"; do
+    case "$arg" in -*) continue ;; esac
+    [ -f "$arg" ] || continue
+    base="$(basename "${arg%.*}")"
+    target="$outdir/$base.webp"
+    # Never delete the source. The auth-hero pass compresses .webp in place, so
+    # there the target IS the input — clearing it first destroyed eighteen
+    # source files before this guard existed.
+    [ "$target" = "$(cd "$(dirname "$arg")" && pwd)/$(basename "$arg")" ] && continue
+    rm -f "$target"
+  done
+  "$DINKY" compress-image "$@" -f webp --smart-quality --strip-metadata -o "$outdir" --json
 }
 
 echo "→ Hero + feature screenshots (max 1920px)"
