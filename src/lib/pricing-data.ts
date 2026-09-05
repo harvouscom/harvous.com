@@ -78,13 +78,13 @@ export const PLUS_PLAN: PricingPlan = {
   tagline: "For study you return to, together",
   features: [
     "Everything in free",
-    "Review — questions built from your own notes, answered from memory",
+    "Review — time-based quizzes that help you remember what you have studied",
     "Unlimited shared spaces",
     "Up to 50 people per space",
     "Turn a thread into a study plan your group reads together",
     "Joining is always free",
   ],
-  comingSoonFeatures: ["Challenges — time-based quizzes, solo, with a group, or open to the public"],
+  comingSoonFeatures: [],
   cta: {
     label: "Get Harvous Plus",
     href: APP_UPGRADE_URL,
