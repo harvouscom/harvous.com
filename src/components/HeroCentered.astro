@@ -31,7 +31,10 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
                     itself — same glyph, same trace-in and drift, not a second
                     "3" beside a plain one. Decorative; the sr-only text carries
                     the character for anyone not seeing it drawn. */}
-                <Harvous3Numeral size="0.8em" />
+                {/* 0.7em of a 16px line is the same 11.2px the glyph occupied at
+                    0.8em of a 14px one — the type came up to meet it, the "3"
+                    did not shrink. */}
+                <Harvous3Numeral size="0.7em" />
                 <span class="sr-only">3</span>
               </span>{" "}
               is here. See what's new
@@ -163,7 +166,7 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
     position: relative;
     z-index: 1;
     font-family: var(--font-sans);
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 500;
     color: var(--color-ink);
     white-space: nowrap;
