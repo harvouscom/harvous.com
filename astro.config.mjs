@@ -9,10 +9,20 @@ import { DRAFT_PAGE_SLUGS, isDraftPageUrl } from "./src/lib/draft-pages.ts";
 import { appendFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
+/*
+  One key per old slug, not both slash variants. `trailingSlash` is unset, so it
+  is Astro's default "ignore" — /x and /x/ are the same route, and declaring
+  both made every redirect a route defined twice. That was 461 collision
+  warnings, and Astro says it becomes a hard error in a later version.
+
+  The host-level rules in public/_redirects still list both spellings, and still
+  need to: Cloudflare does no trailing-slash normalisation of its own. This is
+  Astro's router, which does.
+*/
 const releaseNoteRedirects = Object.fromEntries(
-  [...getReleaseNoteSlugRedirects().entries()].flatMap(([from, to]) => [
-    [`/release-notes/${from}`, `/release-notes/${to}/`],
-    [`/release-notes/${from}/`, `/release-notes/${to}/`],
+  [...getReleaseNoteSlugRedirects().entries()].map(([from, to]) => [
+    `/release-notes/${from}/`,
+    `/release-notes/${to}/`,
   ])
 );
 
