@@ -33,7 +33,6 @@ import BlogCard from "../components/BlogCard.astro";
 import PageClosingCTA from "../components/PageClosingCTA.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
-import { getTourChapter } from "../lib/app-tour-chapters.ts";
 import { getFeatureCategoryBySlug, getFeatureInk } from "../lib/feature-categories-data.ts";
 import { getAddonBySlug, getAddonDetailHref } from "../lib/addons-data.ts";
 import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
@@ -63,23 +62,25 @@ const resourceLibrary = feat("resource-library");
 
 /*
   Each slide carries a screenshot slot, TourShotFrame's way: a build-time
-  filesystem check, so dropping the PNG into public/tour/ is the whole step.
-  Until then the slide keeps its icon badge — a tile with a loud placeholder
-  in it would read as unfinished, where a badge reads as a choice. Four slides
-  reuse the homepage tour's own shots, so one file feeds the tour card, the
-  category page, and this tile.
+  filesystem check, so dropping the PNG into public/tour/3/ is the whole step.
+  Until then the slide keeps its icon badge — a tile with a loud placeholder in
+  it would read as unfinished, where a badge reads as a choice.
+
+  These live in their own folder rather than reusing the homepage tour's files.
+  Four of them used to borrow tour shots, which meant a visitor who had just
+  scrolled the homepage met the same four pictures again here — and it tied the
+  framing of a tour card to the framing of a slide, which want different things.
+
+  Square, because the tile is: .v3-slide__art is 1:1.05 and the window inside it
+  is 1.161:1, so a square file is centre-cropped ~7% top and bottom. Frame with
+  that in mind — nothing load-bearing in the top or bottom eighth.
 */
 type Shot = { src: string; alt: string; width: number; height: number };
 const shotExists = (src: string) =>
   existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
-const tourShot = (key: string): Shot | undefined => getTourChapter(key)?.shot;
-const HALF = { width: 1600, height: 1150 };
-/* Shots without a tour chapter. What each needs to show, for whoever takes them:
-   review — a Review question with the answer box, source still hidden.
-   note-templates — the right side panel open on the template list, SOAP visible.
-   resources — a resource (a PDF or a link) with its @ pill in a note beside it.
-   mentions — a note mid-sentence with the @ picker open. */
-const extraShot = (name: string, alt: string): Shot => ({ src: `/tour/tour-${name}.png`, alt, ...HALF });
+/* 475px is the widest the window gets (a 2560px display), so 1400 is ~3x. */
+const V3_SHOT = { width: 1400, height: 1400 };
+const v3Shot = (name: string, alt: string): Shot => ({ src: `/tour/3/${name}.png`, alt, ...V3_SHOT });
 
 /*
   Hand-picked rather than scored: these two are the release's argument, in the
@@ -108,7 +109,7 @@ const newSlides = [
     icon: activityCategory.icon,
     ink: activityCategory.ink,
     image: activityCategory.image,
-    shot: tourShot("activity"),
+    shot: v3Shot("activity", "The Activity view in Harvous: a day sheet listing the passages read and notes written, with the days before it stacked behind."),
     cta: "See the view",
   },
   readCategory && {
@@ -121,7 +122,7 @@ const newSlides = [
        templates and resources below. */
     ink: getFeatureInk("bible-reader"),
     image: bibleReader?.image ?? readCategory.image,
-    shot: tourShot("read"),
+    shot: v3Shot("bible-reader", "The Harvous Bible reader open on a chapter, with the reader's own notes and highlights beside the verse."),
     cta: "See the reader",
   },
   findCategory && {
@@ -131,7 +132,7 @@ const newSlides = [
     icon: findCategory.icon,
     ink: findCategory.ink,
     image: findCategory.image,
-    shot: tourShot("find"),
+    shot: v3Shot("search", "Search open from the top middle of Harvous, listing matches across notes, highlights, and passages."),
     cta: "See how it works",
   },
   sharedSpaces && {
@@ -142,7 +143,7 @@ const newSlides = [
     icon: sharedSpaces.icon,
     ink: sharedSpaces.ink,
     image: sharedSpaces.image,
-    shot: tourShot("share"),
+    shot: v3Shot("shared-spaces", "A shared space in Harvous, with a thread the group has been adding notes to."),
     cta: "How spaces work",
   },
   review && {
@@ -153,7 +154,7 @@ const newSlides = [
     icon: review.icon,
     ink: review.ink,
     image: review.image,
-    shot: extraShot("review", "A Review question in Harvous, with the answer written from memory and the source still hidden."),
+    shot: v3Shot("review", "A Review question in Harvous, with the answer written from memory and the source still hidden."),
     cta: "How it works",
   },
   noteTemplates && writeCategory && {
@@ -166,7 +167,7 @@ const newSlides = [
        no two cards in this carousel share art. */
     ink: getFeatureInk("note-templates"),
     image: noteTemplates.image ?? writeCategory.image,
-    shot: extraShot("note-templates", "The right side panel in Harvous open on the note templates, with SOAP listed."),
+    shot: v3Shot("note-templates", "The right side panel in Harvous open on the note templates, with SOAP listed."),
     cta: "See templates",
   },
   resourceLibrary && findCategory && {
@@ -179,7 +180,7 @@ const newSlides = [
        Search's, so the two don't read as the same card. */
     ink: getFeatureInk("resource-library"),
     image: resourceLibrary.image ?? findCategory.image,
-    shot: extraShot("resources", "A resource saved in Harvous — a PDF — with its pill placed in a note beside it."),
+    shot: v3Shot("resources", "A resource saved in Harvous — a PDF — with its pill placed in a note beside it."),
     cta: "See resources",
   },
   writeCategory && {
@@ -189,7 +190,7 @@ const newSlides = [
     icon: "fa7-solid:at",
     ink: writeCategory.ink,
     image: writeCategory.image,
-    shot: extraShot("mentions", "A note in Harvous mid-sentence, with the @ picker open listing notes, folders, threads, and resources."),
+    shot: v3Shot("mentions", "A note in Harvous mid-sentence, with the @ picker open listing notes, folders, threads, and resources."),
     cta: "See how it works",
   },
 ].filter((s): s is NonNullable<typeof s> => Boolean(s));
@@ -279,7 +280,7 @@ const jsonLd = {
     <div class="release-notes-frame__grid v3-hero__grid" aria-hidden="true"></div>
     <Container size="xl">
       <div class="v3-hero__inner">
-        <Harvous3Numeral size="clamp(8rem, 25vw, 25rem)" />
+        <Harvous3Numeral size="clamp(8rem, 21vw, 21rem)" />
         <!--
           The copy arrives after the numeral has filled (its fill starts at
           1.25s), not while the outline is still tracing — one thing at a time.
@@ -617,10 +618,11 @@ const jsonLd = {
   }
   /*
     Harvous3Numeral is sized by width, not height, because the constraint that
-    matters is the heading beneath it: the numeral grows until it is nearly as
-    wide as "Harvous 3 is here." and stops. The h1 is one fixed line at
-    clamp(2rem, 4.6vw, 3.5rem), so its width tracks the same curve — the
-    numeral stays between 69% and 92% of it from 375px up.
+    matters is the heading beneath it. The h1 is one fixed line at
+    clamp(2rem, 4.6vw, 3.5rem), so both track the same curve and the ratio
+    holds across widths — the numeral sits at ~58% of the heading's text width,
+    down from ~69%, where it was reading as the page's subject rather than its
+    mark.
   */
   .v3-hero__lead {
     margin: clamp(1.25rem, 3vw, 2rem) 0 0;
