@@ -85,9 +85,22 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
             loading="eager"
             fetchpriority="high"
           />
-          <HeroVideoLightbox src="/touring-harvous-short.mp4" />
+          <HeroVideoLightbox src="/touring-harvous-short.mp4" label="Watch the 5 min tour" />
         </div>
       </div>
+
+      {/*
+        TEMPORARY — delete this whole block once the 3.0 shot and walkthrough
+        replace /app-full.png and /touring-harvous-short.mp4. Both still show
+        2.x (the sidebar, "My Home"), which is exactly what the page above them
+        now announces is gone, so the note says so before a visitor has to work
+        it out. It points at /3/ rather than just apologising, since that page
+        does show the new views.
+      */}
+      <p class="hero__shotnote" data-reveal style="--reveal-delay: 240ms;">
+        Heads up — this screenshot and tour still show Harvous 2. The 3.0 walkthrough is
+        on its way; <a href="/3/">see what's new in Harvous 3</a> in the meantime.
+      </p>
 
       <p class="hero__platforms" data-reveal style="--reveal-delay: 280ms;">
         Available on Web. Mac, iPad, and iPhone apps coming later.
@@ -369,6 +382,31 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
         transparent 45%
       );
   }
+
+  /*
+    TEMPORARY, with the block in the markup — remove both together. Quieter
+    than the platforms line below it and set on the warm ground so it reads as
+    a note about the image rather than a claim the page is making.
+  */
+  .hero__shotnote {
+    margin-top: 0.9rem;
+    max-width: 34rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.75rem;
+    background: var(--color-warm);
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .hero__shotnote a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 3px;
+  }
+  .hero__shotnote a:hover { text-decoration-color: currentColor; }
 
   /* Platform availability — quiet footnote under the hero shot. */
   .hero__platforms {
