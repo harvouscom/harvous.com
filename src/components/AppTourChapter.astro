@@ -264,9 +264,50 @@ const href = category?.href;
     gap: 1rem 1.5rem;
     grid-template-columns: 1fr;
   }
+  /*
+    The wide card is two columns from here up: the text and a 2x2 of its four
+    features on the left, the shot square on the right. It was four features in
+    a single row above a full-width letterbox, which gave each feature a column
+    narrower than the half cards' and left the visual with no relationship to
+    the text beside it.
+  */
   @media (min-width: 720px) {
-    .tcard--wide .tcard__items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .tcard--wide {
+      --tcard-pad: clamp(1.5rem, 2.4vw, 2rem);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      column-gap: var(--tcard-pad);
+    }
+    /*
+      The head spans the card and the features sit beside the shot, so the two
+      have to be siblings in this grid rather than nested in one column. The
+      body stops being a box and lets its children through — which means its
+      padding goes too, and each child carries its own share below.
+    */
+    .tcard--wide .tcard__body { display: contents; }
+    .tcard--wide .tcard__head {
+      grid-column: 1 / -1;
+      padding: var(--tcard-pad) var(--tcard-pad) 0;
+    }
+    /* The 2x2 is set at every width above; here it just takes the left column. */
+    .tcard--wide .tcard__items {
+      grid-column: 1;
+      padding: 0 0 var(--tcard-pad) var(--tcard-pad);
+    }
+    /* No bleed on this one: a square that runs off the card is not a square. */
+    .tcard--wide .tcard__shot {
+      grid-column: 2;
+      margin-top: 0;
+      margin-bottom: 0;
+      padding: 0 var(--tcard-pad) var(--tcard-pad) 0;
+    }
   }
+  /* The wide card's four features are a 2x2 at every width — including the
+     mobile slider, where a single column made the card scroll for a long way
+     past a shot the eye had already finished with. */
+  .tcard--wide .tcard__items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
   .tcard__item { display: block; }
 
   .tcard__icons { display: flex; align-items: center; gap: 0.3rem; }

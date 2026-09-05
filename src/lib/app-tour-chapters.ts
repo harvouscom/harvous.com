@@ -49,8 +49,16 @@ export type TourChapter = {
  * roughly 2x — enough that app text stays readable rather than turning into
  * texture, which is the whole failure mode for a tour built out of screenshots.
  */
-const WIDE_W = 2400;
-const WIDE_H = 1100;
+/*
+  The wide card is two columns from 720px up — a 2x2 of features on the left,
+  this shot square on the right — so its ratio is 1:1 rather than the letterbox
+  it was when the visual ran the card's full width beneath the text.
+*/
+/* 464px is the largest it ever renders — the card caps at 1024px and the two
+   columns are even — so 1400 is 3x, the same headroom the half cards' 1600
+   gives their ~490px. */
+const WIDE_W = 1400;
+const WIDE_H = 1400;
 const HALF_W = 1600;
 const HALF_H = 1150;
 
