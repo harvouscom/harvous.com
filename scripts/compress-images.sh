@@ -70,7 +70,11 @@ compress \
   -w 1920
 
 echo "→ Open Graph + founder assets"
-compress "$PUB/og.png" -w 1200
+# og.png deliberately has no WebP sibling. It is only ever a meta tag URL
+# (BaseLayout sets og:image / twitter:image to it), never routed through
+# OptimizedImage, so nothing would ever load an og.webp. Generating one shipped
+# ~180 KB of unread bytes in every deploy — the near-lossless path, since the
+# classifier calls it a graphic — and dirtied the tree on every run.
 compress "$PUB/derek-signiture.png" -w 800 --content-hint graphic
 compress "$PUB/derek-avatar.jpeg" -w 512
 
