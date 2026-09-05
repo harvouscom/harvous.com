@@ -16,6 +16,15 @@
   "workers_dev": false,
   "preview_urls": false,
 
+  // The live site. Declared here rather than left in the dashboard so it is
+  // reviewable, reproducible, and deployed by CI along with everything else.
+  //
+  // The pattern is exact for a reason: `*.harvous.com/*` — the obvious-looking
+  // wildcard — matches every SUBDOMAIN and NOT the apex, so it takes over
+  // app.harvous.com while leaving harvous.com untouched. It did exactly that,
+  // briefly, during the cutover.
+  "routes": [{ "pattern": "harvous.com/*", "zone_name": "harvous.com" }],
+
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -92,6 +101,12 @@
       // is not in production: every staging response carries X-Robots-Tag
       // noindex, stamped into dist/_headers by the build.
       "workers_dev": true,
+
+      // Emphatically empty. `routes` is an inheritable key, like workers_dev
+      // above — without this line staging would inherit `harvous.com/*` and a
+      // staging deploy would take the live site, serving it noindexed and with
+      // the unreleased draft pages. Never give this environment a route.
+      "routes": [],
 
       // Bindings are not inherited by named environments the way `assets` is,
       // so this has to be restated — without it staging answers every
