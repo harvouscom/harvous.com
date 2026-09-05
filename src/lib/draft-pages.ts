@@ -9,9 +9,10 @@
  * `isDraftPageSlug` / `isDraftPageUrl`, so emptying this array is the whole
  * cutover.
  *
- * Currently: `/3/`, the Harvous 3 release page, until launch.
+ * Currently empty: `/3/` shipped at the 3.0 launch. The machinery stays for
+ * the next page that needs to be built in the open before it is announced.
  */
-export const DRAFT_PAGE_SLUGS = ["3"] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
 export function isDraftPageSlug(slug: string): boolean {
   return DRAFT_PAGE_SLUGS.includes(slug);
