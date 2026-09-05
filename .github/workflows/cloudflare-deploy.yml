@@ -77,6 +77,10 @@ jobs:
         # rather than stopping at the first refusal. Prints no secret values.
         continue-on-error: true
         run: |
+          echo "--- which token is this? (id only, never the value) ---"
+          curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            https://api.cloudflare.com/client/v4/user/tokens/verify \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); r=d.get('result') or {}; print('TOKEN ID:', r.get('id','?'), '| status:', r.get('status','?'))"
           echo "--- D1 (needs D1) ---"
           npx wrangler d1 list           && echo "D1 OK"      || echo "D1 DENIED"
           echo "--- R2 (needs Workers R2 Storage) ---"
