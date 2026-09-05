@@ -102,23 +102,23 @@ const ADDON_PAGES: AddonPage[] = [
     slug: "review",
     href: "/add-ons/review/",
     title: "Review",
-    tagline: "Write an answer from memory, then say how it went — from your own notes, highlights, and verses.",
+    tagline: "Short questions built from your own study, with answers Harvous checks.",
     seoTitle: "Review — deliberate practice for what you've studied | Harvous Plus",
     seoDescription:
-      "Review turns your own notes, highlights, and verses into short questions. Write what you remember first, then say how close you were — no AI-written questions, no score.",
+      "Review turns your own notes, the verses you keep, and the chapters you read into short questions with real answers. No question is written by AI, and there is no score, streak, or leaderboard.",
     icon: "fa7-solid:clock-rotate-left",
     ink: "var(--study-dock-accent-violet)",
     image: "/images/auth-hero/ai_bg_075.webp",
     comingSoon: false,
     heroTitle: "A deliberate way to hold onto what you've studied.",
     heroLead:
-      "Suggestions brings things back when they happen to be worth another look. Review is the version you ask for — a short question pulled from something you actually wrote, answered from memory before you see the source.",
+      "Suggestions brings things back when they happen to be worth another look. Review is the version you ask for — a short question drawn from what you actually wrote, kept, or read, with an answer Harvous can check.",
     sections: [
       {
-        heading: "Write it before you see it",
+        heading: "Your own material, and a real answer",
         paragraphs: [
-          "A Review question comes from a note, a highlight, a verse, a connection between two notes, or a whole thread — always something you already wrote or marked, never a question invented about the text. Write what you remember first. The source only appears after.",
-          "Then you say how it went — held it, mostly had it, or needed the reminder. No score, no streak to protect. Just an honest read on where that one actually stands.",
+          "A question comes from a note you wrote, a verse you kept, or a chapter you actually read — never one invented about the text. Finish a verse from memory, put three of them in the order they come, pick the verse that belongs to a chapter, or say who appears in it.",
+          "Every question has a right answer and Harvous checks it. The result names what was asked, marks the words you got, and shows how the passage actually reads — so a question you missed is one you can sit with. It checks facts, never what a passage means to you or how you chose to say it.",
         ],
       },
       {
@@ -133,13 +133,13 @@ const ADDON_PAGES: AddonPage[] = [
     moments: [
       {
         icon: "fa7-solid:pen",
-        heading: "Your own material, not an invented question",
-        body: "Every question is pulled from a note, highlight, verse, connection, or thread you already have. Nothing is written about the text on your behalf.",
+        heading: "Built from your study, not about it",
+        body: "Every question comes from a note you wrote, a verse you kept, or a chapter you read. Nothing is composed on your behalf, by a model or otherwise.",
       },
       {
         icon: "fa7-solid:pen-to-square",
-        heading: "Answer first, then look",
-        body: "Write what you remember before the source appears. Seeing it too early isn't practice — it's just reading again.",
+        heading: "Checked, and shown its working",
+        body: "The result names the question, marks what you answered, and puts the passage underneath — a recap, not just a verdict.",
       },
       {
         icon: "fa7-solid:arrows-rotate",
