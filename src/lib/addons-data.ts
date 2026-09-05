@@ -29,7 +29,7 @@ const ADDON_PAGES: AddonPage[] = [
         heading: "What the group discovers shouldn't disappear.",
         paragraphs: [
           "Personal Harvous is already where your prep and reflections live. Shared Spaces add a group layer — the same threads, scripture pills, and highlights you use alone, opened up so everyone in the space can contribute.",
-          "Joining a shared space is free for members. Hosting — creating spaces for your group — is included with [Harvous Plus](/pricing/) ($7/mo or $49/yr; $35 for the first 99, first year only).",
+          "Joining a shared space is free for members. Hosting — creating spaces for your group — is included with [Harvous Plus](/pricing/) ($6/mo or $36/yr).",
         ],
       },
       {

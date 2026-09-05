@@ -73,8 +73,8 @@ export const PLUS_PLAN: PricingPlan = {
   id: "plus",
   icon: "fa7-solid:plus",
   name: "Harvous Plus",
-  priceDisplay: "$7/mo",
-  priceDisplaySecondary: "$49/yr*",
+  priceDisplay: "$6/mo",
+  priceDisplaySecondary: "$36/yr",
   tagline: "For study you return to, together",
   features: [
     "Everything in free",
@@ -91,7 +91,6 @@ export const PLUS_PLAN: PricingPlan = {
     external: true,
     fathomTrack: fathomSignup.pricingPlus,
   },
-  finePrint: "*$35 for the first 99, first year only. Then $49/yr",
 };
 
 /** Roadmap items shown under Free + Plus (not for sale yet as separate products). */
