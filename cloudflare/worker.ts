@@ -15,6 +15,10 @@
  */
 import { handleChurchSearch } from '../src/lib/church-search.ts';
 import { parseChurchInterest } from '../src/lib/church-interest.ts';
+import {
+  readNotifyConfig,
+  sendChurchInterestNotification,
+} from '../src/lib/church-interest-notify.ts';
 
 type D1Result = { success: boolean };
 type D1PreparedStatement = {
@@ -22,6 +26,8 @@ type D1PreparedStatement = {
   run(): Promise<D1Result>;
 };
 type D1Database = { prepare(query: string): D1PreparedStatement };
+
+type ExecutionContext = { waitUntil(promise: Promise<unknown>): void };
 
 type R2Object = {
   size: number;
@@ -51,6 +57,10 @@ type Env = {
   DB?: D1Database;
   /** Video, served from R2 rather than static assets — see serveMedia. */
   MEDIA?: R2Bucket;
+  /** Submission notification. All three unset = store only, no email. */
+  RESEND_API_KEY?: string;
+  NOTIFY_FROM?: string;
+  NOTIFY_TO?: string;
   HERESMYCHURCH_API_BASE?: string;
   HERESMYCHURCH_ANON_KEY?: string;
   HERESMYCHURCH_PARTNER_API_KEY?: string;
@@ -185,7 +195,11 @@ function submissionResponse(
 /** Bigger than any real submission, small enough that nothing is worth buffering. */
 const MAX_BODY_BYTES = 16 * 1024;
 
-async function handleChurchInterest(request: Request, env: Env): Promise<Response> {
+async function handleChurchInterest(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext
+): Promise<Response> {
   const contentType = request.headers.get('content-type') ?? '';
   if (!contentType.includes('application/x-www-form-urlencoded')) {
     return submissionResponse(request, { error: 'unsupported_media_type' }, 415);
@@ -247,16 +261,28 @@ async function handleChurchInterest(request: Request, env: Env): Promise<Respons
     return submissionResponse(request, { error: 'storage_failed' }, 500);
   }
 
+  // Stored first, told second — and only told if it is configured. waitUntil so
+  // a slow mail API never delays the visitor's response, and so a failure
+  // cannot turn a saved submission into an error they see.
+  const notify = readNotifyConfig({
+    RESEND_API_KEY: env.RESEND_API_KEY,
+    NOTIFY_FROM: env.NOTIFY_FROM,
+    NOTIFY_TO: env.NOTIFY_TO,
+  });
+  if (notify) {
+    ctx.waitUntil(sendChurchInterestNotification(r, notify));
+  }
+
   return submissionResponse(request, { ok: true }, 200);
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const { pathname } = new URL(request.url);
 
     // Only POST is intercepted here; a GET is the page itself, below.
     if (request.method === 'POST' && isChurchInterest(pathname)) {
-      return handleChurchInterest(request, env);
+      return handleChurchInterest(request, env, ctx);
     }
 
     const media = mediaKey(pathname);

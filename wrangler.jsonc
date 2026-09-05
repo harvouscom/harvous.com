@@ -87,6 +87,19 @@
     }
   ],
 
+  // Where a new church-interest submission gets announced. Not secret; the key
+  // is (wrangler secret put RESEND_API_KEY). With any of the three missing the
+  // Worker stores the row and sends nothing — which is what staging does, since
+  // vars are not inherited by named environments.
+  //
+  // The sender is a SUBDOMAIN on purpose. Verifying harvous.com itself in Resend
+  // would want an MX record on the root, and the root's MX is Hey
+  // (work-mx.app.hey.com) — real mail, not to be disturbed for a notification.
+  "vars": {
+    "NOTIFY_FROM": "Harvous forms <forms@send.harvous.com>",
+    "NOTIFY_TO": "derek@harvous.com"
+  },
+
   "observability": {
     "enabled": true
   },

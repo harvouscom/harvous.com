@@ -44,6 +44,16 @@ npx wrangler d1 execute harvous-com --remote \
   --command "select created_at, name, email, church_name, interests from church_interest order by created_at desc limit 20"
 ```
 
+A new submission emails [`NOTIFY_TO`](wrangler.jsonc) via Resend, best-effort:
+the row is committed first and the send runs in `waitUntil`, so a bad key or a
+rate limit costs a notification, never a submission. With `RESEND_API_KEY`
+unset it stores and stays quiet — which is what staging does, since vars are
+not inherited by named environments.
+
+The sender is a **subdomain** (`send.harvous.com`). Verifying the root in
+Resend would want an MX record on it, and the root's MX is Hey — real mail,
+not to be disturbed for a notification.
+
 Schema lives in [`cloudflare/migrations/`](cloudflare/migrations/); CI applies
 pending migrations before each deploy. Validation is in
 [`src/lib/church-interest.ts`](src/lib/church-interest.ts) — a submission that
