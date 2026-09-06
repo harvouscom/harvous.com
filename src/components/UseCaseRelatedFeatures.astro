@@ -156,6 +156,20 @@ const publishedSlugs = new Set(
     .use-case-features__grid > li {
       flex-basis: calc((100% - 3 * 1.5rem) / 4);
     }
+    /*
+      Five cards drop to three columns, so they land 3 + 2 rather than 4 + 1.
+      Centering (above) is enough for a row missing two or three cards — it reads
+      as a short row. A single centered card under a full four does not: it reads
+      as one that failed to load. Three of the eight pages here carried five
+      before Reminders existed, and every one of them had this shape.
+
+      Exactly five, hence :nth-child(5):last-child. Four and six are already
+      whole at this width, and where :has() is unsupported the rule is skipped
+      and the layout is what it is today.
+    */
+    .use-case-features__grid:has(> li:nth-child(5):last-child) > li {
+      flex-basis: calc((100% - 2 * 1.5rem) / 3);
+    }
   }
   .use-case-features__card {
     display: block;
