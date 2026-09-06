@@ -59,6 +59,7 @@ const feat = (id: string) => features.find((f) => f.id === id)?.data;
 const bibleReader = feat("bible-reader");
 const noteTemplates = feat("note-templates");
 const resourceLibrary = feat("resource-library");
+const reminders = feat("reminders");
 
 /*
   Each slide carries a screenshot slot, TourShotFrame's way: a build-time
@@ -183,6 +184,23 @@ const newSlides = [
     shot: v3Shot("resources", "A resource saved in Harvous — a PDF — with its pill placed in a note beside it."),
     cta: "See resources",
   },
+  /* Free, so no plan badge — the two Plus slides above are the only ones. Sits
+     after the writing tools because it is the one thing here that reaches you
+     rather than waiting to be opened. */
+  reminders && {
+        title: "Reminders",
+        tagline:
+          "An optional nudge Sunday morning and once midweek — carrying the passage and opening straight to it.",
+        href: "/features/reminders/",
+        icon: reminders.icon ?? "fa7-solid:bell",
+        ink: getFeatureInk("reminders"),
+        image: reminders.image ?? activityCategory?.image,
+        shot: v3Shot(
+          "reminders",
+          "A Harvous reminder on a phone lock screen, carrying the day's verse, with the passage open behind it."
+        ),
+        cta: "See how it works",
+      },
   writeCategory && {
     title: "@ mentions",
     tagline: "Type @ in a note to drop in a note, folder, thread, or resource — and jump to it later.",

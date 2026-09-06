@@ -9,6 +9,7 @@ import { Icon } from "astro-icon/components";
 import Container from "./layout/Container.astro";
 import { FEATURE_ICONS } from "../lib/feature-icons.ts";
 import { hasDetailContent } from "../lib/product-page-data.ts";
+import { draftPageIsReachable } from "../lib/draft-pages.ts";
 import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
 
 interface Props {
@@ -17,7 +18,17 @@ interface Props {
   cards: RelatedFeatureCard[];
 }
 
-const { featuresHeading, featuresLead, cards } = Astro.props;
+const { featuresHeading, featuresLead, cards: allCards } = Astro.props;
+
+/*
+  Every featureIds grid on the site renders through here, so the draft filter
+  lives here too rather than in the four near-identical resolvers that build
+  these cards. A feature whose page is stripped from the production build has no
+  card at all — a tile that silently loses its link reads as an oversight.
+*/
+const cards = allCards.filter(
+  (card) => card.kind !== "feature" || draftPageIsReachable(`features/${card.feature.id}`)
+);
 
 const allFeatures = await getCollection("features");
 const publishedSlugs = new Set(

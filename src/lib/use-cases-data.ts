@@ -93,7 +93,7 @@ const useCases: UseCase[] = [
         body: "When the habit thins out, Suggestions resurface a fading note, highlight, or passage — so last week's thought isn't gone just because Tuesday got loud.",
       },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions"],
+    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions", "reminders"],
     featuresHeading: "What daily study asks of your notes",
     featuresLead:
       "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
@@ -158,7 +158,7 @@ const useCases: UseCase[] = [
         body: "When half a phrase is all you have, Suggestions can resurface a fading sermon note — so Sunday's thought isn't buried under two months of life.",
       },
     ],
-    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "suggestions"],
+    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "suggestions", "reminders"],
     featuresHeading: "What sermon notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",

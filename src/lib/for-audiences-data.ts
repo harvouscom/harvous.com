@@ -100,8 +100,13 @@ const audiences: ForAudience[] = [
         heading: "Suggestions bring a note back",
         body: "When the week gets loud, Suggestions can resurface a fading note or passage — so Monday's thought isn't gone by Thursday.",
       },
+      {
+        icon: "fa7-solid:bell",
+        heading: "A nudge on the days it slips",
+        body: "Two optional nudges a week carry the day's verse and open straight to it. Set the hour, or leave them off — they quiet down on their own either way.",
+      },
     ],
-    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions"],
+    featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions", "reminders"],
     featuresHeading: "What a daily rhythm asks of your notes",
     featuresLead:
       "Open a verse, save what stood out, and find it again later — the pieces people lean on most for everyday study.",
@@ -220,7 +225,7 @@ const audiences: ForAudience[] = [
         body: "Noticing \"grace\" everywhere? A thread can hold notes from wherever they show up, at your pace.",
       },
     ],
-    featureIds: ["daily-passage", "scripture-pills", "bible-reader", "dictionary"],
+    featureIds: ["daily-passage", "scripture-pills", "bible-reader", "dictionary", "reminders"],
     featuresHeading: "What helps when you're getting started",
     featuresLead:
       "A starting point, simple capture, and tools that explain without overwhelming — so you can build a record as you go.",
@@ -278,8 +283,13 @@ const audiences: ForAudience[] = [
         heading: "Suggestions find what Monday buried",
         body: "When half a phrase is all you have, Suggestions can resurface a fading sermon note — so October still has Sunday in it.",
       },
+      {
+        icon: "fa7-solid:bell",
+        heading: "A reminder before church",
+        body: "An optional Sunday-morning nudge, at the hour you set, carrying the day's passage — so you arrive with somewhere to write.",
+      },
     ],
-    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "suggestions"],
+    featureIds: ["scripture-pills", "highlights", "sidebar-modes", "suggestions", "reminders"],
     featuresHeading: "What Sunday notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you have — so Sunday doesn't disappear by Monday.",
@@ -796,7 +806,7 @@ const audiences: ForAudience[] = [
         body: "Plans keep going. Your notes shouldn't vanish with them. Suggestions resurface a fading note, highlight, or passage from your own study.",
       },
     ],
-    featureIds: ["scripture-pills", "bible-reader", "suggestions", "offline-sync"],
+    featureIds: ["scripture-pills", "bible-reader", "suggestions", "offline-sync", "reminders"],
     featuresHeading: "What dual-app study asks of your notes",
     featuresLead:
       "Scripture that stays linked, a way back to what you saved, and capture that works when you're offline in the pew or on a plane.",

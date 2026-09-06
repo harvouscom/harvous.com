@@ -9,10 +9,27 @@
  * `isDraftPageSlug` / `isDraftPageUrl`, so emptying this array is the whole
  * cutover.
  *
- * Currently empty: `/3/` shipped at the 3.0 launch. The machinery stays for
- * the next page that needs to be built in the open before it is announced.
+ * Currently empty: `/3/` shipped at the 3.0 launch, and `features/reminders`
+ * left when the push server was configured. The machinery stays for the next
+ * page that needs to be built in the open before it is announced.
  */
 export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
+
+/**
+ * Whether links to a draft page should render — i.e. whether the page will be
+ * there when someone clicks.
+ *
+ * Not the same question as `isDraftPageSlug`. Production strips the directory,
+ * so its links have to hide. Staging keeps it (KEEP_DRAFT_PAGES=1) precisely so
+ * the page can be reviewed in place, and `astro dev` strips nothing — in both,
+ * hiding the links would hide the thing you are trying to look at.
+ */
+export function draftPageIsReachable(slug: string): boolean {
+  if (!isDraftPageSlug(slug)) return true;
+  if (process.env.KEEP_DRAFT_PAGES === "1") return true;
+  return Boolean((import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV);
+}
+
 
 export function isDraftPageSlug(slug: string): boolean {
   return DRAFT_PAGE_SLUGS.includes(slug);

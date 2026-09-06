@@ -71,14 +71,14 @@ const categories: FeatureCategory[] = [
       {
         heading: "A day at a time, not an endless feed",
         paragraphs: [
-          "A feed says *here is everything, keep going*. A day says *here is what this one was*. Each day gets its own sheet with a sentence at the top — what you read, how much you wrote, the book you kept returning to.",
+          "A feed says: here is everything, keep going. A day says: here is what this one was. Each day gets its own sheet with a sentence at the top — what you read, how much you wrote, the book you kept returning to.",
           "Days you did not study still get a sheet. The quiet days count too, and a stack that skipped them would rewrite your month into an unbroken streak you never had.",
         ],
       },
       {
         heading: "A thread is the long version of a day sheet",
         paragraphs: [
-          "A day sheet shows what one day held. A thread shows what one *study* held — the notes you connected on purpose, across every day you worked on it, even when they sit in different folders and were written months apart.",
+          "A day sheet shows what one day held. A thread shows what one whole study held — the notes you connected on purpose, across every day you worked on it, even when they sit in different folders and were written months apart.",
           "Auto-folders do the filing so you do not have to. A thread is the opposite: the one piece of organizing worth doing by hand, because only you know which notes belong to the same line of thinking.",
         ],
       },
@@ -115,7 +115,7 @@ const categories: FeatureCategory[] = [
     // "review" resolves via getComingSoonGridItem() to the addon page, the same
     // mechanism Share uses for "shared-spaces" — a Plus add-on housed inside a
     // free category's grid, not a fourth item on the homepage tour card.
-    featureIds: ["suggestions", "daily-passage", "threads", "review"],
+    featureIds: ["suggestions", "daily-passage", "threads", "review", "reminders"],
     featuresHeading: "What keeps Activity worth opening",
     featuresLead:
       "Activity is built out of what Harvous already logs — nothing new to maintain, which is why it can show you a trail reaching back further than the feature itself.",
@@ -149,7 +149,7 @@ const categories: FeatureCategory[] = [
       {
         heading: "Two translations, lined up honestly",
         paragraphs: [
-          "Put a second version beside the first and Harvous aligns them **by verse number, not by position in the list**. KJV counts 31,102 verses and other versions count fewer, so a naive pairing goes wrong at the first disagreement and stays wrong for the rest of the chapter.",
+          "Put a second version beside the first and Harvous aligns them by verse number, not by position in the list. KJV counts 31,102 verses and other versions count fewer, so a naive pairing goes wrong at the first disagreement and stays wrong for the rest of the chapter.",
           "Where a version omits a verse, the cell says which one is missing it rather than quietly sliding everything up. Both columns stay markable, and the comparison is in the URL, so it survives a page turn and can be shared.",
         ],
       },
@@ -316,7 +316,7 @@ const categories: FeatureCategory[] = [
         heading: "A space is a place, not a folder",
         paragraphs: [
           "A shared space has its own front door — its own cover, its own threads, its own tools in its header. Standing in someone else's space shows you what is happening there, not your own study under their roof.",
-          "Hosting a space comes with Harvous Plus. **Joining one is always free**, so inviting a group never means asking them to pay to show up.",
+          "Hosting a space comes with Harvous Plus. Joining one is always free, so inviting a group never means asking them to pay to show up.",
         ],
       },
     ],
@@ -382,7 +382,9 @@ export function getCategoryForFeature(featureId: string): FeatureCategory | unde
  * deeper shade of the same hue — the way Write's note-templates should read as
  * a version of Write's yellow, not an unrelated teal.
  */
-const INK_VARIANT_TIERS = [55, 42, 32, 24];
+/* Five now: Activity gained Reminders, and a clamped fifth would have shared
+   Review's shade — two cards in one grid reading as a pair. */
+const INK_VARIANT_TIERS = [55, 42, 32, 24, 18];
 
 export function getFeatureInk(featureId: string): string {
   const category = getCategoryForFeature(featureId);
