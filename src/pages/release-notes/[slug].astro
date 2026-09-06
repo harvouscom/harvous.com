@@ -101,14 +101,14 @@ const categoryTone = (category: string) => {
                   <h2 class="release-entry__title">{entry.title}</h2>
                   {
                     entry.lead && entry.lead !== entry.title && (
-                      <p class="release-entry__lead">{entry.lead}</p>
+                      <p class="release-entry__lead" set:html={entry.leadHtml} />
                     )
                   }
                   {
                     entry.bullets.length > 0 && (
                       <ul class="release-entry__list">
-                        {entry.bullets.map((bullet) => (
-                          <li>{bullet}</li>
+                        {entry.bulletsHtml.map((bullet) => (
+                          <li set:html={bullet} />
                         ))}
                       </ul>
                     )
@@ -275,5 +275,25 @@ const categoryTone = (category: string) => {
   }
   .release-entry__list li + li {
     margin-top: 0.35rem;
+  }
+  /*
+    A commit body's inline markdown, now that it renders as markup rather than
+    as its own syntax. `strong` inherits the entry's ink so a fully-bolded
+    bullet — how most of these were written — reads as emphasis, not a heading.
+  */
+  .release-entry__lead :global(strong),
+  .release-entry__list :global(strong) {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .release-entry__lead :global(code),
+  .release-entry__list :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.88em;
+    padding: 0.1em 0.34em;
+    border-radius: 0.3rem;
+    background: var(--color-rule);
+    color: var(--color-ink);
+    overflow-wrap: anywhere;
   }
 </style>
