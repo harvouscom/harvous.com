@@ -13,10 +13,14 @@
  * passage & dictionary") are separate features with separate pages.
  *
  * Resource library isn't here: the Find tour card above already carries it.
- * Note templates and @ mentions traded places with the Write tour card too —
- * templates moved up there, @ mentions moved down here — so each is captioned
- * once instead of the tour card carrying three items where its siblings carry
- * two.
+ * Note templates came down from the Write tour card for the same reason.
+ *
+ * @ mentions used to be the sixth, moved down here to keep Write at two items.
+ * Reminders took the slot when it shipped, and @ mentions was the one to give
+ * way: the hero cards at the top of this same page already say "Type @ to drop
+ * in a note, folder, thread, or resource", and the /3/ slide says it a third
+ * time. Every other tile here is captioned nowhere else. Six is the count the
+ * 3×2 wants, so the cut had to be the line that was already being read twice.
  */
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
@@ -25,10 +29,10 @@ import { hasDetailContent } from "../lib/product-page-data.ts";
 import { COMING_SOON_GRID_ITEMS } from "../lib/coming-soon-grid.ts";
 
 /*
-  Ordered casual-to-pro: what shows up for you with no effort (Daily passage),
-  through what everyone can enjoy but has to reach for (Make it yours, Offline
-  & sync, Dictionary), to what takes learning a mechanic (@ mentions), ending
-  on the tile that names its own audience — "for the power users."
+  Ordered casual-to-pro: what shows up for you with no effort (Daily passage,
+  Reminders), through what everyone can enjoy but has to reach for (Make it
+  yours, Offline & sync, Dictionary), ending on the tile that names its own
+  audience — "for the power users."
 */
 const items = [
   {
@@ -36,6 +40,14 @@ const items = [
     title: "Daily passage",
     desc: "A curated passage waits each day, whether or not you know where to start.",
     featureSlug: "daily-passage",
+  },
+  /* Second because the order is casual-to-pro and nothing asks less of you
+     than being handed the passage. */
+  {
+    icon: "fa7-solid:bell",
+    title: "Reminders",
+    desc: "An optional Sunday and midweek nudge — carrying the passage, not just a badge.",
+    featureSlug: "reminders",
   },
   {
     icon: "fa7-solid:palette",
@@ -53,11 +65,6 @@ const items = [
     title: "Dictionary",
     desc: "Select a name or term in a note for its Easton's entry and cross-references.",
     featureSlug: "dictionary",
-  },
-  {
-    icon: "fa7-solid:at",
-    title: "@ mentions",
-    desc: "Type @ in a note to drop in a note, folder, thread, or resource — and jump to it later.",
   },
   {
     icon: "fa7-solid:keyboard",

@@ -11,6 +11,7 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 - Built-in Bible reader that feeds your notes — browse or type a reference in one of 11 translations, open the chapter, and your notes/highlights for it are right there
 - No sermon transcription focus — capture what matters to you, not auto-generated transcripts
 - Suggestions: resurface notes, highlights, and passages worth revisiting (called Recall before Harvous 3)
+- Reminders: an optional Sunday-morning and midweek web push carrying the day's verse or the chapter you left, opening straight to it — two a week at most, and they pause themselves when they go unopened
 - Review (Harvous Plus): answer a question about your own notes from memory, then say how it went — no AI-written questions, no score
 - Search from the top middle finds anything you have saved
 - Shared Spaces, threads, and folders that organize themselves around what you study — hosting a space is Plus, joining is always free

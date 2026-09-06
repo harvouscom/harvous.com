@@ -15,4 +15,5 @@ export const FEATURE_ICONS: Record<string, string> = {
   suggestions: "fa7-solid:lightbulb",
   "note-templates": "fa7-solid:list-check",
   "resource-library": "fa7-solid:newspaper",
+  reminders: "fa7-solid:bell",
 };

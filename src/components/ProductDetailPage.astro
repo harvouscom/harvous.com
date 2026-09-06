@@ -10,6 +10,7 @@ import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import { getCategoryForFeature } from "../lib/feature-categories-data.ts";
+import { draftPageIsReachable, isDraftPageSlug } from "../lib/draft-pages.ts";
 import { getCompareSeoPageBySlug } from "../lib/compare-seo-pages.ts";
 import type { ProductPage } from "../lib/product-page-data.ts";
 import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
@@ -34,11 +35,17 @@ const publishedFeatureSlugs = new Set(
   allFeatures.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id)
 );
 
+/*
+  A related id can name a feature whose page is a draft (draft-pages.ts strips it
+  from the production build), and frontmatter cannot ask that question for
+  itself — so the filter lives here rather than in every MDX file.
+*/
 const relatedFeatures =
   page.kind === "feature"
     ? page.relatedIds
         .map((id) => allFeatures.find((f) => f.id === id))
         .filter((f): f is NonNullable<typeof f> => f !== undefined)
+        .filter((f) => draftPageIsReachable(`features/${f.id}`))
     : [];
 
 const compareSlugs = page.compareSlugs ?? [];
@@ -82,13 +89,34 @@ const fathomTrack =
 const defaultHeroImage =
   page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
+/*
+  A product page can be a draft too, the same way /3/ was before launch. The
+  slug is the path, not the id, so this matches DRAFT_PAGE_SLUGS entries like
+  "features/reminders".
+*/
+const draftSlug = page.href.replace(/^\/|\/$/g, "");
+const isDraft = isDraftPageSlug(draftSlug);
 const ogImage =
   page.kind === "feature"
     ? `/images/features/og/${page.slug}.webp`
     : `/images/add-ons/og/${page.slug}.webp`;
 ---
 
-<BaseLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} jsonLd={jsonLd}>
+<BaseLayout
+  title={page.seoTitle}
+  description={page.seoDescription}
+  ogImage={ogImage}
+  noindex={isDraft}
+  jsonLd={jsonLd}
+>
+  {
+    isDraft && (
+      <div class="draft-page-banner" role="status">
+        Draft — not indexed or deployed. Remove <code>"{draftSlug}"</code> from DRAFT_PAGE_SLUGS to
+        publish.
+      </div>
+    )
+  }
   <article
     class="use-case-detail product-detail"
     style={`--use-case-ink: ${page.ink};${page.inkFg ? ` --use-case-ink-fg: ${page.inkFg};` : ""}`}

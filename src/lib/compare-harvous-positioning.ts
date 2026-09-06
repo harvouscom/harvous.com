@@ -85,6 +85,11 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Activity — your own week of study",
         competitorHint: "Today’s reading or plan streak",
       },
+      {
+        label: "Reminders",
+        harvous: "Optional, and they carry the passage",
+        competitorHint: "Usually tied to a plan or a streak",
+      },
     ],
     featureIds: ["activity", "scripture-pills", "threads", "suggestions"],
   },

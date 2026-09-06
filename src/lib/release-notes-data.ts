@@ -7,8 +7,12 @@ export type ChangelogEntry = {
   category: string;
   date: string;
   dateKey: number;
+  /** Plain text — also what dedupe fingerprints and the index headline use. */
   lead: string;
   bullets: string[];
+  /** The same two, with inline markdown rendered. Use these to display. */
+  leadHtml: string;
+  bulletsHtml: string[];
 };
 
 export type ChangelogRelease = {
@@ -101,7 +105,49 @@ function stripBoilerplate(text: string): string {
     .trim();
 }
 
-export function parseCommitMessageHtml(html: string): { lead: string; bullets: string[] } {
+/**
+ * Inline markdown a commit body carries, as either plain text or safe HTML.
+ *
+ * Commit messages reach this site verbatim, and `parseCommitMessageHtml` reduces
+ * them to plain strings — so `**bold**`, `` `code` `` and the `##` headings of a
+ * dumped commit body used to publish as their own syntax. Two treatments,
+ * because the fields want different things: a title is an identifier as much as
+ * a headline (it feeds `entryFingerprint` and `buildExcerpt`), so it loses the
+ * markers entirely; body copy keeps the emphasis.
+ *
+ * `commitTextToHtml` escapes first and then marks up a closed set, the same
+ * shape as `inlineMdLinksToHtml`. Anything outside that set stays literal text
+ * rather than becoming markup — `decodeHtml` above has already turned entities
+ * back into real characters, so an unescaped pass would make any commit
+ * containing a tag into markup on a public page.
+ */
+const INLINE_MD_MARKERS = /(\*\*|`)/g;
+
+export function stripInlineMarkdown(text: string): string {
+  return text
+    .replace(/^#{1,6}\s+/, "")
+    .replace(INLINE_MD_MARKERS, "")
+    .trim();
+}
+
+export function commitTextToHtml(text: string): string {
+  const escaped = text
+    .replace(/^#{1,6}\s+/, "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+  return escaped
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(INLINE_MD_MARKERS, "")
+    .trim();
+}
+
+export function parseCommitMessageHtml(
+  html: string
+): { lead: string; bullets: string[]; leadHtml: string; bulletsHtml: string[] } {
   const plain = decodeHtml(html)
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>\s*<p[^>]*>/gi, "\n\n")
@@ -128,9 +174,14 @@ export function parseCommitMessageHtml(html: string): { lead: string; bullets: s
   const lead = stripBoilerplate(prose[0] ?? "");
   const tail = prose.slice(1).filter((p) => !p.match(/^Co-?authored-by:/i) && !p.match(/^Made-with:/i));
 
+  const finalLead = lead || tail[0] || "";
+  const finalBullets = bullets.length > 0 ? bullets : tail.filter((p) => p !== lead);
+
   return {
-    lead: lead || tail[0] || "",
-    bullets: bullets.length > 0 ? bullets : tail.filter((p) => p !== lead),
+    lead: stripInlineMarkdown(finalLead),
+    bullets: finalBullets.map(stripInlineMarkdown),
+    leadHtml: commitTextToHtml(finalLead),
+    bulletsHtml: finalBullets.map(commitTextToHtml),
   };
 }
 
@@ -367,16 +418,19 @@ export function getReleaseNotes(): ChangelogRelease[] {
     if (!version || !title || !slug) continue;
 
     const { label, key } = formatReleaseDate(get("Date"));
-    const { lead, bullets } = parseCommitMessageHtml(get("Commit Message"));
+    const { lead, bullets, leadHtml, bulletsHtml } = parseCommitMessageHtml(get("Commit Message"));
 
     const entry: ChangelogEntry = {
       slug,
-      title,
+      /* Plain: the title is a fingerprint and an excerpt as well as a heading. */
+      title: stripInlineMarkdown(title),
       category: get("Category") || "Update",
       date: label,
       dateKey: key,
       lead,
       bullets,
+      leadHtml,
+      bulletsHtml,
     };
 
     const list = byVersion.get(version) ?? [];
