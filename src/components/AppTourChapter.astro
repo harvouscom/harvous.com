@@ -295,12 +295,31 @@ const href = category?.href;
       grid-column: 1;
       padding: 0 0 var(--tcard-pad) var(--tcard-pad);
     }
-    /* No bleed on this one: a square that runs off the card is not a square. */
+    /*
+      No bleed on this one: a square that runs off the card is not a square.
+
+      Flush to the card's right and bottom edges instead of inset from them.
+      align-self overrides the row's `center`, which is what left the shot
+      floating with card showing beneath it; with the padding gone the card's
+      own radius and overflow do the corner work on that side.
+    */
     .tcard--wide .tcard__shot {
       grid-column: 2;
+      align-self: end;
       margin-top: 0;
       margin-bottom: 0;
-      padding: 0 var(--tcard-pad) var(--tcard-pad) 0;
+      padding: 0;
+    }
+    /*
+      Only the top-left corner is interior now — the other three either meet a
+      card edge or are cut by the card's own radius, and rounding those left
+      the ground showing through in a thin crescent. The shadow goes with them:
+      it was there to lift a panel off the tint, and an edge-to-edge shot has
+      no gap to cast into.
+    */
+    .tcard--wide .tcard__shot :global(.tourshot) {
+      border-radius: clamp(12px, 1.4vw, 16px) 0 0 0;
+      box-shadow: none;
     }
   }
   /* The wide card's four features are a 2x2 at every width — including the
