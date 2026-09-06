@@ -145,6 +145,38 @@ export function commitTextToHtml(text: string): string {
     .trim();
 }
 
+/**
+ * Lines that mark a body as a dumped commit message rather than a written note.
+ *
+ * `generate-changelog.js` writes one clean sentence per change. The Webflow-era
+ * rows in this CSV predate it and carry whole commit bodies instead — heading
+ * sections, a trailer, build output. 1.36.0 published seventeen bullets ending
+ * on "⏳ Pending: Netlify preview deployment and auth flow testing".
+ *
+ * Roughly 44 legacy 1.x rows look like this, and none of them can be fixed at
+ * the source: the exporter only appends, and the changelog files upstream are
+ * already clean — Changelog/1.36.0.md says "Enhance navigation history
+ * management", nothing about JWT. The dumps live only in this CSV's Commit
+ * Message column.
+ *
+ * A trailer is safe to treat as the tell. It marks the old raw-`git log` shape
+ * specifically: of the 28 rows written since 3.3, not one carries a trailer,
+ * because the exporter now publishes the changelog file's sentence rather than
+ * the commit body. Between them the two signals catch 36 entries, every one of
+ * them 1.x.
+ */
+const COMMIT_TRAILER = /^(?:co-?authored-by|made-with|signed-off-by):|^🤖 Generated with/i;
+const MARKDOWN_HEADING = /^#{1,6}\s/;
+
+/**
+ * A body with sections or a trailer was never written for readers, and no
+ * amount of per-line filtering makes one read like a release note. The title
+ * is the one part a person wrote deliberately, so it goes out alone.
+ */
+function isDumpedCommitBody(lines: string[]): boolean {
+  return lines.some((line) => MARKDOWN_HEADING.test(line) || COMMIT_TRAILER.test(line));
+}
+
 export function parseCommitMessageHtml(
   html: string
 ): { lead: string; bullets: string[]; leadHtml: string; bulletsHtml: string[] } {
@@ -160,6 +192,10 @@ export function parseCommitMessageHtml(
     .map((line) => line.trim())
     .filter(Boolean);
 
+  if (isDumpedCommitBody(lines)) {
+    return { lead: "", bullets: [], leadHtml: "", bulletsHtml: [] };
+  }
+
   const bullets: string[] = [];
   const prose: string[] = [];
 
@@ -172,7 +208,7 @@ export function parseCommitMessageHtml(
   }
 
   const lead = stripBoilerplate(prose[0] ?? "");
-  const tail = prose.slice(1).filter((p) => !p.match(/^Co-?authored-by:/i) && !p.match(/^Made-with:/i));
+  const tail = prose.slice(1).filter((p) => !COMMIT_TRAILER.test(p));
 
   const finalLead = lead || tail[0] || "";
   const finalBullets = bullets.length > 0 ? bullets : tail.filter((p) => p !== lead);
