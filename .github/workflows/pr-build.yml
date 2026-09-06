@@ -1,0 +1,78 @@
+# Proves a pull request still builds. No deploy, no secrets.
+#
+# Netlify used to answer this question as a side effect: it built every PR and
+# posted a deploy preview, which is what pre-merge checks on this repo actually
+# were. That site is gone — it was also publishing a crawlable duplicate of
+# harvous.com and holding a custom-domain claim on the apex — and Cloudflare
+# only builds on push to main. So PRs briefly had no checks at all.
+#
+# Deliberately needs no secrets, so it runs on forks too.
+
+name: Build
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - "docs/**"
+
+# A newer push supersedes an in-flight run; nothing here is worth finishing twice.
+concurrency:
+  group: pr-build-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # No LFS fetch, for the reason given in cloudflare-deploy.yml: every LFS
+      # object here is video, and none of it ships.
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci --prefer-offline --no-audit
+
+      # What production will do. Content-collection schemas are enforced here,
+      # so a malformed feature MDX fails this rather than the deploy.
+      - name: Build production
+        run: npm run build
+
+      # And what staging will do. These are different builds, not one artifact
+      # deployed twice: KEEP_DRAFT_PAGES flips noindex, the sitemap filter and
+      # the dist strip together, so a draft page can be whole in one and absent
+      # from the other. Both paths are worth compiling before a merge — the
+      # production one is what ships, and the staging one is how a page gets
+      # reviewed before it launches.
+      - name: Build staging
+        run: npm run build
+        env:
+          KEEP_DRAFT_PAGES: "1"
+
+      # Draft pages are stripped after the build, not excluded from it, so a
+      # regression in that plugin looks like a successful build right up until
+      # the page is public. Cheap to assert, and it is the machinery the next
+      # launch gate depends on.
+      # The staging build above left drafts in dist/, so production is rebuilt
+      # here before asserting. --experimental-strip-types is explicit rather
+      # than relying on the default: .nvmrc says "22", and stripping only
+      # became default-on later in that line.
+      - name: Assert the draft gate still strips
+        run: |
+          npm run build > /dev/null
+          node --experimental-strip-types --input-type=module -e '
+            const { DRAFT_PAGE_SLUGS } = await import("./src/lib/draft-pages.ts");
+            const { existsSync } = await import("node:fs");
+            const leaked = DRAFT_PAGE_SLUGS.filter((s) => existsSync(`dist/${s}`));
+            if (leaked.length) {
+              console.error("Draft page survived a production build:", leaked.join(", "));
+              process.exit(1);
+            }
+            console.log(`draft gate ok — ${DRAFT_PAGE_SLUGS.length} slug(s) listed, none in dist/`);
+          '
