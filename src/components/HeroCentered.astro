@@ -17,7 +17,7 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
 ---
 
 <section class="hero">
-  <Container size="xl">
+  <Container size="2xl">
     <div class="hero__inner">
       {
         /* Points at /3/ — hidden while that page is still a draft (same guard
@@ -133,7 +133,11 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-top: clamp(3rem, 7vw, 5.5rem);
+    /* Matched to `.hero__shotwrap`'s own `margin-top` below, so the space
+       above the announce pill and the space between the buttons and the shot
+       are the same gap. They were not, and the hero read top-heavy: more air
+       before it started than anywhere inside it. */
+    padding-top: clamp(2.75rem, 6vw, 4.5rem);
     padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
   }
 
@@ -236,7 +240,12 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
     font-weight: 600;
     font-variation-settings: "wdth" 100, "ROND" 0;
     letter-spacing: -0.02em;
-    font-size: clamp(2.5rem, 6.5vw, 4rem);
+    /* Ceiling matches `.display-xl`'s 4.5rem — the size /discover/ and the
+       other hub headings top out at — so the homepage is not the one page
+       whose h1 is smaller than the pages under it. Only the ceiling moves:
+       the floor and the 6.5vw slope are unchanged, so every width below
+       ~1108px renders exactly as before and the two-line break holds. */
+    font-size: clamp(2.5rem, 6.5vw, 4.5rem);
     line-height: 1.05;
     color: var(--color-ink);
     text-align: center;
@@ -339,7 +348,7 @@ import { isDraftPageSlug } from "../lib/draft-pages.ts";
   .hero__shotwrap {
     margin-top: clamp(2.75rem, 6vw, 4.5rem);
     width: 100%;
-    max-width: 72rem; /* matches container--xl */
+    max-width: 80rem; /* matches container--2xl */
   }
   .hero__shot-frame {
     position: relative;
