@@ -38,9 +38,22 @@ export type DiscoverPreview = {
   headings?: string[];
   titles?: string[];
   noteCount?: number;
+  /** The Thread's own colour, for the stripe that says it is a Thread. */
+  color?: string | null;
+  /** So a scripture note is not drawn as a plain one. */
+  noteType?: string | null;
   sourceDomain?: string | null;
   sourceSiteName?: string | null;
+  sourceImage?: string | null;
   excerpt?: string;
+  /**
+   * The artifact itself — sanitized server-side on write and again on read, so
+   * this is safe to render with `set:html` and this repo needs no sanitizer of
+   * its own. Capped, which the fade makes invisible. Absent on rows written
+   * before it existed and on links, which have no body; the page falls back to
+   * the outline in that case.
+   */
+  bodyHtml?: string;
 };
 
 export type DiscoverCategory = {
@@ -119,6 +132,71 @@ export const DISCOVER_KIND_BLURB: Record<DiscoverKind, string> = {
   pack: "A Thread of notes that arrive together, as one.",
   resource: "A link, saved to your own library.",
 };
+
+/**
+ * The colour a kind wears, from the site's own content-type hues.
+ *
+ * `ContentPill` already paints a note blue and a thread green everywhere else
+ * on this site; Discover reading the same way is most of what makes the catalog
+ * feel like part of the product rather than a page about it. Those two are
+ * exact matches and are not negotiable.
+ *
+ * Templates and links have no pill of their own, so they take the two remaining
+ * hues rather than earning new tokens in a palette the whole site shares. A
+ * template took `--color-accent` first and it was wrong: accent and
+ * `--pill-note` are both blue, so a template card and a note card were
+ * indistinguishable at a glance — which is the entire job of this function. It
+ * takes the amber instead, and specifically `--pill-highlight-ink`, the readable
+ * one: `--pill-highlight` is a highlighter fill and vanishes as a border.
+ *
+ * These are all fills. `global.css` says so in as many words — mix them toward
+ * `--color-ink` before using one as text or a glyph.
+ */
+export function discoverKindInk(kind: DiscoverKind): string {
+  switch (kind) {
+    case "note":
+      return "var(--pill-note)";
+    case "pack":
+      return "var(--pill-thread)";
+    case "resource":
+      return "var(--pill-scripture)";
+    case "template":
+    default:
+      return "var(--pill-highlight-ink)";
+  }
+}
+
+/**
+ * A Thread's colour, translated into this site's palette.
+ *
+ * The app's thread hues (`--color-blue`, `--color-purple`, …) do not exist
+ * here — a stripe asking for one silently fell back to the accent, so every
+ * Thread looked blue no matter what its owner picked. This is the same mapping
+ * the app itself keeps in `THREAD_TO_APPEARANCE_COLOR_ID` (blue→sky,
+ * purple→lilac, orange→peach, green→mint, pink→pink), extended with yellow→cream
+ * because this site has no yellow tile.
+ *
+ * `paper` is a real thread colour meaning "no colour", and gets the rule.
+ */
+export function discoverThreadStripe(color: string | null | undefined): string {
+  switch ((color ?? "").toLowerCase()) {
+    case "purple":
+      return "var(--color-lilac)";
+    case "green":
+      return "var(--color-mint)";
+    case "orange":
+      return "var(--color-peach)";
+    case "pink":
+      return "var(--color-pink)";
+    case "yellow":
+      return "var(--color-cream)";
+    case "paper":
+      return "var(--color-rule)";
+    case "blue":
+    default:
+      return "var(--color-sky)";
+  }
+}
 
 export function discoverCategoryLabel(id: string | null): string {
   if (!id) return "Uncategorized";

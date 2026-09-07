@@ -3,7 +3,7 @@
         {
             "id": "daily-journal",
             "label": "Daily journal",
-            "blurb": "Starters for a regular reading rhythm."
+            "blurb": "For keeping a regular reading rhythm."
         },
         {
             "id": "sermon-notes",
@@ -47,6 +47,83 @@
         }
     ],
     "listings": [
+        {
+            "slug": "read-the-bible-in-one-year",
+            "kind": "resource",
+            "title": "Read the Bible in One Year",
+            "description": "A plan, and an argument for reading whole books at a time",
+            "category": "reference",
+            "authorDisplayName": "Derek C.",
+            "preview": {
+                "sourceDomain": "desiringgod.org",
+                "sourceSiteName": "Desiring God",
+                "sourceImage": "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&q=70",
+                "excerpt": "A plan, and an argument for reading whole books at a time"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T05:31:11.542Z"
+        },
+        {
+            "slug": "inductive-study",
+            "kind": "template",
+            "title": "Inductive study",
+            "description": "Observation, interpretation, application",
+            "category": "deep-study",
+            "authorDisplayName": "Derek C.",
+            "preview": {
+                "titleTemplate": "",
+                "iconColor": "orange",
+                "headings": [
+                    "Observation",
+                    "Interpretation",
+                    "Application"
+                ],
+                "excerpt": "Observation What does the passage actually say? Read it three times before you write anything. Interpretation What did it mean to the people who first heard it? Application What does it ask of you this week \u2014 specificall...",
+                "bodyHtml": "<h2>Observation</h2><p>What does the passage actually say? Read it three times before you write anything.</p><h2>Interpretation</h2><p>What did it mean to the people who first heard it?</p><h2>Application</h2><p>What does it ask of you this week \u2014 specifically?</p>"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T05:22:50.382Z"
+        },
+        {
+            "slug": "romans-8-slowly",
+            "kind": "note",
+            "title": "Romans 8, slowly",
+            "description": "What I noticed reading it over a month",
+            "category": "deep-study",
+            "authorDisplayName": "Derek C.",
+            "preview": {
+                "headings": [
+                    "Verses 1\u201311",
+                    "Verses 12\u201327"
+                ],
+                "excerpt": "Verses 1\u201311 There is therefore now no condemnation. I have read that line for years as a verdict handed down at a distance. This month it read as something closer \u2014 a door held open by someone standing in it. The chapter...",
+                "noteType": "default",
+                "bodyHtml": "<h2>Verses 1\u201311</h2><p>There is therefore now no condemnation. I have read that line for years as a verdict handed down at a distance. This month it read as something closer \u2014 a door held open by someone standing in it.</p><p>The chapter keeps returning to what the Spirit does rather than what I manage.</p><h2>Verses 12\u201327</h2><p>Groaning is the word Paul reaches for three times: creation, us, the Spirit. Not despair. The sound of something straining toward a shape it has not reached yet.</p><p>I want to sit with that longer than a week.</p>"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T05:22:33.850Z"
+        },
+        {
+            "slug": "advent-four-weeks-2",
+            "kind": "pack",
+            "title": "Advent, four weeks",
+            "description": "Hope, peace, joy, love \u2014 one evening each",
+            "category": "small-group",
+            "authorDisplayName": "Derek C.",
+            "preview": {
+                "noteCount": 3,
+                "titles": [
+                    "Week 3 \u2014 Joy",
+                    "Week 2 \u2014 Peace",
+                    "Week 1 \u2014 Hope"
+                ],
+                "excerpt": "Small and specific Joy in Luke is almost always attached to a particular person hearing a particular thing.",
+                "color": "purple",
+                "bodyHtml": "<h2>Small and specific</h2><p>Joy in Luke is almost always attached to a particular person hearing a particular thing.</p>"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T05:22:27.996Z"
+        },
         {
             "slug": "morning-page",
             "kind": "template",

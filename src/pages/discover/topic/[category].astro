@@ -15,9 +15,9 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PageIntro from "../../../components/PageIntro.astro";
 import PageClosingCTA from "../../../components/PageClosingCTA.astro";
+import DiscoverCard from "../../../components/DiscoverCard.astro";
 import { isDraftPageSlug } from "../../../lib/draft-pages.ts";
 import {
-  DISCOVER_KIND_NOUN,
   getPopulatedDiscoverCategories,
   type DiscoverListing,
 } from "../../../lib/discover-data.ts";
@@ -64,24 +64,7 @@ const isDraft = isDraftPageSlug("discover");
 
   <section class="discover-category__body">
     <ul class="discover-category__list">
-      {
-        listings.map((listing) => (
-          <li>
-            <a class="discover-category__item" href={`/discover/${listing.slug}/`}>
-              <span class="discover-category__item-title">{listing.title}</span>
-              {listing.description ? (
-                <span class="discover-category__item-desc">{listing.description}</span>
-              ) : null}
-              <span class="discover-category__item-meta">
-                {DISCOVER_KIND_NOUN[listing.kind] ?? "Item"}
-                {listing.authorDisplayName ? ` · ${listing.authorDisplayName}` : ""}
-                {listing.installCount > 0 ? ` · saved by ${listing.installCount}` : ""}
-              </span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+      {listings.map((listing) => <DiscoverCard listing={listing} />)}
   </section>
 
   <PageClosingCTA
@@ -108,28 +91,5 @@ const isDraft = isDraftPageSlug("discover");
   .discover-category__list {
     display: grid;
     gap: 0.5rem;
-  }
-  .discover-category__item {
-    display: grid;
-    gap: 0.125rem;
-    padding: 0.875rem 1rem;
-    border: 1px solid var(--color-rule);
-    border-radius: var(--radius-card);
-    background: var(--color-card);
-    text-decoration: none;
-    color: inherit;
-  }
-  .discover-category__item:hover {
-    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
-  }
-  .discover-category__item-title {
-    font-weight: 600;
-  }
-  .discover-category__item-desc {
-    color: var(--color-ink-soft);
-  }
-  .discover-category__item-meta {
-    font-size: 0.875rem;
-    color: var(--color-ink-faint);
   }
 </style>
