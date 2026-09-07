@@ -46,5 +46,103 @@
             "blurb": "Things to keep nearby rather than work through."
         }
     ],
-    "listings": []
+    "listings": [
+        {
+            "slug": "morning-page",
+            "kind": "template",
+            "title": "Morning page",
+            "description": "Ten minutes before the day starts",
+            "category": "daily-journal",
+            "authorDisplayName": "Sam W.",
+            "preview": {
+                "titleTemplate": "",
+                "headings": [
+                    "Today I read",
+                    "One thing I noticed",
+                    "Praying about"
+                ],
+                "excerpt": "Today I read One thing I noticed Praying about"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T03:30:37.028Z"
+        },
+        {
+            "slug": "advent-four-weeks",
+            "kind": "template",
+            "title": "Advent, four weeks",
+            "description": "Hope, peace, joy, love \u2014 one evening each",
+            "category": "small-group",
+            "authorDisplayName": "Jo M.",
+            "preview": {
+                "titleTemplate": "",
+                "headings": [
+                    "Week 1 \u2014 Hope",
+                    "Week 2 \u2014 Peace",
+                    "Week 3 \u2014 Joy",
+                    "Week 4 \u2014 Love"
+                ],
+                "excerpt": "Week 1 \u2014 Hope Week 2 \u2014 Peace Week 3 \u2014 Joy Week 4 \u2014 Love"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T03:30:36.694Z"
+        },
+        {
+            "slug": "slow-chapter",
+            "kind": "template",
+            "title": "Slow chapter",
+            "description": "One chapter, read three times, a week apart",
+            "category": "deep-study",
+            "authorDisplayName": "Ada K.",
+            "preview": {
+                "titleTemplate": "",
+                "headings": [
+                    "First reading \u2014 what happens",
+                    "Second reading \u2014 what repeats",
+                    "Third reading \u2014 what it asks"
+                ],
+                "excerpt": "First reading \u2014 what happens Second reading \u2014 what repeats Third reading \u2014 what it asks"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T03:30:36.378Z"
+        },
+        {
+            "slug": "sunday-in-my-own-words",
+            "kind": "template",
+            "title": "Sunday, in my own words",
+            "description": "For writing the sermon down while you still remember it",
+            "category": "sermon-notes",
+            "authorDisplayName": "Tom B.",
+            "preview": {
+                "titleTemplate": "",
+                "headings": [
+                    "The passage",
+                    "One line I want to keep",
+                    "What I would ask the preacher"
+                ],
+                "excerpt": "The passage One line I want to keep What I would ask the preacher"
+            },
+            "installCount": 0,
+            "listedAt": "2026-09-07T03:30:36.075Z"
+        },
+        {
+            "slug": "soap",
+            "kind": "template",
+            "title": "SOAP",
+            "description": "Scripture, Observation, Application, Prayer",
+            "category": "sermon-notes",
+            "authorDisplayName": "Naomi R.",
+            "preview": {
+                "titleTemplate": "",
+                "headings": [
+                    "Scripture",
+                    "Observation",
+                    "Application",
+                    "Prayer"
+                ],
+                "excerpt": "Scripture Write or paste the passage. Observation What do you notice? Application What does this ask of you? Prayer Turn the study into prayer."
+            },
+            "installCount": 1,
+            "listedAt": "2026-09-07T03:30:35.761Z"
+        }
+    ]
 }

@@ -33,6 +33,8 @@ export type DiscoverListing = {
 
 export type DiscoverPreview = {
   titleTemplate?: string | null;
+  /** The colour the author picked; absent falls back to a hash of the slug. */
+  iconColor?: string | null;
   headings?: string[];
   titles?: string[];
   noteCount?: number;
@@ -95,18 +97,26 @@ export function getPopulatedDiscoverCategories(): Array<
     .filter((category) => category.listings.length > 0);
 }
 
-/** What taking a copy of each kind actually produces, said in the reader's words. */
+/*
+ * The app's own words, not new ones.
+ *
+ * These were Starter / Study / Series, which read well and named nothing: the
+ * app calls them Templates, Notes and Threads, and someone arriving here from
+ * search then has to translate before they can use what they took. "Series" was
+ * worse than merely new — the church planner already uses it for a teaching
+ * series, so it named two different things.
+ */
 export const DISCOVER_KIND_NOUN: Record<DiscoverKind, string> = {
-  template: "Starter",
-  note: "Study",
-  pack: "Series",
+  template: "Template",
+  note: "Note",
+  pack: "Thread",
   resource: "Resource",
 };
 
 export const DISCOVER_KIND_BLURB: Record<DiscoverKind, string> = {
   template: "A shape to write into — headings and prompts, nothing filled in.",
-  note: "A finished study, copied into your own Harvous to read and change.",
-  pack: "A series of notes that arrive together as one thread.",
+  note: "A finished note, copied into your own Harvous to read and change.",
+  pack: "A Thread of notes that arrive together, as one.",
   resource: "A link, saved to your own library.",
 };
 

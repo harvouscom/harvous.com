@@ -9,11 +9,10 @@
  * — threading a third kind through those call sites would cost more than this
  * file and leave both worse.
  *
- * What it does reuse is everything around it: BaseLayout, PageIntro, CTAButton,
- * and PageClosingCTA.
+ * What it does reuse is everything around it: BaseLayout, CTAButton and
+ * PageClosingCTA — and the app's own paper-stack recipe for the sheet itself.
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageIntro from "./PageIntro.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
 import CTAButton from "./CTAButton.astro";
 import { buildInstallUrl } from "../lib/signup-url.ts";
@@ -37,7 +36,7 @@ const categoryLabel = listing.category ? discoverCategoryLabel(listing.category)
 const installUrl = buildInstallUrl(listing.slug);
 
 /* The structure is the honest preview of a starter, and the note titles are the
-   honest preview of a series. Neither is the body — taking a copy is what hands
+   honest preview of a Thread. Neither is the body — taking a copy is what hands
    that over. */
 const outline = listing.preview?.headings ?? listing.preview?.titles ?? [];
 const noteCount = listing.preview?.noteCount ?? null;
@@ -66,64 +65,83 @@ const description =
     )
   }
 
-  <section>
-    <PageIntro flushBottom>
-      <p class="discover-detail__eyebrow">
-        <span>{kindNoun}</span>
-        {categoryLabel ? (
-          <>
-            <span aria-hidden="true"> · </span>
-            <a href={`/discover/topic/${listing.category}/`}>{categoryLabel}</a>
-          </>
+  <section class="discover-detail">
+    {/* The eyebrow the app's shared pages open with: who this came from, before
+        what it is. */}
+    <p class="discover-detail__kicker">
+      {listing.authorDisplayName
+        ? `A ${kindNoun.toLowerCase()} from ${listing.authorDisplayName}`
+        : `A ${kindNoun.toLowerCase()} shared on Harvous`}
+    </p>
+
+    {/*
+      Paper stack — two cream leaves fanned behind a white sheet, ported from the
+      app's shared-note page (`.public-paper-stack` in public-pages.css) rather
+      than approximated. Someone who follows a link here and then opens a shared
+      note should meet the same object twice; a listing that looked like a
+      marketing card would read as an advert for the thing rather than the thing.
+    */}
+    <div class="discover-paper">
+      <div class="discover-paper__leaf discover-paper__leaf--back" aria-hidden="true"></div>
+      <div class="discover-paper__leaf discover-paper__leaf--mid" aria-hidden="true"></div>
+
+      <article class="discover-paper__sheet">
+        <p class="discover-paper__eyebrow">
+          <span>{kindNoun}</span>
+          {categoryLabel ? (
+            <>
+              <span aria-hidden="true"> · </span>
+              <a href={`/discover/topic/${listing.category}/`}>{categoryLabel}</a>
+            </>
+          ) : null}
+        </p>
+
+        <h1 class="discover-paper__title">{listing.title}</h1>
+        {listing.description ? (
+          <p class="discover-paper__lead">{listing.description}</p>
         ) : null}
-      </p>
-      <h1 class="section-title text-pretty">{listing.title}</h1>
-      {listing.description ? (
-        <p class="mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">{listing.description}</p>
-      ) : null}
 
-      {/* Attribution only — a name, never a link. There are no creator pages. */}
-      <p class="discover-detail__meta mt-4">
-        {listing.authorDisplayName
-          ? `Shared by ${listing.authorDisplayName}`
-          : "Shared with everyone"}
-        {noteCount ? ` · ${noteCount} notes` : ""}
-        {listing.installCount > 0 ? ` · saved by ${listing.installCount}` : ""}
-      </p>
+        {outline.length > 0 ? (
+          <ul class="discover-paper__outline">
+            {outline.map((line) => (
+              <li>{line}</li>
+            ))}
+          </ul>
+        ) : (
+          <p class="discover-paper__empty">Take a copy to see what is inside.</p>
+        )}
 
-      <div class="mt-6">
-        <CTAButton href={installUrl} variant="primary" size="lg" external>
-          Save this to my Harvous
-        </CTAButton>
-      </div>
-      <p class="discover-detail__meta mt-3">Free. {DISCOVER_KIND_BLURB[listing.kind]}</p>
-    </PageIntro>
+        <p class="discover-paper__meta">
+          {noteCount ? `${noteCount} notes` : ""}
+          {noteCount && listing.installCount > 0 ? " · " : ""}
+          {listing.installCount > 0 ? `saved by ${listing.installCount}` : ""}
+        </p>
+      </article>
+    </div>
+
+    <div class="discover-detail__cta">
+      <CTAButton href={installUrl} variant="primary" size="lg" external>
+        Save this to my Harvous
+      </CTAButton>
+      <p class="discover-detail__note">Free. {DISCOVER_KIND_BLURB[listing.kind]}</p>
+    </div>
+
+    {related.length > 0 ? (
+      <section class="discover-detail__related">
+        <h2 class="discover-detail__related-title">More like this</h2>
+        <ul class="discover-detail__related-list">
+          {related.map((other) => (
+            <li>
+              <a href={`/discover/${other.slug}/`}>
+                <span>{other.title}</span>
+                {other.authorDisplayName ? <span> · {other.authorDisplayName}</span> : null}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ) : null}
   </section>
-
-  {outline.length > 0 ? (
-    <section class="discover-detail__section">
-      <h2 class="discover-detail__section-title">What's in it</h2>
-      <ul class="discover-detail__list">
-        {outline.map((line) => (
-          <li>{line}</li>
-        ))}
-      </ul>
-    </section>
-  ) : null}
-
-  {related.length > 0 ? (
-    <section class="discover-detail__section">
-      <h2 class="discover-detail__section-title">More like this</h2>
-      <ul class="discover-detail__list">
-        {related.map((other) => (
-          <li>
-            <a href={`/discover/${other.slug}/`}>{other.title}</a>
-            {other.authorDisplayName ? <span> · {other.authorDisplayName}</span> : null}
-          </li>
-        ))}
-      </ul>
-    </section>
-  ) : null}
 
   <PageClosingCTA
     heading="Somewhere for your own study to live"
@@ -132,41 +150,167 @@ const description =
 </BaseLayout>
 
 <style>
-  .discover-detail__eyebrow {
-    font-size: 0.8125rem;
-    letter-spacing: 0.04em;
+  .discover-detail {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 0;
+  }
+
+  .discover-detail__kicker {
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    margin-bottom: 1.25rem;
+  }
+
+  /* Two cream leaves, tucked inset so their corners stay inside the stack after
+     rotation. Sharp corners: they are meant to read as sheets of paper. */
+  .discover-paper {
+    position: relative;
+    padding: 10px 14px;
+  }
+
+  .discover-paper__leaf {
+    position: absolute;
+    inset: 10px 14px;
+    background-color: #fcfbf7;
+    border: 0.5px solid var(--color-rule);
+    box-shadow: 0 8px 24px -12px rgba(20, 18, 12, 0.1);
+    pointer-events: none;
+  }
+  .discover-paper__leaf--back {
+    transform: rotate(1.6deg);
+    z-index: 0;
+  }
+  .discover-paper__leaf--mid {
+    transform: rotate(-1.9deg);
+    z-index: 1;
+  }
+
+  /* The front sheet: white, radial-dot grain, a hair of rotation, layered
+     shadow — the same recipe as the app's `.public-note-card`. */
+  .discover-paper__sheet {
+    position: relative;
+    z-index: 2;
+    transform: rotate(-0.6deg);
+    padding: 2rem 1.75rem 1.75rem;
+    background-color: #ffffff;
+    background-image:
+      radial-gradient(rgba(20, 18, 12, 0.025) 1px, transparent 1px),
+      radial-gradient(rgba(20, 18, 12, 0.018) 1px, transparent 1px);
+    background-size: 28px 28px, 17px 17px;
+    background-position: 0 0, 9px 9px;
+    border: 0.5px solid var(--color-rule);
+    box-shadow:
+      0 2px 6px rgba(20, 18, 12, 0.04),
+      0 20px 50px -20px rgba(20, 18, 12, 0.16);
+  }
+
+  /* The folded corner, so the sheet reads as paper rather than a panel. */
+  .discover-paper__sheet::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(
+      225deg,
+      rgba(20, 18, 12, 0.07) 0%,
+      rgba(20, 18, 12, 0.02) 40%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .discover-paper__eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-ink-faint);
   }
-  .discover-detail__eyebrow a {
+  .discover-paper__eyebrow a {
     color: inherit;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
-  .discover-detail__meta {
+
+  .discover-paper__title {
+    margin-top: 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+
+  .discover-paper__lead {
+    margin-top: 0.5rem;
+    color: var(--color-ink-soft);
+  }
+
+  /* The shape of the thing, which is what is actually on offer — never the body. */
+  .discover-paper__outline {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 0;
+    border-top: 0.5px solid var(--color-rule);
+  }
+  .discover-paper__outline li {
+    padding: 0.6rem 0;
+    border-bottom: 0.5px solid var(--color-rule);
+    color: var(--color-ink-soft);
+  }
+
+  .discover-paper__empty {
+    margin-top: 1.5rem;
+    padding-top: 0.875rem;
+    border-top: 0.5px solid var(--color-rule);
+    color: var(--color-ink-faint);
+  }
+
+  .discover-paper__meta {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+    min-height: 1rem;
+  }
+
+  .discover-detail__cta {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .discover-detail__note {
+    margin-top: 0.75rem;
     font-size: 0.9375rem;
     color: var(--color-ink-faint);
   }
-  .discover-detail__section {
-    max-width: 44rem;
-    margin: 0 auto;
-    padding: 0 1.25rem 2.5rem;
-  }
-  .discover-detail__section-title {
-    font-size: 1.0625rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-  }
-  .discover-detail__list {
-    display: grid;
-    gap: 0.5rem;
+
+  .discover-detail__related {
+    margin-top: 3rem;
+    padding-top: 1.25rem;
     border-top: 1px solid var(--color-rule);
-    padding-top: 0.875rem;
   }
-  .discover-detail__list li {
+  .discover-detail__related-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .discover-detail__related-list {
+    display: grid;
+    gap: 0.375rem;
+  }
+  .discover-detail__related-list a {
     color: var(--color-ink-soft);
+    text-decoration: none;
   }
-  .discover-detail__list span {
+  .discover-detail__related-list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .discover-detail__related-list span + span {
     color: var(--color-ink-faint);
   }
 </style>
