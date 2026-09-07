@@ -21,6 +21,7 @@
  * can filter it without a re-render.
  */
 import { Icon } from "astro-icon/components";
+import { sanitizeListingHtml } from "../lib/sanitize-listing-html.ts";
 import {
   DISCOVER_KIND_NOUN,
   discoverArtPosition,
@@ -56,12 +57,16 @@ const documentArt = discoverDocumentArt(listing.slug);
 
 const titles = (preview.titles ?? []).slice(0, 3);
 const titlesMore = (preview.noteCount ?? 0) - titles.length;
-/* The artifact itself — sanitized twice server-side, so it renders directly.
+/* The artifact itself. Sanitized **here** — the API stores it as authored,
+   because sanitizing it there meant DOMPurify, which meant jsdom, which could
+   not be bundled into the API image and took production down at startup. This
+   is the only pass, and this is the only place the bytes become HTML.
+
    `excerpt` is the same text with every block boundary flattened out, which
    made a template's headings run into their instructions and read as one grey
    paragraph. It stays as the fallback for rows written before bodies were
-   carried. */
-const bodyHtml = preview.bodyHtml ?? "";
+   carried, and needs no sanitizing — it is text, interpolated, not `set:html`. */
+const bodyHtml = sanitizeListingHtml(preview.bodyHtml ?? "");
 const excerpt = preview.excerpt ?? "";
 const hasBody = Boolean(bodyHtml || excerpt);
 
