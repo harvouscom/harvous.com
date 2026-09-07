@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
 import RelatedBlogPosts from "./RelatedBlogPosts.astro";
+import RelatedDiscoverListings from "./RelatedDiscoverListings.astro";
 import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
 import ComparePreview from "./ComparePreview.astro";
 import { Icon } from "astro-icon/components";
@@ -274,6 +275,10 @@ const jsonLd = {
     href={buildTryUrl({ useCase: useCase.slug })}
     fathomTrack={fathomTry.useCaseDetail(useCase.slug)}
   />
+
+  {/* Before the blog strip: someone who just read how this way of studying
+      works is closer to starting than to reading more about it. */}
+  <RelatedDiscoverListings useCaseSlug={useCase.slug} />
 
   <RelatedBlogPosts posts={relatedBlogPosts} />
 </BaseLayout>
