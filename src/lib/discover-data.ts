@@ -220,6 +220,47 @@ export function discoverTopicInk(id: string): string {
 }
 
 /**
+ * The app's thread-colour names in this site's palette.
+ *
+ * `preview.iconColor` arrives as one of the app's colour names, because that is
+ * what a template's author picked in the app's own picker. Nothing here can
+ * consume that name directly, so this is the one place the two palettes are
+ * pinned to each other.
+ *
+ * `orange` and `yellow` land on **different** tokens on purpose: the accent set
+ * had no orange for a long time and `warmAmber` (#f2cf13) is a yellow, so
+ * folding them together would draw Inductive Study and Comparative Study — both
+ * filed under Deep study, and side by side in that strip — as the same colour.
+ */
+const THREAD_COLOR_INK: Record<string, string> = {
+  blue: "var(--study-dock-accent-skyBlue)",
+  orange: "var(--study-dock-accent-orange)",
+  yellow: "var(--study-dock-accent-warmAmber)",
+  pink: "var(--study-dock-accent-coralRose)",
+  green: "var(--study-dock-accent-mintGreen)",
+  purple: "var(--study-dock-accent-violet)",
+  teal: "var(--study-dock-accent-teal)",
+  gray: "var(--study-dock-accent-neutral)",
+};
+
+/**
+ * A listing's own ink: the author's colour where the kind has one, the topic's
+ * otherwise — the same rule the app's Discover panel follows, so a template is
+ * the colour its author chose in both products.
+ *
+ * Only the tile on a `mini` card uses this. The full card carries its topic as
+ * artwork instead, which is a deliberate difference: a card with room for a
+ * picture shows the artifact, and a card without room shows what kind of thing
+ * it is.
+ */
+export function discoverListingInk(listing: DiscoverListing): string {
+  const own = listing.preview?.iconColor;
+  if (own && THREAD_COLOR_INK[own]) return THREAD_COLOR_INK[own];
+  if (listing.category) return discoverTopicInk(listing.category);
+  return "var(--study-dock-accent-neutral)";
+}
+
+/**
  * The wash behind a resource that has no picture of its own — a PDF, or a link
  * whose site publishes no OG image. Four of the unclaimed auth-hero plates,
  * chosen by slug so a row of them is not four copies of one image.

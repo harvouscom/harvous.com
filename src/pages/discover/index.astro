@@ -44,6 +44,19 @@ const KINDS: DiscoverKind[] = ["template", "note", "pack", "resource"];
 const kindCounts = Object.fromEntries(
   KINDS.map((kind) => [kind, listings.filter((l) => l.kind === kind).length]),
 ) as Record<DiscoverKind, number>;
+const presentKinds = KINDS.filter((kind) => kindCounts[kind] > 0);
+
+/*
+ * A control that cannot change what you see is not a control.
+ *
+ * While the catalog holds one kind, "All" and "Templates" select the same
+ * cards, and the row reads as a promise that there is something else in here.
+ * Same for the use-case menu with one topic in it. Each comes back on its own
+ * the day a second one is approved — the same rule the header's Resources menu
+ * follows, so the two never disagree about what the catalog contains.
+ */
+const showKinds = presentKinds.length > 1;
+const showTopics = topics.length > 1;
 /* Plural, the way the app's own tabs say it. */
 const KIND_TAB: Record<DiscoverKind, string> = {
   template: "Templates",
@@ -74,10 +87,10 @@ const isDraft = isDraftPageSlug("discover");
 
   <section>
     <PageIntro flushBottom>
-      <h1 class="section-title display-xl text-balance">Start from someone else's study.</h1>
+      <h1 class="section-title display-xl text-balance">A good place to start.</h1>
       <p class="lead mx-auto mt-6 max-w-xl text-pretty">
-        Templates to write into, notes to read, Threads to work through, and things worth
-        keeping nearby. All of it free — and the moment you take a copy,
+        Templates to write into, notes to read, Threads to work through — some ours, some
+        shared by people who use Harvous. All of it free, and the moment you take a copy,
         <mark>it's yours to change</mark>.
       </p>
     </PageIntro>
@@ -94,22 +107,28 @@ const isDraft = isDraftPageSlug("discover");
     ) : (
       <div class="dhub" data-dhub>
         {/* ── One bar: kinds, a use-case menu, and search ──────────── */}
-        <div class="dhub__bar" data-reveal>
-          <div class="dhub__kinds" role="group" aria-label="Kind">
-            <button type="button" class="dhub__kind is-active" data-dhub-kind="" aria-pressed="true">
-              All
-            </button>
-            {KINDS.filter((kind) => kindCounts[kind] > 0).map((kind) => (
-              <button type="button" class="dhub__kind" data-dhub-kind={kind} aria-pressed="false">
-                <span class="dhub__kind-icon">
-                  <Icon name={DISCOVER_KIND_ICON[kind]} />
-                </span>
-                {KIND_TAB[kind]}
+        <div
+          class:list={["dhub__bar", !showKinds && "dhub__bar--tools-only"]}
+          data-reveal
+        >
+          {showKinds && (
+            <div class="dhub__kinds" role="group" aria-label="Kind">
+              <button type="button" class="dhub__kind is-active" data-dhub-kind="" aria-pressed="true">
+                All
               </button>
-            ))}
-          </div>
+              {presentKinds.map((kind) => (
+                <button type="button" class="dhub__kind" data-dhub-kind={kind} aria-pressed="false">
+                  <span class="dhub__kind-icon">
+                    <Icon name={DISCOVER_KIND_ICON[kind]} />
+                  </span>
+                  {KIND_TAB[kind]}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div class="dhub__tools">
+            {showTopics && (
             <div class="dhub__topics" data-dhub-topics>
               <button
                 type="button"
@@ -155,6 +174,7 @@ const isDraft = isDraftPageSlug("discover");
                 ))}
               </div>
             </div>
+            )}
 
             <label class="dhub__search">
               <span class="sr-only">Search the catalog</span>
@@ -456,6 +476,16 @@ const isDraft = isDraftPageSlug("discover");
     width: 0.875rem;
     height: 0.875rem;
     fill: currentColor;
+  }
+
+  /* Nothing left but the tools, so they get the bar. 52rem of pill around one
+     menu and a search field is a lot of empty; the bar comes in to fit them. */
+  .dhub__bar--tools-only {
+    max-width: 34rem;
+  }
+  .dhub__bar--tools-only .dhub__tools,
+  .dhub__bar--tools-only .dhub__search {
+    flex: 1 1 auto;
   }
 
   .dhub__tools {

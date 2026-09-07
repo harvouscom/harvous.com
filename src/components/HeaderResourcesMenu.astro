@@ -37,7 +37,11 @@ import {
   includeBlogDrafts,
   isBlogPostListed,
 } from "../lib/blog";
-import { DISCOVER_KIND_ICON, DISCOVER_KIND_NOUN } from "../lib/discover-data.ts";
+import {
+  DISCOVER_KIND_ICON,
+  DISCOVER_KIND_NOUN,
+  getDiscoverListings,
+} from "../lib/discover-data.ts";
 import { draftPageIsReachable } from "../lib/draft-pages.ts";
 import { getReleaseNotes } from "../lib/release-notes-data.ts";
 import Harvous3Numeral from "./Harvous3Numeral.astro";
@@ -55,8 +59,18 @@ const latestRelease = getReleaseNotes()[0];
 const latestReleaseHeadline = latestRelease?.entries[0]?.title ?? latestRelease?.excerpt;
 
 const discoverReachable = draftPageIsReachable("discover");
-const KINDS = ["template", "note", "pack", "resource"] as const;
-const KIND_BLURB: Record<(typeof KINDS)[number], string> = {
+const ALL_KINDS = ["template", "note", "pack", "resource"] as const;
+/*
+ * Only the kinds the catalog actually holds.
+ *
+ * The menu listed all four from the day it was built, when the catalog had
+ * none of them — an offer to browse Threads that lands on an empty grid is
+ * worse than not offering. It fills in on its own as each kind gets its first
+ * listing, the same rule the hub's own kind chips already follow.
+ */
+const listings = getDiscoverListings();
+const KINDS = ALL_KINDS.filter((kind) => listings.some((l) => l.kind === kind));
+const KIND_BLURB: Record<(typeof ALL_KINDS)[number], string> = {
   template: "Scaffolds to write into",
   note: "Finished study to read",
   pack: "A sequence to work through",
@@ -93,7 +107,7 @@ const KIND_BLURB: Record<(typeof KINDS)[number], string> = {
     </div>
 
     {
-      discoverReachable && (
+      discoverReachable && listings.length > 0 && (
         <div class="hmenu__col hmenu__col--ruled">
           <p class="hmenu__eyebrow">Discover</p>
           <a class="hmenu__row hmenu__row--lead" href="/discover/">

@@ -14,6 +14,8 @@ const groups = [
       { label: "Who it's for", href: "/for/" },
       { label: "Compare", href: "/compare/" },
       { label: "Pricing", href: "/pricing/" },
+      /* What shipped is a fact about the product, not about the company. */
+      { label: "Release notes", href: "/release-notes/" },
       { label: "Status", href: "https://status.harvous.com/", external: true },
     ],
   },
@@ -22,8 +24,8 @@ const groups = [
     links: [
       { label: "About", href: "/about/" },
       { label: "Blog", href: "/blog/" },
-      { label: "Release Notes", href: "/release-notes/" },
-      { label: "Harvous 3", href: "/3/" },
+      /* Filtered out by `isDraftPageUrl` below until the catalog launches. */
+      { label: "Discover", href: "/discover/" },
       { label: "Support", href: "/support/" },
     ],
   },
