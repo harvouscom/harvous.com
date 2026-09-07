@@ -9,11 +9,16 @@
  * `isDraftPageSlug` / `isDraftPageUrl`, so emptying this array is the whole
  * cutover.
  *
- * Currently empty: `/3/` shipped at the 3.0 launch, and `features/reminders`
- * left when the push server was configured. The machinery stays for the next
- * page that needs to be built in the open before it is announced.
+ * `discover` is the catalog of study people have shared. It is built and
+ * reviewable on staging, and stripped from production, until the app side ships
+ * — a hub with nothing under it is worse than no hub. Launch is deleting the
+ * string.
+ *
+ * Note the sitemap needs its own rule for it: `isDraftPageUrl` is an exact path
+ * match by design, so it excludes `/discover/` but not `/discover/<slug>/`. See
+ * the filter in astro.config.mjs.
  */
-export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = ["discover"] as const as readonly string[];
 
 /**
  * Whether links to a draft page should render — i.e. whether the page will be

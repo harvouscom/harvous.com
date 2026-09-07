@@ -1,15 +1,28 @@
 ---
 import { fathomSignin, fathomSignup } from "../lib/fathom-events.ts";
 import OptimizedImage from "./OptimizedImage.astro";
+import HeaderResourcesMenu from "./HeaderResourcesMenu.astro";
+import { draftPageIsReachable } from "../lib/draft-pages.ts";
 
 const APP_SIGN_IN = "https://app.harvous.com/sign-in";
 
+/* `menu: true` is the Resources item: a button that opens the mega panel rather
+   than a link. It replaced "Blog", which named one destination and hid the
+   other half of what there is to read here. */
 const navLinks = [
   { href: "/#features", label: "Features" },
   { href: "/use-cases/", label: "Use cases" },
   { href: "/compare/", label: "Compare" },
-  { href: "/blog/", label: "Blog" },
+  { href: "/blog/", label: "Resources", menu: true },
   { href: "/pricing/", label: "Pricing" },
+];
+
+/* The mobile sheet has no room for a panel, so it lists the same destinations
+   flat, under a heading. */
+const discoverReachable = draftPageIsReachable("discover");
+const mobileResourceLinks = [
+  { href: "/blog/", label: "Blog" },
+  ...(discoverReachable ? [{ href: "/discover/", label: "Discover" }] : []),
 ];
 
 // Scroll threshold (px) at which the header switches from the flat,
@@ -35,11 +48,29 @@ const SCROLL_THRESHOLD = 16;
     </a>
 
     <nav class="site-header__nav" aria-label="Primary">
-      {navLinks.map((link) => (
-        <a href={link.href} class="site-header__link">
-          {link.label}
-        </a>
-      ))}
+      {navLinks.map((link) =>
+        link.menu ? (
+          <div class="site-header__menu-item" data-header-menu-root>
+            <button
+              type="button"
+              class="site-header__link site-header__menu-trigger"
+              data-header-menu-trigger
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-controls="header-resources-menu"
+            >
+              {link.label}
+              <svg class="site-header__menu-chevron" viewBox="0 0 12 12" aria-hidden="true">
+                <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <a href={link.href} class="site-header__link">
+            {link.label}
+          </a>
+        ),
+      )}
     </nav>
 
     <div class="site-header__actions">
@@ -68,15 +99,25 @@ const SCROLL_THRESHOLD = 16;
     </div>
   </div>
 
+  <HeaderResourcesMenu />
+
   <div class="site-header__mobile-nav" id="site-header-mobile-nav" aria-hidden="true">
     <button type="button" class="site-header__mobile-nav-backdrop" id="site-header-mobile-backdrop" tabindex="-1" aria-label="Close menu"></button>
     <nav class="site-header__mobile-nav-panel" aria-label="Mobile">
       <div class="site-header__mobile-nav-links">
-        {navLinks.map((link) => (
-          <a href={link.href} class="site-header__mobile-link">
-            {link.label}
-          </a>
-        ))}
+        {navLinks.map((link) =>
+          link.menu ? (
+            mobileResourceLinks.map((sub) => (
+              <a href={sub.href} class="site-header__mobile-link">
+                {sub.label}
+              </a>
+            ))
+          ) : (
+            <a href={link.href} class="site-header__mobile-link">
+              {link.label}
+            </a>
+          ),
+        )}
         <a href={APP_SIGN_IN} class="site-header__mobile-link" data-fathom-track={fathomSignin.header}>
           Sign in
         </a>
@@ -275,6 +316,42 @@ const SCROLL_THRESHOLD = 16;
     color: var(--color-ink);
   }
 
+  /* The Resources trigger. A button styled as a nav link, plus the chevron that
+     says it opens something — without it the item looks like the four links
+     beside it and nobody hovers. */
+  .site-header__menu-item {
+    display: flex;
+    align-items: center;
+  }
+  .site-header__menu-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  .site-header__menu-item.is-open .site-header__menu-trigger {
+    color: var(--color-ink);
+  }
+  .site-header__menu-chevron {
+    width: 0.7rem;
+    height: 0.7rem;
+    opacity: 0.6;
+    transition: transform 150ms ease;
+  }
+  .site-header__menu-item.is-open .site-header__menu-chevron {
+    transform: rotate(180deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-header__menu-chevron {
+      transition: none;
+    }
+  }
+
   .site-header__cta {
     flex: none;
   }
@@ -450,15 +527,18 @@ const SCROLL_THRESHOLD = 16;
       const paddingX = forScrolled ? pillInset * 2 : parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const borderX = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
 
+      // Direct children, not `a` — the Resources item is a <button> in a
+      // wrapper, and selecting anchors measured the pill one nav item short
+      // (and would have counted the mega panel's own links once it opened).
       const measureNavWidth = (nav) => {
         const navStyle = getComputedStyle(nav);
         const navGap = parseFloat(navStyle.columnGap || navStyle.gap) || 0;
-        const links = [...nav.querySelectorAll("a")].filter(
-          (link) => getComputedStyle(link).display !== "none" && link.offsetParent !== null
+        const items = [...nav.children].filter(
+          (item) => getComputedStyle(item).display !== "none" && item.offsetParent !== null
         );
-        if (links.length === 0) return 0;
-        const linksWidth = links.reduce((sum, link) => sum + link.getBoundingClientRect().width, 0);
-        return linksWidth + Math.max(0, links.length - 1) * navGap;
+        if (items.length === 0) return 0;
+        const itemsWidth = items.reduce((sum, item) => sum + item.getBoundingClientRect().width, 0);
+        return itemsWidth + Math.max(0, items.length - 1) * navGap;
       };
 
       const measureActionsWidth = (actions) => {
@@ -561,5 +641,63 @@ const SCROLL_THRESHOLD = 16;
 
     updateScrolled();
     measurePillWidth();
+  }
+
+  /*
+   * The Resources mega menu.
+   *
+   * Opens on hover and on click, the way Lattice's does — hover alone strands
+   * keyboard and touch users, click alone makes a pointer stop and aim at a
+   * thing that looks like a nav link. A short close delay covers the diagonal
+   * from the trigger to the panel, which is the whole reason hover menus feel
+   * broken when they lack one.
+   */
+  const menuRoot = document.querySelector<HTMLElement>("[data-header-menu-root]");
+  const menuTrigger = document.querySelector<HTMLButtonElement>("[data-header-menu-trigger]");
+  const menuPanel = document.querySelector<HTMLElement>("[data-header-menu]");
+  if (menuRoot && menuTrigger && menuPanel) {
+    let closeTimer = 0;
+    const setOpen = (open: boolean) => {
+      window.clearTimeout(closeTimer);
+      menuPanel.hidden = !open;
+      menuTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+      menuRoot.classList.toggle("is-open", open);
+    };
+    const closeSoon = () => {
+      window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(() => setOpen(false), 160);
+    };
+
+    menuTrigger.addEventListener("click", () => setOpen(menuPanel.hidden));
+    for (const el of [menuRoot, menuPanel]) {
+      el.addEventListener("mouseenter", () => {
+        // Pointer only. On a touch screen `mouseenter` fires with the tap that
+        // is already toggling it, which would open and close in one gesture.
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) setOpen(true);
+      });
+      el.addEventListener("mouseleave", closeSoon);
+    }
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !menuPanel.hidden) {
+        setOpen(false);
+        menuTrigger.focus();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      const target = event.target as Node | null;
+      if (!menuRoot.contains(target) && !menuPanel.contains(target)) setOpen(false);
+    });
+    // A link inside the panel navigates; leaving it open behind the new page
+    // is the classic mega-menu ghost.
+    for (const link of menuPanel.querySelectorAll("a")) {
+      link.addEventListener("click", () => setOpen(false));
+    }
+    // Focus moving out of the whole thing closes it — tabbing past the last
+    // link should not leave a panel hanging over the page.
+    document.addEventListener("focusin", (event) => {
+      const target = event.target as Node | null;
+      if (menuPanel.hidden) return;
+      if (!menuRoot.contains(target) && !menuPanel.contains(target)) setOpen(false);
+    });
   }
 </script>

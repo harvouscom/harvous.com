@@ -1,0 +1,667 @@
+---
+/**
+ * One listing, as an indexed page — with a treatment per kind.
+ *
+ * It used to be one treatment for all four: the app's shared-note paper stack,
+ * applied to Threads and links as well. That was wrong for the reason the app
+ * itself already writes down, on the shared thread's plan-step:
+ *
+ *   "Deliberately a flat row rather than a note card — a step here is a plan
+ *    row, not a note. Borrowing the note card would promise content the preview
+ *    does not (and must not) show."
+ *
+ * The app speaks two dialects and each kind already belongs to one. **Paper** —
+ * sharp corners, a hair of rotation, dot grain, a folded corner — says *a
+ * document someone wrote*. **Card** — rounded, colour stripe, header rule — says
+ * *a container of things*. So:
+ *
+ *   note      paper, tilted, body faded         ← .public-note-card
+ *   template  the same — a template is a note template, and drawing it as a
+ *             ruled form put it in a dialect of its own that nothing in the
+ *             app speaks. Its body is the scaffold, which reads fine as a page.
+ *   pack      card, icon tile, spine            ← .proto-collection-card, which
+ *                                                 is how the app draws a Thread
+ *   resource  link card, image and domain bar   ← .card-image-link
+ *
+ * Not built on `ProductDetailPage.astro`: its type is `kind: "feature" |
+ * "addon"` and its body reaches into eight feature-specific helpers across 300
+ * lines that all market a product.
+ */
+import { Icon } from "astro-icon/components";
+import DiscoverCard from "./DiscoverCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageClosingCTA from "./PageClosingCTA.astro";
+import CTAButton from "./CTAButton.astro";
+import { buildInstallUrl } from "../lib/signup-url.ts";
+import { isDraftPageSlug } from "../lib/draft-pages.ts";
+import {
+  DISCOVER_KIND_BLURB,
+  DISCOVER_KIND_NOUN,
+  discoverCategoryLabel,
+  discoverTopicInk,
+  type DiscoverListing,
+} from "../lib/discover-data.ts";
+
+interface Props {
+  listing: DiscoverListing;
+  related: DiscoverListing[];
+}
+
+const { listing, related } = Astro.props;
+
+const kindNoun = DISCOVER_KIND_NOUN[listing.kind] ?? "Item";
+const categoryLabel = listing.category ? discoverCategoryLabel(listing.category) : null;
+const installUrl = buildInstallUrl(listing.slug);
+const preview = listing.preview ?? {};
+
+/* Sanitized twice server-side — once at snapshot, once in `serializePublic` —
+   so this repo renders it directly and takes no sanitizer dependency of its own.
+   Absent on rows written before bodies were carried, and on links, which have
+   none; those fall back to the outline. */
+/* The topic's ink, the same one its chip wears on the hub and its use-case page
+   wears elsewhere. */
+const ink = listing.category ? discoverTopicInk(listing.category) : null;
+
+const bodyHtml = preview.bodyHtml ?? "";
+/* Only fade a body long enough to actually be cut. Below this the whole thing
+   fits, and a gradient over it hides writing for no reason — the fade is there
+   to make a truncation invisible, not to withhold. */
+const bodyIsLong = bodyHtml.length > 420;
+const outline = preview.headings ?? preview.titles ?? [];
+const noteCount = preview.noteCount ?? null;
+
+/* Everything after the first note of a Thread, by title — so the page stays a
+   page whether the Thread holds four notes or a hundred. */
+const spine = (preview.titles ?? []).slice(1);
+const spineMore = (noteCount ?? 0) - (preview.titles ?? []).length;
+
+/* noindex whenever `discover` is a draft slug — including staging, which is the
+   one environment that actually builds and serves these pages. */
+const isDraft = isDraftPageSlug("discover");
+
+const description =
+  listing.description ??
+  `${kindNoun} shared on Harvous${
+    !preview.official && listing.authorDisplayName ? ` by ${listing.authorDisplayName}` : ""
+  }.`;
+
+const kicker = preview.official
+  ? `A ${kindNoun.toLowerCase()} included with Harvous`
+  : listing.authorDisplayName
+    ? `A ${kindNoun.toLowerCase()} from ${listing.authorDisplayName}`
+    : `A ${kindNoun.toLowerCase()} shared on Harvous`;
+---
+
+<BaseLayout
+  title={`${listing.title} — Discover — Harvous`}
+  description={description}
+  noindex={isDraft}
+>
+  {
+    isDraft && (
+      <div class="draft-page-banner" role="status">
+        Draft — not indexed or deployed. Remove <code>"discover"</code> from DRAFT_PAGE_SLUGS to publish.
+      </div>
+    )
+  }
+
+  <section class="dlist" style={ink ? `--ink: ${ink};` : undefined}>
+    <p class="dlist__kicker">{kicker}</p>
+
+    {/* ── note and template: paper, tilted, faded ───────────────────── */}
+    {
+      (listing.kind === "note" || listing.kind === "template") && (
+        <div class="dpaper">
+          <div class="dpaper__leaf dpaper__leaf--back" aria-hidden="true" />
+          <div class="dpaper__leaf dpaper__leaf--mid" aria-hidden="true" />
+          <article class="dpaper__sheet dpaper__sheet--tilt">
+            <p class="dlist__eyebrow">
+              <span>{kindNoun}</span>
+              {categoryLabel && (
+                <>
+                  <span aria-hidden="true"> · </span>
+                  <a href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>
+                </>
+              )}
+            </p>
+            <h1 class="dpaper__title">{listing.title}</h1>
+            {listing.description && <p class="dpaper__lead">{listing.description}</p>}
+
+            {bodyHtml ? (
+              <div class="dbody">
+                <div class="dbody__html" set:html={bodyHtml} />
+                {bodyIsLong && <div class="dbody__fade" aria-hidden="true" />}
+              </div>
+            ) : (
+              <ul class="dlist__outline">
+                {outline.map((line) => (
+                  <li>{line}</li>
+                ))}
+              </ul>
+            )}
+          </article>
+        </div>
+      )
+    }
+
+    {/* ── pack: card, colour stripe, first note then the spine ────────── */}
+    {
+      listing.kind === "pack" && (
+        <article class="dthread">
+          <div class="dthread__head">
+            {/* The neutral tile and the swap glyph, which is the whole of a
+                Thread's identity in the app — `proto-collection-card` draws an
+                icon, a title and a note count, and nothing else. There used to
+                be a 5px stripe here in `Threads.color`; the column still exists
+                and shared-space covers still read it, but a personal Thread has
+                not been drawn in its own hue for a long time, and reviving it
+                only in the catalog had the same Thread showing two colours. */}
+            <span class="dthread__tile" aria-hidden="true">
+              <Icon name="fa7-solid:arrow-right-arrow-left" />
+            </span>
+            <p class="dlist__eyebrow">
+              <span>{kindNoun}</span>
+              {categoryLabel && (
+                <>
+                  <span aria-hidden="true"> · </span>
+                  <a href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>
+                </>
+              )}
+            </p>
+            <h1 class="dthread__title">{listing.title}</h1>
+            <p class="dthread__meta">
+              {noteCount ? `${noteCount} notes` : ""}
+              {noteCount && listing.installCount > 0 ? " · " : ""}
+              {listing.installCount > 0 ? `saved by ${listing.installCount}` : ""}
+            </p>
+          </div>
+
+          {bodyHtml && (
+            <div class="dthread__first">
+              {preview.titles?.[0] && <p class="dthread__first-title">{preview.titles[0]}</p>}
+              <div class="dbody">
+                <div class="dbody__html" set:html={bodyHtml} />
+                {bodyIsLong && <div class="dbody__fade dbody__fade--card" aria-hidden="true" />}
+              </div>
+            </div>
+          )}
+
+          {spine.length > 0 && (
+            <ol class="dspine">
+              {spine.map((title) => (
+                <li class="dspine__step">
+                  <span class="dspine__orb" aria-hidden="true" />
+                  <span class="dspine__title">{title}</span>
+                </li>
+              ))}
+              {spineMore > 0 && (
+                <li class="dspine__step dspine__step--more">
+                  <span class="dspine__orb" aria-hidden="true" />
+                  <span class="dspine__title">and {spineMore} more</span>
+                </li>
+              )}
+            </ol>
+          )}
+        </article>
+      )
+    }
+
+    {/* ── resource: the link card the app draws ───────────────────────── */}
+    {
+      listing.kind === "resource" && (
+        <article class="dlink">
+          {preview.sourceImage && (
+            <div
+              class="dlink__image"
+              style={`background-image: url(${preview.sourceImage});`}
+              aria-hidden="true"
+            />
+          )}
+          <div class="dlink__body">
+            <p class="dlist__eyebrow">
+              <span>{kindNoun}</span>
+              {categoryLabel && (
+                <>
+                  <span aria-hidden="true"> · </span>
+                  <a href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>
+                </>
+              )}
+            </p>
+            <h1 class="dlink__title">{listing.title}</h1>
+            {listing.description && <p class="dlink__lead">{listing.description}</p>}
+          </div>
+
+          {/* Where it goes. Domain over site name, as the app prefers — a site
+              name derived from a host mangles subdomains. */}
+          {preview.sourceDomain && (
+            <div class="dlink__source">
+              <span class="dlink__domain">{preview.sourceDomain}</span>
+              <span class="dlink__arrow" aria-hidden="true">↗</span>
+            </div>
+          )}
+        </article>
+      )
+    }
+
+    <div class="dlist__cta">
+      <CTAButton href={installUrl} variant="primary" size="lg" external>
+        Save this to my Harvous
+      </CTAButton>
+      <p class="dlist__note">Free. {DISCOVER_KIND_BLURB[listing.kind]}</p>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="dlist__related">
+          <h2 class="dlist__related-title">More like this</h2>
+          {/* The catalog's own cards, without their preview panels — someone at
+              the foot of a page wants somewhere to go next, not another three
+              artifacts to read. */}
+          <ul class="dlist__related-grid">
+            {related.map((other) => (
+              <DiscoverCard listing={other} variant="compact" />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </section>
+
+  <PageClosingCTA
+    heading="Somewhere for your own study to live"
+    lead="Take a copy, then make it yours. Harvous keeps what you write where you can find it again."
+  />
+</BaseLayout>
+
+<style>
+  .dlist {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 0;
+  }
+
+  .dlist__kicker {
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    margin-bottom: 1.25rem;
+  }
+
+  /* Neutral, matching .dlist__kicker above the card — kind identity already
+     has its place (the tile on the hub card, the accent on a template's own
+     rules); tinting the same word a second time here just made "Note" and
+     "Deep study" read as two different colours doing two different jobs when
+     they are both just a caption. */
+  .dlist__eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  /* The site's own quiet-link recipe (discover-hub__group-title and friends):
+     inherits the caption's colour, no underline at rest, underline on hover —
+     not the plain default-anchor blue-and-underline this replaced. */
+  .dlist__eyebrow a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .dlist__eyebrow a:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* ── Paper ────────────────────────────────────────────────────────────
+     The app's own recipe, in the tokens that already exist here — grain,
+     fold and shadow all have --pds-paper-* values, and unlike hex they
+     follow the dark palette when night mode returns. */
+  .dpaper {
+    position: relative;
+    padding: 10px 14px;
+  }
+
+  .dpaper__leaf {
+    position: absolute;
+    inset: 10px 14px;
+    background-color: var(--pds-paper-desk);
+    border: 0.5px solid var(--pds-paper-rule);
+    box-shadow: 0 8px 24px -12px rgba(20, 18, 12, 0.1);
+    pointer-events: none;
+    transform: rotate(1.6deg);
+    z-index: 0;
+  }
+  .dpaper__leaf--mid {
+    transform: rotate(-1.9deg);
+    z-index: 1;
+  }
+
+  .dpaper__sheet {
+    position: relative;
+    z-index: 2;
+    padding: 2rem 1.75rem 1.75rem;
+    background-color: var(--color-card);
+    background-image:
+      radial-gradient(var(--pds-paper-grain-a) 1px, transparent 1px),
+      radial-gradient(var(--pds-paper-grain-b) 1px, transparent 1px);
+    background-size: 28px 28px, 17px 17px;
+    background-position: 0 0, 9px 9px;
+    border: 0.5px solid var(--pds-paper-rule);
+    box-shadow: var(--pds-paper-shadow);
+  }
+  /* A note is a document, so it sits as one was set down. */
+  .dpaper__sheet--tilt {
+    transform: rotate(-0.6deg);
+  }
+
+  .dpaper__sheet::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(
+      225deg,
+      var(--pds-paper-fold-a) 0%,
+      var(--pds-paper-fold-b) 40%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .dpaper__title {
+    margin-top: 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+  .dpaper__lead {
+    margin-top: 0.5rem;
+    color: var(--color-ink-soft);
+  }
+
+  /* ── The faded body ──────────────────────────────────────────────────
+     Capped server-side, which the fade makes invisible — the cut always
+     lands under the gradient. */
+  .dbody {
+    position: relative;
+    margin-top: 1.5rem;
+    overflow: hidden;
+  }
+  /* Only clip when there is a fade to hide the cut. */
+  .dbody:has(.dbody__fade) {
+    max-height: 22rem;
+  }
+  .dbody__html {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink);
+  }
+  .dbody__html :global(h2),
+  .dbody__html :global(h3) {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: 1.25em 0 0.4em;
+  }
+  .dbody__html :global(h2:first-child),
+  .dbody__html :global(h3:first-child) {
+    margin-top: 0;
+  }
+  .dbody__html :global(p) {
+    margin: 0 0 0.75em;
+  }
+  .dbody__html :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  /* Enough to make the cut invisible and no more — at 9rem it was covering
+     two fifths of a 22rem body, which withholds writing the reader was meant
+     to get. */
+  .dbody__fade {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 6rem;
+    background: linear-gradient(to bottom, transparent, var(--color-card) 82%);
+    pointer-events: none;
+  }
+  .dbody__fade--card {
+    background: linear-gradient(to bottom, transparent, var(--color-card) 82%);
+  }
+
+  /* ── Thread: a container of things, not a sheet of paper ─────────────── */
+  .dthread {
+    position: relative;
+    background: var(--color-card);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  .dthread__head {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  /* 8px corner on a 34px box, glyph at ~0.42 of the tile — the join letter's
+     proportion, which is where this site already keeps the app's tile. */
+  .dthread__tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 0.875rem;
+    border-radius: 8px;
+    background: color-mix(in oklab, var(--ink, var(--color-ink)) 14%, var(--color-paper));
+    color: var(--ink, var(--color-ink-soft));
+  }
+  .dthread__tile :global(svg) {
+    width: 14px;
+    height: 14px;
+    display: block;
+    fill: currentColor;
+  }
+  .dthread__title {
+    margin-top: 0.5rem;
+    font-size: 1.625rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .dthread__meta {
+    margin-top: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+  }
+  .dthread__first {
+    padding: 1.25rem 1.5rem 0;
+  }
+  .dthread__first-title {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .dthread__first .dbody {
+    margin-top: 0.5rem;
+  }
+  .dthread__first .dbody:has(.dbody__fade) {
+    max-height: 16rem;
+  }
+
+  /* The trail: a rule down the left with a stop per note, the shape a Thread
+     has in the app. */
+  .dspine {
+    margin: 0;
+    padding: 1.25rem 1.5rem 1.5rem 1.75rem;
+    display: grid;
+    gap: 0.875rem;
+    list-style: none;
+  }
+  .dspine__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    align-items: center;
+    column-gap: 0.75rem;
+  }
+  .dspine__step::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: -0.875rem;
+    bottom: 50%;
+    width: 2px;
+    background: var(--color-rule);
+  }
+  .dspine__step:first-child::before {
+    display: none;
+  }
+  /* Ink, not a hue. The app's own trail orb is a neutral ring on the rule —
+     a Thread's steps are steps, and colouring them would be inventing a
+     signal the app does not have. */
+  .dspine__orb {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    border: 2px solid color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
+    background: var(--color-card);
+    z-index: 1;
+  }
+  .dspine__title {
+    color: var(--color-ink-soft);
+  }
+  .dspine__step--more .dspine__title {
+    color: var(--color-ink-faint);
+  }
+  .dspine__step--more .dspine__orb {
+    border-style: dashed;
+  }
+
+  /* ── Resource: the link card ─────────────────────────────────────────
+     No fade. Nothing is withheld — the whole thing is a pointer. */
+  .dlink {
+    background: var(--color-card);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  .dlink__image {
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--color-warm);
+  }
+  .dlink__body {
+    padding: 1.5rem 1.5rem 1.25rem;
+  }
+  .dlink__title {
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .dlink__lead {
+    margin-top: 0.5rem;
+    color: var(--color-ink-soft);
+  }
+  .dlink__source {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0 1.25rem 1.25rem;
+    padding: 0 1.25rem;
+    height: 64px;
+    border-radius: 1.25rem;
+    background: var(--color-warm);
+  }
+  .dlink__domain {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  .dlink__arrow {
+    color: var(--color-ink-faint);
+  }
+
+  /* ── Shared tail ─────────────────────────────────────────────────────── */
+  .dlist__outline {
+    margin-top: 1.5rem;
+    display: grid;
+    border-top: 0.5px solid var(--color-rule);
+  }
+  .dlist__outline li {
+    padding: 0.6rem 0;
+    border-bottom: 0.5px solid var(--color-rule);
+    color: var(--color-ink-soft);
+  }
+
+  /* The take-a-copy block and what comes after it both sit under a rule, so
+     the sheet above ends cleanly instead of bleeding into page furniture. */
+  .dlist__cta {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    padding-bottom: 2.25rem;
+    border-top: 1px solid var(--color-rule);
+    text-align: center;
+  }
+  .dlist__note {
+    margin: 0.625rem auto 0;
+    max-width: 26rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-faint);
+  }
+
+  .dlist__related {
+    padding-top: 1.75rem;
+    padding-bottom: 3rem;
+    border-top: 1px solid var(--color-rule);
+    text-align: center;
+  }
+  .dlist__related-title {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    font-variation-settings: "wdth" 100, "ROND" 0;
+  }
+  .dlist__related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+  }
+  /* The paper stack has no responsive rules in the app; its rotations and the
+     40px fold are fixed, so a phone gets the sheet without the tilt. */
+  @media (max-width: 520px) {
+    .dpaper {
+      padding: 6px 4px;
+    }
+    .dpaper__leaf {
+      inset: 6px 4px;
+    }
+    .dpaper__sheet {
+      padding: 1.5rem 1.25rem 1.25rem;
+    }
+    .dpaper__sheet--tilt {
+      transform: none;
+    }
+    .dpaper__leaf {
+      transform: rotate(1deg);
+    }
+    .dpaper__leaf--mid {
+      transform: rotate(-1.2deg);
+    }
+  }
+</style>
