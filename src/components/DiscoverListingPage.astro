@@ -16,16 +16,19 @@
  * *a container of things*. So:
  *
  *   note      paper, tilted, body faded         ← .public-note-card
- *   template  paper, upright, ruled as a form   ← the join letter, which is
- *                                                 upright precisely because it
- *                                                 holds a form
- *   pack      card, colour stripe, spine        ← .public-card + __color-stripe
+ *   template  the same — a template is a note template, and drawing it as a
+ *             ruled form put it in a dialect of its own that nothing in the
+ *             app speaks. Its body is the scaffold, which reads fine as a page.
+ *   pack      card, icon tile, spine            ← .proto-collection-card, which
+ *                                                 is how the app draws a Thread
  *   resource  link card, image and domain bar   ← .card-image-link
  *
  * Not built on `ProductDetailPage.astro`: its type is `kind: "feature" |
  * "addon"` and its body reaches into eight feature-specific helpers across 300
  * lines that all market a product.
  */
+import { Icon } from "astro-icon/components";
+import DiscoverCard from "./DiscoverCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
 import CTAButton from "./CTAButton.astro";
@@ -35,8 +38,7 @@ import {
   DISCOVER_KIND_BLURB,
   DISCOVER_KIND_NOUN,
   discoverCategoryLabel,
-  discoverKindInk,
-  discoverThreadStripe,
+  discoverTopicInk,
   type DiscoverListing,
 } from "../lib/discover-data.ts";
 
@@ -56,6 +58,10 @@ const preview = listing.preview ?? {};
    so this repo renders it directly and takes no sanitizer dependency of its own.
    Absent on rows written before bodies were carried, and on links, which have
    none; those fall back to the outline. */
+/* The topic's ink, the same one its chip wears on the hub and its use-case page
+   wears elsewhere. */
+const ink = listing.category ? discoverTopicInk(listing.category) : null;
+
 const bodyHtml = preview.bodyHtml ?? "";
 /* Only fade a body long enough to actually be cut. Below this the whole thing
    fits, and a gradient over it hides writing for no reason — the fade is there
@@ -75,11 +81,15 @@ const isDraft = isDraftPageSlug("discover");
 
 const description =
   listing.description ??
-  `${kindNoun} shared on Harvous${listing.authorDisplayName ? ` by ${listing.authorDisplayName}` : ""}.`;
+  `${kindNoun} shared on Harvous${
+    !preview.official && listing.authorDisplayName ? ` by ${listing.authorDisplayName}` : ""
+  }.`;
 
-const kicker = listing.authorDisplayName
-  ? `A ${kindNoun.toLowerCase()} from ${listing.authorDisplayName}`
-  : `A ${kindNoun.toLowerCase()} shared on Harvous`;
+const kicker = preview.official
+  ? `A ${kindNoun.toLowerCase()} included with Harvous`
+  : listing.authorDisplayName
+    ? `A ${kindNoun.toLowerCase()} from ${listing.authorDisplayName}`
+    : `A ${kindNoun.toLowerCase()} shared on Harvous`;
 ---
 
 <BaseLayout
@@ -95,12 +105,12 @@ const kicker = listing.authorDisplayName
     )
   }
 
-  <section class="dlist" style={`--kind-ink: ${discoverKindInk(listing.kind)};`}>
+  <section class="dlist" style={ink ? `--ink: ${ink};` : undefined}>
     <p class="dlist__kicker">{kicker}</p>
 
-    {/* ── note: paper, tilted, faded ─────────────────────────────────── */}
+    {/* ── note and template: paper, tilted, faded ───────────────────── */}
     {
-      listing.kind === "note" && (
+      (listing.kind === "note" || listing.kind === "template") && (
         <div class="dpaper">
           <div class="dpaper__leaf dpaper__leaf--back" aria-hidden="true" />
           <div class="dpaper__leaf dpaper__leaf--mid" aria-hidden="true" />
@@ -110,7 +120,7 @@ const kicker = listing.authorDisplayName
               {categoryLabel && (
                 <>
                   <span aria-hidden="true"> · </span>
-                  <a href={`/discover/topic/${listing.category}/`}>{categoryLabel}</a>
+                  <a href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>
                 </>
               )}
             </p>
@@ -134,62 +144,27 @@ const kicker = listing.authorDisplayName
       )
     }
 
-    {/* ── template: paper, upright, ruled as a form ───────────────────── */}
-    {
-      listing.kind === "template" && (
-        <div class="dpaper dpaper--upright">
-          <div class="dpaper__leaf dpaper__leaf--back" aria-hidden="true" />
-          <article class="dpaper__sheet">
-            <p class="dlist__eyebrow">
-              <span>{kindNoun}</span>
-              {categoryLabel && (
-                <>
-                  <span aria-hidden="true"> · </span>
-                  <a href={`/discover/topic/${listing.category}/`}>{categoryLabel}</a>
-                </>
-              )}
-            </p>
-            <h1 class="dpaper__title">{listing.title}</h1>
-            {listing.description && <p class="dpaper__lead">{listing.description}</p>}
-
-            {/* The blank form itself. No fade — nothing is being withheld; the
-                emptiness is the product, and it is what you would be writing
-                into. */}
-            <div class="dform">
-              {outline.map((section) => (
-                <div class="dform__section">
-                  <p class="dform__label">{section}</p>
-                  <span class="dform__rule" aria-hidden="true" />
-                  <span class="dform__rule" aria-hidden="true" />
-                </div>
-              ))}
-            </div>
-          </article>
-        </div>
-      )
-    }
-
     {/* ── pack: card, colour stripe, first note then the spine ────────── */}
     {
       listing.kind === "pack" && (
-        <article
-          class="dthread"
-          style={`--thread-ink: ${discoverThreadStripe(preview.color)};`}
-        >
-          {/* The 5px stripe in the Thread's own colour — the house idiom for a
-              Thread on a public page. */}
-          <div
-            class="dthread__stripe"
-            style={`background: ${discoverThreadStripe(preview.color)};`}
-            aria-hidden="true"
-          />
+        <article class="dthread">
           <div class="dthread__head">
+            {/* The neutral tile and the swap glyph, which is the whole of a
+                Thread's identity in the app — `proto-collection-card` draws an
+                icon, a title and a note count, and nothing else. There used to
+                be a 5px stripe here in `Threads.color`; the column still exists
+                and shared-space covers still read it, but a personal Thread has
+                not been drawn in its own hue for a long time, and reviving it
+                only in the catalog had the same Thread showing two colours. */}
+            <span class="dthread__tile" aria-hidden="true">
+              <Icon name="fa7-solid:arrow-right-arrow-left" />
+            </span>
             <p class="dlist__eyebrow">
               <span>{kindNoun}</span>
               {categoryLabel && (
                 <>
                   <span aria-hidden="true"> · </span>
-                  <a href={`/discover/topic/${listing.category}/`}>{categoryLabel}</a>
+                  <a href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>
                 </>
               )}
             </p>
@@ -248,7 +223,7 @@ const kicker = listing.authorDisplayName
               {categoryLabel && (
                 <>
                   <span aria-hidden="true"> · </span>
-                  <a href={`/discover/topic/${listing.category}/`}>{categoryLabel}</a>
+                  <a href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>
                 </>
               )}
             </p>
@@ -279,14 +254,12 @@ const kicker = listing.authorDisplayName
       related.length > 0 && (
         <section class="dlist__related">
           <h2 class="dlist__related-title">More like this</h2>
-          <ul class="dlist__related-list">
+          {/* The catalog's own cards, without their preview panels — someone at
+              the foot of a page wants somewhere to go next, not another three
+              artifacts to read. */}
+          <ul class="dlist__related-grid">
             {related.map((other) => (
-              <li>
-                <a href={`/discover/${other.slug}/`}>
-                  <span>{other.title}</span>
-                  {other.authorDisplayName && <span> · {other.authorDisplayName}</span>}
-                </a>
-              </li>
+              <DiscoverCard listing={other} variant="compact" />
             ))}
           </ul>
         </section>
@@ -316,15 +289,25 @@ const kicker = listing.authorDisplayName
     margin-bottom: 1.25rem;
   }
 
+  /* Neutral, matching .dlist__kicker above the card — kind identity already
+     has its place (the tile on the hub card, the accent on a template's own
+     rules); tinting the same word a second time here just made "Note" and
+     "Deep study" read as two different colours doing two different jobs when
+     they are both just a caption. */
   .dlist__eyebrow {
     font-size: 0.75rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    /* Mixed toward ink: --pill-* are highlighter fills, not text colours. */
-    color: color-mix(in oklab, var(--kind-ink) 55%, var(--color-ink));
+    color: var(--color-ink-faint);
   }
+  /* The site's own quiet-link recipe (discover-hub__group-title and friends):
+     inherits the caption's colour, no underline at rest, underline on hover —
+     not the plain default-anchor blue-and-underline this replaced. */
   .dlist__eyebrow a {
     color: inherit;
+    text-decoration: none;
+  }
+  .dlist__eyebrow a:hover {
     text-decoration: underline;
     text-underline-offset: 2px;
   }
@@ -388,12 +371,6 @@ const kicker = listing.authorDisplayName
     z-index: 5;
   }
 
-  /* Upright, and one leaf rather than two: the join letter reasoned its way
-     here first — "a tilted form reads as broken" — and a template is a form. */
-  .dpaper--upright .dpaper__leaf {
-    transform: rotate(1.1deg);
-  }
-
   .dpaper__title {
     margin-top: 0.5rem;
     font-size: 1.75rem;
@@ -454,29 +431,6 @@ const kicker = listing.authorDisplayName
     background: linear-gradient(to bottom, transparent, var(--color-card) 82%);
   }
 
-  /* ── Template: the blank form ────────────────────────────────────────
-     Headings with ruled empty space under each, which is what you would be
-     writing into. The author's accent lands on the rules and nowhere else. */
-  .dform {
-    margin-top: 1.75rem;
-    display: grid;
-    gap: 1.5rem;
-  }
-  .dform__label {
-    font-size: 1.0625rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-  }
-  .dform__rule {
-    display: block;
-    height: 1px;
-    margin-bottom: 1.125rem;
-    background: color-mix(in oklab, var(--kind-ink) 30%, var(--color-rule));
-  }
-  .dform__rule:last-child {
-    margin-bottom: 0;
-  }
-
   /* ── Thread: a container of things, not a sheet of paper ─────────────── */
   .dthread {
     position: relative;
@@ -486,12 +440,28 @@ const kicker = listing.authorDisplayName
     box-shadow: var(--shadow-card);
     overflow: hidden;
   }
-  .dthread__stripe {
-    height: 5px;
-  }
   .dthread__head {
-    padding: 1.25rem 1.5rem 1rem;
+    padding: 1.5rem 1.5rem 1rem;
     border-bottom: 1px solid var(--color-rule);
+  }
+  /* 8px corner on a 34px box, glyph at ~0.42 of the tile — the join letter's
+     proportion, which is where this site already keeps the app's tile. */
+  .dthread__tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 0.875rem;
+    border-radius: 8px;
+    background: color-mix(in oklab, var(--ink, var(--color-ink)) 14%, var(--color-paper));
+    color: var(--ink, var(--color-ink-soft));
+  }
+  .dthread__tile :global(svg) {
+    width: 14px;
+    height: 14px;
+    display: block;
+    fill: currentColor;
   }
   .dthread__title {
     margin-top: 0.5rem;
@@ -549,14 +519,14 @@ const kicker = listing.authorDisplayName
   .dspine__step:first-child::before {
     display: none;
   }
-  /* The Thread's own colour, not the kind hue. Inside a Thread's page the
-     accent is that Thread — green orbs under a lilac stripe read as a mistake,
-     even though green is correctly "this is a Thread" everywhere else. */
+  /* Ink, not a hue. The app's own trail orb is a neutral ring on the rule —
+     a Thread's steps are steps, and colouring them would be inventing a
+     signal the app does not have. */
   .dspine__orb {
     width: 14px;
     height: 14px;
     border-radius: 999px;
-    border: 2px solid color-mix(in oklab, var(--thread-ink) 70%, var(--color-rule));
+    border: 2px solid color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
     background: var(--color-card);
     z-index: 1;
   }
@@ -631,42 +601,47 @@ const kicker = listing.authorDisplayName
     color: var(--color-ink-soft);
   }
 
+  /* The take-a-copy block and what comes after it both sit under a rule, so
+     the sheet above ends cleanly instead of bleeding into page furniture. */
   .dlist__cta {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    padding-bottom: 2.25rem;
+    border-top: 1px solid var(--color-rule);
     text-align: center;
   }
   .dlist__note {
-    margin-top: 0.75rem;
-    font-size: 0.9375rem;
+    margin: 0.625rem auto 0;
+    max-width: 26rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
     color: var(--color-ink-faint);
   }
 
   .dlist__related {
-    margin-top: 3rem;
-    padding-top: 1.25rem;
+    padding-top: 1.75rem;
+    padding-bottom: 3rem;
     border-top: 1px solid var(--color-rule);
+    text-align: center;
   }
   .dlist__related-title {
-    font-size: 1rem;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-  .dlist__related-list {
-    display: grid;
-    gap: 0.375rem;
-  }
-  .dlist__related-list a {
-    color: var(--color-ink-soft);
-    text-decoration: none;
-  }
-  .dlist__related-list a:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .dlist__related-list span + span {
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
     color: var(--color-ink-faint);
+    font-variation-settings: "wdth" 100, "ROND" 0;
   }
-
+  .dlist__related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+  }
   /* The paper stack has no responsive rules in the app; its rotations and the
      40px fold are fixed, so a phone gets the sheet without the tilt. */
   @media (max-width: 520px) {

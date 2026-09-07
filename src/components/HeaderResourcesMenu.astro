@@ -1,0 +1,375 @@
+---
+/**
+ * The Resources mega menu — the blog and Discover under one nav item.
+ *
+ * "Blog" named a single destination and hid the other half of what the site
+ * has to read. Discover needed a home in the nav and did not deserve a sixth
+ * top-level link: the row is already tight enough that the mobile breakpoint
+ * sits at 900px because of it. One item, two columns, and a featured post —
+ * the shape Lattice's Resources menu settles on, and the shape this site's own
+ * `BlogLibraryNav` already implies.
+ *
+ * Both columns draw from data that exists: `BLOG_CATEGORY_ICONS` and
+ * `blogCategoryColor` are the same tiles the blog hub uses, and the Discover
+ * rows reuse `DISCOVER_KIND_ICON`, so nothing here invents a second vocabulary.
+ *
+ * The third column was a featured blog post; it is the release notes now.
+ * A person opening "Resources" from the nav is asking what is on this site,
+ * not what changed in the product last — a blog excerpt there was competing
+ * with the Read column for the same attention. "What shipped" earns the third
+ * slot the way `hero__announce` on the homepage already treats it: the same
+ * gradient and the same traced `Harvous3Numeral`, at menu scale, so the mark
+ * reads as one identity wherever the site says "here's what's new" rather
+ * than a screenshot standing in for it.
+ *
+ * The Discover half hides itself when the catalog is a draft — `draftPageIsReachable`,
+ * not `isDraftPageSlug`: the question is whether the page will be there when
+ * someone clicks, and on staging and in `astro dev` it will be.
+ */
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import {
+  BLOG_CATEGORY_LABELS,
+  blogCategoriesInUse,
+  blogCategoryColor,
+  blogCategoryHref,
+  blogCategoryIcon,
+  includeBlogDrafts,
+  isBlogPostListed,
+} from "../lib/blog";
+import { DISCOVER_KIND_ICON, DISCOVER_KIND_NOUN } from "../lib/discover-data.ts";
+import { draftPageIsReachable } from "../lib/draft-pages.ts";
+import { getReleaseNotes } from "../lib/release-notes-data.ts";
+import Harvous3Numeral from "./Harvous3Numeral.astro";
+
+const showDrafts = includeBlogDrafts();
+const posts = (await getCollection("blog"))
+  .filter((p) => isBlogPostListed(p, showDrafts))
+  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
+
+/* Five, not all seven: the column has to stay the height of the Discover one
+   beside it, and the hub link below carries the rest. */
+const categories = blogCategoriesInUse(posts).slice(0, 5);
+
+const latestRelease = getReleaseNotes()[0];
+const latestReleaseHeadline = latestRelease?.entries[0]?.title ?? latestRelease?.excerpt;
+
+const discoverReachable = draftPageIsReachable("discover");
+const KINDS = ["template", "note", "pack", "resource"] as const;
+const KIND_BLURB: Record<(typeof KINDS)[number], string> = {
+  template: "Scaffolds to write into",
+  note: "Finished study to read",
+  pack: "A sequence to work through",
+  resource: "Links worth keeping nearby",
+};
+---
+
+<div class="hmenu" id="header-resources-menu" data-header-menu hidden>
+  <div class="hmenu__panel">
+    <div class="hmenu__col">
+      <p class="hmenu__eyebrow">Blog</p>
+      <a class="hmenu__row hmenu__row--lead" href="/blog/">
+        <span class="hmenu__icon" style="background: var(--color-warm); color: var(--color-ink);">
+          <Icon name="fa7-solid:newspaper" />
+        </span>
+        <span class="hmenu__text">
+          <span class="hmenu__title">Bright Enough</span>
+          <span class="hmenu__blurb">Writing on study, memory and teaching</span>
+        </span>
+      </a>
+      <div class="hmenu__list">
+        {categories.map((category) => {
+          const color = blogCategoryColor(category);
+          return (
+            <a class="hmenu__chip" href={blogCategoryHref(category)}>
+              <span class="hmenu__chip-icon" style={`background: ${color.bg}; color: ${color.ink};`}>
+                <Icon name={blogCategoryIcon(category)} />
+              </span>
+              {BLOG_CATEGORY_LABELS[category]}
+            </a>
+          );
+        })}
+      </div>
+    </div>
+
+    {
+      discoverReachable && (
+        <div class="hmenu__col hmenu__col--ruled">
+          <p class="hmenu__eyebrow">Discover</p>
+          <a class="hmenu__row hmenu__row--lead" href="/discover/">
+            <span class="hmenu__icon" style="background: var(--color-warm); color: var(--color-ink);">
+              <Icon name="fa7-solid:layer-group" />
+            </span>
+            <span class="hmenu__text">
+              <span class="hmenu__title">Everything shared</span>
+              <span class="hmenu__blurb">Free study people have offered to share</span>
+            </span>
+          </a>
+          <div class="hmenu__rows">
+            {KINDS.map((kind) => (
+              <a class="hmenu__row" href={`/discover/?kind=${kind}`}>
+                <span class="hmenu__icon hmenu__icon--sm">
+                  <Icon name={DISCOVER_KIND_ICON[kind]} />
+                </span>
+                <span class="hmenu__text">
+                  <span class="hmenu__title">{DISCOVER_KIND_NOUN[kind]}s</span>
+                  <span class="hmenu__blurb">{KIND_BLURB[kind]}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      latestRelease && (
+        <div class="hmenu__col hmenu__col--ruled hmenu__col--featured">
+          <p class="hmenu__eyebrow">Latest</p>
+          <a class="hmenu__feature" href={`/release-notes/${latestRelease.slug}/`}>
+            {/* `Harvous3Numeral` is the exact glyph and trace-in `/3/`'s hero and
+                the homepage's `hero__announce` both wear — reused again here
+                rather than a screenshot standing in for "here's what shipped".
+                A soft accent tint stands in for the hero's own animated paper
+                grid, which is built for a section, not a 44px tile. */}
+            <span class="hmenu__feature-art">
+              <Harvous3Numeral size="2.75rem" />
+            </span>
+            <span class="hmenu__feature-version">v{latestRelease.version}</span>
+            {latestReleaseHeadline && (
+              <span class="hmenu__feature-title">{latestReleaseHeadline}</span>
+            )}
+          </a>
+          <a class="hmenu__feature-all" href="/release-notes/">
+            All release notes
+            <svg viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M4 2.5 8 6l-4 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .hmenu {
+    position: absolute;
+    top: calc(100% - 0.25rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 60;
+    padding-top: 0.5rem;
+  }
+  .hmenu[hidden] {
+    display: none;
+  }
+
+  .hmenu__panel {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 15rem) minmax(0, 13rem);
+    gap: 1.5rem;
+    width: max-content;
+    max-width: min(52rem, calc(100vw - 2 * var(--frame-content-pad)));
+    padding: 1.25rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 1.25rem;
+    background: var(--color-card);
+    box-shadow: var(--shadow-float);
+  }
+  /* One column short when Discover is a draft — the grid should not leave a
+     15rem hole where it would have been. */
+  .hmenu__panel:has(.hmenu__col:nth-child(2):last-child) {
+    grid-template-columns: minmax(0, 16rem) minmax(0, 14rem);
+  }
+
+  .hmenu__col {
+    min-width: 0;
+  }
+  .hmenu__col--ruled {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--color-rule);
+  }
+
+  .hmenu__eyebrow {
+    margin-bottom: 0.625rem;
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink-faint);
+  }
+
+  .hmenu__rows {
+    display: grid;
+  }
+  .hmenu__row {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    align-items: start;
+    gap: 0.625rem;
+    padding: 0.5rem;
+    margin: 0 -0.5rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 120ms ease;
+  }
+  .hmenu__row:hover {
+    background: var(--color-warm);
+  }
+  .hmenu__row--lead {
+    margin-bottom: 0.375rem;
+  }
+
+  .hmenu__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.625rem;
+    background: var(--color-warm);
+    color: var(--color-ink-soft);
+  }
+  .hmenu__icon :global(svg) {
+    width: 0.875rem;
+    height: 0.875rem;
+    fill: currentColor;
+  }
+  .hmenu__icon--sm :global(svg) {
+    width: 0.8125rem;
+    height: 0.8125rem;
+  }
+
+  .hmenu__text {
+    display: grid;
+    min-width: 0;
+    gap: 0.0625rem;
+  }
+  .hmenu__title {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink);
+  }
+  .hmenu__blurb {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--color-ink-faint);
+  }
+
+  .hmenu__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.5rem;
+  }
+  .hmenu__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--color-ink);
+    transition: border-color 120ms ease;
+  }
+  .hmenu__chip:hover {
+    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
+  }
+  .hmenu__chip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 999px;
+  }
+  .hmenu__chip-icon :global(svg) {
+    width: 0.6875rem;
+    height: 0.6875rem;
+    fill: currentColor;
+  }
+
+  .hmenu__feature {
+    display: grid;
+    gap: 0.375rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .hmenu__feature-art {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 10;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in oklab, var(--color-accent) 20%, var(--color-rule));
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, var(--color-accent) 12%, var(--color-paper)),
+      color-mix(in oklab, var(--color-accent) 4%, var(--color-paper))
+    );
+  }
+  .hmenu__feature-version {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-accent);
+  }
+  .hmenu__feature-title {
+    margin-top: -0.25rem;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink);
+  }
+  .hmenu__feature:hover .hmenu__feature-title {
+    color: var(--color-accent);
+  }
+
+  .hmenu__feature-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-ink-soft);
+  }
+  .hmenu__feature-all:hover {
+    color: var(--color-accent);
+  }
+  .hmenu__feature-all svg {
+    width: 0.6875rem;
+    height: 0.6875rem;
+  }
+
+  /* The panel is desktop-only; below the header's own breakpoint the mobile
+     sheet carries these links instead. */
+  @media (max-width: 899px) {
+    .hmenu {
+      display: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hmenu__row,
+    .hmenu__chip {
+      transition: none;
+    }
+  }
+</style>

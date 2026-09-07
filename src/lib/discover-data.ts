@@ -15,6 +15,7 @@
  * loudly, rather than shipping a hub page with nothing under it.
  */
 import { readFileSync } from "node:fs";
+import { getUseCaseBySlug } from "./use-cases-data.ts";
 import { join } from "node:path";
 
 export type DiscoverKind = "template" | "note" | "pack" | "resource";
@@ -38,10 +39,20 @@ export type DiscoverPreview = {
   headings?: string[];
   titles?: string[];
   noteCount?: number;
-  /** The Thread's own colour, for the stripe that says it is a Thread. */
-  color?: string | null;
   /** So a scripture note is not drawn as a plain one. */
   noteType?: string | null;
+  /** Harvous's own — a built-in template. Shown as "From Harvous", never a byline. */
+  official?: boolean;
+  /**
+   * A file resource's type, lowercased ("pdf", "epub", …).
+   *
+   * Nothing writes this yet: `snapshotResource` takes links only, because a
+   * file-kind item means copying a private storage object between owners and
+   * that path does not exist. Read defensively so the day it does, the card
+   * already knows how to draw one — and in the meantime the same treatment is
+   * what an imageless link falls back to.
+   */
+  fileType?: string | null;
   sourceDomain?: string | null;
   sourceSiteName?: string | null;
   sourceImage?: string | null;
@@ -60,6 +71,9 @@ export type DiscoverCategory = {
   id: string;
   label: string;
   blurb: string;
+  /** The topic's hue as a thread-colour name — the app's palette. This site
+   *  draws topics with `discoverTopicInk` + artwork instead. */
+  color?: string | null;
 };
 
 type CatalogFile = {
@@ -98,6 +112,150 @@ export function getDiscoverListingBySlug(slug: string): DiscoverListing | undefi
 }
 
 /** Only categories with something in them — a heading over an empty list is a dead end. */
+/**
+ * The glyph each kind wears — the app's, not ours. `list-check` is
+ * `NOTE_TEMPLATE_ICON_NAME`, `arrow-right-arrow-left` is what
+ * `PrototypeSidebarThreadCard` draws, `newspaper` is a resource row's, and a
+ * note follows `noteKindIcon` (a scripture note takes `book`).
+ */
+export const DISCOVER_KIND_ICON: Record<DiscoverKind, string> = {
+  template: "fa7-solid:list-check",
+  note: "fa7-solid:note-sticky",
+  pack: "fa7-solid:arrow-right-arrow-left",
+  resource: "fa7-solid:newspaper",
+};
+
+export function discoverListingIcon(listing: DiscoverListing): string {
+  if (listing.kind === "note" && listing.preview?.noteType === "scripture") {
+    return "fa7-solid:book";
+  }
+  return DISCOVER_KIND_ICON[listing.kind] ?? DISCOVER_KIND_ICON.note;
+}
+
+/**
+ * A topic's glyph, borrowed from its use-case page.
+ *
+ * Category ids are the use-case slugs on purpose (`discover-categories.ts` says
+ * so), and every use case already carries an icon that the homepage carousel,
+ * `/for/` and its own page all draw. Discover reuses it rather than picking a
+ * second one, so "Sermon notes" looks like Sermon notes everywhere on the
+ * site. Two topics have no use-case page and take their own.
+ */
+const TOPIC_ICON_FALLBACK: Record<string, string> = {
+  "teaching-prep": "fa7-solid:chalkboard-user",
+  reference: "fa7-solid:bookmark",
+};
+
+export function discoverTopicIcon(id: string): string {
+  return getUseCaseBySlug(id)?.icon ?? TOPIC_ICON_FALLBACK[id] ?? "fa7-solid:layer-group";
+}
+
+/**
+ * A topic's artwork, borrowed from its use-case page.
+ *
+ * Same trade as the glyph: the category ids *are* the use-case slugs, and each
+ * use case already has a colour-matched wash curated onto it — the Daily journal
+ * art is blue because Daily journal is blue. Picking new images per topic would
+ * mean maintaining a second set that drifts from the first.
+ *
+ * Two topics have no use-case page. Teaching prep takes an unclaimed amber wash
+ * to sit with the orange it shares with Sermon notes; **Reference deliberately
+ * gets none** — it is the grey shelf, and a colour wash behind a list of links
+ * would be the one card claiming a hue it does not have.
+ */
+const TOPIC_ART_FALLBACK: Record<string, string | null> = {
+  "teaching-prep": "/images/auth-hero/ai_bg_060.webp",
+  /* Deep study's use-case art is gold and its ink is neutral grey. Grey means
+     Reference in this catalog, so the topic takes the violet pair instead —
+     see `discoverTopicInk`. */
+  "deep-study": "/images/auth-hero/ai_bg_076.webp",
+  reference: null,
+};
+
+export function discoverTopicArt(id: string | null | undefined): string | null {
+  if (!id) return null;
+  if (id in TOPIC_ART_FALLBACK) return TOPIC_ART_FALLBACK[id];
+  return getUseCaseBySlug(id)?.image ?? null;
+}
+
+/**
+ * Where the wash is cropped, so two cards under one topic are not the same
+ * picture twice. Deterministic per slug — the same listing always crops the
+ * same way, which matters because these pages are static and diffed.
+ */
+export function discoverArtPosition(slug: string | null | undefined): string {
+  let h = 0;
+  for (let i = 0; i < (slug ?? "").length; i++) h = (h * 31 + (slug as string).charCodeAt(i)) >>> 0;
+  const x = [12, 30, 50, 70, 88][h % 5];
+  const y = [22, 42, 58, 78][(h >> 3) % 4];
+  return `${x}% ${y}%`;
+}
+
+/**
+ * A topic's ink **on this site**, taken from its use-case page.
+ *
+ * Not `DiscoverCategory.color`. That is a thread-colour name and it is right in
+ * the app, whose tiles speak that palette — but here a topic also wears its
+ * use case's artwork, and the two disagreed: Deep study is purple in the app
+ * and its curated wash is gold. The use-case page already pairs an ink with
+ * that image, so the chip borrows the pairing rather than inventing a second
+ * one and drifting from it.
+ */
+const TOPIC_INK_FALLBACK: Record<string, string> = {
+  "teaching-prep": "var(--study-dock-accent-warmAmber)",
+  reference: "var(--study-dock-accent-neutral)",
+  /* Overrides its use case, which is neutral grey. **Grey is Reference's** in
+     Discover — it is the shelf, and the links on it are grey for the same
+     reason — so a second grey topic would be saying something it does not mean.
+     Violet is the nearest free pair, and Deep study's artwork moves with it. */
+  "deep-study": "var(--study-dock-accent-violet)",
+};
+
+export function discoverTopicInk(id: string): string {
+  return (
+    TOPIC_INK_FALLBACK[id] ??
+    getUseCaseBySlug(id)?.ink ??
+    "var(--study-dock-accent-neutral)"
+  );
+}
+
+/**
+ * The wash behind a resource that has no picture of its own — a PDF, or a link
+ * whose site publishes no OG image. Four of the unclaimed auth-hero plates,
+ * chosen by slug so a row of them is not four copies of one image.
+ */
+const DOCUMENT_ART = [
+  "/images/auth-hero/ai_bg_046.webp",
+  "/images/auth-hero/ai_bg_059.webp",
+  "/images/auth-hero/ai_bg_072.webp",
+  "/images/auth-hero/ai_bg_077.webp",
+];
+
+export function discoverDocumentArt(slug: string | null | undefined): string {
+  let h = 0;
+  for (let i = 0; i < (slug ?? "").length; i++) h = (h * 31 + (slug as string).charCodeAt(i)) >>> 0;
+  return DOCUMENT_ART[h % DOCUMENT_ART.length];
+}
+
+export type DiscoverTopic = DiscoverCategory & {
+  icon: string;
+  ink: string;
+  count: number;
+};
+
+/** The topics that have something in them, with their glyph, ink and a count. */
+export function getDiscoverTopics(): DiscoverTopic[] {
+  return getPopulatedDiscoverCategories().map((category) => ({
+    id: category.id,
+    label: category.label,
+    blurb: category.blurb,
+    color: category.color,
+    icon: discoverTopicIcon(category.id),
+    ink: discoverTopicInk(category.id),
+    count: category.listings.length,
+  }));
+}
+
 export function getPopulatedDiscoverCategories(): Array<
   DiscoverCategory & { listings: DiscoverListing[] }
 > {
@@ -132,71 +290,6 @@ export const DISCOVER_KIND_BLURB: Record<DiscoverKind, string> = {
   pack: "A Thread of notes that arrive together, as one.",
   resource: "A link, saved to your own library.",
 };
-
-/**
- * The colour a kind wears, from the site's own content-type hues.
- *
- * `ContentPill` already paints a note blue and a thread green everywhere else
- * on this site; Discover reading the same way is most of what makes the catalog
- * feel like part of the product rather than a page about it. Those two are
- * exact matches and are not negotiable.
- *
- * Templates and links have no pill of their own, so they take the two remaining
- * hues rather than earning new tokens in a palette the whole site shares. A
- * template took `--color-accent` first and it was wrong: accent and
- * `--pill-note` are both blue, so a template card and a note card were
- * indistinguishable at a glance — which is the entire job of this function. It
- * takes the amber instead, and specifically `--pill-highlight-ink`, the readable
- * one: `--pill-highlight` is a highlighter fill and vanishes as a border.
- *
- * These are all fills. `global.css` says so in as many words — mix them toward
- * `--color-ink` before using one as text or a glyph.
- */
-export function discoverKindInk(kind: DiscoverKind): string {
-  switch (kind) {
-    case "note":
-      return "var(--pill-note)";
-    case "pack":
-      return "var(--pill-thread)";
-    case "resource":
-      return "var(--pill-scripture)";
-    case "template":
-    default:
-      return "var(--pill-highlight-ink)";
-  }
-}
-
-/**
- * A Thread's colour, translated into this site's palette.
- *
- * The app's thread hues (`--color-blue`, `--color-purple`, …) do not exist
- * here — a stripe asking for one silently fell back to the accent, so every
- * Thread looked blue no matter what its owner picked. This is the same mapping
- * the app itself keeps in `THREAD_TO_APPEARANCE_COLOR_ID` (blue→sky,
- * purple→lilac, orange→peach, green→mint, pink→pink), extended with yellow→cream
- * because this site has no yellow tile.
- *
- * `paper` is a real thread colour meaning "no colour", and gets the rule.
- */
-export function discoverThreadStripe(color: string | null | undefined): string {
-  switch ((color ?? "").toLowerCase()) {
-    case "purple":
-      return "var(--color-lilac)";
-    case "green":
-      return "var(--color-mint)";
-    case "orange":
-      return "var(--color-peach)";
-    case "pink":
-      return "var(--color-pink)";
-    case "yellow":
-      return "var(--color-cream)";
-    case "paper":
-      return "var(--color-rule)";
-    case "blue":
-    default:
-      return "var(--color-sky)";
-  }
-}
 
 export function discoverCategoryLabel(id: string | null): string {
   if (!id) return "Uncategorized";

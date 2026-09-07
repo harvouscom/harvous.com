@@ -1,27 +1,57 @@
 ---
 /**
- * `/discover` — the catalog hub.
+ * `/discover` — the whole catalog on one page.
  *
- * Grouped by category rather than one flat grid, following `for/index.astro`:
- * a catalog people arrive at from search wants a shape they can scan, and the
- * jump nav gives one without asking for a search box the catalog is too small
- * to need. Client-side search is deliberately deferred — a Fuse.js index over a
- * dozen listings is a UI that costs more than it finds.
+ * One grid, filtered in place, rather than a page per topic. The topic pages
+ * only ever regrouped the same handful of cards, and a reader who wants Sermon
+ * notes wants them *here*, beside everything else — so the topics became
+ * filters, and `/discover/?use=sermon-notes` is the address a use-case page
+ * links to.
+ *
+ * **One bar, not two.** The first cut stacked a row of topic chips above a row
+ * of kind chips, which is two full-width bands of controls over a catalog of
+ * nine things — the controls outweighed the content. Topics moved into a
+ * dropdown beside the kinds, which is the shape `BlogLibraryNav` already uses
+ * for exactly this job (a topics menu and a search field on one line). Kinds
+ * stay visible because there are only five and they are the coarser cut;
+ * topics fold away because there are nine and most readers want one.
+ *
+ * Topics borrow their glyph from the use-case page of the same slug
+ * (`discoverTopicIcon`), so Sermon notes wears the same church here as on
+ * `/for/`. Their colour is the same one their listings' pills wear.
+ *
+ * Filtering is a few lines of `hidden` toggling, not a search library: every
+ * card is in the HTML already, and the catalog is scanned, not queried.
  */
+import { Icon } from "astro-icon/components";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageIntro from "../../components/PageIntro.astro";
 import PageClosingCTA from "../../components/PageClosingCTA.astro";
-import HubSectionNav from "../../components/HubSectionNav.astro";
 import DiscoverCard from "../../components/DiscoverCard.astro";
 import { isDraftPageSlug } from "../../lib/draft-pages.ts";
 import {
-  getDiscoverListings,
-  getPopulatedDiscoverCategories,
+  DISCOVER_KIND_ICON,
+  getDiscoverTopics,
+  sortedDiscoverListings,
+  type DiscoverKind,
 } from "../../lib/discover-data.ts";
 
-const groups = getPopulatedDiscoverCategories();
-const total = getDiscoverListings().length;
-const navItems = groups.map((group) => ({ id: group.id, label: group.label }));
+const listings = sortedDiscoverListings();
+const topics = getDiscoverTopics();
+const total = listings.length;
+
+const KINDS: DiscoverKind[] = ["template", "note", "pack", "resource"];
+const kindCounts = Object.fromEntries(
+  KINDS.map((kind) => [kind, listings.filter((l) => l.kind === kind).length]),
+) as Record<DiscoverKind, number>;
+/* Plural, the way the app's own tabs say it. */
+const KIND_TAB: Record<DiscoverKind, string> = {
+  template: "Templates",
+  note: "Notes",
+  pack: "Threads",
+  resource: "Resources",
+};
+
 /* noindex whenever `discover` is a draft slug — including staging, which is the
    one environment that actually builds and serves these pages. `draftPageIsReachable`
    is the wrong question here: it asks whether *links* should render, and is true on
@@ -44,56 +74,124 @@ const isDraft = isDraftPageSlug("discover");
 
   <section>
     <PageIntro flushBottom>
-      <h1 class="section-title text-pretty">Study people have offered to share.</h1>
-      <p class="mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">
-        Templates to write into, notes to read, and Threads to work through — all of it free,
-        and all of it yours to change once you take a copy.
+      <h1 class="section-title display-xl text-balance">Start from someone else's study.</h1>
+      <p class="lead mx-auto mt-6 max-w-xl text-pretty">
+        Templates to write into, notes to read, Threads to work through, and things worth
+        keeping nearby. All of it free — and the moment you take a copy,
+        <mark>it's yours to change</mark>.
       </p>
     </PageIntro>
   </section>
 
   {
-    groups.length === 0 ? (
-      <section class="discover-hub__empty">
+    total === 0 ? (
+      <section class="dhub__empty-catalog">
         <p class="text-[var(--color-ink-soft)]">
-          Nothing has been shared yet. When someone offers a starter or a study and it has been
+          Nothing has been shared yet. When someone offers a template or a study and it has been
           looked over, it turns up here.
         </p>
       </section>
     ) : (
-      <div class="discover-hub" data-hub-section-nav-main>
-        <HubSectionNav
-          items={navItems}
-          ariaLabel="Topics"
-          selectLabel="Jump to topic"
-          selectId="discover-category-select"
-        />
+      <div class="dhub" data-dhub>
+        {/* ── One bar: kinds, a use-case menu, and search ──────────── */}
+        <div class="dhub__bar" data-reveal>
+          <div class="dhub__kinds" role="group" aria-label="Kind">
+            <button type="button" class="dhub__kind is-active" data-dhub-kind="" aria-pressed="true">
+              All
+            </button>
+            {KINDS.filter((kind) => kindCounts[kind] > 0).map((kind) => (
+              <button type="button" class="dhub__kind" data-dhub-kind={kind} aria-pressed="false">
+                <span class="dhub__kind-icon">
+                  <Icon name={DISCOVER_KIND_ICON[kind]} />
+                </span>
+                {KIND_TAB[kind]}
+              </button>
+            ))}
+          </div>
 
-        {groups.map((group, groupIndex) => (
-          <section
-            id={group.id}
-            class:list={[
-              "discover-hub__group",
-              groupIndex > 0 && "border-t border-[var(--color-rule)]",
-            ]}
-            aria-labelledby={`${group.id}-title`}
-          >
-            <div class="discover-hub__group-inner">
-              <div class="discover-hub__group-head">
-                <h2 id={`${group.id}-title`} class="discover-hub__group-title">
-                  <a href={`/discover/topic/${group.id}/`}>{group.label}</a>
-                </h2>
-                <p class="discover-hub__group-blurb">{group.blurb}</p>
-              </div>
-
-              <ul class="discover-hub__list">
-                {group.listings.map((listing) => (
-                  <DiscoverCard listing={listing} />
+          <div class="dhub__tools">
+            <div class="dhub__topics" data-dhub-topics>
+              <button
+                type="button"
+                class="dhub__topics-trigger"
+                data-dhub-topics-trigger
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-controls="dhub-topics-menu"
+              >
+                <span class="dhub__topics-dot" aria-hidden="true">
+                  <svg viewBox="0 0 640 640"><path fill="currentColor" d="M296.5 69.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0l-218.6-101c-8.5-4-13.9-12.5-13.9-21.8s5.4-17.9 13.9-21.8zM112.1 282.4l164.3 75.9c27.7 12.8 59.6 12.8 87.3 0L528 282.4l34.1 15.8c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0l-218.6-101c-8.5-4-13.9-12.5-13.9-21.8s5.4-17.9 13.9-21.8l34.1-15.8zM77.9 426.2l34.1-15.8l164.3 75.9c27.7 12.8 59.6 12.8 87.3 0l164.3-75.9l34.1 15.8c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0l-218.5-101c-8.5-4-13.9-12.5-13.9-21.8s5.4-17.9 13.9-21.8"></path></svg>
+                </span>
+                <span data-dhub-topics-label>Use cases</span>
+                <svg class="dhub__chevron" viewBox="0 0 12 12" aria-hidden="true">
+                  <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+              <div class="dhub__menu" id="dhub-topics-menu" role="menu" data-dhub-topics-menu hidden>
+                <button type="button" class="dhub__menu-item is-active" role="menuitemradio" aria-checked="true" data-dhub-topic="">
+                  <span class="dhub__menu-icon">
+                    <Icon name="fa7-solid:layer-group" />
+                  </span>
+                  <span class="dhub__menu-label">All use cases</span>
+                </button>
+                {topics.map((topic) => (
+                  <button
+                    type="button"
+                    class="dhub__menu-item"
+                    role="menuitemradio"
+                    aria-checked="false"
+                    data-dhub-topic={topic.id}
+                    data-dhub-topic-icon={topic.icon}
+                    style={`--ink: ${topic.ink};`}
+                  >
+                    <span class="dhub__menu-icon">
+                      <Icon name={topic.icon} />
+                    </span>
+                    <span class="dhub__menu-label">
+                      {topic.label}
+                      <span class="dhub__menu-blurb">{topic.blurb}</span>
+                    </span>
+                  </button>
                 ))}
-              </ul>
+              </div>
             </div>
-          </section>
-        ))}
+
+            <label class="dhub__search">
+              <span class="sr-only">Search the catalog</span>
+              <span class="dhub__search-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+                  <circle cx="7" cy="7" r="4.25"></circle>
+                  <path d="M10.25 10.25 13.5 13.5"></path>
+                </svg>
+              </span>
+              <input
+                type="search"
+                class="dhub__search-input"
+                placeholder="Search…"
+                autocomplete="off"
+                data-dhub-search
+              />
+            </label>
+          </div>
+        </div>
+
+        {/* ── The grid ──────────────────────────────────────────────── */}
+        <ul class="dhub__grid" data-dhub-grid data-reveal="stagger">
+          {listings.map((listing) => (
+            <DiscoverCard listing={listing} />
+          ))}
+        </ul>
+        <div class="dhub__empty" data-dhub-empty hidden>
+          <p>Nothing matches that yet.</p>
+          <button type="button" class="dhub__reset" data-dhub-reset>Show everything</button>
+        </div>
+        {/* Only rendered into once there is more than a page to walk — a
+            catalog of nine never shows it. */}
+        <nav class="dhub__pager" data-dhub-pager aria-label="Pages" hidden>
+          <button type="button" class="dhub__page-btn" data-dhub-prev>Previous</button>
+          <span class="dhub__page-of" data-dhub-page-of aria-live="polite"></span>
+          <button type="button" class="dhub__page-btn" data-dhub-next>Next</button>
+        </nav>
       </div>
     )
   }
@@ -104,36 +202,552 @@ const isDraft = isDraftPageSlug("discover");
   />
 </BaseLayout>
 
+<script>
+  /*
+   * Filter in place. State is (topic, kind, query); the URL carries topic and
+   * kind so a use-case page can link straight to `?use=sermon-notes` and a
+   * reader can share what they were looking at. The query is not written to
+   * the URL — it changes on every keystroke and is nobody's address.
+   */
+  const root = document.querySelector<HTMLElement>("[data-dhub]");
+  if (root) {
+    const cards = Array.from(root.querySelectorAll<HTMLElement>(".dcard"));
+    const kindButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dhub-kind]"));
+    const topicItems = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dhub-topic]"));
+    const topicsWrap = root.querySelector<HTMLElement>("[data-dhub-topics]");
+    const trigger = root.querySelector<HTMLButtonElement>("[data-dhub-topics-trigger]");
+    const menu = root.querySelector<HTMLElement>("[data-dhub-topics-menu]");
+    const triggerLabel = root.querySelector<HTMLElement>("[data-dhub-topics-label]");
+    const search = root.querySelector<HTMLInputElement>("[data-dhub-search]");
+    const pager = root.querySelector<HTMLElement>("[data-dhub-pager]");
+    const pageOf = root.querySelector<HTMLElement>("[data-dhub-page-of]");
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-dhub-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-dhub-next]");
+    /* Enough that the catalog has to grow a long way before anyone meets a
+       pager; small enough that it exists before the page gets unscrollable. */
+    const PAGE_SIZE = 24;
+    let page = 0;
+    const empty = root.querySelector<HTMLElement>("[data-dhub-empty]");
+    const grid = root.querySelector<HTMLElement>("[data-dhub-grid]");
+
+    const params = new URLSearchParams(location.search);
+    let topic = params.get("use") ?? "";
+    let kind = params.get("kind") ?? "";
+    let query = "";
+
+    /* An unknown value in the URL is nobody's filter — fall back to everything
+       rather than showing an empty grid for a typo. */
+    if (topic && !topicItems.some((b) => b.dataset.dhubTopic === topic)) topic = "";
+    if (kind && !kindButtons.some((b) => b.dataset.dhubKind === kind)) kind = "";
+
+    const closeMenu = () => {
+      if (!menu || !trigger) return;
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    };
+    const openMenu = () => {
+      if (!menu || !trigger) return;
+      menu.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+    };
+
+    const apply = (resetPage = true) => {
+      if (resetPage) page = 0;
+      /* Two passes: which cards match, then which of those this page shows.
+         Doing it in one would page over the unfiltered list. */
+      const matched = cards.filter(
+        (card) =>
+          (!topic || card.dataset.topic === topic) &&
+          (!kind || card.dataset.kind === kind) &&
+          (!query || (card.dataset.search ?? "").includes(query)),
+      );
+      const pages = Math.max(1, Math.ceil(matched.length / PAGE_SIZE));
+      page = Math.min(page, pages - 1);
+      const from = page * PAGE_SIZE;
+      const visible = new Set(matched.slice(from, from + PAGE_SIZE));
+      for (const card of cards) card.hidden = !visible.has(card);
+      const shown = matched.length;
+
+      for (const b of kindButtons) {
+        const on = (b.dataset.dhubKind ?? "") === kind;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      }
+
+      let current: HTMLButtonElement | undefined;
+      for (const b of topicItems) {
+        const on = (b.dataset.dhubTopic ?? "") === topic;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-checked", on ? "true" : "false");
+        if (on) current = b;
+      }
+      /* The trigger names the axis at rest and wears the choice once there is
+         one, so a folded-away filter is still visible at a glance. Reading the
+         "All use cases" row's own text would put that whole phrase in a control
+         that has to fit beside a search field. */
+      if (triggerLabel) {
+        triggerLabel.textContent = topic
+          ? (current?.querySelector<HTMLElement>(".dhub__menu-label")?.childNodes[0]?.textContent?.trim() ??
+            "Use cases")
+          : "Use cases";
+      }
+      if (topicsWrap) {
+        topicsWrap.style.cssText = topic && current ? current.style.cssText : "";
+        topicsWrap.classList.toggle("is-set", Boolean(topic));
+      }
+      /* The stack glyph stays put; only the fill and the label change. Swapping
+         in the topic's own glyph meant cloning an <svg> whose <use> points at a
+         <symbol> defined inside the original — the clone left the symbol behind
+         and rendered an empty circle. */
+
+      if (empty) empty.hidden = shown > 0;
+      if (grid) grid.hidden = shown === 0;
+      if (pager) pager.hidden = pages < 2;
+      if (pageOf) pageOf.textContent = `Page ${page + 1} of ${pages}`;
+      if (prevBtn) prevBtn.disabled = page === 0;
+      if (nextBtn) nextBtn.disabled = page >= pages - 1;
+      const next = new URLSearchParams();
+      if (topic) next.set("use", topic);
+      if (kind) next.set("kind", kind);
+      const qs = next.toString();
+      history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+    };
+
+    for (const b of kindButtons) {
+      b.addEventListener("click", () => {
+        const value = b.dataset.dhubKind ?? "";
+        kind = kind === value ? "" : value;
+        apply();
+      });
+    }
+    for (const b of topicItems) {
+      b.addEventListener("click", () => {
+        topic = b.dataset.dhubTopic ?? "";
+        closeMenu();
+        apply();
+      });
+    }
+    trigger?.addEventListener("click", () => {
+      if (menu?.hidden) openMenu();
+      else closeMenu();
+    });
+    document.addEventListener("click", (event) => {
+      if (!topicsWrap?.contains(event.target as Node)) closeMenu();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeMenu();
+    });
+    search?.addEventListener("input", () => {
+      query = search.value.trim().toLowerCase();
+      apply();
+    });
+    prevBtn?.addEventListener("click", () => {
+      page -= 1;
+      apply(false);
+      grid?.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+    nextBtn?.addEventListener("click", () => {
+      page += 1;
+      apply(false);
+      grid?.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+    root.querySelector("[data-dhub-reset]")?.addEventListener("click", () => {
+      topic = "";
+      kind = "";
+      query = "";
+      if (search) search.value = "";
+      apply();
+    });
+
+    apply();
+  }
+</script>
+
 <style>
-  .discover-hub__empty {
+  .dhub__empty-catalog {
     max-width: 44rem;
     margin: 0 auto;
-    padding: 0 1.25rem 3rem;
+    padding: 0 var(--frame-content-pad) 3rem;
   }
-  .discover-hub__group-inner {
-    max-width: 44rem;
+
+  /*
+    Inside the frame rails. `.page-frame`'s hairlines sit at `--frame-inset`
+    from the viewport edge; a 72rem box with its own padding put the bar's
+    border a few pixels *past* them at ~1200px. `--frame-content-pad` is the
+    gap the rest of the site leaves between hairline and content.
+  */
+  .dhub {
+    max-width: 72rem;
     margin: 0 auto;
-    padding: 2.25rem 1.25rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem) var(--frame-content-pad) 3rem;
   }
-  .discover-hub__group-title {
-    font-size: 1.25rem;
+
+  /* ── The bar ── kinds on the left, topic menu and search on the right. */
+  /*
+    Capped and centred rather than spanning the grid. It is a floating pill
+    directly under another floating pill, and at the grid's full 72rem it read
+    as a different kind of object from the header — a page-width toolbar under
+    a content-width nav. 52rem sits with the header's own measured
+    `--pill-width` (~778px at 1280) without tying a static stylesheet to a
+    value the header's script computes at runtime.
+  */
+  .dhub__bar {
+    position: sticky;
+    top: 5.25rem;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 52rem;
+    margin-inline: auto;
+    box-sizing: border-box;
+    padding: 0.375rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--color-card) 92%, transparent);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-card);
+  }
+
+  .dhub__kinds {
+    display: flex;
+    flex: 1 1 auto;
+    gap: 0.125rem;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .dhub__kinds::-webkit-scrollbar {
+    display: none;
+  }
+  .dhub__kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    padding: 0.45rem 0.85rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
     font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink-soft);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
   }
-  .discover-hub__group-title a {
-    color: inherit;
-    text-decoration: none;
+  .dhub__kind:hover {
+    color: var(--color-ink);
   }
-  .discover-hub__group-title a:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  /* The accent gradient every other primary control on this site uses — a
+     solid black chip was a shape borrowed from nowhere. */
+  .dhub__kind.is-active {
+    background: var(--accent-btn-bg);
+    box-shadow: var(--accent-btn-shadow-sm);
+    color: #fff;
   }
-  .discover-hub__group-blurb {
-    margin-top: 0.25rem;
+  .dhub__kind-icon {
+    display: inline-flex;
+  }
+  .dhub__kind-icon :global(svg) {
+    width: 0.875rem;
+    height: 0.875rem;
+    fill: currentColor;
+  }
+
+  .dhub__tools {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    /* Shrinkable, and `min-width: 0` so the search field inside can actually
+       give width back — without it the row keeps its content width and the
+       field runs past the bar's rounded edge. */
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  /* ── Topic menu ── */
+  .dhub__topics {
+    position: relative;
+  }
+  .dhub__topics-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    max-width: 100%;
+    min-width: 0;
+    height: 2.25rem;
+    padding: 0 0.75rem 0 0.3rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    /* `border-color` only — deliberately NOT `background`. Picking a topic sets
+       `--ink` on the wrapper and toggles `.is-set` in the same frame, and a
+       transition whose endpoint reads that property never re-resolves against the
+       new custom property: the fill stayed white while the text went lilac.
+       The fill is a state, not a hover affordance, so it has no business
+       animating anyway. */
+    transition: border-color 0.15s ease;
+  }
+  .dhub__topics-trigger:hover {
+    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
+  }
+  .dhub__topics.is-set .dhub__topics-trigger {
+    background: color-mix(in oklab, var(--ink, var(--color-ink)) 12%, var(--color-paper));
+    border-color: color-mix(in oklab, var(--ink, var(--color-ink)) 30%, var(--color-rule));
+    color: var(--color-ink);
+  }
+  .dhub__topics-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.625rem;
+    height: 1.625rem;
+    border-radius: 999px;
+    background: var(--color-warm);
+    color: var(--color-ink-soft);
+  }
+  .dhub__topics.is-set .dhub__topics-dot {
+    background: var(--color-card);
+    color: var(--ink, var(--color-ink-soft));
+  }
+  .dhub__topics-dot svg {
+    width: 0.8125rem;
+    height: 0.8125rem;
+    display: block;
+    fill: currentColor;
+  }
+  .dhub__chevron {
+    flex-shrink: 0;
+    width: 0.7rem;
+    height: 0.7rem;
+    opacity: 0.55;
+  }
+  /* The chosen use case can be long ("Sunday, in my own words" is a listing,
+     but "Teaching prep" plus a chevron still needs somewhere to go). */
+  [data-dhub-topics-label] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dhub__menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    z-index: 40;
+    display: grid;
+    gap: 0.125rem;
+    width: min(20rem, calc(100vw - 2 * var(--frame-content-pad)));
+    max-height: min(24rem, 60vh);
+    overflow-y: auto;
+    padding: 0.375rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 1rem;
+    background: var(--color-card);
+    box-shadow: var(--shadow-float);
+  }
+  .dhub__menu-item {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.625rem;
+    border: 0;
+    border-radius: 0.625rem;
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .dhub__menu-item:hover {
+    background: var(--color-warm);
+  }
+  .dhub__menu-item.is-active {
+    background: color-mix(in oklab, var(--ink, var(--color-ink)) 7%, var(--color-paper));
+  }
+  /* "All use cases" sets no ink, so the mix above lands on plain grey and reads
+     as disabled rather than chosen. */
+  .dhub__menu-item.is-active:not([style]) {
+    background: var(--color-warm);
+  }
+  .dhub__menu-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--ink, var(--color-ink)) 14%, var(--color-paper));
+    color: var(--ink, var(--color-ink-soft));
+  }
+  .dhub__menu-icon :global(svg) {
+    width: 0.8125rem;
+    height: 0.8125rem;
+    fill: currentColor;
+  }
+  .dhub__menu-label {
+    display: grid;
+    min-width: 0;
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+  }
+  .dhub__menu-blurb {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.35;
+    color: var(--color-ink-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* ── Search ── */
+  .dhub__search {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 0 1 11rem;
+    min-width: 0;
+    height: 2.25rem;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    background: var(--color-warm);
+  }
+  .dhub__search:focus-within {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 28%, transparent);
+  }
+  .dhub__search-icon {
+    display: inline-flex;
+    width: 0.9rem;
+    height: 0.9rem;
     color: var(--color-ink-faint);
   }
-  .discover-hub__list {
+  .dhub__search-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  .dhub__search-input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--color-ink);
+    outline: none;
+  }
+  .dhub__search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  /* ── Grid ── */
+  .dhub__grid {
     display: grid;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 1rem;
+    align-items: stretch;
+    margin-top: 1.5rem;
+    scroll-margin-top: 9rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dhub__empty {
+    padding: 4rem 1rem;
+    text-align: center;
+    color: var(--color-ink-soft);
+  }
+  .dhub__pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+  }
+  .dhub__page-btn {
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+  .dhub__page-btn:hover:not(:disabled) {
+    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
+  }
+  .dhub__page-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .dhub__reset {
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    font: inherit;
+    font-weight: 600;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  /* Narrow: the bar wraps to two lines of its own accord — kinds scroll on the
+     first, topic menu and search share the second. */
+  @media (max-width: 800px) {
+    .dhub__bar {
+      top: 4.5rem;
+      flex-wrap: wrap;
+      border-radius: 1.5rem;
+    }
+    .dhub__kinds {
+      flex: 1 1 100%;
+    }
+    .dhub__tools {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+    .dhub__search {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .dhub__menu {
+      right: auto;
+      left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dhub__kind,
+    .dhub__topics-trigger,
+    .dhub__menu-item {
+      transition: none;
+    }
   }
 </style>
