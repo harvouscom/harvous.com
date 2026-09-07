@@ -4,7 +4,7 @@
  * Pair inside <Section>. Sizes map to the measures already used across the site.
  */
 interface Props {
-  size?: "prose" | "sm" | "md" | "lg" | "xl" | "full";
+  size?: "prose" | "sm" | "md" | "lg" | "xl" | "2xl" | "full";
   class?: string;
 }
 
@@ -29,5 +29,9 @@ const { size = "xl", class: className = "" } = Astro.props;
   .container--md { max-width: 56rem; }
   .container--lg { max-width: 64rem; }
   .container--xl { max-width: 72rem; }
+  /* One notch past xl, continuing the +8rem step. The homepage hero uses it so
+     its product shot can run wider than a text measure wants to; still well
+     inside the frame rails, which is what stops this becoming full-bleed. */
+  .container--2xl { max-width: 80rem; }
   .container--full { max-width: none; }
 </style>
