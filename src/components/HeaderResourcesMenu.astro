@@ -71,7 +71,12 @@ const ALL_KINDS = ["template", "note", "pack", "resource"] as const;
 const listings = getDiscoverListings();
 const KINDS = ALL_KINDS.filter((kind) => listings.some((l) => l.kind === kind));
 const KIND_BLURB: Record<(typeof ALL_KINDS)[number], string> = {
-  template: "Scaffolds to write into",
+  /* "Scaffolds" was pedagogy jargon — no rule in `docs/BRAND_VOICE.md`
+     forbids the word, but Rule 4 (Simplify Relentlessly) asks whether you
+     would say it out loud to a friend, and nobody offers a friend a scaffold.
+     This is the phrase the listing page's own CTA already uses, so the two
+     surfaces describe a template the same way. */
+  template: "A shape to write into",
   note: "Finished study to read",
   pack: "A sequence to work through",
   resource: "Links worth keeping nearby",
@@ -110,15 +115,11 @@ const KIND_BLURB: Record<(typeof ALL_KINDS)[number], string> = {
       discoverReachable && listings.length > 0 && (
         <div class="hmenu__col hmenu__col--ruled">
           <p class="hmenu__eyebrow">Discover</p>
-          <a class="hmenu__row hmenu__row--lead" href="/discover/">
-            <span class="hmenu__icon" style="background: var(--color-warm); color: var(--color-ink);">
-              <Icon name="fa7-solid:layer-group" />
-            </span>
-            <span class="hmenu__text">
-              <span class="hmenu__title">Everything shared</span>
-              <span class="hmenu__blurb">Free study people have offered to share</span>
-            </span>
-          </a>
+          {/* No "everything" row above these. It sat where the Blog column's
+              lead row sits and did the same job on paper, but the two are not
+              alike: "Bright Enough" is a place with a name, and "Everything
+              shared" was a category label standing in for one. The kinds are
+              what a reader is actually choosing between. */}
           <div class="hmenu__rows">
             {KINDS.map((kind) => (
               <a class="hmenu__row" href={`/discover/?kind=${kind}`}>
