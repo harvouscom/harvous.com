@@ -1,0 +1,174 @@
+---
+/**
+ * `/discover` — the catalog hub.
+ *
+ * Grouped by category rather than one flat grid, following `for/index.astro`:
+ * a catalog people arrive at from search wants a shape they can scan, and the
+ * jump nav gives one without asking for a search box the catalog is too small
+ * to need. Client-side search is deliberately deferred — a Fuse.js index over a
+ * dozen listings is a UI that costs more than it finds.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import PageClosingCTA from "../../components/PageClosingCTA.astro";
+import HubSectionNav from "../../components/HubSectionNav.astro";
+import { isDraftPageSlug } from "../../lib/draft-pages.ts";
+import {
+  DISCOVER_KIND_NOUN,
+  getDiscoverListings,
+  getPopulatedDiscoverCategories,
+} from "../../lib/discover-data.ts";
+
+const groups = getPopulatedDiscoverCategories();
+const total = getDiscoverListings().length;
+const navItems = groups.map((group) => ({ id: group.id, label: group.label }));
+/* noindex whenever `discover` is a draft slug — including staging, which is the
+   one environment that actually builds and serves these pages. `draftPageIsReachable`
+   is the wrong question here: it asks whether *links* should render, and is true on
+   staging, which would leave the built page indexable. */
+const isDraft = isDraftPageSlug("discover");
+---
+
+<BaseLayout
+  title="Discover — study starters people have shared — Harvous"
+  description="Free Bible study starters, studies and series shared by people who use Harvous. Take a copy of any of them into your own account."
+  noindex={isDraft}
+>
+  {
+    isDraft && (
+      <div class="draft-page-banner" role="status">
+        Draft — not indexed or deployed. Remove <code>"discover"</code> from DRAFT_PAGE_SLUGS to publish.
+      </div>
+    )
+  }
+
+  <section>
+    <PageIntro flushBottom>
+      <h1 class="section-title text-pretty">Study people have offered to share.</h1>
+      <p class="mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">
+        Starters to write into, studies to read, and series to work through — all of it free,
+        and all of it yours to change once you take a copy.
+      </p>
+    </PageIntro>
+  </section>
+
+  {
+    groups.length === 0 ? (
+      <section class="discover-hub__empty">
+        <p class="text-[var(--color-ink-soft)]">
+          Nothing has been shared yet. When someone offers a starter or a study and it has been
+          looked over, it turns up here.
+        </p>
+      </section>
+    ) : (
+      <div class="discover-hub" data-hub-section-nav-main>
+        <HubSectionNav
+          items={navItems}
+          ariaLabel="Topics"
+          selectLabel="Jump to topic"
+          selectId="discover-category-select"
+        />
+
+        {groups.map((group, groupIndex) => (
+          <section
+            id={group.id}
+            class:list={[
+              "discover-hub__group",
+              groupIndex > 0 && "border-t border-[var(--color-rule)]",
+            ]}
+            aria-labelledby={`${group.id}-title`}
+          >
+            <div class="discover-hub__group-inner">
+              <div class="discover-hub__group-head">
+                <h2 id={`${group.id}-title`} class="discover-hub__group-title">
+                  <a href={`/discover/topic/${group.id}/`}>{group.label}</a>
+                </h2>
+                <p class="discover-hub__group-blurb">{group.blurb}</p>
+              </div>
+
+              <ul class="discover-hub__list">
+                {group.listings.map((listing) => (
+                  <li class="discover-hub__item">
+                    <a class="discover-hub__item-link" href={`/discover/${listing.slug}/`}>
+                      <span class="discover-hub__item-title">{listing.title}</span>
+                      {listing.description ? (
+                        <span class="discover-hub__item-desc">{listing.description}</span>
+                      ) : null}
+                      <span class="discover-hub__item-meta">
+                        {DISCOVER_KIND_NOUN[listing.kind] ?? "Item"}
+                        {listing.authorDisplayName ? ` · ${listing.authorDisplayName}` : ""}
+                        {listing.installCount > 0 ? ` · saved by ${listing.installCount}` : ""}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ))}
+      </div>
+    )
+  }
+
+  <PageClosingCTA
+    heading={total > 0 ? "Take one, and make it yours" : "Somewhere for your study to live"}
+    lead="Harvous keeps what you write where you can find it again — and lets you pass it on."
+  />
+</BaseLayout>
+
+<style>
+  .discover-hub__empty {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 0 1.25rem 3rem;
+  }
+  .discover-hub__group-inner {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 2.25rem 1.25rem;
+  }
+  .discover-hub__group-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .discover-hub__group-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .discover-hub__group-title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .discover-hub__group-blurb {
+    margin-top: 0.25rem;
+    color: var(--color-ink-faint);
+  }
+  .discover-hub__list {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+  .discover-hub__item-link {
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-card);
+    background: var(--color-card);
+    text-decoration: none;
+    color: inherit;
+  }
+  .discover-hub__item-link:hover {
+    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
+  }
+  .discover-hub__item-title {
+    font-weight: 600;
+  }
+  .discover-hub__item-desc {
+    color: var(--color-ink-soft);
+  }
+  .discover-hub__item-meta {
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+  }
+</style>

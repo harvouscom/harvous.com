@@ -1,0 +1,135 @@
+---
+/**
+ * `/discover/<category>` — one topic.
+ *
+ * A real page rather than an anchor on the hub, because the category ids are the
+ * same slugs the use-case pages already use (`sermon-notes`, `daily-journal`,
+ * …), so `/use-cases/sermon-notes/` links straight to `/discover/topic/sermon-notes/`
+ * with no mapping table, and a search result for the topic lands on the topic.
+ *
+ * Under `/topic/` rather than sitting beside the listings, because listing slugs
+ * are generated from user-supplied titles: a starter called "Sermon notes" would
+ * otherwise claim the same path as the Sermon notes category. One extra segment
+ * makes that collision impossible instead of merely unlikely.
+ */
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageIntro from "../../../components/PageIntro.astro";
+import PageClosingCTA from "../../../components/PageClosingCTA.astro";
+import { isDraftPageSlug } from "../../../lib/draft-pages.ts";
+import {
+  DISCOVER_KIND_NOUN,
+  getPopulatedDiscoverCategories,
+  type DiscoverListing,
+} from "../../../lib/discover-data.ts";
+
+export async function getStaticPaths() {
+  return getPopulatedDiscoverCategories().map((category) => ({
+    params: { category: category.id },
+    props: { category, listings: category.listings },
+  }));
+}
+
+const { category, listings } = Astro.props as {
+  category: { id: string; label: string; blurb: string };
+  listings: DiscoverListing[];
+};
+
+/* noindex whenever `discover` is a draft slug — including staging, which is the
+   one environment that actually builds and serves these pages. `draftPageIsReachable`
+   is the wrong question here: it asks whether *links* should render, and is true on
+   staging, which would leave the built page indexable. */
+const isDraft = isDraftPageSlug("discover");
+---
+
+<BaseLayout
+  title={`${category.label} — Discover — Harvous`}
+  description={`${category.blurb} Free Bible study starters and studies shared by people who use Harvous.`}
+  noindex={isDraft}
+>
+  {
+    isDraft && (
+      <div class="draft-page-banner" role="status">
+        Draft — not indexed or deployed. Remove <code>"discover"</code> from DRAFT_PAGE_SLUGS to publish.
+      </div>
+    )
+  }
+
+  <section>
+    <PageIntro flushBottom>
+      <p class="discover-category__eyebrow"><a href="/discover/">Discover</a></p>
+      <h1 class="section-title text-pretty">{category.label}</h1>
+      <p class="mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">{category.blurb}</p>
+    </PageIntro>
+  </section>
+
+  <section class="discover-category__body">
+    <ul class="discover-category__list">
+      {
+        listings.map((listing) => (
+          <li>
+            <a class="discover-category__item" href={`/discover/${listing.slug}/`}>
+              <span class="discover-category__item-title">{listing.title}</span>
+              {listing.description ? (
+                <span class="discover-category__item-desc">{listing.description}</span>
+              ) : null}
+              <span class="discover-category__item-meta">
+                {DISCOVER_KIND_NOUN[listing.kind] ?? "Item"}
+                {listing.authorDisplayName ? ` · ${listing.authorDisplayName}` : ""}
+                {listing.installCount > 0 ? ` · saved by ${listing.installCount}` : ""}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <PageClosingCTA
+    heading="Take one, and make it yours"
+    lead="Harvous keeps what you write where you can find it again — and lets you pass it on."
+  />
+</BaseLayout>
+
+<style>
+  .discover-category__eyebrow {
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .discover-category__eyebrow a {
+    color: inherit;
+  }
+  .discover-category__body {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 0 1.25rem 3rem;
+  }
+  .discover-category__list {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .discover-category__item {
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-card);
+    background: var(--color-card);
+    text-decoration: none;
+    color: inherit;
+  }
+  .discover-category__item:hover {
+    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
+  }
+  .discover-category__item-title {
+    font-weight: 600;
+  }
+  .discover-category__item-desc {
+    color: var(--color-ink-soft);
+  }
+  .discover-category__item-meta {
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+  }
+</style>

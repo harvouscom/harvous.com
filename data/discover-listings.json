@@ -1,0 +1,50 @@
+{
+    "categories": [
+        {
+            "id": "daily-journal",
+            "label": "Daily journal",
+            "blurb": "Starters for a regular reading rhythm."
+        },
+        {
+            "id": "sermon-notes",
+            "label": "Sermon notes",
+            "blurb": "For writing down what you heard on Sunday."
+        },
+        {
+            "id": "sermon-prep",
+            "label": "Sermon prep",
+            "blurb": "For the week of work before you preach."
+        },
+        {
+            "id": "book-study",
+            "label": "Book study",
+            "blurb": "Working through one book of the Bible."
+        },
+        {
+            "id": "topical-study",
+            "label": "Topical study",
+            "blurb": "Following a theme across the whole Bible."
+        },
+        {
+            "id": "deep-study",
+            "label": "Deep study",
+            "blurb": "Longer, slower work on a single passage."
+        },
+        {
+            "id": "small-group",
+            "label": "Small group",
+            "blurb": "For studying together and coming back with something."
+        },
+        {
+            "id": "teaching-prep",
+            "label": "Teaching prep",
+            "blurb": "Preparing to teach a class, a group, or a family."
+        },
+        {
+            "id": "reference",
+            "label": "Reference",
+            "blurb": "Things to keep nearby rather than work through."
+        }
+    ],
+    "listings": []
+}

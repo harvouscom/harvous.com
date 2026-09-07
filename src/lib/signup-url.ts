@@ -70,3 +70,25 @@ export function buildTryUrl(params: SignupAttributionParams = {}): string {
   if (source) url.searchParams.set("source", source);
   return url.toString();
 }
+
+/**
+ * Where "Save this to my Harvous" goes for a Discover listing.
+ *
+ * Points at the **app's** listing page, not `/sign-up`. That page is what holds
+ * the pending install across Clerk: signed in, it installs immediately; signed
+ * out, it parks the intent in sessionStorage and sends the visitor to sign-up,
+ * then replays on return. Linking straight to `buildSignupUrl()` would skip the
+ * page holding that state, and the visitor would arrive in an empty account with
+ * nothing to show for the click.
+ *
+ * `sanitizeSignupSlug` is shared with the signup helpers above so a malformed
+ * slug cannot forward query junk into the app.
+ */
+export function buildInstallUrl(slug: string): string {
+  const safeSlug = sanitizeSignupSlug(slug);
+  if (!safeSlug) return APP_TRY_URL;
+  const url = new URL(`${APP_ORIGIN}/discover/${safeSlug}`);
+  url.searchParams.set("install", "1");
+  url.searchParams.set("source", "harvous_com");
+  return url.toString();
+}
