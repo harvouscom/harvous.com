@@ -28,6 +28,7 @@
  * lines that all market a product.
  */
 import { Icon } from "astro-icon/components";
+import { sanitizeListingHtml } from "../lib/sanitize-listing-html.ts";
 import DiscoverCard from "./DiscoverCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageClosingCTA from "./PageClosingCTA.astro";
@@ -62,7 +63,9 @@ const preview = listing.preview ?? {};
    wears elsewhere. */
 const ink = listing.category ? discoverTopicInk(listing.category) : null;
 
-const bodyHtml = preview.bodyHtml ?? "";
+/* Sanitized here, and only here — see `sanitize-listing-html.ts` for why the
+   API cannot do it. Both `set:html` sites below read this variable. */
+const bodyHtml = sanitizeListingHtml(preview.bodyHtml ?? "");
 /* Only fade a body long enough to actually be cut. Below this the whole thing
    fits, and a gradient over it hides writing for no reason — the fade is there
    to make a truncation invisible, not to withhold. */
