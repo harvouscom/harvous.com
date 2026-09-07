@@ -1,0 +1,172 @@
+---
+/**
+ * One Discover listing, as an indexed page.
+ *
+ * Not built on `ProductDetailPage.astro`, which the plan first reached for. That
+ * component's type is `kind: "feature" | "addon"` and its body reaches into
+ * eight feature/add-on-specific helpers across 300-odd lines whose every section
+ * markets a product. A listing page is a title, a byline, a shape, and a button
+ * — threading a third kind through those call sites would cost more than this
+ * file and leave both worse.
+ *
+ * What it does reuse is everything around it: BaseLayout, PageIntro, CTAButton,
+ * and PageClosingCTA.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "./PageIntro.astro";
+import PageClosingCTA from "./PageClosingCTA.astro";
+import CTAButton from "./CTAButton.astro";
+import { buildInstallUrl } from "../lib/signup-url.ts";
+import { isDraftPageSlug } from "../lib/draft-pages.ts";
+import {
+  DISCOVER_KIND_BLURB,
+  DISCOVER_KIND_NOUN,
+  discoverCategoryLabel,
+  type DiscoverListing,
+} from "../lib/discover-data.ts";
+
+interface Props {
+  listing: DiscoverListing;
+  related: DiscoverListing[];
+}
+
+const { listing, related } = Astro.props;
+
+const kindNoun = DISCOVER_KIND_NOUN[listing.kind] ?? "Item";
+const categoryLabel = listing.category ? discoverCategoryLabel(listing.category) : null;
+const installUrl = buildInstallUrl(listing.slug);
+
+/* The structure is the honest preview of a starter, and the note titles are the
+   honest preview of a series. Neither is the body — taking a copy is what hands
+   that over. */
+const outline = listing.preview?.headings ?? listing.preview?.titles ?? [];
+const noteCount = listing.preview?.noteCount ?? null;
+
+/* noindex whenever `discover` is a draft slug — including staging, which is the
+   one environment that actually builds and serves these pages. `draftPageIsReachable`
+   is the wrong question here: it asks whether *links* should render, and is true on
+   staging, which would leave the built page indexable. */
+const isDraft = isDraftPageSlug("discover");
+
+const description =
+  listing.description ??
+  `${kindNoun} shared on Harvous${listing.authorDisplayName ? ` by ${listing.authorDisplayName}` : ""}.`;
+---
+
+<BaseLayout
+  title={`${listing.title} — Discover — Harvous`}
+  description={description}
+  noindex={isDraft}
+>
+  {
+    isDraft && (
+      <div class="draft-page-banner" role="status">
+        Draft — not indexed or deployed. Remove <code>"discover"</code> from DRAFT_PAGE_SLUGS to publish.
+      </div>
+    )
+  }
+
+  <section>
+    <PageIntro flushBottom>
+      <p class="discover-detail__eyebrow">
+        <span>{kindNoun}</span>
+        {categoryLabel ? (
+          <>
+            <span aria-hidden="true"> · </span>
+            <a href={`/discover/topic/${listing.category}/`}>{categoryLabel}</a>
+          </>
+        ) : null}
+      </p>
+      <h1 class="section-title text-pretty">{listing.title}</h1>
+      {listing.description ? (
+        <p class="mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">{listing.description}</p>
+      ) : null}
+
+      {/* Attribution only — a name, never a link. There are no creator pages. */}
+      <p class="discover-detail__meta mt-4">
+        {listing.authorDisplayName
+          ? `Shared by ${listing.authorDisplayName}`
+          : "Shared with everyone"}
+        {noteCount ? ` · ${noteCount} notes` : ""}
+        {listing.installCount > 0 ? ` · saved by ${listing.installCount}` : ""}
+      </p>
+
+      <div class="mt-6">
+        <CTAButton href={installUrl} variant="primary" size="lg" external>
+          Save this to my Harvous
+        </CTAButton>
+      </div>
+      <p class="discover-detail__meta mt-3">Free. {DISCOVER_KIND_BLURB[listing.kind]}</p>
+    </PageIntro>
+  </section>
+
+  {outline.length > 0 ? (
+    <section class="discover-detail__section">
+      <h2 class="discover-detail__section-title">What's in it</h2>
+      <ul class="discover-detail__list">
+        {outline.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+    </section>
+  ) : null}
+
+  {related.length > 0 ? (
+    <section class="discover-detail__section">
+      <h2 class="discover-detail__section-title">More like this</h2>
+      <ul class="discover-detail__list">
+        {related.map((other) => (
+          <li>
+            <a href={`/discover/${other.slug}/`}>{other.title}</a>
+            {other.authorDisplayName ? <span> · {other.authorDisplayName}</span> : null}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ) : null}
+
+  <PageClosingCTA
+    heading="Somewhere for your own study to live"
+    lead="Take a copy, then make it yours. Harvous keeps what you write where you can find it again."
+  />
+</BaseLayout>
+
+<style>
+  .discover-detail__eyebrow {
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .discover-detail__eyebrow a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .discover-detail__meta {
+    font-size: 0.9375rem;
+    color: var(--color-ink-faint);
+  }
+  .discover-detail__section {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 0 1.25rem 2.5rem;
+  }
+  .discover-detail__section-title {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .discover-detail__list {
+    display: grid;
+    gap: 0.5rem;
+    border-top: 1px solid var(--color-rule);
+    padding-top: 0.875rem;
+  }
+  .discover-detail__list li {
+    color: var(--color-ink-soft);
+  }
+  .discover-detail__list span {
+    color: var(--color-ink-faint);
+  }
+</style>

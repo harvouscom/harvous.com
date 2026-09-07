@@ -1,0 +1,23 @@
+---
+import DiscoverListingPage from "../../components/DiscoverListingPage.astro";
+import { getDiscoverListings } from "../../lib/discover-data.ts";
+
+export async function getStaticPaths() {
+  const listings = getDiscoverListings();
+  return listings.map((listing) => ({
+    params: { slug: listing.slug },
+    props: {
+      listing,
+      /* Same category first, newest first, never itself. Four is enough to give
+         somewhere else to go without turning the page into a second hub. */
+      related: listings
+        .filter((other) => other.slug !== listing.slug && other.category === listing.category)
+        .slice(0, 4),
+    },
+  }));
+}
+
+const { listing, related } = Astro.props;
+---
+
+<DiscoverListingPage listing={listing} related={related} />

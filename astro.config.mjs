@@ -94,6 +94,16 @@ export default defineConfig({
       filter: (page) => {
         // Draft marketing pages (src/lib/draft-pages.ts) never enter the sitemap.
         if (isDraftPageUrl(page)) return false;
+        /*
+          `isDraftPageUrl` is an exact path match by design (see its docblock), so it
+          excludes `/discover/` and nothing under it. Without this line a crawl would
+          find every listing right up until the production build deletes the directory
+          — the one failure that is cheap now and expensive after it has happened.
+
+          After launch, narrow this to the pagination and index routes rather than
+          deleting it: the listings themselves are the pages worth indexing.
+        */
+        if (DRAFT_PAGE_SLUGS.includes("discover") && page.includes("/discover/")) return false;
         // Blog hub, categories, and posts are indexed; search, index JSON, RSS, and pagination stay out.
         if (page.includes("/blog/search")) return false;
         if (page.includes("/blog/rss")) return false;
