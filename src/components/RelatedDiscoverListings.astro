@@ -3,11 +3,15 @@
  * "Start from one of these" — the Discover listings filed under this use case.
  *
  * Sits beside `RelatedBlogPosts` at the foot of a use-case page and takes the
- * same band shape, but shows the actual thing rather than an illustration of
- * it: the reader has just finished a page about studying this way, and the
- * catalog has scaffolds for exactly that. Category ids *are* use-case slugs —
- * that correspondence is why `discover-categories.ts` refuses to rename one —
- * so the filter is the slug and needs no mapping table.
+ * same measure — `42rem`, the blog band's `--related-blog-max` — so the two
+ * read as siblings rather than as one wide section and one narrow one. Where
+ * the blog strip runs copy against an illustration, this one centres the copy
+ * and puts the actual things underneath: the reader has just finished a page
+ * about studying this way, and the catalog has scaffolds for exactly that.
+ *
+ * Category ids *are* use-case slugs — that correspondence is why
+ * `discover-categories.ts` refuses to rename one — so the filter is the slug
+ * and needs no mapping table.
  *
  * Renders nothing at all when the catalog has nothing for this use case, or
  * while Discover is still a draft. A section headed "start from one of these"
@@ -25,17 +29,22 @@ import { draftPageIsReachable } from "../lib/draft-pages.ts";
 interface Props {
   /** A use-case slug, which is also a Discover category id. */
   useCaseSlug: string;
-  /** Three keeps the row one line on desktop and honest on a small catalog. */
+  /** Four fills the two-column grid twice over; more belongs on the hub. */
   limit?: number;
 }
 
-const { useCaseSlug, limit = 3 } = Astro.props;
+const { useCaseSlug, limit = 4 } = Astro.props;
 
-const listings: DiscoverListing[] = draftPageIsReachable("discover")
-  ? getDiscoverListings()
-      .filter((listing) => listing.category === useCaseSlug)
-      .slice(0, limit)
+const matches: DiscoverListing[] = draftPageIsReachable("discover")
+  ? getDiscoverListings().filter((listing) => listing.category === useCaseSlug)
   : [];
+
+/* Two columns want an even number. An odd one leaves a lone card beside a hole,
+   which reads as something failing to load rather than as the end of a short
+   list — so the odd one out is dropped and the hub link carries it. One on its
+   own is fine: a single centred card is a card, not half a row. */
+const capped = matches.slice(0, limit);
+const listings = capped.length > 1 && capped.length % 2 === 1 ? capped.slice(0, -1) : capped;
 
 const label = discoverCategoryLabel(useCaseSlug);
 ---
@@ -56,19 +65,26 @@ const label = discoverCategoryLabel(useCaseSlug);
             Free templates and studies filed under {label.toLowerCase()} — take a copy and it is
             yours to change.
           </p>
-          <a
-            href={`/discover/?use=${useCaseSlug}`}
-            class="related-discover__more mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-[var(--color-rule)] bg-[var(--color-card)] px-5 py-3 text-base font-medium text-[var(--color-ink)] transition-all hover:bg-[var(--color-warm)]"
-          >
-            See everything in {label}
-          </a>
         </div>
 
-        <ul class="related-discover__grid" data-reveal="stagger">
+        <ul
+          class:list={[
+            "related-discover__grid",
+            listings.length === 1 && "related-discover__grid--single",
+          ]}
+          data-reveal="stagger"
+        >
           {listings.map((listing) => (
-            <DiscoverCard listing={listing} variant="compact" />
+            <DiscoverCard listing={listing} variant="mini" />
           ))}
         </ul>
+
+        <a
+          href={`/discover/?use=${useCaseSlug}`}
+          class="related-discover__more inline-flex items-center justify-center gap-2 rounded-full border border-[var(--color-rule)] bg-[var(--color-card)] px-5 py-3 text-base font-medium text-[var(--color-ink)] transition-all hover:bg-[var(--color-warm)]"
+        >
+          See everything in {label}
+        </a>
       </div>
     </section>
   )
@@ -76,30 +92,46 @@ const label = discoverCategoryLabel(useCaseSlug);
 
 <style>
   .related-discover__inner {
-    max-width: 72rem;
+    /* The blog band's own measure, so the foot of a use-case page keeps one
+       column width throughout rather than widening for this section. */
+    width: min(100%, 42rem);
     margin-inline: auto;
-    padding: clamp(2.5rem, 6vw, 4rem) var(--frame-content-pad);
+    padding: clamp(2.5rem, 6vw, 3.5rem) var(--frame-content-pad);
     display: grid;
-    gap: clamp(1.5rem, 4vw, 2.5rem);
+    justify-items: center;
+    gap: clamp(1.5rem, 3vw, 2rem);
   }
-  /* Copy left, cards right once there is room for both — the same two-column
-     band `RelatedBlogPosts` uses, so the two sections read as siblings. */
-  @media (min-width: 900px) {
-    .related-discover__inner {
-      grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
-      align-items: start;
-      gap: 3rem;
-    }
+
+  .related-discover__intro {
+    text-align: center;
   }
   .related-discover__lead {
-    max-width: 32rem;
+    max-width: 30rem;
+    margin-inline: auto;
+    text-wrap: pretty;
   }
+
   .related-discover__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
+    width: 100%;
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+  /* One card does not stretch to fill two columns — a mini card at half the
+     band's width is the size it was drawn at. */
+  .related-discover__grid--single {
+    grid-template-columns: minmax(0, 20rem);
+    justify-content: center;
+  }
+
+  /* Two mini cards side by side get narrow before the page does; below that
+     they stack rather than squeeze. */
+  @media (max-width: 34rem) {
+    .related-discover__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>
