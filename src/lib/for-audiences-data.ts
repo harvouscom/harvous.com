@@ -103,7 +103,7 @@ const audiences: ForAudience[] = [
       {
         icon: "fa7-solid:bell",
         heading: "A nudge on the days it slips",
-        body: "Two optional nudges a week carry the day's verse and open straight to it. Set the hour, or leave them off — they quiet down on their own either way.",
+        body: "Optional reminders carry the day's verse and open straight to it — twice a week, or every morning if that's closer to your rhythm. Set the hour, or leave them off — they quiet down on their own either way.",
       },
     ],
     featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions", "reminders"],
