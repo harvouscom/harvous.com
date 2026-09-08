@@ -118,7 +118,6 @@ const defaultId = items[0]?.id ?? "";
     width: max-content;
     max-width: calc(min(72rem, 100%) - 2 * var(--frame-content-pad));
     min-width: 0;
-    /* Vertical only when pills are showing — horizontal padding lives on the scroll row. */
     padding: 0.4rem 0.55rem;
     border: 1px solid var(--color-rule);
     border-radius: 999px;
@@ -149,22 +148,19 @@ const defaultId = items[0]?.id ?? "";
 
   .hub-section-nav__pills {
     display: none;
-    /* Don't grow to fill the float (that forced full-width bars); shrink + scroll when capped. */
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
     gap: 0.35rem;
     min-width: 0;
     max-width: 100%;
-    /* Pad the scroll content so first/last pills clear the float's rounded ends. */
     padding-inline: 0.55rem;
     scroll-padding-inline: 0.55rem;
     box-sizing: border-box;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
-    /* Keep scroll (trackpad / touch / shift-wheel); hide the bar chrome. */
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
@@ -193,7 +189,6 @@ const defaultId = items[0]?.id ?? "";
     display: none;
   }
 
-  /* Compact: keep search + select; hide topic pills */
   .hub-section-nav__float.is-compact .hub-section-nav__search,
   .hub-section-nav__float.is-pinned .hub-section-nav__search {
     width: 100%;
@@ -210,7 +205,6 @@ const defaultId = items[0]?.id ?? "";
     width: 100%;
   }
 
-  /* Hard viewport fallback — matches COMPACT_MAX_WIDTH in the script. */
   @media (max-width: 920px) {
     .hub-section-nav__float:not(.is-pinned) .hub-section-nav__pills {
       display: none !important;
@@ -327,8 +321,6 @@ const defaultId = items[0]?.id ?? "";
     const compactMq = window.matchMedia(`(max-width: ${COMPACT_MAX_WIDTH}px)`);
 
     const syncCompact = () => {
-      // Narrow viewports use the select. Wider ones keep pills and scroll
-      // horizontally when the row is longer than the float.
       navFloat.classList.toggle("is-compact", compactMq.matches);
     };
 
@@ -354,16 +346,22 @@ const defaultId = items[0]?.id ?? "";
       }
     };
 
+    const scrollPillIntoRow = (pill: HTMLElement) => {
+      if (!pillsNav) return;
+      const navRect = pillsNav.getBoundingClientRect();
+      const pillRect = pill.getBoundingClientRect();
+      const overflowLeft = pillRect.left - navRect.left - 8;
+      const overflowRight = pillRect.right - navRect.right + 8;
+      if (overflowLeft < 0) pillsNav.scrollLeft += overflowLeft;
+      else if (overflowRight > 0) pillsNav.scrollLeft += overflowRight;
+    };
+
     const setActive = (id: string) => {
       pills.forEach((pill) => {
         const active = pill.dataset.sectionId === id;
         pill.classList.toggle("hub-section-nav__pill--active", active);
         pill.setAttribute("aria-current", active ? "location" : "false");
-        if (active && pillsNav && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          pill.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
-        } else if (active && pillsNav) {
-          pill.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "auto" });
-        }
+        if (active) scrollPillIntoRow(pill);
       });
       if (select && select.value !== id) {
         select.value = id;
