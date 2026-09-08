@@ -30,6 +30,10 @@ function trackPadStart(track: HTMLElement): number {
   return parseFloat(style.scrollPaddingLeft || style.paddingLeft || "0") || 0;
 }
 
+function maxScrollLeft(track: HTMLElement): number {
+  return Math.max(0, track.scrollWidth - track.clientWidth);
+}
+
 function nearestSlideIndex(track: HTMLElement, slides: HTMLElement[]): number {
   const pad = trackPadStart(track);
   const current = track.scrollLeft;
@@ -65,15 +69,22 @@ export function bindCarouselFit({
     if (enabled && !enabled()) return;
 
     if (carouselFitsAll(track, slideSelector)) {
-      if (track.scrollLeft > 1) track.scrollLeft = 0;
       if (prevBtn) prevBtn.disabled = true;
       if (nextBtn) nextBtn.disabled = true;
       return;
     }
 
-    const max = Math.max(0, track.scrollWidth - track.clientWidth - 1);
+    const max = maxScrollLeft(track);
     if (prevBtn) prevBtn.disabled = track.scrollLeft <= 1;
-    if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
+    if (nextBtn) nextBtn.disabled = track.scrollLeft >= max - 1;
+  };
+
+  const scrollToLeft = (left: number) => {
+    const max = maxScrollLeft(track);
+    track.scrollTo({
+      left: Math.min(max, Math.max(0, left)),
+      behavior: reduced ? "auto" : "smooth",
+    });
   };
 
   const scrollByDir = (dir: 1 | -1) => {
@@ -84,21 +95,27 @@ export function bindCarouselFit({
     if (!slides.length) return;
 
     const pad = trackPadStart(track);
+    const max = maxScrollLeft(track);
     const index = nearestSlideIndex(track, slides);
     const next = slides[index + dir];
+
     if (!next) {
-      const max = Math.max(0, track.scrollWidth - track.clientWidth);
-      track.scrollTo({
-        left: dir > 0 ? max : 0,
-        behavior: reduced ? "auto" : "smooth",
-      });
+      scrollToLeft(dir > 0 ? max : 0);
       return;
     }
 
-    track.scrollTo({
-      left: Math.max(0, next.offsetLeft - pad),
-      behavior: reduced ? "auto" : "smooth",
-    });
+    const target = next.offsetLeft - pad;
+    // Last leftover step on a short lane: go to the end instead of a snap
+    // point the track cannot actually reach.
+    if (dir > 0 && target > max - 8) {
+      scrollToLeft(max);
+      return;
+    }
+    if (dir < 0 && target < 8) {
+      scrollToLeft(0);
+      return;
+    }
+    scrollToLeft(target);
   };
 
   prevBtn?.addEventListener("click", () => scrollByDir(-1));
