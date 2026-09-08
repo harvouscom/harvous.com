@@ -9,13 +9,12 @@
  * `isDraftPageSlug` / `isDraftPageUrl`, so emptying this array is the whole
  * cutover.
  *
- * Empty as of the Discover launch (Sept 2026) — the catalog carried its own
- * entry here from build to launch, and this is the one line that turned it on.
- *
- * The array stays typed `readonly string[]`, not `readonly []`, so the next
- * page built this way can add its own slug back without fighting the type.
+ * `discover` went live (Sept 2026), then came back — launched before it was
+ * fully ready. Everything built for it stays in place and keeps working on
+ * staging (`KEEP_DRAFT_PAGES=1`) and in dev; this one string is what took it
+ * back out of production. Launch, when it happens again, is deleting it.
  */
-export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = ["discover"] as const as readonly string[];
 
 /**
  * Whether links to a draft page should render — i.e. whether the page will be
