@@ -25,6 +25,27 @@ type BindCarouselFitOptions = {
   enabled?: () => boolean;
 };
 
+function trackPadStart(track: HTMLElement): number {
+  const style = getComputedStyle(track);
+  return parseFloat(style.scrollPaddingLeft || style.paddingLeft || "0") || 0;
+}
+
+function nearestSlideIndex(track: HTMLElement, slides: HTMLElement[]): number {
+  const pad = trackPadStart(track);
+  const current = track.scrollLeft;
+  let index = 0;
+  let best = Infinity;
+  slides.forEach((slide, i) => {
+    const pos = slide.offsetLeft - pad;
+    const dist = Math.abs(pos - current);
+    if (dist < best) {
+      best = dist;
+      index = i;
+    }
+  });
+  return index;
+}
+
 /** Keep prev/next disabled state in sync with scroll position. */
 export function bindCarouselFit({
   track,
@@ -33,34 +54,51 @@ export function bindCarouselFit({
   nextBtn,
   enabled,
 }: BindCarouselFitOptions): void {
+  if (track.dataset.carouselBound === "1") return;
+  track.dataset.carouselBound = "1";
+
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const step = () => {
-    const slide = track.querySelector<HTMLElement>(slideSelector);
-    if (!slide) return track.clientWidth * 0.9;
-    const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0") || 0;
-    return slide.getBoundingClientRect().width + gap;
-  };
+  const slidesOf = () => [...track.querySelectorAll<HTMLElement>(slideSelector)];
 
   const update = () => {
     if (enabled && !enabled()) return;
 
     if (carouselFitsAll(track, slideSelector)) {
-      track.scrollLeft = 0;
+      if (track.scrollLeft > 1) track.scrollLeft = 0;
       if (prevBtn) prevBtn.disabled = true;
       if (nextBtn) nextBtn.disabled = true;
       return;
     }
 
-    const max = track.scrollWidth - track.clientWidth - 1;
-    if (prevBtn) prevBtn.disabled = track.scrollLeft <= 0;
+    const max = Math.max(0, track.scrollWidth - track.clientWidth - 1);
+    if (prevBtn) prevBtn.disabled = track.scrollLeft <= 1;
     if (nextBtn) nextBtn.disabled = track.scrollLeft >= max;
   };
 
   const scrollByDir = (dir: 1 | -1) => {
     if (enabled && !enabled()) return;
     if (carouselFitsAll(track, slideSelector)) return;
-    track.scrollBy({ left: dir * step(), behavior: reduced ? "auto" : "smooth" });
+
+    const slides = slidesOf();
+    if (!slides.length) return;
+
+    const pad = trackPadStart(track);
+    const index = nearestSlideIndex(track, slides);
+    const next = slides[index + dir];
+    if (!next) {
+      const max = Math.max(0, track.scrollWidth - track.clientWidth);
+      track.scrollTo({
+        left: dir > 0 ? max : 0,
+        behavior: reduced ? "auto" : "smooth",
+      });
+      return;
+    }
+
+    track.scrollTo({
+      left: Math.max(0, next.offsetLeft - pad),
+      behavior: reduced ? "auto" : "smooth",
+    });
   };
 
   prevBtn?.addEventListener("click", () => scrollByDir(-1));
@@ -82,6 +120,7 @@ export function bindCarouselFit({
 
   track.querySelectorAll("img").forEach((img) => {
     if (!img.complete) img.addEventListener("load", update, { once: true });
+    img.addEventListener("error", update, { once: true });
   });
 
   if (typeof ResizeObserver !== "undefined") {
