@@ -167,6 +167,18 @@ const {
     overflow: hidden;
     margin-inline: var(--frame-inset);
     margin-top: clamp(1rem, 2.5vw, 1.35rem);
+    --compare-slide-width: clamp(
+      var(--carousel-slide-min),
+      calc(
+        (
+          100cqw
+          - var(--carousel-track-pad-start)
+          - var(--carousel-peek-gap-count) * var(--carousel-slide-gap)
+        )
+        / var(--carousel-peek-slides)
+      ),
+      100%
+    );
   }
   .compare-carousel--tight .compare-carousel__track-wrap {
     margin-top: clamp(2.25rem, 5vw, 3.25rem);
@@ -181,14 +193,20 @@ const {
       var(--frame-inset),
       calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
     );
-    padding-right: var(--frame-inset);
+    /* Enough trailing space that the last card can snap to the heading column.
+       Short lanes (AI Guided Bible has four cards) otherwise cannot advance:
+       mandatory snap treats the leftover peek as closer to 0 than to the next card. */
+    padding-right: max(
+      var(--frame-inset),
+      calc(100cqw - var(--carousel-track-pad-start) - var(--compare-slide-width))
+    );
     scroll-padding-left: max(
       var(--frame-inset),
       calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
     );
     list-style: none;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
