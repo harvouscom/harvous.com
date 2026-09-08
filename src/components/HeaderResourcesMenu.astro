@@ -350,6 +350,11 @@ const KIND_BLURB: Record<(typeof ALL_KINDS)[number], string> = {
     letter-spacing: -0.01em;
     font-variation-settings: "wdth" 100, "ROND" 0;
     color: var(--color-ink);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
   }
   .hmenu__feature:hover .hmenu__feature-title {
     color: var(--color-accent);
