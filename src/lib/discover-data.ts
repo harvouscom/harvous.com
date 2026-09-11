@@ -14,11 +14,105 @@
  * The file is the contract. If it is missing or malformed the build fails here,
  * loudly, rather than shipping a hub page with nothing under it.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { getUseCaseBySlug } from "./use-cases-data.ts";
+import { buildInstallUrl } from "./signup-url.ts";
 import { join } from "node:path";
 
 export type DiscoverKind = "template" | "note" | "pack" | "resource";
+
+/** Which file a row's identity came from. Stamped by the reader, never authored. */
+export type DiscoverOrigin = "catalog" | "curated";
+
+/** What a curated reference *is*, which is a finer question than its kind. */
+/**
+ * `"article"` used to cover everything with no video and no full curriculum —
+ * which quietly meant STEP Bible's interlinear, Blue Letter Bible's lexicons
+ * and Matthew Henry's whole commentary all wore the same label as a 900-word
+ * essay. Two of those are instruments you look something up in and put back
+ * down; one is a historical work read cover to cover. Neither is an article.
+ *
+ *   article  something written to be read once, start to end
+ *   book     a full-length work — a commentary, a devotional, a classic text
+ *   tool     an instrument you consult, not read — a lexicon, an index, a
+ *            concordance
+ *   guide    ours: a how-to piece written for Harvous
+ *   series   a curriculum or course library, worked through over weeks
+ *   video    plays in place — see `DiscoverVideo`
+ */
+export type DiscoverResourceType = "video" | "article" | "book" | "tool" | "guide" | "series";
+
+export const DISCOVER_RESOURCE_TYPE_NOUN: Record<DiscoverResourceType, string> = {
+  video: "Video",
+  article: "Article",
+  book: "Book",
+  tool: "Tool",
+  guide: "Guide",
+  series: "Series",
+};
+
+/**
+ * The publisher a curated reference points at.
+ *
+ * A reference is somebody's work, and the first thing worth knowing about it is
+ * whose — so this is not `preview.sourceDomain` with a nicer name. The domain is
+ * small print; the name and the mark are what a reader recognises, and the
+ * attribution is a promise we make to the publisher rather than a caption we
+ * chose.
+ */
+export type DiscoverSource = {
+  /** The publisher's name as they write it — "BibleProject", not "bibleproject.com". */
+  name: string;
+  /** Bare host, for the card's small print. */
+  domain: string;
+  /** The exact page this points at. `https://…`, or `/…` when it is ours. */
+  url: string;
+  /** Their home page — where the credit line's link goes. */
+  homeUrl: string;
+  /** Square mark under `/images/discover-sources/logos/`. Absent draws an initial. */
+  logo?: string | null;
+  /** One sentence naming who made it and who owns it. Shown beside the player. */
+  attribution: string;
+  /** What the licence actually allows, in plain words. Doubles as the CTA note. */
+  licence?: string | null;
+  /**
+   * Never host this publisher's media — embed it from their own platform.
+   *
+   * BibleProject's terms are the reason this field exists: they permit embedding
+   * a stream or a link, and forbid uploading or storing the file. It governs
+   * *media*, not the poster frame — see `mirrorPoster`.
+   */
+  embedOnly?: boolean;
+  /**
+   * Whether we may keep a local copy of the poster frame. Default true.
+   *
+   * Hot-linking a YouTube thumbnail fires a request to a Google host from
+   * `/discover/` before anyone presses play, which undoes the whole point of the
+   * click-to-play facade. A mirrored thumbnail that credits and links back is
+   * what every link preview on the web already does. One flag to flip for a
+   * publisher who would rather we hot-linked theirs.
+   */
+  mirrorPoster?: boolean;
+};
+
+export type DiscoverVideo = {
+  provider: "youtube";
+  /** The 11-character id, not a URL. Validated at build. */
+  id: string;
+  /**
+   * When the publisher put it out — *not* when we listed it.
+   *
+   * `VideoObject.uploadDate` is a claim about someone else's video, and
+   * `listedAt` would make it a false one: Genesis 1–11 went up in 2015 and we
+   * listed it in 2026. Absent means the JSON-LD omits the field rather than
+   * guessing, which costs a video rich result and tells no lies.
+   */
+  publishedAt?: string | null;
+  /** ISO 8601, e.g. "PT8M57S" — schema.org's spelling, for `VideoObject`. */
+  duration?: string | null;
+  /** What the badge shows, e.g. "8:57". */
+  durationLabel?: string | null;
+};
 
 export type DiscoverListing = {
   slug: string;
@@ -30,6 +124,45 @@ export type DiscoverListing = {
   preview: DiscoverPreview | null;
   installCount: number;
   listedAt: string | null;
+
+  /** Which file this row came from. */
+  origin: DiscoverOrigin;
+  /**
+   * Whether the app has a listing at this slug — i.e. whether `buildInstallUrl`
+   * resolves to a real page rather than a 404.
+   *
+   * Deliberately not the same question as `origin`. The CTA branches on this
+   * one, so a curated row that later lands in the synced catalog becomes
+   * installable while keeping its publisher chrome, with no component edit.
+   */
+  installable: boolean;
+  /** Curated only: the publisher this points at. */
+  source?: DiscoverSource | null;
+  resourceType?: DiscoverResourceType | null;
+  video?: DiscoverVideo | null;
+  /** Curated only: our own sentence about why it is here. Never the publisher's. */
+  note?: string | null;
+  /**
+   * Curated only: the ground behind this listing's picture, taken from the
+   * picture itself by `npm run discover:sources`.
+   *
+   * A curated card used to sit its picture on the *topic's* wash, and the two
+   * disagree more often than not — a guide's blog thumb is graded to its blog
+   * category (`plan-the-quarter-not-the-week` is `equipping`, so green) while
+   * its Discover topic is `teaching-prep`, which is amber. Neither taxonomy is
+   * wrong; they are just different ones. So a reference stops borrowing either
+   * and takes the colour of the thing itself, which cannot disagree with the
+   * picture sitting on it.
+   */
+  plateTone?: string | null;
+  /**
+   * Curated only: link straight to the source and build no `/discover/<slug>/`.
+   *
+   * True for anything we have nothing of our own to add to — a blog post we
+   * wrote, a series page whose lessons sit behind someone's login. A stub page
+   * about somebody else's page is thin content carrying our canonical.
+   */
+  passThrough?: boolean;
 };
 
 export type DiscoverPreview = {
@@ -56,6 +189,21 @@ export type DiscoverPreview = {
   sourceDomain?: string | null;
   sourceSiteName?: string | null;
   sourceImage?: string | null;
+  /**
+   * Where a listing's *shape or content* was informed by, when that is
+   * neither "Harvous invented this" (`official`) nor "a Harvous account
+   * submitted this" (`authorDisplayName` on the listing itself).
+   *
+   * Distinct from `DiscoverSource` on purpose — that is the whole identity of
+   * a curated `resource` row (its picture, its licence, its CTA). This is
+   * much smaller: a template or note whose content Harvous wrote, crediting
+   * where the structure came from. The six sermon-outline templates are the
+   * first use — real Harvous template content, adapted from frameworks
+   * surveyed at an outside article, so neither "Included" nor a fabricated
+   * submitter byline would be honest.
+   */
+  sourceName?: string | null;
+  sourceUrl?: string | null;
   excerpt?: string;
   /**
    * The artifact itself — sanitized server-side on write and again on read, so
@@ -81,12 +229,41 @@ type CatalogFile = {
   listings: DiscoverListing[];
 };
 
+/**
+ * One hand-written reference, before the reader expands it.
+ *
+ * Flat on purpose: an author writes `source.domain` once, and `expandCurated`
+ * projects it into `preview.sourceDomain` so every existing code path — the
+ * card's `hasPanel`, the listing page's `.dlink` treatment — keeps working with
+ * no change at all. The publisher chrome then layers on top of that.
+ */
+type CuratedEntry = {
+  slug: string;
+  title: string;
+  description: string;
+  /** Ours, not theirs. Required — it is what makes a listing page not a stub. */
+  note: string;
+  category: string;
+  listedAt: string;
+  resourceType: DiscoverResourceType;
+  source: DiscoverSource;
+  video?: DiscoverVideo;
+  /** Poster or OG image. A local path, or a remote URL for the mirror script. */
+  image?: string;
+  imageAlt?: string;
+  passThrough?: boolean;
+};
+
 const CATALOG_PATH = join(process.cwd(), "data/discover-listings.json");
+const CURATED_PATH = join(process.cwd(), "data/discover-curated.json");
+
+/** The shape `sanitizeSignupSlug` accepts — a slug it would reject is a dead URL. */
+const CURATED_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const YOUTUBE_ID_RE = /^[A-Za-z0-9_-]{11}$/;
 
 let cache: CatalogFile | null = null;
 
-function readCatalog(): CatalogFile {
-  if (cache) return cache;
+function readSyncedFile(): CatalogFile {
   const raw = readFileSync(CATALOG_PATH, "utf-8");
   const parsed = JSON.parse(raw) as CatalogFile;
   if (!Array.isArray(parsed.listings) || !Array.isArray(parsed.categories)) {
@@ -95,7 +272,212 @@ function readCatalog(): CatalogFile {
         "sync-discover-catalog.yml in the app repo from GET /api/discover/export.",
     );
   }
-  cache = parsed;
+  return parsed;
+}
+
+/**
+ * The curated file is optional, and strict when it is there.
+ *
+ * Absent-is-legal is not laziness — it is the endgame. When the app-side seed
+ * publishes these references itself, retiring this layer is emptying the file
+ * and then deleting it, with no reader change and no build break in between.
+ */
+function readCuratedFile(): { listings: CuratedEntry[] } {
+  let raw: string;
+  try {
+    raw = readFileSync(CURATED_PATH, "utf-8");
+  } catch {
+    return { listings: [] };
+  }
+  const parsed = JSON.parse(raw) as { listings?: unknown };
+  if (!Array.isArray(parsed.listings)) {
+    throw new Error("data/discover-curated.json is missing `listings`.");
+  }
+  return { listings: parsed.listings as CuratedEntry[] };
+}
+
+function bad(slug: string, why: string): never {
+  throw new Error(`data/discover-curated.json — "${slug}": ${why}`);
+}
+
+/**
+ * Fail loud, name the slug.
+ *
+ * Every check here guards something that would otherwise go quietly wrong
+ * rather than loudly: a slug the app would reject is a URL nobody can reach, an
+ * unknown category is a card the topic filter never matches, and a pasted watch
+ * URL where an id belongs is a player that renders and never plays.
+ */
+function validateCuratedEntry(entry: CuratedEntry, categoryIds: Set<string>): void {
+  const slug = entry?.slug ?? "(missing slug)";
+  if (!entry?.slug || !CURATED_SLUG_RE.test(entry.slug)) bad(slug, "slug must be kebab-case");
+  if (!entry.title?.trim()) bad(slug, "title is required");
+  if (!entry.description?.trim()) bad(slug, "description is required");
+  if (!entry.note?.trim()) bad(slug, "note is required — it is what makes the page ours");
+  if (!categoryIds.has(entry.category)) {
+    bad(slug, `category "${entry.category}" is not one the catalog knows`);
+  }
+  if (!(entry.resourceType in DISCOVER_RESOURCE_TYPE_NOUN)) {
+    bad(slug, `resourceType "${entry.resourceType}" is not one Discover knows`);
+  }
+  if (!Number.isFinite(Date.parse(entry.listedAt))) bad(slug, "listedAt is not a date");
+
+  const source = entry.source;
+  if (!source?.name?.trim()) bad(slug, "source.name is required");
+  if (!source.domain?.trim()) bad(slug, "source.domain is required");
+  if (!source.attribution?.trim()) bad(slug, "source.attribution is required");
+  for (const field of ["url", "homeUrl"] as const) {
+    const value = source[field];
+    if (!value || !(value.startsWith("https://") || value.startsWith("/"))) {
+      bad(slug, `source.${field} must be an https:// URL or a site-relative path`);
+    }
+  }
+
+  if (entry.resourceType === "video") {
+    if (entry.video?.provider !== "youtube") bad(slug, "a video needs video.provider 'youtube'");
+    if (!YOUTUBE_ID_RE.test(entry.video.id)) {
+      bad(slug, `video.id "${entry.video.id}" is not an 11-character YouTube id`);
+    }
+  }
+}
+
+/**
+ * The local mirror if it is there, the authored path otherwise.
+ *
+ * Same posture as `OptimizedImage` and the compare OG images: check the disk at
+ * build time and degrade to what the author wrote. A forgotten
+ * `npm run discover:sources` therefore costs a hot-linked image, not a build.
+ */
+function resolveDiscoverImage(slug: string, authored: string | null): string | null {
+  const local = `/images/discover-sources/${slug}.webp`;
+  if (existsSync(join(process.cwd(), "public", local.slice(1)))) return local;
+  return authored;
+}
+
+/**
+ * The plate tones, written alongside the mirrored posters.
+ *
+ * Absent is fine and silent — the card falls back to the topic wash, which is
+ * what it did before tones existed. Read once, like the catalogs.
+ */
+let toneCache: Record<string, string> | null = null;
+
+function discoverPlateTone(slug: string): string | null {
+  if (!toneCache) {
+    const path = join(process.cwd(), "public/images/discover-sources/manifest.json");
+    try {
+      toneCache = (JSON.parse(readFileSync(path, "utf-8")).tones ?? {}) as Record<string, string>;
+    } catch {
+      toneCache = {};
+    }
+  }
+  return toneCache[slug] ?? null;
+}
+
+/**
+ * A publisher's mark, but only if it is actually on disk.
+ *
+ * `npm run discover:sources` fetches these from the publisher's own domain and
+ * any one of them can fail — a blocked favicon, a site that answers a build
+ * agent differently. Resolving to null here is what makes the card draw its
+ * initial tile instead of a broken image, so a missed fetch is a slightly
+ * plainer card rather than a visible defect.
+ */
+function resolveSourceLogo(source: DiscoverSource): DiscoverSource {
+  const logo = source.logo;
+  if (!logo) return source;
+  if (existsSync(join(process.cwd(), "public", logo.slice(1)))) return source;
+  return { ...source, logo: null };
+}
+
+function expandCurated(entry: CuratedEntry): DiscoverListing {
+  return {
+    slug: entry.slug,
+    kind: "resource",
+    title: entry.title,
+    description: entry.description,
+    category: entry.category,
+    /* The publisher *is* the author. This also drops their name into the card's
+       `data-search` for free, so "bibleproject" finds these without the hub
+       growing a third control it has no room for. */
+    authorDisplayName: entry.source.name,
+    installCount: 0,
+    listedAt: new Date(entry.listedAt).toISOString(),
+    preview: {
+      official: false,
+      sourceDomain: entry.source.domain,
+      sourceSiteName: entry.source.name,
+      sourceImage: resolveDiscoverImage(entry.slug, entry.image ?? null),
+    },
+    origin: "curated",
+    installable: false,
+    source: resolveSourceLogo(entry.source),
+    resourceType: entry.resourceType,
+    video: entry.video ?? null,
+    note: entry.note,
+    plateTone: discoverPlateTone(entry.slug),
+    passThrough: entry.passThrough === true,
+  };
+}
+
+function readCatalog(): CatalogFile {
+  if (cache) return cache;
+
+  const synced = readSyncedFile();
+  const curated = readCuratedFile();
+  const categoryIds = new Set(synced.categories.map((category) => category.id));
+
+  const listings: DiscoverListing[] = synced.listings.map((row) => ({
+    ...row,
+    origin: "catalog" as const,
+    installable: true,
+  }));
+  const bySlug = new Map(listings.map((listing) => [listing.slug, listing]));
+  const seen = new Set<string>();
+
+  for (const entry of curated.listings) {
+    validateCuratedEntry(entry, categoryIds);
+    if (seen.has(entry.slug)) bad(entry.slug, "listed twice in this file");
+    seen.add(entry.slug);
+
+    const existing = bySlug.get(entry.slug);
+    if (existing) {
+      /*
+        The app-side seed has landed at this slug. The catalog row is the real
+        one — it is installable, and the sync keeps it in step — so the curated
+        entry demotes to an overlay supplying only the columns
+        `GET /api/discover/export` has no field for. The page keeps its
+        publisher lockup and its player on the day the seed ships, rather than
+        on the day the export grows three more fields.
+
+        A warning, deliberately, and never a throw: the synced file is rewritten
+        by a bot every six hours, and a slug collision must not be able to break
+        a build nobody started.
+      */
+      console.warn(
+        `[discover] "${entry.slug}" is in the synced catalog now. ` +
+          "data/discover-curated.json is only supplying source/video/note for it — " +
+          "drop the entry once the export carries those fields.",
+      );
+      existing.source = resolveSourceLogo(entry.source);
+      existing.resourceType = entry.resourceType;
+      existing.video = entry.video ?? null;
+      existing.note = entry.note;
+      existing.plateTone = discoverPlateTone(entry.slug);
+      existing.preview = {
+        ...(existing.preview ?? {}),
+        sourceImage:
+          existing.preview?.sourceImage ?? resolveDiscoverImage(entry.slug, entry.image ?? null),
+      };
+      continue;
+    }
+
+    const expanded = expandCurated(entry);
+    listings.push(expanded);
+    bySlug.set(expanded.slug, expanded);
+  }
+
+  cache = { categories: synced.categories, listings };
   return cache;
 }
 
@@ -125,9 +507,26 @@ export const DISCOVER_KIND_ICON: Record<DiscoverKind, string> = {
   resource: "fa7-solid:newspaper",
 };
 
+/** The glyph a curated `resourceType` wears — everything past the kind-level
+ *  default. `mini` and the OG badge have room for exactly one, so this is the
+ *  one place that has to pick. */
+const RESOURCE_TYPE_ICON: Partial<Record<DiscoverResourceType, string>> = {
+  video: "fa7-solid:play",
+  /** A lexicon or an index — something you look something up *in*. */
+  tool: "fa7-solid:magnifying-glass",
+  /** A full-length work, distinct from `note`'s plain "fa7-solid:book" so a
+      curated classic and a scripture note never draw the same glyph. */
+  book: "fa7-solid:book-open",
+  /** A curriculum worked through over weeks — a stack, not a single page. */
+  series: "fa7-solid:layer-group",
+};
+
 export function discoverListingIcon(listing: DiscoverListing): string {
   if (listing.kind === "note" && listing.preview?.noteType === "scripture") {
     return "fa7-solid:book";
+  }
+  if (listing.resourceType && RESOURCE_TYPE_ICON[listing.resourceType]) {
+    return RESOURCE_TYPE_ICON[listing.resourceType]!;
   }
   return DISCOVER_KIND_ICON[listing.kind] ?? DISCOVER_KIND_ICON.note;
 }
@@ -337,11 +736,122 @@ export function discoverCategoryLabel(id: string | null): string {
   return getDiscoverCategories().find((c) => c.id === id)?.label ?? id;
 }
 
-/** Newest first, which is what a small catalog wants until it needs ranking. */
+export function isCuratedListing(listing: DiscoverListing): boolean {
+  return listing.origin === "curated";
+}
+
+/** "BibleProject" → "bibleproject", which is what `/discover/?from=` carries. */
+export function discoverSourceSlug(source: DiscoverSource): string {
+  return source.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * Where a card goes.
+ *
+ * A pass-through entry has no page of ours to send anyone to, so the card is
+ * the link — one hop instead of two, and no stub page carrying our canonical
+ * over a summary of somebody else's writing.
+ */
+export function discoverListingHref(listing: DiscoverListing): string {
+  if (listing.passThrough && listing.source) return listing.source.url;
+  return `/discover/${listing.slug}/`;
+}
+
+export type DiscoverCta = {
+  href: string;
+  label: string;
+  note: string;
+  external: boolean;
+};
+
+/**
+ * The one place the three CTA stories live.
+ *
+ * They had drifted into a single hardcoded button that said "Save this to my
+ * Harvous" under a kicker reading "A template included with Harvous" — an
+ * invitation to add something the reader already has. The three cases are
+ * genuinely different:
+ *
+ *   curated    nothing of ours to install; the button opens the publisher
+ *   official   already in every account; the button starts a note from it
+ *   shared     someone gave this away; the button takes a copy
+ */
+/** "Read on STEP Bible" is the wrong verb for an interlinear you consult and
+ *  close again — it wants the same "Open" a course library gets. Defaults to
+ *  "Read", which is right for `article`, `book` and `guide`. */
+const CTA_VERB: Partial<Record<DiscoverResourceType, string>> = {
+  video: "Watch",
+  series: "Open",
+  tool: "Open",
+};
+
+export function discoverListingCta(listing: DiscoverListing): DiscoverCta {
+  const source = listing.source;
+  if (!listing.installable && source) {
+    const verb = (listing.resourceType && CTA_VERB[listing.resourceType]) || "Read";
+    return {
+      href: source.url,
+      label: `${verb} on ${source.name}`,
+      external: /^https?:/.test(source.url),
+      note: source.licence ?? `Free to ${verb.toLowerCase()}, and no account needed.`,
+    };
+  }
+  if (listing.preview?.official) {
+    return {
+      href: buildInstallUrl(listing.slug),
+      label: `Start a note from this ${DISCOVER_KIND_NOUN[listing.kind].toLowerCase()}`,
+      external: true,
+      note: "Free, and already in your templates — this opens it in Harvous.",
+    };
+  }
+  return {
+    href: buildInstallUrl(listing.slug),
+    label: "Save this to my Harvous",
+    external: true,
+    note: `Free. ${DISCOVER_KIND_BLURB[listing.kind]}`,
+  };
+}
+
+/**
+ * Newest first, then dealt out by kind so the first screen shows the catalog.
+ *
+ * Newest-first alone was right while the catalog was six templates listed on
+ * one day. It broke the moment references arrived: every curated row carries
+ * the day it was listed, so twenty-three of them sorted above six templates
+ * that were three days older, and the first page of a hub whose own lead
+ * begins "Templates to write into" contained no templates at all.
+ *
+ * Dealing round-robin across kinds fixes that without inventing a rank nobody
+ * asked for. Within a kind the order is still newest-first, so the newest
+ * template and the newest resource both surface; it is only the interleave
+ * that is imposed. A single-kind catalog is unaffected — one bucket deals back
+ * exactly what went in, which is what this did before.
+ */
 export function sortedDiscoverListings(): DiscoverListing[] {
-  return [...getDiscoverListings()].sort((a, b) => {
+  const byRecency = [...getDiscoverListings()].sort((a, b) => {
     const at = a.listedAt ? Date.parse(a.listedAt) : 0;
     const bt = b.listedAt ? Date.parse(b.listedAt) : 0;
     return bt - at;
   });
+
+  /* Insertion-ordered, so the kind holding the newest thing deals first. */
+  const buckets = new Map<DiscoverKind, DiscoverListing[]>();
+  for (const listing of byRecency) {
+    const bucket = buckets.get(listing.kind);
+    if (bucket) bucket.push(listing);
+    else buckets.set(listing.kind, [listing]);
+  }
+
+  const dealt: DiscoverListing[] = [];
+  const hands = [...buckets.values()];
+  for (let round = 0; dealt.length < byRecency.length; round++) {
+    for (const hand of hands) {
+      const next = hand[round];
+      if (next) dealt.push(next);
+    }
+  }
+  return dealt;
 }

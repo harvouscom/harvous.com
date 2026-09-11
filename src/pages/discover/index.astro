@@ -28,6 +28,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageIntro from "../../components/PageIntro.astro";
 import PageClosingCTA from "../../components/PageClosingCTA.astro";
 import DiscoverCard from "../../components/DiscoverCard.astro";
+import { breadcrumbJsonLd } from "../../lib/breadcrumb-jsonld.ts";
 import { isDraftPageSlug } from "../../lib/draft-pages.ts";
 import {
   DISCOVER_KIND_ICON,
@@ -70,11 +71,58 @@ const KIND_TAB: Record<DiscoverKind, string> = {
    is the wrong question here: it asks whether *links* should render, and is true on
    staging, which would leave the built page indexable. */
 const isDraft = isDraftPageSlug("discover");
+
+const siteOrigin = Astro.site ?? "https://harvous.com";
+const pageUrl = new URL("/discover/", siteOrigin).toString();
+
+/**
+ * The catalog, to a crawler.
+ *
+ * An `ItemList` of what is actually on the page, in the order it is drawn, so
+ * the hub is legible as a collection rather than as one more marketing page
+ * with cards on it. `url` per item points where the card points — which for a
+ * pass-through entry is the publisher, not a page of ours, because that is
+ * genuinely where the thing lives.
+ */
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Discover",
+    description:
+      "Free Bible study templates, notes and Threads shared by people who use Harvous, " +
+      "plus videos and guides from BibleProject and others.",
+    url: pageUrl,
+    isAccessibleForFree: true,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: listings.length,
+      itemListElement: listings.map((listing, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: listing.title,
+        url:
+          listing.passThrough && listing.source
+            ? listing.source.url
+            : new URL(`/discover/${listing.slug}/`, siteOrigin).toString(),
+      })),
+    },
+  },
+  breadcrumbJsonLd(
+    [
+      { name: "Harvous", path: "/" },
+      { name: "Discover", path: "/discover/" },
+    ],
+    siteOrigin,
+  ),
+];
 ---
 
 <BaseLayout
   title="Discover — Bible study templates and notes people have shared — Harvous"
-  description="Free Bible study templates, notes and Threads shared by people who use Harvous. Take a copy of any of them into your own account."
+  description="Free Bible study templates, notes and Threads shared by people who use Harvous, plus videos and guides from BibleProject and others. Take a copy into your own account."
+  ogImage="/images/discover/og.webp"
+  jsonLd={jsonLd}
   noindex={isDraft}
 >
   {
@@ -89,9 +137,9 @@ const isDraft = isDraftPageSlug("discover");
     <PageIntro flushBottom>
       <h1 class="section-title display-xl text-balance">A good place to start.</h1>
       <p class="lead mx-auto mt-6 max-w-xl text-pretty">
-        Templates to write into, notes to read, Threads to work through — some ours, some
-        shared by people who use Harvous. All of it free, and the moment you take a copy,
-        <mark>it's yours to change</mark>.
+        Templates to write into, notes to read, Threads to work through — and a few things
+        worth watching or reading, from people we trust. All of it free, and the moment you
+        take a copy, <mark>it's yours to change</mark>.
       </p>
     </PageIntro>
   </section>
@@ -196,6 +244,49 @@ const isDraft = isDraftPageSlug("discover");
         </div>
 
         {/* ── The grid ──────────────────────────────────────────────── */}
+        {/* Named by the script from a matching card, because the publisher's
+            name exists on this page only on the cards themselves. Hidden until
+            a `?from=` is in play — which only a listing page's "More from …"
+            link puts there. */}
+        {/* A filter token, not a sentence. It says the same thing in the
+            language the rest of this bar already speaks — a pill wearing the
+            publisher's own mark — and carries its own dismiss, so the way out
+            is on the thing that narrowed the grid rather than a link beside it.
+
+            Named by the script from a matching card, because the publisher's
+            name and mark exist on this page only on the cards themselves. */}
+        <div class="dhub__from" data-dhub-from hidden>
+          <span class="dhub__from-chip">
+            <img
+              class="dhub__from-mark"
+              data-dhub-from-mark
+              alt=""
+              width="18"
+              height="18"
+              decoding="async"
+              hidden
+            />
+            <span class="dhub__from-name" data-dhub-from-name></span>
+            <button
+              type="button"
+              class="dhub__from-x"
+              data-dhub-reset
+              aria-label="Show everything, not just this source"
+            >
+              <svg viewBox="0 0 12 12" aria-hidden="true">
+                <path
+                  d="M3.2 3.2 8.8 8.8M8.8 3.2 3.2 8.8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                ></path>
+              </svg>
+            </button>
+          </span>
+          <span class="dhub__from-count" data-dhub-from-count></span>
+        </div>
+
         <ul class="dhub__grid" data-dhub-grid data-reveal="stagger">
           {listings.map((listing) => (
             <DiscoverCard listing={listing} />
@@ -253,12 +344,23 @@ const isDraft = isDraftPageSlug("discover");
     const params = new URLSearchParams(location.search);
     let topic = params.get("use") ?? "";
     let kind = params.get("kind") ?? "";
+    /* Publisher, and URL-only on purpose. The bar already carries two rows of
+       controls and this file learned once that a third outweighed the cards
+       under it — so "More from BibleProject" is a link into this filter rather
+       than a chip nobody would use twice. */
+    let from = params.get("from") ?? "";
     let query = "";
 
     /* An unknown value in the URL is nobody's filter — fall back to everything
        rather than showing an empty grid for a typo. */
     if (topic && !topicItems.some((b) => b.dataset.dhubTopic === topic)) topic = "";
     if (kind && !kindButtons.some((b) => b.dataset.dhubKind === kind)) kind = "";
+    if (from && !cards.some((c) => c.dataset.source === from)) from = "";
+
+    const fromStrip = root.querySelector<HTMLElement>("[data-dhub-from]");
+    const fromName = root.querySelector<HTMLElement>("[data-dhub-from-name]");
+    const fromMark = root.querySelector<HTMLImageElement>("[data-dhub-from-mark]");
+    const fromCount = root.querySelector<HTMLElement>("[data-dhub-from-count]");
 
     const closeMenu = () => {
       if (!menu || !trigger) return;
@@ -279,12 +381,17 @@ const isDraft = isDraftPageSlug("discover");
         (card) =>
           (!topic || card.dataset.topic === topic) &&
           (!kind || card.dataset.kind === kind) &&
+          (!from || card.dataset.source === from) &&
           (!query || (card.dataset.search ?? "").includes(query)),
       );
       const pages = Math.max(1, Math.ceil(matched.length / PAGE_SIZE));
       page = Math.min(page, pages - 1);
-      const from = page * PAGE_SIZE;
-      const visible = new Set(matched.slice(from, from + PAGE_SIZE));
+      /* `offset`, not `from` — `from` is the publisher filter in the closure
+         above, and a `const from` here shadowed it inside the very filter that
+         reads it, which is a temporal-dead-zone throw rather than a wrong
+         answer. */
+      const offset = page * PAGE_SIZE;
+      const visible = new Set(matched.slice(offset, offset + PAGE_SIZE));
       for (const card of cards) card.hidden = !visible.has(card);
       const shown = matched.length;
 
@@ -326,9 +433,28 @@ const isDraft = isDraftPageSlug("discover");
       if (pageOf) pageOf.textContent = `Page ${page + 1} of ${pages}`;
       if (prevBtn) prevBtn.disabled = page === 0;
       if (nextBtn) nextBtn.disabled = page >= pages - 1;
+      /* The token names the publisher from a card rather than from a lookup —
+         the cards are the only place that name and mark exist on this page. */
+      if (fromStrip) fromStrip.hidden = !from;
+      if (from) {
+        const card = cards.find((c) => c.dataset.source === from);
+        if (fromName) fromName.textContent = card?.dataset.sourceName ?? from;
+        if (fromMark) {
+          const logo = card?.dataset.sourceLogo ?? "";
+          /* Hidden rather than left with an empty src, which browsers render
+             as a broken-image glyph inside the pill. */
+          fromMark.hidden = !logo;
+          if (logo) fromMark.src = logo;
+        }
+        if (fromCount) {
+          fromCount.textContent = shown === 1 ? "1 thing" : `${shown} things`;
+        }
+      }
+
       const next = new URLSearchParams();
       if (topic) next.set("use", topic);
       if (kind) next.set("kind", kind);
+      if (from) next.set("from", from);
       const qs = next.toString();
       history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
     };
@@ -371,13 +497,16 @@ const isDraft = isDraftPageSlug("discover");
       apply(false);
       grid?.scrollIntoView({ block: "start", behavior: "smooth" });
     });
-    root.querySelector("[data-dhub-reset]")?.addEventListener("click", () => {
-      topic = "";
-      kind = "";
-      query = "";
-      if (search) search.value = "";
-      apply();
-    });
+    for (const button of root.querySelectorAll("[data-dhub-reset]")) {
+      button.addEventListener("click", () => {
+        topic = "";
+        kind = "";
+        from = "";
+        query = "";
+        if (search) search.value = "";
+        apply();
+      });
+    }
 
     apply();
   }
@@ -581,7 +710,15 @@ const isDraft = isDraftPageSlug("discover");
     display: grid;
     gap: 0.125rem;
     width: min(20rem, calc(100vw - 2 * var(--frame-content-pad)));
-    max-height: min(24rem, 60vh);
+    /* Cut through a row, deliberately.
+       Measured: the "All use cases" row is 44px, each topic row 57px including
+       its gap. At the old 24rem the sixth topic landed 49px into its 57 — near
+       enough to whole that the menu looked finished, so nothing told a reader
+       there were three more below. Half a row of peek is the only thing a menu
+       with no persistent scrollbar has to say "keep going", and it makes the
+       panel shorter at the same time.
+       0.375rem padding + 2.75rem "All" + four 3.5625rem rows + half a row. */
+    max-height: min(19.125rem, 60vh);
     overflow-y: auto;
     padding: 0.375rem;
     border: 1px solid var(--color-rule);
@@ -690,6 +827,113 @@ const isDraft = isDraftPageSlug("discover");
   }
 
   /* ── Grid ── */
+  /* The publisher filter has no control in the bar, so this token is the only
+     thing saying the grid is narrowed — and it carries its own way out. */
+  /* Same box as the bar above it — 52rem, centred — so it sits in the page the
+     way the bar does rather than running out to the frame's edge, and the token
+     itself is centred within that box.
+
+     `.dhub__bar--tools-only` narrows to 34rem, and this does not follow it:
+     that state only exists while the catalog holds a single kind, and a
+     `?from=` filter cannot be reached without curated resources in it. */
+  .dhub__from {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 52rem;
+    margin-inline: auto;
+    padding-inline: 0.375rem;
+    /* Even above and below: the grid brings its own 1.5rem, so this matches it
+       rather than halving the gap underneath the way it first did. */
+    margin-top: 1.5rem;
+  }
+
+  /* The bar's own pill vocabulary: full rule, 999px, warm ground. Sized off
+     `.dhub__topics-trigger` so a filter that came from a link looks like one
+     that came from a control. */
+  .dhub__from-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    padding: 0.3125rem 0.3125rem 0.3125rem 0.75rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .dhub__from-mark {
+    display: block;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 5px;
+    object-fit: contain;
+  }
+
+  .dhub__from-name {
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--color-ink);
+  }
+
+  /* Inside the chip, so the dismiss is on the thing being dismissed. Its own
+     round hit area rather than a bare glyph — 1.75rem is the smallest target
+     that still reads as part of a 2.25rem pill. */
+  .dhub__from-x {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-warm);
+    color: var(--color-ink-soft);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .dhub__from-x svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .dhub__from-x:hover {
+    background: color-mix(in oklab, var(--color-ink) 10%, var(--color-warm));
+    color: var(--color-ink);
+  }
+
+  .dhub__from-x:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Outside the chip: the chip says which filter, this says what it did. */
+  .dhub__from-count {
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dhub__from-x {
+      transition: none;
+    }
+  }
+
   .dhub__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));

@@ -4,7 +4,13 @@ import { getDiscoverListings } from "../../lib/discover-data.ts";
 
 export async function getStaticPaths() {
   const listings = getDiscoverListings();
-  return listings.map((listing) => ({
+  /* A pass-through entry has no page here on purpose — its card links straight
+     out. Building one anyway would put our canonical on a summary of somebody
+     else's writing, which is thin content whichever way it is dressed, and it
+     would cost a reader a hop to reach the thing they clicked. */
+  return listings
+    .filter((listing) => !listing.passThrough)
+    .map((listing) => ({
     params: { slug: listing.slug },
     props: {
       listing,
@@ -16,6 +22,7 @@ export async function getStaticPaths() {
     },
   }));
 }
+
 
 const { listing, related } = Astro.props;
 ---

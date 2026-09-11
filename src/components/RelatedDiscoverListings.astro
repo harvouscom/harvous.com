@@ -61,9 +61,14 @@ const label = discoverCategoryLabel(useCaseSlug);
           >
             Start from one of these
           </h2>
+          {/* "Take a copy and it is yours to change" is true of a template and
+              false of somebody else's video, and this strip can now hold both.
+              Computed rather than reworded to cover both cases at once, so a
+              band showing only templates still makes the stronger promise. */}
           <p class="related-discover__lead mt-3 text-sm leading-relaxed text-[var(--color-ink-soft)] md:text-[0.95rem]">
-            Free templates and studies filed under {label.toLowerCase()} — take a copy and it is
-            yours to change.
+            {listings.some((listing) => !listing.installable)
+              ? `Free templates, studies, and things worth watching, filed under ${label.toLowerCase()}.`
+              : `Free templates and studies filed under ${label.toLowerCase()} — take a copy and it is yours to change.`}
           </p>
         </div>
 

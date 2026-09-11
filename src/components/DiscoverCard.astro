@@ -24,10 +24,13 @@ import { Icon } from "astro-icon/components";
 import { sanitizeListingHtml } from "../lib/sanitize-listing-html.ts";
 import {
   DISCOVER_KIND_NOUN,
+  DISCOVER_RESOURCE_TYPE_NOUN,
   discoverArtPosition,
   discoverDocumentArt,
+  discoverListingHref,
   discoverListingIcon,
   discoverListingInk,
+  discoverSourceSlug,
   discoverTopicArt,
   type DiscoverListing,
 } from "../lib/discover-data.ts";
@@ -80,18 +83,58 @@ const excerpt = preview.excerpt ?? "";
 const hasBody = Boolean(bodyHtml || excerpt);
 
 /* Whether there is anything to draw down there. An empty warm panel reads as a
-   failed image, so a card with no preview simply has no panel. */
-/* Only the full card gets a plate. `compact` is the foot of a listing page,
-   where a second row of previews is browsing furniture nobody came for; `mini`
-   has a tile instead — a 100px-wide document preview is a grey smudge, and the
-   thing worth saying at that size is what kind of thing this is. */
+   failed image, so a card with no preview simply has no panel.
+
+   `compact` gets one too, laid out as a thumbnail on the left instead of a
+   band on top — the "more like this" foot of a listing page read as a wall of
+   text next to it, and the same artifact the hub already drew (a template's
+   own headings, a video's own poster) is what makes a related card look like
+   the thing it links to rather than an entry in a list. `mini` still gets a
+   flat tile instead: a 100px-wide document preview is a grey smudge, and the
+   thing worth saying at that size is only what kind of thing this is. */
+/* A curated reference is somebody's work, and what it is called matters less
+   than whose it is and what kind of thing it is — so the publisher and the
+   resource type are what the card leads with. */
+const source = listing.source ?? null;
+const resourceType = listing.resourceType ?? null;
+const isVideo = resourceType === "video" && Boolean(listing.video);
+const typeLabel = resourceType ? DISCOVER_RESOURCE_TYPE_NOUN[resourceType] : kindNoun;
+const durationLabel = listing.video?.durationLabel ?? null;
+
+/* The ground behind the specimen.
+   A reference takes it from its own picture (`plateTone`, extracted by
+   `npm run discover:sources`); everything else wears its topic's wash. The two
+   used to be one rule, and a guide graded green for its *blog* category sat on
+   the amber wash of its *Discover* topic — two taxonomies disagreeing on one
+   card. A tone falls back to the wash if the mirror has not run. */
+const plateTone = listing.plateTone ?? null;
+const plateStyle = plateTone
+  ? `--plate-tone: ${plateTone};`
+  : art
+    ? `--art: url("${art}"); --art-pos: ${artPosition};`
+    : undefined;
+
+/* A pass-through entry has no page of ours, so the card is the outbound link. */
+const href = discoverListingHref(listing);
+const leavesSite = /^https?:/.test(href);
+
 const hasPanel =
-  variant === "full" &&
+  variant !== "mini" &&
   (((listing.kind === "template" || listing.kind === "note") && hasBody) ||
   (listing.kind === "pack" && titles.length > 0) ||
-  (listing.kind === "resource" && Boolean(preview.sourceDomain || preview.sourceImage)));
+  (listing.kind === "resource" && Boolean(source || preview.sourceDomain || preview.sourceImage)));
 
-const searchText = [listing.title, listing.description, listing.authorDisplayName, kindNoun]
+/* Search covers the publisher too, which is what lets "bibleproject" work
+   without the hub's control bar growing a third row it has no room for. */
+const searchText = [
+  listing.title,
+  listing.description,
+  listing.authorDisplayName,
+  kindNoun,
+  source?.name,
+  source?.domain,
+  typeLabel,
+]
   .filter(Boolean)
   .join(" ")
   .toLowerCase();
@@ -105,10 +148,17 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
   ]}
   data-kind={listing.kind}
   data-topic={listing.category ?? ""}
+  data-source={source ? discoverSourceSlug(source) : ""}
+  data-source-name={source?.name ?? ""}
+  data-source-logo={source?.logo ?? ""}
   data-search={searchText}
-  style={art ? `--art: url("${art}"); --art-pos: ${artPosition};` : undefined}
+  style={plateStyle}
 >
-  <a class="dcard__link" href={`/discover/${listing.slug}/`}>
+  <a
+    class="dcard__link"
+    href={href}
+    {...leavesSite ? { target: "_blank", rel: "noopener" } : {}}
+  >
     {/* The icon block: the kind's glyph on the listing's own colour, filling
         the left column. It is the app's tile — `ProtoSpaceMenuIcon`'s pastel
         ground and saturated glyph — grown to the height of the card, which is
@@ -167,7 +217,65 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
                 then shows what it points at, rather than being the artifact
                 itself. Domain over site name: a name derived from a host
                 mangles subdomains ("en.wikipedia.org" → "En Wikipedia"). */}
-            {listing.kind === "resource" && (
+            {listing.kind === "resource" && source && (
+              /* A curated reference leads with a masthead: the publisher's mark,
+                 their name, and what kind of thing this is. The block below puts
+                 the listing's own title here instead — which the body then says
+                 again three rem down, at reading size — and files the publisher
+                 in a six-point caption along the bottom edge, which is where a
+                 filename goes. Whose it is outranks what it is called. */
+              <>
+                <span class="dcard__src">
+                  {source.logo ? (
+                    <span class="dcard__src-mark">
+                      <img src={source.logo} alt="" width="36" height="36" loading="lazy" decoding="async" />
+                    </span>
+                  ) : (
+                    <span class="dcard__src-mark dcard__src-mark--letter">
+                      {source.name.slice(0, 1)}
+                    </span>
+                  )}
+                  <span class="dcard__src-text">
+                    <span class="dcard__src-name">{source.name}</span>
+                    <span class="dcard__src-type">{typeLabel}</span>
+                  </span>
+                </span>
+                {preview.sourceImage ? (
+                  <span
+                    class="dcard__link-image"
+                    style={`background-image: url("${preview.sourceImage}")`}
+                  >
+                    {isVideo && (
+                      <>
+                        <span class="dcard__play"><Icon name="fa7-solid:play" /></span>
+                        {durationLabel && <span class="dcard__time">{durationLabel}</span>}
+                      </>
+                    )}
+                  </span>
+                ) : (
+                  /* No picture of its own — a study tool, a curriculum index.
+                     With a tone it wears its publisher's colour; without one it
+                     falls back to `discoverDocumentArt`, which picks a plate by
+                     hashing the slug and so put Working Preacher on an orange
+                     wash it has nothing to do with. */
+                  <span
+                    class:list={["dcard__doc-art", plateTone && "dcard__doc-art--tone"]}
+                    style={plateTone ? undefined : `background-image: url("${documentArt}")`}
+                  >
+                    <span class="dcard__doc-tile">
+                      {/* `icon` already resolves video/tool/book through
+                          `discoverListingIcon` — a hand-rolled `isVideo` ternary
+                          here would draw a lexicon or a commentary under the
+                          same page-of-text glyph as a source with nothing more
+                          specific to say. */}
+                      <Icon name={icon} />
+                    </span>
+                  </span>
+                )}
+              </>
+            )}
+
+            {listing.kind === "resource" && !source && (
               <>
                 <span class="dcard__doc-head">
                   <span class="dcard__doc-title">{listing.title}</span>
@@ -206,18 +314,42 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
           description, which gave a two-line card three stacked meta rows —
           it is an attribution, not a section. */}
       <span class="dcard__head">
+        {/* For a reference the publisher takes the pill's slot rather than
+            sitting beside it: "Template · Derek" is two facts, and
+            "BibleProject · Video" is one. This is also the only place a
+            `compact` or `mini` card names a publisher at all — both drop the
+            plate, and with it the masthead. The name alone does that job; the
+            mark stays on the plate, where it is said once. */}
+        {source ? (
+          /* No mark here. The masthead on the plate above already carries it,
+             and twice on one card made the head compete with the title instead
+             of labelling it. The name alone is enough this far down. */
+          <span class="dcard__from">
+            <span class="dcard__from-name">{source.name}</span>
+            <span class="dcard__from-type">{typeLabel}</span>
+          </span>
+        ) : (
         <span class="dcard__pill">
           <span class="dcard__pill-icon"><Icon name={icon} /></span>
           <span>{kindNoun}</span>
         </span>
+        )}
         {/* Templates the app ships with are the product's, not a stranger's —
             crediting the account that submitted one names the wrong author.
             "Included" rather than a byline, because that is what it is: not
-            somebody's gift, part of what you already have. */}
-        {preview.official ? (
+            somebody's gift, part of what you already have.
+
+            `preview.sourceName` is a third case, neither of those: Harvous
+            wrote the content, so it is not a stranger's submission, but the
+            shape came from outside, so "Included" would claim more than is
+            true. No link here — the card is already one, and the real credit
+            with its link lives on the listing page. */}
+        {source ? null : preview.official ? (
           <span class="dcard__by">Included</span>
         ) : listing.authorDisplayName ? (
           <span class="dcard__by">{listing.authorDisplayName}</span>
+        ) : preview.sourceName ? (
+          <span class="dcard__by">{preview.sourceName}</span>
         ) : null}
         {/* One save is not social proof — it is usually the author. The count
             earns its place once it says "other people took this". */}
@@ -294,6 +426,33 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
     background-image: var(--art);
     background-size: cover;
     background-position: var(--art-pos, center);
+  }
+
+  /* ── The tone ground ──────────────────────────────────────────────────
+     A reference's own colour, mixed well down towards paper and raked across
+     the plate so it reads as a wash rather than a swatch. Two stops, because a
+     flat fill under a picture with soft edges looks like a bug. */
+  .dcard[style*="--plate-tone"] .dcard__plate {
+    background-image: linear-gradient(
+      142deg,
+      color-mix(in oklab, var(--plate-tone) 34%, var(--color-paper)),
+      color-mix(in oklab, var(--plate-tone) 14%, var(--color-paper))
+    );
+  }
+  /* Flanks lift off the tone the same way they lift off artwork. */
+  .dcard[style*="--plate-tone"] .dcard__flank {
+    background: color-mix(in oklab, var(--color-paper) 34%, transparent);
+  }
+
+  /* The specimen for a link with no picture: the publisher's colour, a shade
+     stronger than the plate behind it so the document still reads as sitting
+     *on* something. */
+  .dcard__doc-art--tone {
+    background-image: linear-gradient(
+      142deg,
+      color-mix(in oklab, var(--plate-tone) 52%, var(--color-paper)),
+      color-mix(in oklab, var(--plate-tone) 26%, var(--color-paper))
+    );
   }
 
   /* The specimen sits *into* the bottom edge rather than centred in the plate,
@@ -497,6 +656,7 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
 
   /* ── A link's own picture ── */
   .dcard__link-image {
+    position: relative;
     display: block;
     flex: 1 1 auto;
     min-height: 0;
@@ -505,6 +665,145 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+  }
+
+  /* ── The source masthead ──────────────────────────────────────────────
+     A masthead, not a caption. The publisher's mark, their name, and what
+     kind of thing this is, above the picture rather than under it in the
+     six-point uppercase the domain used to wear. */
+  .dcard__src {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .dcard__src-mark {
+    display: inline-flex;
+    flex: 0 0 1.75rem;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    overflow: hidden;
+    border: 1px solid var(--color-rule);
+    border-radius: 8px;
+    background: var(--color-card);
+  }
+
+  .dcard__src-mark img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* No mark on file — a favicon that would not fetch, or a publisher who has
+     none. The initial keeps the lockup's shape, so a missed fetch costs a
+     plainer card rather than a reflowed one. */
+  .dcard__src-mark--letter {
+    background: var(--color-warm);
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink-soft);
+  }
+
+  .dcard__src-text {
+    display: grid;
+    min-width: 0;
+  }
+
+  /* Two lines rather than one. A masthead's whole job is to say whose this is,
+     and "Bible Engagemen…" fails at that in a way a second line does not —
+     the picture below can spare 0.9rem more readily than the name can spare
+     its second half. */
+  .dcard__src-name {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: var(--color-ink);
+  }
+
+  .dcard__src-type {
+    font-size: 0.5625rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  /* ── Play ─────────────────────────────────────────────────────────────
+     A label, not a control. The card is a link and the playing happens on the
+     listing page, so this only has to say "this one is a video" — it wore the
+     accent gradient at first, which is the site's primary-button fill, and a
+     row of them read as six buttons demanding to be pressed.
+
+     Same ink as `.dcard__time` beside it, so the two things sitting on a
+     poster are one system. The blue disc stays on `DiscoverVideoEmbed`, where
+     it *is* the control. */
+  .dcard__play {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.125rem;
+    height: 2.125rem;
+    margin: auto;
+    border-radius: 999px;
+    background: color-mix(in srgb, #0d0e12 62%, transparent);
+    color: #fff;
+  }
+
+  .dcard__play :global(svg) {
+    width: 0.6875rem;
+    height: 0.6875rem;
+    /* A play triangle is optically left-heavy inside a circle. */
+    margin-left: 0.1em;
+    fill: currentColor;
+  }
+
+  .dcard__time {
+    position: absolute;
+    right: 0.375rem;
+    bottom: 0.375rem;
+    padding: 0.125rem 0.3125rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, #0d0e12 78%, transparent);
+    font-size: 0.5625rem;
+    font-weight: 600;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+  }
+
+  .dcard__link:hover .dcard__play {
+    background: color-mix(in srgb, #0d0e12 76%, transparent);
+  }
+
+  /* ── The grey shelf ───────────────────────────────────────────────────
+     `TOPIC_ART_FALLBACK.reference` is null on purpose — Reference has no hue,
+     and a wash behind a list of links would be the one card claiming a colour
+     it does not have. With no artwork the plate is white on white, so it takes
+     a ruled ground instead of a colour: the shelf, drawn. */
+  /* Only where nothing else is drawing the ground. A reference *listing* with a
+     picture of its own carries `--plate-tone`, and that is the truer colour —
+     the shelf is for the ones with no picture to take a colour from. */
+  .dcard[data-topic="reference"]:not([style*="--plate-tone"]) .dcard__plate {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 1.375rem,
+      color-mix(in oklab, var(--color-ink) 5%, transparent) 1.375rem 1.4375rem
+    );
   }
 
   /* ── The body ── */
@@ -590,7 +889,51 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
     margin-right: 0.4em;
   }
 
-  /* Compact: no plate, so the body carries the whole card. */
+  /* ── From ─────────────────────────────────────────────────────────────
+     The byline for a card whose author is a publisher, in the kind pill's
+     slot rather than beside it. On `compact` and `mini` this is the only
+     place the publisher is named at all, which is why it carries the mark. */
+  .dcard__from {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  /* Exactly `.dcard__pill`'s register — same size, same weight, same ink-soft.
+     It sat on `--color-ink` at first, which read as a second headline above the
+     real one: the head labels the card, the title carries it. */
+  .dcard__from-name {
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--color-ink-soft);
+  }
+  .dcard__from-type {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+  }
+  .dcard__from-type::before {
+    content: "·";
+    margin-right: 0.4em;
+  }
+  .dcard--mini .dcard__from-name,
+  .dcard--mini .dcard__from-type {
+    font-size: 0.6875rem;
+  }
+
+  /* Compact: the row, and its body. The plate turns into a thumbnail (below)
+     rather than disappearing — it used to, on the theory that a second row of
+     previews at the foot of a listing page was furniture nobody came for, but
+     a title-and-two-lines card next to five others just like it turned "more
+     like this" into a wall of text with no way to tell one from another at a
+     glance. The artifact is still the fastest way to do that. */
   .dcard--compact .dcard__body {
     gap: 0.25rem;
     padding: 1rem 1.125rem;
@@ -604,6 +947,72 @@ const searchText = [listing.title, listing.description, listing.authorDisplayNam
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* The thumbnail: the same plate, turned into a column flush to the card's
+     left edge instead of a band across its top. No flanks — there is not
+     enough width left for the shelf illusion once the plate is this narrow —
+     and the specimen keeps its own small white mat rather than bleeding to
+     the edge, so it still reads as *paper sitting on a wash* rather than the
+     wash itself. The source masthead hides too: the publisher's name is
+     already said once, in the text beside this, and repeating it in a mark
+     this small was the name competing with itself. */
+  /* Side-by-side, and only where there is room for it. Below the breakpoint
+     this whole block stops applying and a compact card falls back to the base
+     card's own layout — plate stacked on top at full width, flanks and
+     masthead back, specimen at its 58% — which is the right shape on a narrow
+     screen and costs no un-setting to reach. 10rem of a 335px card was half
+     the width, and the title lost to it.
+
+     10rem × 4:3 is the hub *specimen's* proportions (204×154, measured), not
+     the hub plate's. The plate is 2.08:1, and a faithful miniature of that
+     would want 252px of a 600px card before the title got a pixel; the
+     specimen is the part carrying the artifact anyway, so its shape is the one
+     worth keeping. This started square (7rem × 7.25rem), which was the real
+     fault — a 1.9:1 video poster crushed into 0.97:1 lost half its width to
+     the crop, and a template's headings wrapped mid-word. */
+  @media (min-width: 561px) {
+    .dcard--compact .dcard__link {
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .dcard--compact .dcard__plate {
+      flex: 0 0 10rem;
+      /* `aspect-ratio`, not a hard height: it derives a *definite* height from
+         the width, which is what the base rule's `overflow: hidden` needs to
+         clip against. Plain `height: auto` has no such height, which is how
+         the first cut let a template's whole unclamped body set the row. */
+      aspect-ratio: 4 / 3;
+      height: auto;
+      /* Not stretched — stretching would override the ratio the moment the
+         text beside it runs taller. */
+      align-self: center;
+      padding: 0.5rem;
+      gap: 0;
+    }
+
+    .dcard--compact .dcard__flank {
+      display: none;
+    }
+    .dcard--compact .dcard__src {
+      display: none;
+    }
+
+    /* Specificity note: `.dcard[data-kind="resource"] .dcard__specimen` sets
+       its own padding, and a plain `.dcard--compact .dcard__specimen` loses to
+       it on source order alone — the compound selector on the root element is
+       what wins the tie-break. */
+    li.dcard.dcard--compact .dcard__specimen {
+      /* `flex: 0 0 58%` on the base rule leaves the other 42% to the two
+         flanks. They are hidden here, so without this the specimen kept its
+         58% and the rest of the plate was empty wash — putting the artifact
+         back at 0.80:1 portrait inside a 1.33:1 landscape plate, the exact
+         squeeze this was meant to fix. */
+      flex: 1 1 auto;
+      padding: 0.4375rem;
+      border-radius: 8px;
+    }
   }
 
   /* Mini: the same card one step down again and turned on its side, for the

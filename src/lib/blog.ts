@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import { breadcrumbJsonLd } from "./breadcrumb-jsonld.ts";
 
 export type BlogCategory = CollectionEntry<"blog">["data"]["category"];
 
@@ -94,23 +95,15 @@ export function blogCategoryHref(category: BlogCategory, page = 1): string {
   return `/blog/${category}/page/${page}/`;
 }
 
-/** BreadcrumbList JSON-LD for Bright Enough surfaces. */
-export function blogBreadcrumbJsonLd(
-  crumbs: { name: string; path: string }[],
-  siteOrigin: string | URL,
-): Record<string, unknown> {
-  const origin = typeof siteOrigin === "string" ? siteOrigin : siteOrigin.toString();
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: crumbs.map((crumb, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: crumb.name,
-      item: new URL(crumb.path, origin).toString(),
-    })),
-  };
-}
+/**
+ * BreadcrumbList JSON-LD for Bright Enough surfaces.
+ *
+ * The implementation moved to `breadcrumb-jsonld.ts` when Discover wanted the
+ * same trail — it was never blog-specific, and importing it from here would
+ * have pulled `astro:content` into pages that have no collections. Kept under
+ * its old name so this module's callers did not have to move with it.
+ */
+export const blogBreadcrumbJsonLd = breadcrumbJsonLd;
 
 /** Shared Blog entity for hub / archives / posts. */
 export function brightEnoughBlogJsonLd(

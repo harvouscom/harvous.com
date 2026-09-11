@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-03T06:03:10.028Z",
+  "generatedAt": "2026-09-11T16:35:38.347Z",
   "size": "1200x630",
-  "count": 43,
+  "count": 59,
   "targets": [
     {
       "kind": "use-case",
@@ -217,6 +217,86 @@
       "kind": "release",
       "slug": "3",
       "out": "/images/3/og.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "discover",
+      "out": "/images/discover/og.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "chapter-summary",
+      "out": "/images/discover/og/chapter-summary.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "inductive-study",
+      "out": "/images/discover/og/inductive-study.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "comparative-study",
+      "out": "/images/discover/og/comparative-study.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "text",
+      "out": "/images/discover/og/text.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "soap",
+      "out": "/images/discover/og/soap.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "topical-study",
+      "out": "/images/discover/og/topical-study.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-the-story-of-the-bible",
+      "out": "/images/discover/og/bibleproject-the-story-of-the-bible.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-genesis-1-11",
+      "out": "/images/discover/og/bibleproject-genesis-1-11.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-justice",
+      "out": "/images/discover/og/bibleproject-justice.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-gospel-of-mark",
+      "out": "/images/discover/og/bibleproject-gospel-of-mark.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-exodus-1-18",
+      "out": "/images/discover/og/bibleproject-exodus-1-18.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-james",
+      "out": "/images/discover/og/bibleproject-james.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-new-testament-overview",
+      "out": "/images/discover/og/bibleproject-new-testament-overview.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-sacrifice-and-atonement",
+      "out": "/images/discover/og/bibleproject-sacrifice-and-atonement.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bibleproject-job",
+      "out": "/images/discover/og/bibleproject-job.webp"
     }
   ]
 }
