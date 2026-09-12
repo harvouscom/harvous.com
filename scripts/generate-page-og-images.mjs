@@ -237,6 +237,116 @@ targets.push({
   outRel: "/images/3/og.webp",
 });
 
+/*
+ * Discover — the hub and a card per listing.
+ *
+ * Every one of these fell back to the site-wide /og.png, which is the least
+ * useful thing to hand a share of a specific study method.
+ *
+ * A listing's art is its **topic's**, never the publisher's. Category ids are
+ * use-case slugs (`discover-categories.ts` says so), so the wash and ink come
+ * from the same use-case page the on-page card borrows them from. Putting a
+ * BibleProject frame on a harvous.com OG card would be our URL wearing their
+ * artwork in somebody else's feed — a claim about authorship we do not want to
+ * make, and the one case where matching the on-page treatment would be wrong.
+ *
+ * The three overrides below mirror `TOPIC_ART_FALLBACK` / `TOPIC_INK_FALLBACK`
+ * in `src/lib/discover-data.ts`. Duplicated rather than imported because this
+ * is a plain node script and cannot read the .ts module — the same trade
+ * `INK_HEX` above already makes against the CSS.
+ */
+const DISCOVER_TOPIC_ART = {
+  "teaching-prep": "/images/auth-hero/ai_bg_060.webp",
+  "deep-study": "/images/auth-hero/ai_bg_076.webp",
+  /* The one place this deliberately parts from `TOPIC_ART_FALLBACK`, where
+     Reference is null. On the hub that null is the point — a grey card among
+     coloured ones reads as a shelf. Alone in a feed at 1200×630 it is a nearly
+     white rectangle that reads as an image that failed to load. So Reference
+     borrows a `DOCUMENT_ART` plate, which is already this codebase's answer to
+     "a resource with no picture of its own", and keeps its neutral ink. */
+  reference: "/images/auth-hero/ai_bg_059.webp",
+};
+const DISCOVER_TOPIC_INK = {
+  "teaching-prep": "var(--study-dock-accent-warmAmber)",
+  reference: "var(--study-dock-accent-neutral)",
+  "deep-study": "var(--study-dock-accent-violet)",
+};
+const DISCOVER_KIND_ICON = {
+  template: "fa7-solid:list-check",
+  note: "fa7-solid:note-sticky",
+  pack: "fa7-solid:arrow-right-arrow-left",
+  resource: "fa7-solid:newspaper",
+};
+/* Mirrors `RESOURCE_TYPE_ICON` in `src/lib/discover-data.ts` — this is a plain
+   node script and cannot import that .ts module, so the two are kept in step
+   by hand. Update both when a resourceType's glyph changes. */
+const DISCOVER_RESOURCE_TYPE_ICON = {
+  video: "fa7-solid:play",
+  tool: "fa7-solid:magnifying-glass",
+  book: "fa7-solid:book-open",
+  series: "fa7-solid:layer-group",
+};
+
+{
+  const useCases = new Map(
+    parseDataObjects(join(ROOT, "src/lib/use-cases-data.ts")).map((item) => [item.slug, item]),
+  );
+
+  const readListings = (path) => {
+    if (!existsSync(join(ROOT, path))) return [];
+    return JSON.parse(readFileSync(join(ROOT, path), "utf8")).listings ?? [];
+  };
+
+  targets.push({
+    kind: "discover",
+    slug: "discover",
+    image: "/images/auth-hero/ai_bg_046.webp",
+    icon: "fa7-solid:layer-group",
+    ink: "var(--study-dock-accent-skyBlue)",
+    outRel: "/images/discover/og.webp",
+  });
+
+  const synced = readListings("data/discover-listings.json");
+  const curated = readListings("data/discover-curated.json");
+  const seen = new Set();
+
+  for (const listing of [...synced, ...curated]) {
+    /* A pass-through entry has no page of ours, so there is nothing to share. */
+    if (listing.passThrough) continue;
+    if (seen.has(listing.slug)) continue;
+    seen.add(listing.slug);
+
+    const topic = listing.category;
+    const art =
+      topic && topic in DISCOVER_TOPIC_ART
+        ? DISCOVER_TOPIC_ART[topic]
+        : (useCases.get(topic)?.image ?? null);
+    const ink =
+      (topic && DISCOVER_TOPIC_INK[topic]) ||
+      useCases.get(topic)?.ink ||
+      "var(--study-dock-accent-neutral)";
+
+    /* A curated resource's icon follows its resourceType, the way its card
+       does. `resourceType` only exists on curated rows; a synced one falls
+       through to its kind. */
+    const icon =
+      DISCOVER_RESOURCE_TYPE_ICON[listing.resourceType] ??
+      DISCOVER_KIND_ICON[listing.kind] ??
+      DISCOVER_KIND_ICON.note;
+
+    targets.push({
+      kind: "discover",
+      slug: listing.slug,
+      image: art ?? undefined,
+      /* Reference has no artwork on purpose — the grey shelf. Tint carries it. */
+      tint: !art,
+      icon,
+      ink,
+      outRel: `/images/discover/og/${listing.slug}.webp`,
+    });
+  }
+}
+
 const results = [];
 for (const t of targets) {
   results.push(await renderTarget(t));

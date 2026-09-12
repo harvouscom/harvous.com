@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-09-11T16:59:36.520Z",
+  "posters": [],
+  "logos": [
+    {
+      "source": "Preach and Lead",
+      "out": "/images/discover-sources/logos/preach-and-lead.webp",
+      "bytes": 1436
+    }
+  ],
+  "tones": {
+    "bibleproject-the-story-of-the-bible": "#9498db",
+    "bibleproject-genesis-1-11": "#dbbc94",
+    "bibleproject-justice": "#58a78e",
+    "guide-the-lesson-prep-stack": "#be6fcf",
+    "guide-the-five-minute-capture": "#94b7db",
+    "guide-plan-the-quarter-not-the-week": "#b4d699",
+    "bible-engagement-project-adults": "#bf4052",
+    "bible-engagement-project-downloads": "#bf4052",
+    "blue-letter-bible-study-tools": "#536eac",
+    "matthew-henry-commentary": "#c8c85b",
+    "bibleproject-gospel-of-mark": "#dbbc94",
+    "bibleproject-exodus-1-18": "#cca566",
+    "bibleproject-james": "#dbbc94",
+    "bibleproject-new-testament-overview": "#dbbc94",
+    "bibleproject-sacrifice-and-atonement": "#bf9b43",
+    "bibleproject-job": "#b26a59",
+    "guide-prep-a-lesson-that-leaves-a-trail": "#c097d9",
+    "guide-asking-better-questions": "#c097d8",
+    "guide-the-monday-retention-loop": "#c57852",
+    "guide-teaching-through-a-book": "#bd97d9",
+    "spurgeon-morning-and-evening": "#c8c85b",
+    "augustine-confessions": "#c8c85b",
+    "bible-engagement-project-kids": "#bf4052",
+    "step-bible": "#40a3bf",
+    "openbible-topics": "#988767",
+    "working-preacher-bible-index": "#bf4053",
+    "working-preacher-craft-of-preaching": "#bf4053",
+    "tgc-courses": "#7cb34c",
+    "ligonier-dust-to-glory": "#95876a",
+    "preach-and-lead-outline-your-sermon": "#4074bf"
+  }
+}

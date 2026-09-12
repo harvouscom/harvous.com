@@ -90,9 +90,16 @@ const comingSoon = COMING_SOON_GRID_ITEMS;
       <h2 class="section-title">Everything else it does.</h2>
       {/*
         Was "on every plan, free ones included" — a pricing claim, and a fragment.
-        The free plan lists the dictionary, daily passage and offline sync, but
-        not note templates, the resource library or appearance, so the claim was
-        only true of half this grid. It says what these are instead.
+        It came out because `FREE_PLAN.features` does not enumerate note
+        templates, the resource library or appearance, which read as those being
+        withheld. They are not: the app gates on feature keys, and
+        `PLUS_FEATURES` in the app's `billing-plans.ts` is exactly
+        `['shared_spaces', 'review', 'challenges']` — nothing in this grid. The
+        free list is simply not exhaustive.
+
+        So the claim would now be true. It stays out anyway, because a pricing
+        sentence over a feature grid dates the moment the plans move, and saying
+        what these things *are* is the more useful heading either way.
       */}
       <p class="lead grid-band__lead">
         The pieces you notice most when they go missing — a dictionary one tap away, a passage

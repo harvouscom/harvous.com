@@ -1,0 +1,647 @@
+{
+  "listings": [
+    {
+      "slug": "bibleproject-the-story-of-the-bible",
+      "title": "The Story of the Bible",
+      "description": "Six minutes on how the whole Bible holds together as one story, from the garden to the city.",
+      "note": "Worth watching before a book study, not during one. It gives you the shape of the whole thing, so the book you are about to sit in has somewhere to sit. Write down the one thread you want to follow, and start there.",
+      "category": "reference",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated summary of the Bible's storyline",
+      "video": {
+        "provider": "youtube",
+        "id": "7_CGP-12AE0",
+        "publishedAt": "2017-05-11T14:01:24-07:00",
+        "duration": "PT6M8S",
+        "durationLabel": "6:08"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "url": "https://bibleproject.com/videos/the-story-of-the-bible/",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true
+      }
+    },
+    {
+      "slug": "bibleproject-genesis-1-11",
+      "title": "Genesis 1–11",
+      "description": "An animated overview of the Bible's first eleven chapters — creation, the garden, the flood, Babel — drawn as one story rather than four.",
+      "note": "We point people here when a book study starts in Genesis and those opening chapters read like separate episodes. Watch it once, then write down the thread you want to follow, and let the study start from that.",
+      "category": "book-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's illustrated overview of Genesis 1–11",
+      "video": {
+        "provider": "youtube",
+        "id": "GQI72THyO5I",
+        "publishedAt": "2015-12-30T06:15:00-08:00",
+        "duration": "PT8M56S",
+        "durationLabel": "8:56"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "url": "https://bibleproject.com/videos/genesis-1-11/",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true
+      }
+    },
+    {
+      "slug": "bibleproject-justice",
+      "title": "Justice",
+      "description": "What the Bible means by justice, traced as a theme from Genesis through to Jesus.",
+      "note": "A good opener for a topical study, because it does the work of showing that the word carries more than one idea. Keep a note open while you watch and collect the passages it walks through — that list is most of your study already.",
+      "category": "topical-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated video on the biblical theme of justice",
+      "video": {
+        "provider": "youtube",
+        "id": "A14THPoc4-4",
+        "publishedAt": "2017-10-27T08:42:58-07:00",
+        "duration": "PT6M2S",
+        "durationLabel": "6:02"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "url": "https://bibleproject.com/videos/justice/",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true
+      }
+    },
+    {
+      "slug": "guide-the-lesson-prep-stack",
+      "title": "The lesson prep stack",
+      "description": "A five-part shape for weekly lesson prep — passage, aim, questions, trail, return — with a template you can copy.",
+      "note": "Our own writing, filed here because it is the piece people come back to most. It ends with a template you can copy straight into a note.",
+      "category": "sermon-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "guide",
+      "image": "/blog-thumbs/the-lesson-prep-stack-feat.webp",
+      "imageAlt": "The lesson prep stack, on Bright Enough",
+      "passThrough": true,
+      "source": {
+        "name": "Harvous",
+        "domain": "harvous.com",
+        "url": "/blog/the-lesson-prep-stack/",
+        "homeUrl": "/blog/",
+        "logo": "/images/harvous-icon-sm.webp",
+        "attribution": "Written for Bright Enough, the Harvous blog."
+      }
+    },
+    {
+      "slug": "guide-the-five-minute-capture",
+      "title": "The five-minute capture",
+      "description": "What to write down right after you read, so the study you did this morning is still there next month.",
+      "note": "The shortest way into a daily habit. Read it once and you have the whole idea; the rest is doing it.",
+      "category": "daily-journal",
+      "listedAt": "2026-09-10",
+      "resourceType": "guide",
+      "image": "/blog-thumbs/the-five-minute-capture-feat.webp",
+      "imageAlt": "The five-minute capture, on Bright Enough",
+      "passThrough": true,
+      "source": {
+        "name": "Harvous",
+        "domain": "harvous.com",
+        "url": "/blog/the-five-minute-capture/",
+        "homeUrl": "/blog/",
+        "logo": "/images/harvous-icon-sm.webp",
+        "attribution": "Written for Bright Enough, the Harvous blog."
+      }
+    },
+    {
+      "slug": "guide-plan-the-quarter-not-the-week",
+      "title": "Plan the quarter, not the week",
+      "description": "How to map a teaching quarter once, so each week's prep starts from a plan instead of a blank page.",
+      "note": "For anyone whose prep restarts from nothing every Tuesday. Read it before a term begins rather than in the middle of one.",
+      "category": "teaching-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "guide",
+      "image": "/blog-thumbs/plan-the-quarter-not-the-week-feat.webp",
+      "imageAlt": "Plan the quarter, not the week, on Bright Enough",
+      "passThrough": true,
+      "source": {
+        "name": "Harvous",
+        "domain": "harvous.com",
+        "url": "/blog/plan-the-quarter-not-the-week/",
+        "homeUrl": "/blog/",
+        "logo": "/images/harvous-icon-sm.webp",
+        "attribution": "Written for Bright Enough, the Harvous blog."
+      }
+    },
+    {
+      "slug": "bible-engagement-project-adults",
+      "title": "Bible Engagement Project — adult curriculum",
+      "description": "Small-group studies for adults, with every age group in a church following the same scope and sequence.",
+      "note": "Useful when a whole church wants to be in the same place at the same time. The overview page is open to read; the lessons themselves are behind a free account.",
+      "category": "small-group",
+      "listedAt": "2026-09-10",
+      "resourceType": "series",
+      "imageAlt": "Bible Engagement Project adult curriculum",
+      "passThrough": true,
+      "source": {
+        "name": "Bible Engagement Project",
+        "domain": "bibleengagementproject.com",
+        "url": "https://bibleengagementproject.com/Adults",
+        "homeUrl": "https://bibleengagementproject.com/",
+        "logo": "/images/discover-sources/logos/bible-engagement-project.webp",
+        "attribution": "Bible Engagement Project is the author and owner of this curriculum.",
+        "licence": "The overview is open. The lessons need a free Bible Engagement Project account."
+      }
+    },
+    {
+      "slug": "bible-engagement-project-downloads",
+      "title": "Scope and sequence, as a PDF",
+      "description": "The printable plans behind the Bible Engagement Project curriculum — what each age group covers, and when.",
+      "note": "Worth a look even if you use something else entirely. Seeing three years mapped on one page is a good way to notice the gaps in your own plan.",
+      "category": "teaching-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "article",
+      "imageAlt": "Bible Engagement Project downloads",
+      "passThrough": true,
+      "source": {
+        "name": "Bible Engagement Project",
+        "domain": "bibleengagementproject.com",
+        "url": "https://bibleengagementproject.com/Downloads",
+        "homeUrl": "https://bibleengagementproject.com/",
+        "logo": "/images/discover-sources/logos/bible-engagement-project.webp",
+        "attribution": "Bible Engagement Project is the author and owner of these documents.",
+        "licence": "Free to download, and no account needed."
+      }
+    },
+    {
+      "slug": "blue-letter-bible-study-tools",
+      "title": "Blue Letter Bible study tools",
+      "description": "Interlinears, lexicons, concordances and commentaries, free and open to anyone.",
+      "note": "Where to go when a study turns on one word and you want to see it in the original. Keep it on the shelf rather than reading it through.",
+      "category": "reference",
+      "listedAt": "2026-09-10",
+      "resourceType": "tool",
+      "imageAlt": "Blue Letter Bible study resources",
+      "passThrough": true,
+      "source": {
+        "name": "Blue Letter Bible",
+        "domain": "blueletterbible.org",
+        "url": "https://www.blueletterbible.org/study.cfm",
+        "homeUrl": "https://www.blueletterbible.org/",
+        "logo": "/images/discover-sources/logos/blue-letter-bible.webp",
+        "attribution": "Blue Letter Bible is the author and owner of these tools.",
+        "licence": "Free to use, and no account needed."
+      }
+    },
+    {
+      "slug": "matthew-henry-commentary",
+      "title": "Matthew Henry's Commentary",
+      "description": "The whole commentary on the whole Bible, written in the early 1700s and long out of copyright.",
+      "note": "Old, warm, and still worth reading beside a passage you think you already know. Public domain, so you can quote it anywhere.",
+      "category": "reference",
+      "listedAt": "2026-09-10",
+      "resourceType": "book",
+      "imageAlt": "Matthew Henry's Commentary at the Christian Classics Ethereal Library",
+      "passThrough": true,
+      "source": {
+        "name": "Christian Classics Ethereal Library",
+        "domain": "ccel.org",
+        "url": "https://www.ccel.org/ccel/henry/mhc.html",
+        "homeUrl": "https://www.ccel.org/",
+        "logo": "/images/discover-sources/logos/christian-classics-ethereal-library.webp",
+        "attribution": "Hosted by the Christian Classics Ethereal Library at Calvin University.",
+        "licence": "Public domain."
+      }
+    },
+    {
+      "slug": "bibleproject-gospel-of-mark",
+      "title": "Gospel of Mark",
+      "description": "The shortest gospel, drawn end to end — what Mark is arguing and how the pace of it carries the argument.",
+      "note": "Start a Mark study here rather than at chapter one. Nine minutes gives you the arc, and the arc is what stops week three feeling like a pile of disconnected miracles.",
+      "category": "book-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated overview of Gospel of Mark",
+      "video": {
+        "provider": "youtube",
+        "id": "HGHqu9-DtXk",
+        "publishedAt": "2016-09-05T00:00:00Z",
+        "duration": "PT9M31S",
+        "durationLabel": "9:31"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true,
+        "url": "https://bibleproject.com/videos/gospel-mark/"
+      }
+    },
+    {
+      "slug": "bibleproject-exodus-1-18",
+      "title": "Exodus 1–18",
+      "description": "The first half of Exodus — slavery, the plagues, the sea — as one movement rather than a set of famous scenes.",
+      "note": "Useful when a group knows the stories but not the shape they sit in. Watch it, then ask what changes if these are one story instead of five.",
+      "category": "book-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated overview of Exodus 1–18",
+      "video": {
+        "provider": "youtube",
+        "id": "0uf-PgW7rqE",
+        "publishedAt": "2014-11-28T00:00:00Z",
+        "duration": "PT5M44S",
+        "durationLabel": "5:44"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true,
+        "url": "https://bibleproject.com/videos/exodus-1-18/"
+      }
+    },
+    {
+      "slug": "bibleproject-james",
+      "title": "James",
+      "description": "A short letter about what belief looks like when it reaches your hands, laid out whole.",
+      "note": "James is easy to quote and hard to hold together. This gives you the through-line, which is what a study of it needs before the memorable verses take over.",
+      "category": "book-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated overview of James",
+      "video": {
+        "provider": "youtube",
+        "id": "qn-hLHWwRYY",
+        "publishedAt": "2016-12-05T00:00:00Z",
+        "duration": "PT8M2S",
+        "durationLabel": "8:02"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true,
+        "url": "https://bibleproject.com/videos/james/"
+      }
+    },
+    {
+      "slug": "bibleproject-new-testament-overview",
+      "title": "The New Testament",
+      "description": "How the whole New Testament fits together — gospels, Acts, letters, Revelation — in eight minutes.",
+      "note": "The companion to the whole-Bible video. Worth keeping on the shelf for the week someone asks why the letters are in that order.",
+      "category": "reference",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated overview of The New Testament",
+      "video": {
+        "provider": "youtube",
+        "id": "Q0BrP8bqj0c",
+        "publishedAt": "2018-09-20T00:00:00Z",
+        "duration": "PT8M17S",
+        "durationLabel": "8:17"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true,
+        "url": "https://bibleproject.com/videos/new-testament-overview/"
+      }
+    },
+    {
+      "slug": "bibleproject-sacrifice-and-atonement",
+      "title": "Sacrifice and atonement",
+      "description": "What the sacrificial system was actually for, and how the New Testament reads Jesus' death through it.",
+      "note": "A good opener for a topical study that would otherwise stall on unfamiliar ritual. Collect the passages it walks through and you have most of your outline.",
+      "category": "topical-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated overview of Sacrifice and atonement",
+      "video": {
+        "provider": "youtube",
+        "id": "G_OlRWGLdnw",
+        "publishedAt": "2015-08-27T00:00:00Z",
+        "duration": "PT6M50S",
+        "durationLabel": "6:50"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true,
+        "url": "https://bibleproject.com/videos/sacrifice-and-atonement/"
+      }
+    },
+    {
+      "slug": "bibleproject-job",
+      "title": "Job",
+      "description": "The design of Job — the frame story, the speeches, and what the book is really asking about how God runs the world.",
+      "note": "Job punishes a chapter-a-day approach. Watch this first so you know which speeches are meant to be wrong, then slow down.",
+      "category": "deep-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "video",
+      "imageAlt": "BibleProject's animated overview of Job",
+      "video": {
+        "provider": "youtube",
+        "id": "GswSg2ohqmA",
+        "publishedAt": "2016-10-22T00:00:00Z",
+        "duration": "PT7M14S",
+        "durationLabel": "7:14"
+      },
+      "source": {
+        "name": "BibleProject",
+        "domain": "bibleproject.com",
+        "homeUrl": "https://bibleproject.com/",
+        "logo": "/images/discover-sources/logos/bibleproject.webp",
+        "attribution": "BibleProject is the author and owner of this video. To find more BibleProject resources, visit bibleproject.com.",
+        "licence": "Plays here from BibleProject's own YouTube channel. Free to watch, and no account needed.",
+        "embedOnly": true,
+        "url": "https://bibleproject.com/videos/job/"
+      }
+    },
+    {
+      "slug": "guide-prep-a-lesson-that-leaves-a-trail",
+      "title": "Prep a lesson that leaves a trail",
+      "description": "How to prepare so the study survives the week — for you and for the people you taught.",
+      "note": "The companion to the lesson prep stack: that one gives you the shape, this one gives you what to do with it afterwards.",
+      "category": "sermon-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "guide",
+      "image": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-feat.webp",
+      "imageAlt": "Prep a lesson that leaves a trail, on Bright Enough",
+      "passThrough": true,
+      "source": {
+        "name": "Harvous",
+        "domain": "harvous.com",
+        "homeUrl": "/blog/",
+        "logo": "/images/harvous-icon-sm.webp",
+        "attribution": "Written for Bright Enough, the Harvous blog.",
+        "url": "/blog/prep-a-lesson-that-leaves-a-trail/"
+      }
+    },
+    {
+      "slug": "guide-asking-better-questions",
+      "title": "Asking better questions in class and group",
+      "description": "Why the questions you plan matter more than the answers you prepared, and how to write ones that open a room.",
+      "note": "Read it the week before a term starts. It changes what you write in the questions section of your prep, which is the part most likely to be filled in last.",
+      "category": "small-group",
+      "listedAt": "2026-09-10",
+      "resourceType": "guide",
+      "image": "/blog-thumbs/asking-better-questions-in-class-and-group-feat.webp",
+      "imageAlt": "Asking better questions in class and group, on Bright Enough",
+      "passThrough": true,
+      "source": {
+        "name": "Harvous",
+        "domain": "harvous.com",
+        "homeUrl": "/blog/",
+        "logo": "/images/harvous-icon-sm.webp",
+        "attribution": "Written for Bright Enough, the Harvous blog.",
+        "url": "/blog/asking-better-questions-in-class-and-group/"
+      }
+    },
+    {
+      "slug": "guide-the-monday-retention-loop",
+      "title": "The Monday retention loop",
+      "description": "What to do on Monday so that Sunday's teaching is still doing something on Thursday.",
+      "note": "For anyone who has watched a good Sunday evaporate by midweek. Short, and the loop it describes takes about ten minutes to run.",
+      "category": "sermon-notes",
+      "listedAt": "2026-09-10",
+      "resourceType": "guide",
+      "image": "/blog-thumbs/the-monday-retention-loop-feat.webp",
+      "imageAlt": "The Monday retention loop, on Bright Enough",
+      "passThrough": true,
+      "source": {
+        "name": "Harvous",
+        "domain": "harvous.com",
+        "homeUrl": "/blog/",
+        "logo": "/images/harvous-icon-sm.webp",
+        "attribution": "Written for Bright Enough, the Harvous blog.",
+        "url": "/blog/the-monday-retention-loop/"
+      }
+    },
+    {
+      "slug": "guide-teaching-through-a-book",
+      "title": "Teaching through a book",
+      "description": "Planning a series that walks through one book — where to break it, and what to keep visible across weeks.",
+      "note": "Pair it with a BibleProject overview of the book you are about to teach. One gives you the arc, the other gives you the weeks.",
+      "category": "teaching-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "guide",
+      "image": "/blog-thumbs/teaching-through-a-book-feat.webp",
+      "imageAlt": "Teaching through a book, on Bright Enough",
+      "passThrough": true,
+      "source": {
+        "name": "Harvous",
+        "domain": "harvous.com",
+        "homeUrl": "/blog/",
+        "logo": "/images/harvous-icon-sm.webp",
+        "attribution": "Written for Bright Enough, the Harvous blog.",
+        "url": "/blog/teaching-through-a-book/"
+      }
+    },
+    {
+      "slug": "spurgeon-morning-and-evening",
+      "title": "Morning and Evening",
+      "description": "Spurgeon's daily readings, two for every day of the year, written in the 1860s.",
+      "note": "A daily devotional that is genuinely old and genuinely short. Useful as a second voice beside your own reading rather than as a replacement for it.",
+      "category": "daily-journal",
+      "listedAt": "2026-09-10",
+      "resourceType": "book",
+      "imageAlt": "Morning and Evening at the Christian Classics Ethereal Library",
+      "passThrough": true,
+      "source": {
+        "name": "Christian Classics Ethereal Library",
+        "domain": "ccel.org",
+        "homeUrl": "https://www.ccel.org/",
+        "logo": "/images/discover-sources/logos/christian-classics-ethereal-library.webp",
+        "attribution": "Hosted by the Christian Classics Ethereal Library at Calvin University.",
+        "licence": "Public domain.",
+        "url": "https://www.ccel.org/ccel/spurgeon/morneve.html"
+      }
+    },
+    {
+      "slug": "augustine-confessions",
+      "title": "Augustine's Confessions",
+      "description": "The fourth-century autobiography that reads as one long prayer, in full.",
+      "note": "Slow reading, and worth it. Keep a note open for the sentences you will want again — there are more of them than you expect.",
+      "category": "deep-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "book",
+      "imageAlt": "Augustine's Confessions at the Christian Classics Ethereal Library",
+      "passThrough": true,
+      "source": {
+        "name": "Christian Classics Ethereal Library",
+        "domain": "ccel.org",
+        "homeUrl": "https://www.ccel.org/",
+        "logo": "/images/discover-sources/logos/christian-classics-ethereal-library.webp",
+        "attribution": "Hosted by the Christian Classics Ethereal Library at Calvin University.",
+        "licence": "Public domain.",
+        "url": "https://www.ccel.org/ccel/augustine/confessions.html"
+      }
+    },
+    {
+      "slug": "bible-engagement-project-kids",
+      "title": "Bible Engagement Project — kids",
+      "description": "Kids' curriculum that follows the same scope and sequence as the adult and youth material.",
+      "note": "Worth a look if your children's ministry and your adult classes are currently in unrelated places in the Bible on the same Sunday.",
+      "category": "teaching-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "series",
+      "imageAlt": "Bible Engagement Project kids curriculum",
+      "passThrough": true,
+      "source": {
+        "name": "Bible Engagement Project",
+        "domain": "bibleengagementproject.com",
+        "url": "https://bibleengagementproject.com/Kids",
+        "homeUrl": "https://bibleengagementproject.com/",
+        "logo": "/images/discover-sources/logos/bible-engagement-project.webp",
+        "attribution": "Bible Engagement Project is the author and owner of this curriculum.",
+        "licence": "The overview is open. The lessons need a free Bible Engagement Project account."
+      }
+    },
+    {
+      "slug": "step-bible",
+      "title": "STEP Bible",
+      "description": "Interlinears, lexicons and morphology from Tyndale House, Cambridge — open, and free of charge.",
+      "note": "The one to reach for when a study turns on a single word and you want to see it in Greek or Hebrew without owning software. Keep it on the shelf; do not try to read it through.",
+      "category": "reference",
+      "listedAt": "2026-09-10",
+      "resourceType": "tool",
+      "imageAlt": "STEP Bible interlinear and lexicon tool",
+      "passThrough": true,
+      "source": {
+        "name": "STEP Bible",
+        "domain": "stepbible.org",
+        "url": "https://www.stepbible.org/",
+        "homeUrl": "https://www.stepbible.org/",
+        "logo": "/images/discover-sources/logos/step-bible.webp",
+        "attribution": "STEP Bible is made by Tyndale House, Cambridge.",
+        "licence": "Free to use, and no account needed."
+      }
+    },
+    {
+      "slug": "openbible-topics",
+      "title": "Bible topics, indexed",
+      "description": "A topical index built from cross-reference data — what the whole Bible says on a subject, ranked and linked.",
+      "note": "A fast way to gather the passages before a topical study rather than working from the ones you already remember. Check what it gives you in context; an index cannot do that part.",
+      "category": "topical-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "tool",
+      "imageAlt": "Bible topics, indexed — OpenBible.info",
+      "passThrough": true,
+      "source": {
+        "name": "OpenBible.info",
+        "domain": "openbible.info",
+        "url": "https://www.openbible.info/topics/",
+        "homeUrl": "https://www.openbible.info/",
+        "logo": "/images/discover-sources/logos/openbible-info.webp",
+        "attribution": "OpenBible.info is the author of this index.",
+        "licence": "Free, and the underlying data is Creative Commons licensed."
+      }
+    },
+    {
+      "slug": "working-preacher-bible-index",
+      "title": "Commentary, book by book",
+      "description": "Free scholarly commentary on each passage, written weekly by biblical scholars at Luther Seminary.",
+      "note": "Where to go on a Tuesday when the passage is not opening. Written for people who have to say something useful about it on Sunday, which is a different job from a study Bible's.",
+      "category": "sermon-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "tool",
+      "imageAlt": "Commentary, book by book — Working Preacher",
+      "passThrough": true,
+      "source": {
+        "name": "Working Preacher",
+        "domain": "workingpreacher.org",
+        "url": "https://www.workingpreacher.org/bible-index",
+        "homeUrl": "https://www.workingpreacher.org/",
+        "logo": "/images/discover-sources/logos/working-preacher.webp",
+        "attribution": "Working Preacher is published by Luther Seminary.",
+        "licence": "Free to read, and no account needed."
+      }
+    },
+    {
+      "slug": "working-preacher-craft-of-preaching",
+      "title": "The craft of preaching",
+      "description": "Essays on the work itself — shaping a sermon, reading a room, and keeping going over years.",
+      "note": "Less about this week's text and more about how you do the job. Worth reading in a quiet week rather than a busy one.",
+      "category": "teaching-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "article",
+      "imageAlt": "The craft of preaching — Working Preacher",
+      "passThrough": true,
+      "source": {
+        "name": "Working Preacher",
+        "domain": "workingpreacher.org",
+        "url": "https://www.workingpreacher.org/craft-of-preaching",
+        "homeUrl": "https://www.workingpreacher.org/",
+        "logo": "/images/discover-sources/logos/working-preacher.webp",
+        "attribution": "Working Preacher is published by Luther Seminary.",
+        "licence": "Free to read, and no account needed."
+      }
+    },
+    {
+      "slug": "tgc-courses",
+      "title": "Free courses",
+      "description": "A library of video courses on books of the Bible, theology and teaching — free to watch.",
+      "note": "Course-shaped rather than article-shaped, so it suits a term of preparation better than a single week. Worth knowing it is written from a Reformed evangelical position.",
+      "category": "teaching-prep",
+      "listedAt": "2026-09-10",
+      "resourceType": "series",
+      "imageAlt": "Free courses — The Gospel Coalition",
+      "passThrough": true,
+      "source": {
+        "name": "The Gospel Coalition",
+        "domain": "thegospelcoalition.org",
+        "url": "https://www.thegospelcoalition.org/course/",
+        "homeUrl": "https://www.thegospelcoalition.org/",
+        "logo": "/images/discover-sources/logos/the-gospel-coalition.webp",
+        "attribution": "The Gospel Coalition is the author and owner of these courses.",
+        "licence": "Free to watch. Some courses ask for a free account."
+      }
+    },
+    {
+      "slug": "ligonier-dust-to-glory",
+      "title": "Dust to Glory",
+      "description": "R.C. Sproul's survey of the whole Bible, Genesis to Revelation, in fifty-seven parts.",
+      "note": "A long walk rather than a lookup. Good as the spine of a year-long study, with a shorter overview alongside it for each book you reach.",
+      "category": "book-study",
+      "listedAt": "2026-09-10",
+      "resourceType": "series",
+      "imageAlt": "Dust to Glory — Ligonier Ministries",
+      "passThrough": true,
+      "source": {
+        "name": "Ligonier Ministries",
+        "domain": "ligonier.org",
+        "url": "https://www.ligonier.org/learn/series/dust-to-glory",
+        "homeUrl": "https://www.ligonier.org/",
+        "logo": "/images/discover-sources/logos/ligonier-ministries.webp",
+        "attribution": "Dust to Glory is taught by R.C. Sproul and owned by Ligonier Ministries.",
+        "licence": "Free to stream. Written from a Reformed position."
+      }
+    }
+  ]
+}

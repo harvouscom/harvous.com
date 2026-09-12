@@ -58,6 +58,21 @@ export const fathomCompare = {
   detailRelated: "compare_detail_related",
 } as const;
 
+/**
+ * Discover, whose CTAs went untracked while every other one on the site carried
+ * an event.
+ *
+ * Three intents, not one: taking a listing into your own account, leaving for
+ * the publisher a curated reference belongs to, and going to read how note
+ * templates work. Folding the middle one into `fathomSignup` would count a
+ * click on somebody else's video as interest in signing up.
+ */
+export const fathomDiscover = {
+  install: (slug: string) => `discover_install_${slug}`,
+  sourceOut: (slug: string) => `discover_source_${slug}`,
+  makeYourOwn: "discover_make_your_own",
+} as const;
+
 export const fathomCta = {
   featuresAnchor: "cta_features",
   faqAnchor: "cta_faq",

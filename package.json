@@ -18,6 +18,7 @@
     "blog:thumbs": "node scripts/generate-blog-thumbs.mjs",
     "og:pages": "node scripts/generate-page-og-images.mjs",
     "og:compare": "node scripts/generate-compare-og-images.mjs",
+    "discover:sources": "node scripts/mirror-discover-sources.mjs",
     "tour:studio": "npm --prefix video run dev",
     "tour:render": "npm --prefix video run render:site"
   },

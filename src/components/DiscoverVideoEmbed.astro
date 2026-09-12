@@ -1,0 +1,226 @@
+---
+/**
+ * A curated video, played in place.
+ *
+ * Deliberately **not** `HeroVideoLightbox`. That component is structurally a
+ * dialog — `role="dialog"`, a focus trap, a scroll lock, and a reparent onto
+ * `<body>` to escape the hero frame's transform — wrapped around a
+ * `<video><source>` for a self-hosted file. Both halves are wrong here. On a
+ * listing page the video *is* the page, so a modal hides the thing someone
+ * came for; and a YouTube embed is a `<div>` carrying `data-plyr-provider`,
+ * not a `<video>`. Making the lightbox do both would add a second variant axis
+ * to the component the homepage hero depends on.
+ *
+ * What the two share is `src/lib/plyr-options.ts`, so the `noCookie` privacy
+ * flags cannot be true in one file and false in the other.
+ *
+ * **Nothing from YouTube loads until the button is pressed.** Until then this
+ * is one local image and a `<button>` — the poster is mirrored into
+ * `public/images/discover-sources/` by `npm run discover:sources` precisely so
+ * that a visitor who never presses play never touches a Google host. Plyr and
+ * its stylesheet arrive on the same click.
+ *
+ * No iframe is in the shipped HTML: Plyr builds one at runtime from
+ * `data-plyr-embed-id`, which is an 11-character id validated at build. This
+ * markup does not pass through `sanitize-listing-html.ts`, and that file's ban
+ * on iframes stands exactly as it is — a listing *body* is author HTML, and
+ * this is not.
+ *
+ * The required credit — "a clear and prominent notice in close proximity to
+ * the video" — is **not** rendered here. It used to be, as a boxed callout
+ * wedged between the frame and the page's own title, which put a large
+ * attribution panel ahead of the one sentence saying what the reader is even
+ * looking at. `DiscoverListingPage.astro` renders it instead, in the same
+ * slot every curated reference already uses for this (`.dref__credit`, after
+ * the title and our own note, before the CTA) — still on the same screen as
+ * the frame in the common case, so "close proximity" holds, and the reader
+ * now meets the video, then what it is, then who made it.
+ */
+import { Icon } from "astro-icon/components";
+import type { DiscoverSource, DiscoverVideo } from "../lib/discover-data.ts";
+
+interface Props {
+  video: DiscoverVideo;
+  source: DiscoverSource;
+  title: string;
+  poster: string | null;
+  posterAlt?: string | null;
+}
+
+const { video, source, title, poster, posterAlt } = Astro.props;
+---
+
+<figure class="dvideo" data-dvideo>
+  <div class="dvideo__frame">
+    <button
+      type="button"
+      class="dvideo__facade"
+      data-dvideo-play
+      aria-label={`Play “${title}” on ${source.name}`}
+    >
+      {
+        poster ? (
+          <img
+            class="dvideo__poster"
+            src={poster}
+            alt={posterAlt ?? ""}
+            width="1280"
+            height="720"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <span class="dvideo__poster dvideo__poster--blank" aria-hidden="true" />
+        )
+      }
+      <span class="dvideo__play" aria-hidden="true"><Icon name="fa7-solid:play" /></span>
+      {video.durationLabel && <span class="dvideo__time">{video.durationLabel}</span>}
+    </button>
+    <div
+      class="dvideo__player"
+      data-dvideo-player
+      data-plyr-provider="youtube"
+      data-plyr-embed-id={video.id}
+      hidden
+    >
+    </div>
+  </div>
+</figure>
+
+<style>
+  .dvideo {
+    margin: 0;
+  }
+
+  .dvideo__frame {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-card);
+    background: #0d0e12;
+    box-shadow: var(--shadow-card);
+  }
+
+  .dvideo__facade,
+  .dvideo__player,
+  .dvideo__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .dvideo__poster {
+    display: block;
+    object-fit: cover;
+  }
+
+  .dvideo__poster--blank {
+    background: var(--color-warm);
+  }
+
+  .dvideo__facade {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .dvideo__facade:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -3px;
+  }
+
+  .dvideo__play {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--accent-btn-bg);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.25) inset,
+      0 12px 32px -12px rgba(15, 23, 42, 0.6);
+    color: #fff;
+    transition: transform 0.15s ease;
+  }
+
+  .dvideo__play :global(svg) {
+    width: 1.375rem;
+    height: 1.375rem;
+    /* A play triangle is optically left-heavy inside a circle. */
+    margin-left: 0.12em;
+    fill: currentColor;
+  }
+
+  .dvideo__facade:hover .dvideo__play {
+    transform: scale(1.04);
+  }
+
+  .dvideo__time {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.1875rem 0.4375rem;
+    border-radius: 8px;
+    background: color-mix(in srgb, #0d0e12 78%, transparent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+  }
+
+  .dvideo__frame :global(.plyr) {
+    --plyr-color-main: #006eff;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dvideo__play {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { PLYR_OPTIONS } from "../lib/plyr-options.ts";
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-dvideo]")) {
+    const button = root.querySelector<HTMLButtonElement>("[data-dvideo-play]");
+    const mount = root.querySelector<HTMLElement>("[data-dvideo-player]");
+    if (!button || !mount) continue;
+
+    let started = false;
+    button.addEventListener("click", async () => {
+      if (started) return;
+      started = true;
+      button.disabled = true;
+
+      /* Both dynamic on purpose: a listing page nobody plays should carry
+         neither the player nor its stylesheet. */
+      const [{ default: Plyr }] = await Promise.all([
+        import("plyr"),
+        import("plyr/dist/plyr.css"),
+      ]);
+
+      mount.hidden = false;
+      button.remove();
+      const player = new Plyr(mount, PLYR_OPTIONS as unknown as Plyr.Options);
+
+      /* `once("ready")` rather than calling play() straight away. The hero
+         lightbox found this out first: Plyr only returns a Promise once the
+         underlying player exists, so an eager play() returns undefined and a
+         bare `.catch()` on it throws. */
+      player.once("ready", () => {
+        const played = player.play() as unknown as Promise<void> | undefined;
+        if (played && typeof played.catch === "function") played.catch(() => {});
+      });
+    });
+  }
+</script>

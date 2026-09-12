@@ -276,6 +276,7 @@ const isInline = variant === "inline";
 
 <script>
   import Plyr from "plyr";
+  import { PLYR_OPTIONS } from "../lib/plyr-options.ts";
 
   type PlyrInstance = InstanceType<typeof Plyr>;
 
@@ -301,26 +302,9 @@ const isInline = variant === "inline";
 
     const ensurePlayer = () => {
       if (player) return player;
-      player = new Plyr(video, {
-        controls: [
-          "play-large",
-          "play",
-          "progress",
-          "current-time",
-          "duration",
-          "mute",
-          "volume",
-          "settings",
-          "fullscreen",
-        ],
-        settings: ["speed"],
-        speed: { selected: 1, options: [0.75, 1, 1.25, 1.5, 2] },
-        hideControls: true,
-        keyboard: { focused: true, global: false },
-        tooltips: { controls: true, seek: true },
-        // youtube-nocookie, and none of YouTube's own chrome competing with Plyr's.
-        youtube: { noCookie: true, rel: 0, modestbranding: 1, iv_load_policy: 3 },
-      });
+      // Shared with DiscoverVideoEmbed — see src/lib/plyr-options.ts for why
+      // these do not live inline in two files.
+      player = new Plyr(video, PLYR_OPTIONS as unknown as Plyr.Options);
       return player;
     };
 
