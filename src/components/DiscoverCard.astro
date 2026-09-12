@@ -974,9 +974,15 @@ const searchText = [
      bookmark.
 
      The padding is equal on both axes and so does not preserve a ratio: the
-     plate loses 22px each way to its own mat and 18px more to the specimen's,
-     so the picture ends up (W−40) × (H−40). 15rem × 19/12 makes that
-     200 × 112 — 16:9 to within a percent, and a poster that is finally whole. */
+     plate loses its own mat each way and the specimen's on top, and the picture
+     ends up the remainder. Sized so that remainder is exactly 160 × 90.
+
+     The height is set by the text beside it, not chosen: the body needs 120px
+     at its tallest (eyebrow, title, two clamped lines, padding), and the plate
+     was standing 152px tall and setting the row — up to 53px of white space
+     under a description that had already stopped. 190 × 120 at 19/12 with 8px
+     and 7px mats lands the picture on 160 × 90, so the poster stays whole and
+     the card stops being taller than it has anything to put in. */
   @media (min-width: 561px) {
     .dcard--compact .dcard__link {
       flex-direction: row;
@@ -984,7 +990,7 @@ const searchText = [
     }
 
     .dcard--compact .dcard__plate {
-      flex: 0 0 15rem;
+      flex: 0 0 11.875rem;
       /* `aspect-ratio`, not a hard height: it derives a *definite* height from
          the width, which is what the base rule's `overflow: hidden` needs to
          clip against. Plain `height: auto` has no such height, which is how
@@ -994,9 +1000,10 @@ const searchText = [
       /* Not stretched — stretching would override the ratio the moment the
          text beside it runs taller. */
       align-self: center;
-      /* Roomier than the 0.5rem it had: at this size the mat is visible as a
-         mat, and a tight one made the sheet look jammed into its own plate. */
-      padding: 0.6875rem;
+      /* 8px here and 7px on the specimen: the two mats together are what turn
+         190 × 120 into a 160 × 90 picture. Changing either changes the poster's
+         shape, so they are a pair, not two independent paddings. */
+      padding: 0.5rem;
       gap: 0;
     }
 
@@ -1018,8 +1025,9 @@ const searchText = [
          back at 0.80:1 portrait inside a 1.33:1 landscape plate, the exact
          squeeze this was meant to fix. */
       flex: 1 1 auto;
-      padding: 0.5625rem;
-      border-radius: 9px;
+      /* Paired with the plate's 8px above — see the note there. */
+      padding: 0.4375rem;
+      border-radius: 8px;
     }
   }
 

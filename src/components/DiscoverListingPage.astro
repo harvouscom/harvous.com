@@ -68,8 +68,28 @@ const typeNoun = listing.resourceType ? DISCOVER_RESOURCE_TYPE_NOUN[listing.reso
 
 /* The CTA stories live in one function rather than in this file's markup — see
    `discoverListingCta`. `secondary` is the publisher link once the install
-   takes the lead; null when there is nothing underneath. */
-const { primary: cta, secondary: ctaSecondary } = discoverListingCta(listing);
+   takes the lead; `note` is one line for the pair, never one per button. */
+const { primary: cta, secondary: ctaSecondary, note: ctaNote } = discoverListingCta(listing);
+
+/**
+ * The credit line, with the publisher named once.
+ *
+ * Their attribution sentence usually ends by naming them ("…visit
+ * bibleproject.com."), and appending a separate "bibleproject.com ↗" after it
+ * printed the domain twice in one breath. Link the mention already in the
+ * sentence instead; only append one where the sentence never names them, which
+ * is what keeps BibleProject's required link present either way.
+ */
+const credit = source
+  ? (() => {
+      const at = source.attribution.lastIndexOf(source.domain);
+      if (at === -1) return { before: `${source.attribution} `, after: "" };
+      return {
+        before: source.attribution.slice(0, at),
+        after: source.attribution.slice(at + source.domain.length),
+      };
+    })()
+  : null;
 
 /* Sanitized twice server-side — once at snapshot, once in `serializePublic` —
    so this repo renders it directly and takes no sanitizer dependency of its own.
@@ -417,12 +437,14 @@ const kicker = source
                 decoding="async"
               />
             )}
-            <span>
-              {source.attribution}{" "}
-              <a href={source.homeUrl} target="_blank" rel="noopener">
-                {source.domain} <span aria-hidden="true">↗</span>
-              </a>
-            </span>
+            {/* No newline between the anchor and what follows it: Astro keeps
+                that whitespace, which put a space before the sentence's own
+                full stop ("bibleproject.com ↗ ."). */}
+            <span
+              >{credit?.before}<a href={source.homeUrl} target="_blank" rel="noopener"
+                >{source.domain} <span aria-hidden="true">↗</span></a
+              >{credit?.after}</span
+            >
           </p>
 
           <a class="dref__more" href={`/discover/?from=${discoverSourceSlug(source)}`}>
@@ -506,12 +528,7 @@ const kicker = source
           )
         }
       </div>
-      <p class="dlist__note text-balance">{cta.note}</p>
-      {
-        ctaSecondary && (
-          <p class="dlist__alt-note text-balance">{ctaSecondary.note}</p>
-        )
-      }
+      {ctaNote && <p class="dlist__note text-balance">{ctaNote}</p>}
     </div>
 
     {/* ── Included templates: the one thing the reader does not have ─────
@@ -1085,16 +1102,6 @@ const kicker = source
       width: 100%;
       max-width: 20rem;
     }
-  }
-
-  /* The publisher's own terms, in their own words. Sits under the pair rather
-     than under one button, because it qualifies the way out, not the install. */
-  .dlist__alt-note {
-    margin: 0.375rem auto 0;
-    max-width: 26rem;
-    font-size: 0.8125rem;
-    line-height: 1.5;
-    color: var(--color-ink-faint);
   }
 
   .dlist__related {

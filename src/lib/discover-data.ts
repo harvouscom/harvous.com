@@ -827,7 +827,6 @@ export function discoverListingHref(listing: DiscoverListing): string {
 export type DiscoverCta = {
   href: string;
   label: string;
-  note: string;
   external: boolean;
 };
 
@@ -845,6 +844,16 @@ export type DiscoverCta = {
 export type DiscoverCtaPair = {
   primary: DiscoverCta;
   secondary: DiscoverCta | null;
+  /**
+   * One line under the pair, or none. Deliberately on the pair rather than on
+   * each button: a note per button meant two stacked paragraphs of grey small
+   * print under two buttons, which is more apparatus than the choice deserves.
+   *
+   * Where there is a publisher, the line worth keeping is theirs — whether it
+   * is free, and whether it needs an account, which is the one thing a reader
+   * cannot guess. "Add to my Harvous" needs no gloss.
+   */
+  note: string | null;
 };
 
 /** "Read on STEP Bible" is the wrong verb for an interlinear you consult and
@@ -869,7 +878,6 @@ function sourceCta(listing: DiscoverListing, source: DiscoverSource): DiscoverCt
     href: source.url,
     label: ours ? `${verb} the ${noun}` : `${verb} on ${source.name}`,
     external: !ours,
-    note: source.licence ?? `Free to ${verb.toLowerCase()}, and no account needed.`,
   };
 }
 
@@ -895,18 +903,16 @@ export function discoverListingCta(listing: DiscoverListing): DiscoverCtaPair {
 
   if (source) {
     const out = sourceCta(listing, source);
-    if (!listing.installable) return { primary: out, secondary: null };
+    /* The publisher's terms, not ours. Whether it is free and whether it needs
+       an account is the one thing a reader cannot work out from the buttons —
+       "Add to my Harvous" explains itself, and glossing it cost a second line
+       of small print saying what the button already said. */
+    const note = source.licence ?? null;
+    if (!listing.installable) return { primary: out, secondary: null, note };
     return {
-      primary: {
-        href: buildInstallUrl(listing.slug),
-        label: "Add to my Harvous",
-        external: true,
-        /* What actually happens, said plainly: the link is filed in your own
-           library. Nothing of the publisher's is copied, which is both true and
-           the thing their terms care about. */
-        note: "Free. Saves the link to your library, ready when you are.",
-      },
+      primary: { href: buildInstallUrl(listing.slug), label: "Add to my Harvous", external: true },
       secondary: out,
+      note,
     };
   }
 
@@ -916,9 +922,9 @@ export function discoverListingCta(listing: DiscoverListing): DiscoverCtaPair {
         href: buildInstallUrl(listing.slug),
         label: `Start a note from this ${DISCOVER_KIND_NOUN[listing.kind].toLowerCase()}`,
         external: true,
-        note: "Free, and already in your templates — this opens it in Harvous.",
       },
       secondary: null,
+      note: "Free, and already in your templates — this opens it in Harvous.",
     };
   }
 
@@ -927,9 +933,9 @@ export function discoverListingCta(listing: DiscoverListing): DiscoverCtaPair {
       href: buildInstallUrl(listing.slug),
       label: "Save this to my Harvous",
       external: true,
-      note: `Free. ${DISCOVER_KIND_BLURB[listing.kind]}`,
     },
     secondary: null,
+    note: `Free. ${DISCOVER_KIND_BLURB[listing.kind]}`,
   };
 }
 
