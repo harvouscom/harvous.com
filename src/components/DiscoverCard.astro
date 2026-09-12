@@ -936,7 +936,7 @@ const searchText = [
      glance. The artifact is still the fastest way to do that. */
   .dcard--compact .dcard__body {
     gap: 0.25rem;
-    padding: 1rem 1.125rem;
+    padding: 1rem 1.25rem;
   }
   .dcard--compact .dcard__title {
     font-size: 1.0625rem;
@@ -964,13 +964,15 @@ const searchText = [
      screen and costs no un-setting to reach. 10rem of a 335px card was half
      the width, and the title lost to it.
 
-     10rem × 4:3 is the hub *specimen's* proportions (204×154, measured), not
-     the hub plate's. The plate is 2.08:1, and a faithful miniature of that
-     would want 252px of a 600px card before the title got a pixel; the
-     specimen is the part carrying the artifact anyway, so its shape is the one
-     worth keeping. This started square (7rem × 7.25rem), which was the real
-     fault — a 1.9:1 video poster crushed into 0.97:1 lost half its width to
-     the crop, and a template's headings wrapped mid-word. */
+     13rem × 4:3 is the hub *specimen* at very nearly its measured size
+     (208×156 against 204×154), not the hub plate's shape. The plate is 2.08:1,
+     and a faithful miniature of that would want 252px before the title got a
+     pixel; the specimen is the part carrying the artifact anyway, so its shape
+     is the one worth keeping. Two earlier cuts were both too small to read: it
+     started square (7rem × 7.25rem), which crushed a 1.9:1 video poster and
+     wrapped a template's headings mid-word, and then 10rem, which fixed the
+     ratio but still cut the sheet off after three lines. At the specimen's own
+     size the artifact is legible, which is the whole reason it is here. */
   @media (min-width: 561px) {
     .dcard--compact .dcard__link {
       flex-direction: row;
@@ -978,7 +980,7 @@ const searchText = [
     }
 
     .dcard--compact .dcard__plate {
-      flex: 0 0 10rem;
+      flex: 0 0 13rem;
       /* `aspect-ratio`, not a hard height: it derives a *definite* height from
          the width, which is what the base rule's `overflow: hidden` needs to
          clip against. Plain `height: auto` has no such height, which is how
@@ -988,7 +990,9 @@ const searchText = [
       /* Not stretched — stretching would override the ratio the moment the
          text beside it runs taller. */
       align-self: center;
-      padding: 0.5rem;
+      /* Roomier than the 0.5rem it had: at this size the mat is visible as a
+         mat, and a tight one made the sheet look jammed into its own plate. */
+      padding: 0.6875rem;
       gap: 0;
     }
 
@@ -1010,8 +1014,8 @@ const searchText = [
          back at 0.80:1 portrait inside a 1.33:1 landscape plate, the exact
          squeeze this was meant to fix. */
       flex: 1 1 auto;
-      padding: 0.4375rem;
-      border-radius: 8px;
+      padding: 0.5625rem;
+      border-radius: 9px;
     }
   }
 

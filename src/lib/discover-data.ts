@@ -155,14 +155,6 @@ export type DiscoverListing = {
    * picture sitting on it.
    */
   plateTone?: string | null;
-  /**
-   * Curated only: link straight to the source and build no `/discover/<slug>/`.
-   *
-   * True for anything we have nothing of our own to add to — a blog post we
-   * wrote, a series page whose lessons sit behind someone's login. A stub page
-   * about somebody else's page is thin content carrying our canonical.
-   */
-  passThrough?: boolean;
 };
 
 export type DiscoverPreview = {
@@ -204,6 +196,22 @@ export type DiscoverPreview = {
    */
   sourceName?: string | null;
   sourceUrl?: string | null;
+  /**
+   * The publisher lockup, carried by the export once the app seeds a curated
+   * reference itself.
+   *
+   * Nested, and named for the type it becomes, precisely so it cannot be
+   * confused with the two flat fields above. `sourceName`/`sourceUrl` mean "a
+   * Harvous-written thing that credits an outside structure"; this means "the
+   * whole listing belongs to somebody else." `readCatalog` lifts it onto the
+   * listing, which is why a seeded reference needs no curated entry to keep its
+   * chrome.
+   */
+  source?: DiscoverSource | null;
+  resourceType?: DiscoverResourceType | null;
+  video?: DiscoverVideo | null;
+  /** Ours, not theirs — the sentence that makes the listing page not a stub. */
+  note?: string | null;
   excerpt?: string;
   /**
    * The artifact itself — sanitized server-side on write and again on read, so
@@ -251,7 +259,6 @@ type CuratedEntry = {
   /** Poster or OG image. A local path, or a remote URL for the mirror script. */
   image?: string;
   imageAlt?: string;
-  passThrough?: boolean;
 };
 
 const CATALOG_PATH = join(process.cwd(), "data/discover-listings.json");
@@ -416,7 +423,51 @@ function expandCurated(entry: CuratedEntry): DiscoverListing {
     video: entry.video ?? null,
     note: entry.note,
     plateTone: discoverPlateTone(entry.slug),
-    passThrough: entry.passThrough === true,
+  };
+}
+
+/**
+ * Lift a seeded reference's publisher chrome out of `preview` and onto the row.
+ *
+ * `GET /api/discover/export` emits `preview` as whatever the seeder wrote, so a
+ * curated reference the app now owns arrives with its whole lockup nested
+ * inside it. Lifting it here means every consumer — the card, the listing page,
+ * the JSON-LD — keeps reading `listing.source` and cannot tell the difference
+ * between a row the app seeded and one `data/discover-curated.json` expanded.
+ *
+ * That equivalence is the point: it is what lets the curated file shrink to
+ * mirrored artwork, and eventually to nothing, without a component edit.
+ */
+/**
+ * Bring one of our own URLs back to a site-relative path.
+ *
+ * The app stores every source URL absolute, because `validateResourceUrl` — the
+ * rule that governs what may be saved to a library — needs a real https URL
+ * with a dotted host, and `/blog/…` is not one. That is right for the seven
+ * Harvous guides *as library links*, and wrong for them as links on this page:
+ * absolute would open harvous.com in a new tab from harvous.com, and would read
+ * as drift against the curated file that still writes them relative.
+ */
+function localizeSourceUrl(url: string): string {
+  if (!url.startsWith("https://harvous.com/")) return url;
+  return url.slice("https://harvous.com".length);
+}
+
+function hydrateSynced(row: DiscoverListing): DiscoverListing {
+  const preview = row.preview;
+  if (!preview?.source) return row;
+  const source = {
+    ...preview.source,
+    url: localizeSourceUrl(preview.source.url),
+    homeUrl: localizeSourceUrl(preview.source.homeUrl),
+  };
+  return {
+    ...row,
+    source: resolveSourceLogo(source),
+    resourceType: preview.resourceType ?? row.resourceType ?? null,
+    video: preview.video ?? row.video ?? null,
+    note: preview.note ?? row.note ?? null,
+    plateTone: row.plateTone ?? discoverPlateTone(row.slug),
   };
 }
 
@@ -427,11 +478,9 @@ function readCatalog(): CatalogFile {
   const curated = readCuratedFile();
   const categoryIds = new Set(synced.categories.map((category) => category.id));
 
-  const listings: DiscoverListing[] = synced.listings.map((row) => ({
-    ...row,
-    origin: "catalog" as const,
-    installable: true,
-  }));
+  const listings: DiscoverListing[] = synced.listings.map((row) =>
+    hydrateSynced({ ...row, origin: "catalog" as const, installable: true }),
+  );
   const bySlug = new Map(listings.map((listing) => [listing.slug, listing]));
   const seen = new Set<string>();
 
@@ -443,26 +492,41 @@ function readCatalog(): CatalogFile {
     const existing = bySlug.get(entry.slug);
     if (existing) {
       /*
-        The app-side seed has landed at this slug. The catalog row is the real
-        one — it is installable, and the sync keeps it in step — so the curated
-        entry demotes to an overlay supplying only the columns
-        `GET /api/discover/export` has no field for. The page keeps its
-        publisher lockup and its player on the day the seed ships, rather than
-        on the day the export grows three more fields.
+        The app-side seed has landed at this slug, which is the intended end
+        state rather than an accident — so this path is quiet by default. The
+        catalog row is the real one: it is installable, and the sync keeps it in
+        step. The curated entry demotes to what the app cannot know, which is
+        artwork living on this disk — the mirrored publisher mark, the mirrored
+        poster, and the tone taken from that poster.
 
-        A warning, deliberately, and never a throw: the synced file is rewritten
-        by a bot every six hours, and a slug collision must not be able to break
-        a build nobody started.
+        What *is* worth saying out loud is a divergence: an author editing a
+        title here, expecting it to show, when the synced row now wins. That
+        edit belongs in the app's `curated-resources.ts`. Warned, never thrown —
+        the synced file is rewritten by a bot every six hours and must not be
+        able to break a build nobody started.
       */
-      console.warn(
-        `[discover] "${entry.slug}" is in the synced catalog now. ` +
-          "data/discover-curated.json is only supplying source/video/note for it — " +
-          "drop the entry once the export carries those fields.",
-      );
-      existing.source = resolveSourceLogo(entry.source);
-      existing.resourceType = entry.resourceType;
-      existing.video = entry.video ?? null;
-      existing.note = entry.note;
+      const owned = [
+        ["title", entry.title, existing.title],
+        ["description", entry.description, existing.description],
+        ["category", entry.category, existing.category],
+        ["note", entry.note, existing.note],
+        ["source.url", entry.source.url, existing.source?.url],
+      ] as const;
+      const drifted = owned.filter(([, mine, theirs]) => theirs != null && mine !== theirs);
+      if (drifted.length > 0) {
+        console.warn(
+          `[discover] "${entry.slug}" is in the synced catalog, so the app owns it now. ` +
+            `These differ and the synced value wins: ${drifted.map(([f]) => f).join(", ")}. ` +
+            "Edit src/data/curated-resources.ts in the app repo and re-seed.",
+        );
+      }
+
+      const logo = resolveSourceLogo(entry.source).logo;
+      if (existing.source && logo) existing.source = { ...existing.source, logo };
+      else if (!existing.source) existing.source = resolveSourceLogo(entry.source);
+      existing.resourceType = existing.resourceType ?? entry.resourceType;
+      existing.video = existing.video ?? entry.video ?? null;
+      existing.note = existing.note ?? entry.note;
       existing.plateTone = discoverPlateTone(entry.slug);
       existing.preview = {
         ...(existing.preview ?? {}),
@@ -749,14 +813,14 @@ export function discoverSourceSlug(source: DiscoverSource): string {
 }
 
 /**
- * Where a card goes.
+ * Where a card goes — always a page of ours.
  *
- * A pass-through entry has no page of ours to send anyone to, so the card is
- * the link — one hop instead of two, and no stub page carrying our canonical
- * over a summary of somebody else's writing.
+ * References used to link straight out, on the reasoning that a page about
+ * somebody else's page is a stub. That stopped being true once a reference
+ * could be added to your own Harvous: the page is where that happens, and a
+ * card that skips it skips the only thing Discover is for.
  */
 export function discoverListingHref(listing: DiscoverListing): string {
-  if (listing.passThrough && listing.source) return listing.source.url;
   return `/discover/${listing.slug}/`;
 }
 
@@ -768,17 +832,21 @@ export type DiscoverCta = {
 };
 
 /**
- * The one place the three CTA stories live.
+ * What the page offers: one button, and — for a reference — the way out to the
+ * publisher underneath it.
  *
- * They had drifted into a single hardcoded button that said "Save this to my
- * Harvous" under a kicker reading "A template included with Harvous" — an
- * invitation to add something the reader already has. The three cases are
- * genuinely different:
- *
- *   curated    nothing of ours to install; the button opens the publisher
- *   official   already in every account; the button starts a note from it
- *   shared     someone gave this away; the button takes a copy
+ * The secondary is not a nicety. Before the app seeds a reference there is
+ * nothing to install and the publisher link *is* the primary; after it, the
+ * install takes the lead and the publisher link has to survive the promotion.
+ * A single-CTA version silently dropped it at exactly that moment, which for
+ * the nine BibleProject videos would have removed the credit link their terms
+ * require. Returning a pair makes that impossible to do by accident.
  */
+export type DiscoverCtaPair = {
+  primary: DiscoverCta;
+  secondary: DiscoverCta | null;
+};
+
 /** "Read on STEP Bible" is the wrong verb for an interlinear you consult and
  *  close again — it wants the same "Open" a course library gets. Defaults to
  *  "Read", which is right for `article`, `book` and `guide`. */
@@ -788,30 +856,80 @@ const CTA_VERB: Partial<Record<DiscoverResourceType, string>> = {
   tool: "Open",
 };
 
-export function discoverListingCta(listing: DiscoverListing): DiscoverCta {
+/** The way out to the publisher, identical whether it leads or follows. */
+function sourceCta(listing: DiscoverListing, source: DiscoverSource): DiscoverCta {
+  const verb = (listing.resourceType && CTA_VERB[listing.resourceType]) || "Read";
+  /* Ours. "Read on Harvous" is a strange thing to say to somebody already on
+     harvous.com, so name the thing instead of the place. */
+  const ours = source.url.startsWith("/");
+  const noun = listing.resourceType
+    ? DISCOVER_RESOURCE_TYPE_NOUN[listing.resourceType].toLowerCase()
+    : "page";
+  return {
+    href: source.url,
+    label: ours ? `${verb} the ${noun}` : `${verb} on ${source.name}`,
+    external: !ours,
+    note: source.licence ?? `Free to ${verb.toLowerCase()}, and no account needed.`,
+  };
+}
+
+/**
+ * The one place the CTA stories live.
+ *
+ * They had drifted into a single hardcoded button that said "Save this to my
+ * Harvous" under a kicker reading "A template included with Harvous" — an
+ * invitation to add something the reader already has. The cases are genuinely
+ * different:
+ *
+ *   reference, seeded    the link is yours to keep; the publisher link follows
+ *   reference, not yet   nothing of ours to install; the publisher link leads
+ *   official             already in every account; the button starts a note
+ *   shared               someone gave this away; the button takes a copy
+ *
+ * The first two are the same listing on either side of the app-side seed, which
+ * is why nothing here reads `origin`: a reference becomes installable the day
+ * its row reaches the synced catalog, and this function is what notices.
+ */
+export function discoverListingCta(listing: DiscoverListing): DiscoverCtaPair {
   const source = listing.source;
-  if (!listing.installable && source) {
-    const verb = (listing.resourceType && CTA_VERB[listing.resourceType]) || "Read";
+
+  if (source) {
+    const out = sourceCta(listing, source);
+    if (!listing.installable) return { primary: out, secondary: null };
     return {
-      href: source.url,
-      label: `${verb} on ${source.name}`,
-      external: /^https?:/.test(source.url),
-      note: source.licence ?? `Free to ${verb.toLowerCase()}, and no account needed.`,
+      primary: {
+        href: buildInstallUrl(listing.slug),
+        label: "Add to my Harvous",
+        external: true,
+        /* What actually happens, said plainly: the link is filed in your own
+           library. Nothing of the publisher's is copied, which is both true and
+           the thing their terms care about. */
+        note: "Free. Saves the link to your library, ready when you are.",
+      },
+      secondary: out,
     };
   }
+
   if (listing.preview?.official) {
     return {
-      href: buildInstallUrl(listing.slug),
-      label: `Start a note from this ${DISCOVER_KIND_NOUN[listing.kind].toLowerCase()}`,
-      external: true,
-      note: "Free, and already in your templates — this opens it in Harvous.",
+      primary: {
+        href: buildInstallUrl(listing.slug),
+        label: `Start a note from this ${DISCOVER_KIND_NOUN[listing.kind].toLowerCase()}`,
+        external: true,
+        note: "Free, and already in your templates — this opens it in Harvous.",
+      },
+      secondary: null,
     };
   }
+
   return {
-    href: buildInstallUrl(listing.slug),
-    label: "Save this to my Harvous",
-    external: true,
-    note: `Free. ${DISCOVER_KIND_BLURB[listing.kind]}`,
+    primary: {
+      href: buildInstallUrl(listing.slug),
+      label: "Save this to my Harvous",
+      external: true,
+      note: `Free. ${DISCOVER_KIND_BLURB[listing.kind]}`,
+    },
+    secondary: null,
   };
 }
 

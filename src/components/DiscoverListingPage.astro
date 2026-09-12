@@ -59,15 +59,17 @@ const categoryLabel = listing.category ? discoverCategoryLabel(listing.category)
 const preview = listing.preview ?? {};
 
 /* A curated reference points at somebody else's page, so it has its own head
-   (the publisher, not a kind pill), its own body (their picture or their video)
-   and its own CTA (open it there, because there is nothing here to install). */
+   (the publisher, not a kind pill) and its own body (their picture or their
+   video). Once the app seeds it, it also gains an install — which is why the
+   CTA below is a pair rather than the single button this used to render. */
 const source = listing.source ?? null;
 const video = listing.video ?? null;
 const typeNoun = listing.resourceType ? DISCOVER_RESOURCE_TYPE_NOUN[listing.resourceType] : kindNoun;
 
-/* The three CTA stories live in one function rather than in this file's markup
-   — see `discoverListingCta`. */
-const cta = discoverListingCta(listing);
+/* The CTA stories live in one function rather than in this file's markup — see
+   `discoverListingCta`. `secondary` is the publisher link once the install
+   takes the lead; null when there is nothing underneath. */
+const { primary: cta, secondary: ctaSecondary } = discoverListingCta(listing);
 
 /* Sanitized twice server-side — once at snapshot, once in `serializePublic` —
    so this repo renders it directly and takes no sanitizer dependency of its own.
@@ -467,19 +469,49 @@ const kicker = source
       )
     }
 
+    {/* The event follows the button, not the listing: once a reference is
+        installable this block renders both an install and a way out, and
+        branching on `source` would have filed the install as a click-away. */}
+    {/* The event follows the button, not the listing: once a reference is
+        installable this block renders both an install and a way out, and
+        branching on `source` would have filed the install as a click-away. */}
     <div class="dlist__cta">
-      <CTAButton
-        href={cta.href}
-        variant="primary"
-        size="lg"
-        external={cta.external}
-        fathomTrack={
-          source ? fathomDiscover.sourceOut(listing.slug) : fathomDiscover.install(listing.slug)
+      <div class="dlist__cta-row">
+        <CTAButton
+          href={cta.href}
+          variant="primary"
+          size="lg"
+          external={cta.external}
+          fathomTrack={
+            ctaSecondary || !source
+              ? fathomDiscover.install(listing.slug)
+              : fathomDiscover.sourceOut(listing.slug)
+          }
+        >
+          {cta.label}
+        </CTAButton>
+        {
+          ctaSecondary && (
+            <CTAButton
+              href={ctaSecondary.href}
+              variant="secondary"
+              size="lg"
+              external={ctaSecondary.external}
+              fathomTrack={fathomDiscover.sourceOut(listing.slug)}
+            >
+              {ctaSecondary.label}
+              {/* Only when it actually leaves — one of these is our own blog. */}
+              {ctaSecondary.external && <span aria-hidden="true">↗</span>}
+            </CTAButton>
+          )
         }
-      >
-        {cta.label}
-      </CTAButton>
+      </div>
       <p class="dlist__note text-balance">{cta.note}</p>
+      {
+        ctaSecondary && (
+          <p class="dlist__alt-note text-balance">{ctaSecondary.note}</p>
+        )
+      }
     </div>
 
     {/* ── Included templates: the one thing the reader does not have ─────
@@ -1034,6 +1066,33 @@ const kicker = source
     margin: 0.625rem auto 0;
     max-width: 26rem;
     font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-faint);
+  }
+
+  /* Two real choices, side by side: take it with you, or go and read it where
+     it lives. Wraps to a column on a narrow screen rather than letting two
+     pill buttons shrink into each other. */
+  .dlist__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  @media (max-width: 30rem) {
+    .dlist__cta-row > :global(a) {
+      width: 100%;
+      max-width: 20rem;
+    }
+  }
+
+  /* The publisher's own terms, in their own words. Sits under the pair rather
+     than under one button, because it qualifies the way out, not the install. */
+  .dlist__alt-note {
+    margin: 0.375rem auto 0;
+    max-width: 26rem;
+    font-size: 0.8125rem;
     line-height: 1.5;
     color: var(--color-ink-faint);
   }
