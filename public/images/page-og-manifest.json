@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-11T16:35:38.347Z",
+  "generatedAt": "2026-09-12T14:36:05.182Z",
   "size": "1200x630",
-  "count": 59,
+  "count": 80,
   "targets": [
     {
       "kind": "use-case",
@@ -185,6 +185,11 @@
     },
     {
       "kind": "feature",
+      "slug": "reminders",
+      "out": "/images/features/og/reminders.webp"
+    },
+    {
+      "kind": "feature",
       "slug": "resource-library",
       "out": "/images/features/og/resource-library.webp"
     },
@@ -270,6 +275,41 @@
     },
     {
       "kind": "discover",
+      "slug": "guide-the-lesson-prep-stack",
+      "out": "/images/discover/og/guide-the-lesson-prep-stack.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "guide-the-five-minute-capture",
+      "out": "/images/discover/og/guide-the-five-minute-capture.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "guide-plan-the-quarter-not-the-week",
+      "out": "/images/discover/og/guide-plan-the-quarter-not-the-week.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bible-engagement-project-adults",
+      "out": "/images/discover/og/bible-engagement-project-adults.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bible-engagement-project-downloads",
+      "out": "/images/discover/og/bible-engagement-project-downloads.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "blue-letter-bible-study-tools",
+      "out": "/images/discover/og/blue-letter-bible-study-tools.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "matthew-henry-commentary",
+      "out": "/images/discover/og/matthew-henry-commentary.webp"
+    },
+    {
+      "kind": "discover",
       "slug": "bibleproject-gospel-of-mark",
       "out": "/images/discover/og/bibleproject-gospel-of-mark.webp"
     },
@@ -297,6 +337,71 @@
       "kind": "discover",
       "slug": "bibleproject-job",
       "out": "/images/discover/og/bibleproject-job.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "guide-prep-a-lesson-that-leaves-a-trail",
+      "out": "/images/discover/og/guide-prep-a-lesson-that-leaves-a-trail.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "guide-asking-better-questions",
+      "out": "/images/discover/og/guide-asking-better-questions.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "guide-the-monday-retention-loop",
+      "out": "/images/discover/og/guide-the-monday-retention-loop.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "guide-teaching-through-a-book",
+      "out": "/images/discover/og/guide-teaching-through-a-book.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "spurgeon-morning-and-evening",
+      "out": "/images/discover/og/spurgeon-morning-and-evening.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "augustine-confessions",
+      "out": "/images/discover/og/augustine-confessions.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "bible-engagement-project-kids",
+      "out": "/images/discover/og/bible-engagement-project-kids.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "step-bible",
+      "out": "/images/discover/og/step-bible.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "openbible-topics",
+      "out": "/images/discover/og/openbible-topics.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "working-preacher-bible-index",
+      "out": "/images/discover/og/working-preacher-bible-index.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "working-preacher-craft-of-preaching",
+      "out": "/images/discover/og/working-preacher-craft-of-preaching.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "tgc-courses",
+      "out": "/images/discover/og/tgc-courses.webp"
+    },
+    {
+      "kind": "discover",
+      "slug": "ligonier-dust-to-glory",
+      "out": "/images/discover/og/ligonier-dust-to-glory.webp"
     }
   ]
 }

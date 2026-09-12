@@ -32,6 +32,7 @@ import { breadcrumbJsonLd } from "../../lib/breadcrumb-jsonld.ts";
 import { isDraftPageSlug } from "../../lib/draft-pages.ts";
 import {
   DISCOVER_KIND_ICON,
+  discoverListingHref,
   getDiscoverTopics,
   sortedDiscoverListings,
   type DiscoverKind,
@@ -101,10 +102,9 @@ const jsonLd = [
         "@type": "ListItem",
         position: index + 1,
         name: listing.title,
-        url:
-          listing.passThrough && listing.source
-            ? listing.source.url
-            : new URL(`/discover/${listing.slug}/`, siteOrigin).toString(),
+        /* Via the shared helper, so the list and the cards can never disagree
+           about where a listing lives. */
+        url: new URL(discoverListingHref(listing), siteOrigin).toString(),
       })),
     },
   },

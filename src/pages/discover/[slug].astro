@@ -4,13 +4,11 @@ import { getDiscoverListings } from "../../lib/discover-data.ts";
 
 export async function getStaticPaths() {
   const listings = getDiscoverListings();
-  /* A pass-through entry has no page here on purpose — its card links straight
-     out. Building one anyway would put our canonical on a summary of somebody
-     else's writing, which is thin content whichever way it is dressed, and it
-     would cost a reader a hop to reach the thing they clicked. */
-  return listings
-    .filter((listing) => !listing.passThrough)
-    .map((listing) => ({
+  /* Every listing gets a page, references included. They used to link straight
+     out, to keep our canonical off a summary of somebody else's writing — but a
+     reference can now be added to your own Harvous, and this page is where that
+     happens. Skipping it would skip the point. */
+  return listings.map((listing) => ({
     params: { slug: listing.slug },
     props: {
       listing,

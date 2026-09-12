@@ -59,15 +59,37 @@ const categoryLabel = listing.category ? discoverCategoryLabel(listing.category)
 const preview = listing.preview ?? {};
 
 /* A curated reference points at somebody else's page, so it has its own head
-   (the publisher, not a kind pill), its own body (their picture or their video)
-   and its own CTA (open it there, because there is nothing here to install). */
+   (the publisher, not a kind pill) and its own body (their picture or their
+   video). Once the app seeds it, it also gains an install — which is why the
+   CTA below is a pair rather than the single button this used to render. */
 const source = listing.source ?? null;
 const video = listing.video ?? null;
 const typeNoun = listing.resourceType ? DISCOVER_RESOURCE_TYPE_NOUN[listing.resourceType] : kindNoun;
 
-/* The three CTA stories live in one function rather than in this file's markup
-   — see `discoverListingCta`. */
-const cta = discoverListingCta(listing);
+/* The CTA stories live in one function rather than in this file's markup — see
+   `discoverListingCta`. `secondary` is the publisher link once the install
+   takes the lead; `note` is one line for the pair, never one per button. */
+const { primary: cta, secondary: ctaSecondary, note: ctaNote } = discoverListingCta(listing);
+
+/**
+ * The credit line, with the publisher named once.
+ *
+ * Their attribution sentence usually ends by naming them ("…visit
+ * bibleproject.com."), and appending a separate "bibleproject.com ↗" after it
+ * printed the domain twice in one breath. Link the mention already in the
+ * sentence instead; only append one where the sentence never names them, which
+ * is what keeps BibleProject's required link present either way.
+ */
+const credit = source
+  ? (() => {
+      const at = source.attribution.lastIndexOf(source.domain);
+      if (at === -1) return { before: `${source.attribution} `, after: "" };
+      return {
+        before: source.attribution.slice(0, at),
+        after: source.attribution.slice(at + source.domain.length),
+      };
+    })()
+  : null;
 
 /* Sanitized twice server-side — once at snapshot, once in `serializePublic` —
    so this repo renders it directly and takes no sanitizer dependency of its own.
@@ -415,12 +437,14 @@ const kicker = source
                 decoding="async"
               />
             )}
-            <span>
-              {source.attribution}{" "}
-              <a href={source.homeUrl} target="_blank" rel="noopener">
-                {source.domain} <span aria-hidden="true">↗</span>
-              </a>
-            </span>
+            {/* No newline between the anchor and what follows it: Astro keeps
+                that whitespace, which put a space before the sentence's own
+                full stop ("bibleproject.com ↗ ."). */}
+            <span
+              >{credit?.before}<a href={source.homeUrl} target="_blank" rel="noopener"
+                >{source.domain} <span aria-hidden="true">↗</span></a
+              >{credit?.after}</span
+            >
           </p>
 
           <a class="dref__more" href={`/discover/?from=${discoverSourceSlug(source)}`}>
@@ -467,19 +491,44 @@ const kicker = source
       )
     }
 
+    {/* The event follows the button, not the listing: once a reference is
+        installable this block renders both an install and a way out, and
+        branching on `source` would have filed the install as a click-away. */}
+    {/* The event follows the button, not the listing: once a reference is
+        installable this block renders both an install and a way out, and
+        branching on `source` would have filed the install as a click-away. */}
     <div class="dlist__cta">
-      <CTAButton
-        href={cta.href}
-        variant="primary"
-        size="lg"
-        external={cta.external}
-        fathomTrack={
-          source ? fathomDiscover.sourceOut(listing.slug) : fathomDiscover.install(listing.slug)
+      <div class="dlist__cta-row">
+        <CTAButton
+          href={cta.href}
+          variant="primary"
+          size="lg"
+          external={cta.external}
+          fathomTrack={
+            ctaSecondary || !source
+              ? fathomDiscover.install(listing.slug)
+              : fathomDiscover.sourceOut(listing.slug)
+          }
+        >
+          {cta.label}
+        </CTAButton>
+        {
+          ctaSecondary && (
+            <CTAButton
+              href={ctaSecondary.href}
+              variant="secondary"
+              size="lg"
+              external={ctaSecondary.external}
+              fathomTrack={fathomDiscover.sourceOut(listing.slug)}
+            >
+              {ctaSecondary.label}
+              {/* Only when it actually leaves — one of these is our own blog. */}
+              {ctaSecondary.external && <span aria-hidden="true">↗</span>}
+            </CTAButton>
+          )
         }
-      >
-        {cta.label}
-      </CTAButton>
-      <p class="dlist__note text-balance">{cta.note}</p>
+      </div>
+      {ctaNote && <p class="dlist__note text-balance">{ctaNote}</p>}
     </div>
 
     {/* ── Included templates: the one thing the reader does not have ─────
@@ -1036,6 +1085,23 @@ const kicker = source
     font-size: 0.875rem;
     line-height: 1.5;
     color: var(--color-ink-faint);
+  }
+
+  /* Two real choices, side by side: take it with you, or go and read it where
+     it lives. Wraps to a column on a narrow screen rather than letting two
+     pill buttons shrink into each other. */
+  .dlist__cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  @media (max-width: 30rem) {
+    .dlist__cta-row > :global(a) {
+      width: 100%;
+      max-width: 20rem;
+    }
   }
 
   .dlist__related {

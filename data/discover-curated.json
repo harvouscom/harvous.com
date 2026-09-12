@@ -91,7 +91,6 @@
       "resourceType": "guide",
       "image": "/blog-thumbs/the-lesson-prep-stack-feat.webp",
       "imageAlt": "The lesson prep stack, on Bright Enough",
-      "passThrough": true,
       "source": {
         "name": "Harvous",
         "domain": "harvous.com",
@@ -111,7 +110,6 @@
       "resourceType": "guide",
       "image": "/blog-thumbs/the-five-minute-capture-feat.webp",
       "imageAlt": "The five-minute capture, on Bright Enough",
-      "passThrough": true,
       "source": {
         "name": "Harvous",
         "domain": "harvous.com",
@@ -131,7 +129,6 @@
       "resourceType": "guide",
       "image": "/blog-thumbs/plan-the-quarter-not-the-week-feat.webp",
       "imageAlt": "Plan the quarter, not the week, on Bright Enough",
-      "passThrough": true,
       "source": {
         "name": "Harvous",
         "domain": "harvous.com",
@@ -150,7 +147,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "series",
       "imageAlt": "Bible Engagement Project adult curriculum",
-      "passThrough": true,
       "source": {
         "name": "Bible Engagement Project",
         "domain": "bibleengagementproject.com",
@@ -170,7 +166,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "article",
       "imageAlt": "Bible Engagement Project downloads",
-      "passThrough": true,
       "source": {
         "name": "Bible Engagement Project",
         "domain": "bibleengagementproject.com",
@@ -190,7 +185,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "tool",
       "imageAlt": "Blue Letter Bible study resources",
-      "passThrough": true,
       "source": {
         "name": "Blue Letter Bible",
         "domain": "blueletterbible.org",
@@ -210,7 +204,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "book",
       "imageAlt": "Matthew Henry's Commentary at the Christian Classics Ethereal Library",
-      "passThrough": true,
       "source": {
         "name": "Christian Classics Ethereal Library",
         "domain": "ccel.org",
@@ -393,7 +386,6 @@
       "resourceType": "guide",
       "image": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-feat.webp",
       "imageAlt": "Prep a lesson that leaves a trail, on Bright Enough",
-      "passThrough": true,
       "source": {
         "name": "Harvous",
         "domain": "harvous.com",
@@ -413,7 +405,6 @@
       "resourceType": "guide",
       "image": "/blog-thumbs/asking-better-questions-in-class-and-group-feat.webp",
       "imageAlt": "Asking better questions in class and group, on Bright Enough",
-      "passThrough": true,
       "source": {
         "name": "Harvous",
         "domain": "harvous.com",
@@ -433,7 +424,6 @@
       "resourceType": "guide",
       "image": "/blog-thumbs/the-monday-retention-loop-feat.webp",
       "imageAlt": "The Monday retention loop, on Bright Enough",
-      "passThrough": true,
       "source": {
         "name": "Harvous",
         "domain": "harvous.com",
@@ -453,7 +443,6 @@
       "resourceType": "guide",
       "image": "/blog-thumbs/teaching-through-a-book-feat.webp",
       "imageAlt": "Teaching through a book, on Bright Enough",
-      "passThrough": true,
       "source": {
         "name": "Harvous",
         "domain": "harvous.com",
@@ -472,7 +461,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "book",
       "imageAlt": "Morning and Evening at the Christian Classics Ethereal Library",
-      "passThrough": true,
       "source": {
         "name": "Christian Classics Ethereal Library",
         "domain": "ccel.org",
@@ -492,7 +480,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "book",
       "imageAlt": "Augustine's Confessions at the Christian Classics Ethereal Library",
-      "passThrough": true,
       "source": {
         "name": "Christian Classics Ethereal Library",
         "domain": "ccel.org",
@@ -512,7 +499,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "series",
       "imageAlt": "Bible Engagement Project kids curriculum",
-      "passThrough": true,
       "source": {
         "name": "Bible Engagement Project",
         "domain": "bibleengagementproject.com",
@@ -532,7 +518,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "tool",
       "imageAlt": "STEP Bible interlinear and lexicon tool",
-      "passThrough": true,
       "source": {
         "name": "STEP Bible",
         "domain": "stepbible.org",
@@ -552,7 +537,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "tool",
       "imageAlt": "Bible topics, indexed — OpenBible.info",
-      "passThrough": true,
       "source": {
         "name": "OpenBible.info",
         "domain": "openbible.info",
@@ -572,7 +556,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "tool",
       "imageAlt": "Commentary, book by book — Working Preacher",
-      "passThrough": true,
       "source": {
         "name": "Working Preacher",
         "domain": "workingpreacher.org",
@@ -592,7 +575,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "article",
       "imageAlt": "The craft of preaching — Working Preacher",
-      "passThrough": true,
       "source": {
         "name": "Working Preacher",
         "domain": "workingpreacher.org",
@@ -612,7 +594,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "series",
       "imageAlt": "Free courses — The Gospel Coalition",
-      "passThrough": true,
       "source": {
         "name": "The Gospel Coalition",
         "domain": "thegospelcoalition.org",
@@ -632,7 +613,6 @@
       "listedAt": "2026-09-10",
       "resourceType": "series",
       "imageAlt": "Dust to Glory — Ligonier Ministries",
-      "passThrough": true,
       "source": {
         "name": "Ligonier Ministries",
         "domain": "ligonier.org",

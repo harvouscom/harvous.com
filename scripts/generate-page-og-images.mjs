@@ -310,9 +310,9 @@ const DISCOVER_RESOURCE_TYPE_ICON = {
   const curated = readListings("data/discover-curated.json");
   const seen = new Set();
 
+  /* Synced first: once the app seeds a reference it owns the category, and the
+     curated file is only still listing it to supply artwork. */
   for (const listing of [...synced, ...curated]) {
-    /* A pass-through entry has no page of ours, so there is nothing to share. */
-    if (listing.passThrough) continue;
     if (seen.has(listing.slug)) continue;
     seen.add(listing.slug);
 
