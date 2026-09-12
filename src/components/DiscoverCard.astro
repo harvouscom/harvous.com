@@ -964,15 +964,19 @@ const searchText = [
      screen and costs no un-setting to reach. 10rem of a 335px card was half
      the width, and the title lost to it.
 
-     13rem × 4:3 is the hub *specimen* at very nearly its measured size
-     (208×156 against 204×154), not the hub plate's shape. The plate is 2.08:1,
-     and a faithful miniature of that would want 252px before the title got a
-     pixel; the specimen is the part carrying the artifact anyway, so its shape
-     is the one worth keeping. Two earlier cuts were both too small to read: it
-     started square (7rem × 7.25rem), which crushed a 1.9:1 video poster and
-     wrapped a template's headings mid-word, and then 10rem, which fixed the
-     ratio but still cut the sheet off after three lines. At the specimen's own
-     size the artifact is legible, which is the whole reason it is here. */
+     The ratio is set by what sits *inside* the plate, not by the plate. A
+     video poster is 16:9 and `.dcard__link-image` paints it `cover`, so any
+     box narrower than 16:9 crops its sides — which is what three earlier cuts
+     all did, each less badly than the last. Square (7rem × 7.25rem) took half
+     the width off a poster; 10rem × 4:3 fixed the gross distortion but still
+     cut the sheet off after three lines; 13rem × 4:3 was legible and still
+     clipped a poster to 1.46:1, losing the left of "Mark" and the right of the
+     bookmark.
+
+     The padding is equal on both axes and so does not preserve a ratio: the
+     plate loses 22px each way to its own mat and 18px more to the specimen's,
+     so the picture ends up (W−40) × (H−40). 15rem × 19/12 makes that
+     200 × 112 — 16:9 to within a percent, and a poster that is finally whole. */
   @media (min-width: 561px) {
     .dcard--compact .dcard__link {
       flex-direction: row;
@@ -980,12 +984,12 @@ const searchText = [
     }
 
     .dcard--compact .dcard__plate {
-      flex: 0 0 13rem;
+      flex: 0 0 15rem;
       /* `aspect-ratio`, not a hard height: it derives a *definite* height from
          the width, which is what the base rule's `overflow: hidden` needs to
          clip against. Plain `height: auto` has no such height, which is how
          the first cut let a template's whole unclamped body set the row. */
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 19 / 12;
       height: auto;
       /* Not stretched — stretching would override the ratio the moment the
          text beside it runs taller. */
