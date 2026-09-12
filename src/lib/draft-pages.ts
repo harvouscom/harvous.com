@@ -9,12 +9,13 @@
  * `isDraftPageSlug` / `isDraftPageUrl`, so emptying this array is the whole
  * cutover.
  *
- * `discover` went live (Sept 2026), then came back — launched before it was
- * fully ready. Everything built for it stays in place and keeps working on
- * staging (`KEEP_DRAFT_PAGES=1`) and in dev; this one string is what took it
- * back out of production. Launch, when it happens again, is deleting it.
+ * `discover` went live (Sept 2026), came back — launched before it was fully
+ * ready — and launched again for good in September 2026: included templates
+ * now explain themselves instead of offering to add what you already have,
+ * and the catalog holds curated references (BibleProject, Bible Engagement
+ * Project, and others) alongside them, not templates alone.
  */
-export const DRAFT_PAGE_SLUGS = ["discover"] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
 /**
  * Whether links to a draft page should render — i.e. whether the page will be

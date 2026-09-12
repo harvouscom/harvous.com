@@ -24,6 +24,7 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 - Blog RSS: https://harvous.com/blog/rss.xml
 - Compare Harvous to other apps: https://harvous.com/compare/
 - Use cases: https://harvous.com/use-cases/
+- Discover — free templates and references, some ours, some curated: https://harvous.com/discover/
 - Release Notes: https://harvous.com/release-notes/
 - Sign up: https://app.harvous.com/
 
