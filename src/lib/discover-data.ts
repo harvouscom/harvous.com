@@ -238,27 +238,36 @@ type CatalogFile = {
 };
 
 /**
- * One hand-written reference, before the reader expands it.
+ * A presentation override for one curated reference, matched to a synced row
+ * by slug.
  *
- * Flat on purpose: an author writes `source.domain` once, and `expandCurated`
- * projects it into `preview.sourceDomain` so every existing code path — the
- * card's `hasPanel`, the listing page's `.dlink` treatment — keeps working with
- * no change at all. The publisher chrome then layers on top of that.
+ * This used to be a full listing an author hand-wrote and `expandCurated`
+ * turned into one — title, description, note, category, the whole publisher
+ * lockup. The app owns all of that now: `src/data/curated-resources.ts`
+ * authors it, `discover-seed-curated-resources.ts` publishes it, and
+ * `GET /api/discover/export` delivers it nested under `preview.source` for
+ * `hydrateSynced` to lift onto the row. What is left here is only what the
+ * app's database cannot hold — a path on *this* disk.
+ *
+ * Both fields are themselves optional overrides, not requirements: most
+ * entries need neither. `resolveDiscoverImage` and `deriveSourceLogo` already
+ * find a mirrored file by convention (`/images/discover-sources/<slug>.webp`,
+ * `/images/discover-sources/logos/<source-slug>.webp`); an entry only needs
+ * to appear here when the convention is wrong for it — the seven Harvous
+ * guides, whose poster is an existing blog thumbnail rather than something to
+ * mirror, and whose mark is the site's own icon rather than a publisher's.
  */
-type CuratedEntry = {
+type CuratedPresentation = {
   slug: string;
-  title: string;
-  description: string;
-  /** Ours, not theirs. Required — it is what makes a listing page not a stub. */
-  note: string;
-  category: string;
-  listedAt: string;
-  resourceType: DiscoverResourceType;
-  source: DiscoverSource;
-  video?: DiscoverVideo;
-  /** Poster or OG image. A local path, or a remote URL for the mirror script. */
+  /** A path already on this disk — an existing blog thumbnail, most often —
+   *  not a URL for the mirror script to fetch. `resolveDiscoverImage` still
+   *  checks the by-convention mirror path first, so this is only reached when
+   *  that lookup misses. */
   image?: string;
-  imageAlt?: string;
+  /** Overrides `deriveSourceLogo`'s by-convention mirror path — a mark that
+   *  is not the publisher's own, and so is never something to mirror or
+   *  refetch. Harvous's own icon is the only current use. */
+  logo?: string;
 };
 
 const CATALOG_PATH = join(process.cwd(), "data/discover-listings.json");
@@ -266,7 +275,6 @@ const CURATED_PATH = join(process.cwd(), "data/discover-curated.json");
 
 /** The shape `sanitizeSignupSlug` accepts — a slug it would reject is a dead URL. */
 const CURATED_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const YOUTUBE_ID_RE = /^[A-Za-z0-9_-]{11}$/;
 
 let cache: CatalogFile | null = null;
 
@@ -285,11 +293,12 @@ function readSyncedFile(): CatalogFile {
 /**
  * The curated file is optional, and strict when it is there.
  *
- * Absent-is-legal is not laziness — it is the endgame. When the app-side seed
- * publishes these references itself, retiring this layer is emptying the file
- * and then deleting it, with no reader change and no build break in between.
+ * Absent-is-legal is not laziness — it is the endgame this already reached
+ * once: the app-side seed publishes every reference itself now, and this file
+ * holds only what its database cannot. Emptying it further, and eventually
+ * deleting it, costs no reader change and no build break in between.
  */
-function readCuratedFile(): { listings: CuratedEntry[] } {
+function readCuratedFile(): { listings: CuratedPresentation[] } {
   let raw: string;
   try {
     raw = readFileSync(CURATED_PATH, "utf-8");
@@ -300,7 +309,7 @@ function readCuratedFile(): { listings: CuratedEntry[] } {
   if (!Array.isArray(parsed.listings)) {
     throw new Error("data/discover-curated.json is missing `listings`.");
   }
-  return { listings: parsed.listings as CuratedEntry[] };
+  return { listings: parsed.listings as CuratedPresentation[] };
 }
 
 function bad(slug: string, why: string): never {
@@ -310,41 +319,20 @@ function bad(slug: string, why: string): never {
 /**
  * Fail loud, name the slug.
  *
- * Every check here guards something that would otherwise go quietly wrong
- * rather than loudly: a slug the app would reject is a URL nobody can reach, an
- * unknown category is a card the topic filter never matches, and a pasted watch
- * URL where an id belongs is a player that renders and never plays.
+ * A slug the app would reject is a URL nobody can reach; a slug the synced
+ * catalog has never heard of is an override with nothing to override — most
+ * often a reference renamed or delisted in `curated-resources.ts` with this
+ * file's entry never cleaned up behind it.
  */
-function validateCuratedEntry(entry: CuratedEntry, categoryIds: Set<string>): void {
+function validatePresentation(entry: CuratedPresentation, syncedSlugs: Set<string>): void {
   const slug = entry?.slug ?? "(missing slug)";
   if (!entry?.slug || !CURATED_SLUG_RE.test(entry.slug)) bad(slug, "slug must be kebab-case");
-  if (!entry.title?.trim()) bad(slug, "title is required");
-  if (!entry.description?.trim()) bad(slug, "description is required");
-  if (!entry.note?.trim()) bad(slug, "note is required — it is what makes the page ours");
-  if (!categoryIds.has(entry.category)) {
-    bad(slug, `category "${entry.category}" is not one the catalog knows`);
-  }
-  if (!(entry.resourceType in DISCOVER_RESOURCE_TYPE_NOUN)) {
-    bad(slug, `resourceType "${entry.resourceType}" is not one Discover knows`);
-  }
-  if (!Number.isFinite(Date.parse(entry.listedAt))) bad(slug, "listedAt is not a date");
-
-  const source = entry.source;
-  if (!source?.name?.trim()) bad(slug, "source.name is required");
-  if (!source.domain?.trim()) bad(slug, "source.domain is required");
-  if (!source.attribution?.trim()) bad(slug, "source.attribution is required");
-  for (const field of ["url", "homeUrl"] as const) {
-    const value = source[field];
-    if (!value || !(value.startsWith("https://") || value.startsWith("/"))) {
-      bad(slug, `source.${field} must be an https:// URL or a site-relative path`);
-    }
-  }
-
-  if (entry.resourceType === "video") {
-    if (entry.video?.provider !== "youtube") bad(slug, "a video needs video.provider 'youtube'");
-    if (!YOUTUBE_ID_RE.test(entry.video.id)) {
-      bad(slug, `video.id "${entry.video.id}" is not an 11-character YouTube id`);
-    }
+  if (!syncedSlugs.has(entry.slug)) {
+    bad(
+      slug,
+      "no synced listing exists for this slug — add it to the app's " +
+        "src/data/curated-resources.ts and seed, or remove this entry",
+    );
   }
 }
 
@@ -382,62 +370,26 @@ function discoverPlateTone(slug: string): string | null {
 }
 
 /**
- * A publisher's mark, but only if it is actually on disk.
+ * A publisher's mark, found by convention or handed an exception.
  *
- * `npm run discover:sources` fetches these from the publisher's own domain and
- * any one of them can fail — a blocked favicon, a site that answers a build
- * agent differently. Resolving to null here is what makes the card draw its
- * initial tile instead of a broken image, so a missed fetch is a slightly
- * plainer card rather than a visible defect.
+ * `npm run discover:sources` mirrors every publisher's mark to
+ * `/images/discover-sources/logos/<source-slug>.webp`, named by
+ * `discoverSourceSlug` — the same function this calls, so neither side has to
+ * tell the other the filename. A presentation override's `logo` matters only
+ * when that convention is wrong for this source: Harvous is not a publisher
+ * to mirror, and points here at the site's own icon instead.
+ *
+ * Checked against disk either way, same posture as `resolveDiscoverImage` — a
+ * mark that failed to fetch, or an override typo'd to a path that never
+ * shipped, costs a plainer initial tile rather than a broken image.
  */
-function resolveSourceLogo(source: DiscoverSource): DiscoverSource {
-  const logo = source.logo;
-  if (!logo) return source;
-  if (existsSync(join(process.cwd(), "public", logo.slice(1)))) return source;
-  return { ...source, logo: null };
+function deriveSourceLogo(source: DiscoverSource, override: string | null): DiscoverSource {
+  const onDisk = (path: string) => existsSync(join(process.cwd(), "public", path.slice(1)));
+  if (override && onDisk(override)) return { ...source, logo: override };
+  const bySlug = `/images/discover-sources/logos/${discoverSourceSlug(source)}.webp`;
+  return { ...source, logo: onDisk(bySlug) ? bySlug : null };
 }
 
-function expandCurated(entry: CuratedEntry): DiscoverListing {
-  return {
-    slug: entry.slug,
-    kind: "resource",
-    title: entry.title,
-    description: entry.description,
-    category: entry.category,
-    /* The publisher *is* the author. This also drops their name into the card's
-       `data-search` for free, so "bibleproject" finds these without the hub
-       growing a third control it has no room for. */
-    authorDisplayName: entry.source.name,
-    installCount: 0,
-    listedAt: new Date(entry.listedAt).toISOString(),
-    preview: {
-      official: false,
-      sourceDomain: entry.source.domain,
-      sourceSiteName: entry.source.name,
-      sourceImage: resolveDiscoverImage(entry.slug, entry.image ?? null),
-    },
-    origin: "curated",
-    installable: false,
-    source: resolveSourceLogo(entry.source),
-    resourceType: entry.resourceType,
-    video: entry.video ?? null,
-    note: entry.note,
-    plateTone: discoverPlateTone(entry.slug),
-  };
-}
-
-/**
- * Lift a seeded reference's publisher chrome out of `preview` and onto the row.
- *
- * `GET /api/discover/export` emits `preview` as whatever the seeder wrote, so a
- * curated reference the app now owns arrives with its whole lockup nested
- * inside it. Lifting it here means every consumer — the card, the listing page,
- * the JSON-LD — keeps reading `listing.source` and cannot tell the difference
- * between a row the app seeded and one `data/discover-curated.json` expanded.
- *
- * That equivalence is the point: it is what lets the curated file shrink to
- * mirrored artwork, and eventually to nothing, without a component edit.
- */
 /**
  * Bring one of our own URLs back to a site-relative path.
  *
@@ -445,15 +397,23 @@ function expandCurated(entry: CuratedEntry): DiscoverListing {
  * rule that governs what may be saved to a library — needs a real https URL
  * with a dotted host, and `/blog/…` is not one. That is right for the seven
  * Harvous guides *as library links*, and wrong for them as links on this page:
- * absolute would open harvous.com in a new tab from harvous.com, and would read
- * as drift against the curated file that still writes them relative.
+ * absolute would open harvous.com in a new tab from harvous.com.
  */
 function localizeSourceUrl(url: string): string {
   if (!url.startsWith("https://harvous.com/")) return url;
   return url.slice("https://harvous.com".length);
 }
 
-function hydrateSynced(row: DiscoverListing): DiscoverListing {
+/**
+ * Lift a seeded reference's publisher chrome out of `preview` and onto the
+ * row, then layer this disk's presentation on top.
+ *
+ * `GET /api/discover/export` emits `preview` as whatever the seeder wrote, so
+ * a curated reference arrives with its whole lockup nested inside it. Lifting
+ * it here means every consumer — the card, the listing page, the JSON-LD —
+ * reads `listing.source` the same way regardless of where a row came from.
+ */
+function hydrateSynced(row: DiscoverListing, presentation?: CuratedPresentation): DiscoverListing {
   const preview = row.preview;
   if (!preview?.source) return row;
   const source = {
@@ -463,11 +423,15 @@ function hydrateSynced(row: DiscoverListing): DiscoverListing {
   };
   return {
     ...row,
-    source: resolveSourceLogo(source),
+    source: deriveSourceLogo(source, presentation?.logo ?? null),
     resourceType: preview.resourceType ?? row.resourceType ?? null,
     video: preview.video ?? row.video ?? null,
     note: preview.note ?? row.note ?? null,
-    plateTone: row.plateTone ?? discoverPlateTone(row.slug),
+    plateTone: discoverPlateTone(row.slug),
+    preview: {
+      ...preview,
+      sourceImage: preview.sourceImage ?? resolveDiscoverImage(row.slug, presentation?.image ?? null),
+    },
   };
 }
 
@@ -476,70 +440,23 @@ function readCatalog(): CatalogFile {
 
   const synced = readSyncedFile();
   const curated = readCuratedFile();
-  const categoryIds = new Set(synced.categories.map((category) => category.id));
+  const bySlug = new Set(synced.listings.map((row) => row.slug));
 
-  const listings: DiscoverListing[] = synced.listings.map((row) =>
-    hydrateSynced({ ...row, origin: "catalog" as const, installable: true }),
-  );
-  const bySlug = new Map(listings.map((listing) => [listing.slug, listing]));
   const seen = new Set<string>();
-
+  const presentationBySlug = new Map<string, CuratedPresentation>();
   for (const entry of curated.listings) {
-    validateCuratedEntry(entry, categoryIds);
+    validatePresentation(entry, bySlug);
     if (seen.has(entry.slug)) bad(entry.slug, "listed twice in this file");
     seen.add(entry.slug);
-
-    const existing = bySlug.get(entry.slug);
-    if (existing) {
-      /*
-        The app-side seed has landed at this slug, which is the intended end
-        state rather than an accident — so this path is quiet by default. The
-        catalog row is the real one: it is installable, and the sync keeps it in
-        step. The curated entry demotes to what the app cannot know, which is
-        artwork living on this disk — the mirrored publisher mark, the mirrored
-        poster, and the tone taken from that poster.
-
-        What *is* worth saying out loud is a divergence: an author editing a
-        title here, expecting it to show, when the synced row now wins. That
-        edit belongs in the app's `curated-resources.ts`. Warned, never thrown —
-        the synced file is rewritten by a bot every six hours and must not be
-        able to break a build nobody started.
-      */
-      const owned = [
-        ["title", entry.title, existing.title],
-        ["description", entry.description, existing.description],
-        ["category", entry.category, existing.category],
-        ["note", entry.note, existing.note],
-        ["source.url", entry.source.url, existing.source?.url],
-      ] as const;
-      const drifted = owned.filter(([, mine, theirs]) => theirs != null && mine !== theirs);
-      if (drifted.length > 0) {
-        console.warn(
-          `[discover] "${entry.slug}" is in the synced catalog, so the app owns it now. ` +
-            `These differ and the synced value wins: ${drifted.map(([f]) => f).join(", ")}. ` +
-            "Edit src/data/curated-resources.ts in the app repo and re-seed.",
-        );
-      }
-
-      const logo = resolveSourceLogo(entry.source).logo;
-      if (existing.source && logo) existing.source = { ...existing.source, logo };
-      else if (!existing.source) existing.source = resolveSourceLogo(entry.source);
-      existing.resourceType = existing.resourceType ?? entry.resourceType;
-      existing.video = existing.video ?? entry.video ?? null;
-      existing.note = existing.note ?? entry.note;
-      existing.plateTone = discoverPlateTone(entry.slug);
-      existing.preview = {
-        ...(existing.preview ?? {}),
-        sourceImage:
-          existing.preview?.sourceImage ?? resolveDiscoverImage(entry.slug, entry.image ?? null),
-      };
-      continue;
-    }
-
-    const expanded = expandCurated(entry);
-    listings.push(expanded);
-    bySlug.set(expanded.slug, expanded);
+    presentationBySlug.set(entry.slug, entry);
   }
+
+  const listings: DiscoverListing[] = synced.listings.map((row) =>
+    hydrateSynced(
+      { ...row, origin: "catalog" as const, installable: true },
+      presentationBySlug.get(row.slug),
+    ),
+  );
 
   cache = { categories: synced.categories, listings };
   return cache;
