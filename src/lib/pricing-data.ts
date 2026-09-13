@@ -62,7 +62,7 @@ export const FREE_PLAN: PricingPlan = {
     "Offline sync across devices",
     "Sharable notes via link",
     "Built-in Suggestions (resurfaces the past)",
-    "Reminders — optional, with the day's verse",
+    "Reminders — an optional nudge with the verse",
   ],
   cta: {
     label: "Sign up free",
@@ -81,7 +81,7 @@ export const PLUS_PLAN: PricingPlan = {
   tagline: "For study you return to, together",
   features: [
     "Everything in free",
-    "Unlimited history — any day you wrote",
+    "Unlimited history",
     "Review — helps you remember what you studied",
     "Unlimited shared spaces",
     "Up to 12 people per space",
