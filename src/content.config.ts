@@ -57,6 +57,14 @@ const faq = defineCollection({
   schema: z.object({
     question: z.string(),
     order: z.number(),
+    /** One-line answer shown on the homepage card before it's opened. */
+    short: z.string().max(70),
+    /** Follow-on link under the full answer. Must be a live, non-draft route. */
+    next: z.object({ label: z.string(), href: z.string().startsWith("/") }).optional(),
+    /** Surfaces this question stays off. Default: everywhere. */
+    hideOn: z.array(z.enum(["home", "support"])).default([]),
+    /** Search synonyms for the homepage filter — matched, never rendered. */
+    keywords: z.array(z.string()).default([]),
   }),
 });
 

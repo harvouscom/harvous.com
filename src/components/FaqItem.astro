@@ -1,12 +1,14 @@
 ---
 interface Props {
   question: string;
+  /** Anchor for deep links, e.g. /support/#faq-contact-support. */
+  id?: string;
 }
 
-const { question } = Astro.props;
+const { question, id } = Astro.props;
 ---
 
-<details class="faq">
+<details class="faq" id={id}>
   <summary class="faq__summary">
     <h3 class="faq__question">{question}</h3>
     <svg class="faq__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
@@ -21,6 +23,8 @@ const { question } = Astro.props;
 <style>
   .faq {
     border-top: 1px solid var(--color-rule);
+    /* Deep links land below the sticky header (same offset as blog headings). */
+    scroll-margin-top: 5.5rem;
   }
   .faq__summary {
     display: flex;
