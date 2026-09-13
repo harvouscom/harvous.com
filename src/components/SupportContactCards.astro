@@ -54,34 +54,14 @@ const { compact = false } = Astro.props;
 </div>
 
 <script>
-  const copyButtons = document.querySelectorAll<HTMLButtonElement>("[data-copy-email]");
+  import { bindCopyButton } from "../lib/copy-button";
 
-  for (const button of copyButtons) {
-    if (button.dataset.copyBound === "true") continue;
-    button.dataset.copyBound = "true";
-
-    button.addEventListener("click", async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      const email = button.dataset.copyEmail;
-      if (!email) return;
-
-      try {
-        await navigator.clipboard.writeText(email);
-        button.classList.add("is-copied");
-        button.setAttribute("aria-label", "Copied email address");
-        const label = button.querySelector(".support-contact-card__copy-label");
-        if (label) label.textContent = "Copied";
-
-        window.setTimeout(() => {
-          button.classList.remove("is-copied");
-          button.setAttribute("aria-label", "Copy email address");
-          if (label) label.textContent = "Copy email";
-        }, 2000);
-      } catch {
-        button.setAttribute("aria-label", "Could not copy email address");
-      }
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-email]")) {
+    bindCopyButton(button, () => button.dataset.copyEmail, {
+      idle: { label: "Copy email", ariaLabel: "Copy email address" },
+      done: { label: "Copied", ariaLabel: "Copied email address" },
+      failed: { ariaLabel: "Could not copy email address" },
+      labelSelector: ".support-contact-card__copy-label",
     });
   }
 </script>

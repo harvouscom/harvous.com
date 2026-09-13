@@ -3,25 +3,16 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/layout/Container.astro";
 import FaqItem from "../components/FaqItem.astro";
 import SupportContactCards from "../components/SupportContactCards.astro";
-import { getCollection, render } from "astro:content";
-import { readFileSync } from "node:fs";
+import { render } from "astro:content";
+import { buildFaqPageJsonLd, faqAnchorId, getFaqEntries } from "../lib/faq";
 
-const entries = (await getCollection("faq")).sort((a, b) => a.data.order - b.data.order);
+const entries = await getFaqEntries("support");
 const faqItems = await Promise.all(
-  entries.map(async (f) => {
-    const { Content } = await render(f);
-    return { data: f.data, Content, filePath: f.filePath };
+  entries.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { entry, Content };
   })
 );
-
-function faqAnswerPlainText(filePath: string): string {
-  const raw = readFileSync(filePath, "utf-8");
-  return raw
-    .replace(/^---[\s\S]*?---\s*/, "")
-    .replace(/[#>*_`\[\]()]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -32,17 +23,7 @@ const jsonLd = {
       description: "Get help with Harvous — FAQs, email support, and in-app support for signed-in users.",
       url: "https://harvous.com/support/",
     },
-    {
-      "@type": "FAQPage",
-      mainEntity: faqItems.map(({ data, filePath }) => ({
-        "@type": "Question",
-        name: data.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: faqAnswerPlainText(filePath) || data.question,
-        },
-      })),
-    },
+    buildFaqPageJsonLd(entries),
   ],
 };
 ---
@@ -71,8 +52,8 @@ const jsonLd = {
           <div class="support-page__faq" data-reveal style="--reveal-delay: 140ms;">
             <h2 class="support-page__faq-title">Common questions</h2>
             <div class="support-page__faq-list">
-              {faqItems.map(({ data, Content }) => (
-                <FaqItem question={data.question}>
+              {faqItems.map(({ entry, Content }) => (
+                <FaqItem id={faqAnchorId(entry)} question={entry.data.question}>
                   <Content />
                 </FaqItem>
               ))}

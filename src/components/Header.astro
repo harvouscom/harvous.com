@@ -530,10 +530,10 @@ const SCROLL_THRESHOLD = 16;
       // Direct children, not `a` — the Resources item is a <button> in a
       // wrapper, and selecting anchors measured the pill one nav item short
       // (and would have counted the mega panel's own links once it opened).
-      const measureNavWidth = (nav) => {
+      const measureNavWidth = (nav: Element) => {
         const navStyle = getComputedStyle(nav);
         const navGap = parseFloat(navStyle.columnGap || navStyle.gap) || 0;
-        const items = [...nav.children].filter(
+        const items = ([...nav.children] as HTMLElement[]).filter(
           (item) => getComputedStyle(item).display !== "none" && item.offsetParent !== null
         );
         if (items.length === 0) return 0;
@@ -541,7 +541,7 @@ const SCROLL_THRESHOLD = 16;
         return itemsWidth + Math.max(0, items.length - 1) * navGap;
       };
 
-      const measureActionsWidth = (actions) => {
+      const measureActionsWidth = (actions: Element) => {
         const actionStyle = getComputedStyle(actions);
         const actionGap = parseFloat(actionStyle.columnGap || actionStyle.gap) || 0;
         const items = [...actions.children].filter(
@@ -600,7 +600,7 @@ const SCROLL_THRESHOLD = 16;
     const mobileNav = document.getElementById("site-header-mobile-nav");
     const mobileBackdrop = document.getElementById("site-header-mobile-backdrop");
 
-    const setMenuOpen = (open) => {
+    const setMenuOpen = (open: boolean) => {
       header.classList.toggle("is-menu-open", open);
       if (menuToggle) menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
       if (mobileNav) {

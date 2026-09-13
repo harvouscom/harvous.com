@@ -1,47 +1,555 @@
 ---
 /**
- * FaqSection — renders the faq content collection through FaqItem in a
- * single accordion column. New to the homepage (previously unused).
+ * FaqSection — the homepage FAQ as quick answers. Every card shows its question
+ * and a one-line answer, so skimming takes no clicks; opening a card turns it
+ * into a full-row panel with the whole answer and a next step. Search, "See
+ * all", and copy-link live in src/scripts/faq-section.ts. With no JS it's a
+ * native one-open-at-a-time accordion of every question.
+ *
+ * The cards are styled here rather than in a card component: the layout rules
+ * reach them through :has() and :nth-child(), which Astro's scoping would
+ * otherwise push into :global().
  */
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import Container from "./layout/Container.astro";
-import FaqItem from "./FaqItem.astro";
+import { SUPPORT_EMAIL, faqAnchorId, getFaqEntries, liveFaqNext } from "../lib/faq";
 
-const entries = (await getCollection("faq")).sort((a, b) => a.data.order - b.data.order);
+const entries = await getFaqEntries("home");
 const items = await Promise.all(
-  entries.map(async (f) => {
-    const { Content } = await render(f);
-    return { data: f.data, Content };
+  entries.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { entry, Content, next: await liveFaqNext(entry) };
   })
 );
+const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A question about Harvous")}`;
 ---
 
 {items.length > 0 && (
-  <section class="faq-section frame-divider" id="faq">
+  <section class="faq-section frame-divider" id="faq" data-faq>
     <Container size="xl">
-      <div class="faq-section__head section-head" data-reveal>
-        <span class="eyebrow-pill">FAQ</span>
-        <h2 class="section-title">Guaranteed questions</h2>
+      <div class="faq-head" data-reveal>
+        <div class="faq-head__intro">
+          <span class="eyebrow-pill">FAQ</span>
+          <h2 class="section-title">Guaranteed questions</h2>
+          <p class="lead">The short answers, up front. Open any card for the whole story.</p>
+        </div>
+
+        <div class="faq-search" role="search">
+          <label class="sr-only" for="faq-search">Search the questions</label>
+          <svg class="faq-search__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <circle cx="7" cy="7" r="4.25"></circle>
+            <path d="M10.25 10.25 13.5 13.5"></path>
+          </svg>
+          <input
+            id="faq-search"
+            class="faq-search__input"
+            type="search"
+            placeholder="Search the questions"
+            autocomplete="off"
+            spellcheck="false"
+            enterkeyhint="search"
+            data-faq-search
+          />
+        </div>
       </div>
 
-      <div class="faq-section__list" data-reveal="stagger" style="--reveal-delay: 80ms;">
-        {items.map(({ data, Content }) => (
-          <FaqItem question={data.question}>
-            <Content />
-          </FaqItem>
+      <ul
+        class="faq-grid"
+        id="faq-grid"
+        role="list"
+        data-faq-grid
+        data-collapsed
+        data-reveal="stagger"
+        style="--reveal-delay: 80ms;"
+      >
+        {items.map(({ entry, Content, next }) => (
+          <li class="faq-grid__item" data-keywords={entry.data.keywords.join(" ")}>
+            <details class="faq-card" id={faqAnchorId(entry)} name="faq-home">
+              <summary class="faq-card__summary">
+                <h3 class="faq-card__question" data-faq-text>{entry.data.question}</h3>
+                <span class="faq-card__short" data-faq-text>{entry.data.short}</span>
+                <span class="faq-card__toggle" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                    <path d="M8 3.5v9M3.5 8h9" />
+                  </svg>
+                </span>
+              </summary>
+              <div class="faq-card__body">
+                <div class="faq-card__answer">
+                  <Content />
+                </div>
+                <div class="faq-card__actions">
+                  {next && (
+                    <a class="faq-card__next" href={next.href}>
+                      {next.label} <span aria-hidden="true">→</span>
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    class="btn-pill faq-card__copy"
+                    data-copy-link={`#${faqAnchorId(entry)}`}
+                    aria-label="Copy a link to this question"
+                  >
+                    <svg class="faq-card__copy-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M6.8 9.2a2.6 2.6 0 0 0 3.7 0l2.1-2.1a2.6 2.6 0 0 0-3.7-3.7l-.9.9" />
+                      <path d="M9.2 6.8a2.6 2.6 0 0 0-3.7 0L3.4 8.9a2.6 2.6 0 0 0 3.7 3.7l.9-.9" />
+                    </svg>
+                    <svg class="faq-card__copy-icon faq-card__copy-icon--check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M3.5 8.5l3 3 6-6" />
+                    </svg>
+                    <span data-copy-label>Copy link</span>
+                  </button>
+                </div>
+              </div>
+            </details>
+          </li>
         ))}
+      </ul>
+
+      <p class="faq-empty" data-faq-empty hidden>
+        That one looks new. <a data-faq-ask data-email={SUPPORT_EMAIL} href={`mailto:${SUPPORT_EMAIL}`}>Send me your question</a>.
+      </p>
+      <p class="sr-only" role="status" data-faq-status></p>
+
+      <div class="faq-foot" data-faq-foot>
+        <button type="button" class="btn-pill faq-more" aria-controls="faq-grid" data-faq-more>
+          See all {items.length} questions
+        </button>
+        <p class="faq-closing">
+          Still wondering? <a href={closingHref}>Email me</a> — I read everything.
+        </p>
       </div>
     </Container>
   </section>
 )}
 
+<script>
+  import "../scripts/faq-section.ts";
+</script>
+
 <style>
   .faq-section {
     padding-block: clamp(3.5rem, 8vw, 6.5rem);
   }
-  .faq-section__list {
-    margin-top: clamp(2.25rem, 5vw, 3rem);
+
+  /* ── Head: title left, search right (UseCasesPreview's split head) ───── */
+  .faq-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+  .faq-head__intro {
+    max-width: 34rem;
+  }
+  .faq-head__intro > * + * {
+    margin-top: 0.85rem;
+  }
+
+  /* Search pill — BlogSearchBar's `page` variant, sized for this row. */
+  .faq-search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 100%;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 150ms ease, border-color 150ms ease;
+  }
+  @media (min-width: 720px) {
+    .faq-search {
+      flex: 0 1 22rem;
+    }
+  }
+  .faq-search:focus-within {
+    border-color: color-mix(in oklab, var(--color-accent) 55%, var(--color-rule));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-accent) 28%, transparent),
+      var(--shadow-card);
+  }
+  .faq-search__icon {
+    flex: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--color-ink-faint);
+  }
+  .faq-search__input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0.3rem 0.1rem;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    outline: none;
+  }
+  .faq-search__input::placeholder {
+    color: var(--color-ink-faint);
+  }
+  .faq-search__input::-webkit-search-decoration,
+  .faq-search__input::-webkit-search-results-button,
+  .faq-search__input::-webkit-search-results-decoration {
+    display: none;
+  }
+  .faq-search__input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-left: 0.2rem;
+    background: center / 0.9rem 0.9rem no-repeat
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6' stroke='%23888c96' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+    cursor: pointer;
+  }
+
+  /* ── Grid ─────────────────────────────────────────────────────────────── */
+  .faq-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    /* An open card spans its row; dense packing lets the cards after it
+       backfill, so it lands as a full-width panel right under its row. */
+    grid-auto-flow: row dense;
+    gap: 0.75rem;
+    margin: clamp(1.75rem, 4vw, 2.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 720px) {
+    .faq-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 960px) {
+    .faq-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* The li carries the global stagger reveal's opacity/transform transition —
+     keep hover, transform, and animation on .faq-card, never here. */
+  .faq-grid__item {
+    display: flex;
+    min-width: 0;
+  }
+  .faq-grid__item[hidden] {
+    display: none;
+  }
+  .faq-grid__item:has(> [open]) {
+    grid-column: 1 / -1;
+  }
+
+  /* Default view: 5 / 8 / 9 cards at 1 / 2 / 3 columns. JS-only, off while
+     searching, and never hides an open or deep-linked card. */
+  @media (max-width: 719.98px) {
+    :global(html.js) .faq-grid[data-collapsed]:not([data-searching]) > .faq-grid__item:nth-child(n + 6):not(:has(> [open], > :target)) {
+      display: none;
+    }
+  }
+  @media (min-width: 720px) and (max-width: 959.98px) {
+    :global(html.js) .faq-grid[data-collapsed]:not([data-searching]) > .faq-grid__item:nth-child(n + 9):not(:has(> [open], > :target)) {
+      display: none;
+    }
+  }
+  @media (min-width: 960px) {
+    :global(html.js) .faq-grid[data-collapsed]:not([data-searching]) > .faq-grid__item:nth-child(n + 10):not(:has(> [open], > :target)) {
+      display: none;
+    }
+  }
+  :global(html:not(.js)) .faq-search,
+  :global(html:not(.js)) .faq-more,
+  :global(html:not(.js)) .faq-card__copy {
+    display: none;
+  }
+
+  /* ── Card ─────────────────────────────────────────────────────────────── */
+  .faq-card {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--color-rule);
+    border-radius: 0.875rem;
+    background: var(--color-paper);
+    scroll-margin-top: 5.5rem;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      box-shadow 200ms ease,
+      transform 150ms ease;
+  }
+  .faq-card:not([open]):hover {
+    background: var(--color-warm);
+    border-color: color-mix(in srgb, var(--color-ink) 10%, var(--color-rule));
+    transform: translateY(-1px);
+  }
+  .faq-card[open] {
+    border-color: color-mix(in srgb, var(--color-accent) 22%, var(--color-rule));
+    box-shadow: var(--shadow-card);
+  }
+
+  .faq-card__summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem 0.75rem;
+    padding: 1.05rem 1.1rem 1.15rem 1.2rem;
+    border-radius: inherit;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-card__summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-card__summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .faq-card__question {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  /* The short answer is the card's headline. */
+  .faq-card__short {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.35vw, 1.15rem);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+
+  .faq-card__toggle {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: -0.15rem -0.2rem 0 0;
+    border: 1px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-card);
+    color: var(--color-ink-soft);
+    transition:
+      transform 250ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 150ms ease,
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+  .faq-card__toggle svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  .faq-card:not([open]):hover .faq-card__toggle {
+    color: var(--color-ink);
+  }
+  .faq-card[open] .faq-card__toggle {
+    transform: rotate(45deg);
+    border-color: transparent;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+
+  .faq-card__body {
+    padding: 0 1.2rem 1.1rem;
+  }
+  .faq-card[open] .faq-card__body {
+    animation: faq-card-in 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .faq-section[data-vt] .faq-card[open] .faq-card__body {
+    animation: none;
+  }
+
+  .faq-card__answer {
     max-width: 42rem;
-    margin-inline: auto;
+    padding-top: 0.25rem;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+  .faq-card__answer :global(> p) {
+    margin: 0;
+  }
+  .faq-card__answer :global(> p + p) {
+    margin-top: 0.85rem;
+  }
+  .faq-card__answer :global(strong) {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .faq-card__answer :global(a) {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .faq-card__answer :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .faq-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--color-rule);
+  }
+  .faq-card__next {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .faq-card__next:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .faq-card__copy {
+    margin-left: auto;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8125rem;
+  }
+  .faq-card__copy-icon {
+    flex: none;
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+  .faq-card__copy-icon--check {
+    display: none;
+  }
+  .faq-card__copy.is-copied {
+    color: var(--color-mint-ink);
+  }
+  .faq-card__copy.is-copied .faq-card__copy-icon {
+    display: none;
+  }
+  .faq-card__copy.is-copied .faq-card__copy-icon--check {
+    display: block;
+  }
+
+  /* Cards revealed by "See all" — the stagger reveal already ran for the list. */
+  .faq-grid__item[data-entering] > .faq-card {
+    animation: faq-card-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--enter-i, 0) * 45ms);
+  }
+
+  @keyframes faq-card-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes faq-card-enter {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ── Empty state, See all, closing line ───────────────────────────────── */
+  .faq-empty {
+    margin-top: 0.75rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px dashed var(--color-rule);
+    border-radius: 0.875rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-align: center;
+  }
+  .faq-empty a {
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .faq-empty a:hover {
+    text-decoration: underline;
+  }
+
+  .faq-foot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: clamp(1.5rem, 3.5vw, 2rem);
+    text-align: center;
+  }
+  .faq-more {
+    padding: 0.5rem 1.1rem;
+  }
+  .faq-closing {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+  .faq-closing a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms ease;
+  }
+  .faq-closing a:hover {
+    text-decoration-color: var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-card,
+    .faq-card__toggle,
+    .faq-search {
+      transition: none;
+    }
+    .faq-card:not([open]):hover {
+      transform: none;
+    }
+    .faq-card[open] .faq-card__body,
+    .faq-grid__item[data-entering] > .faq-card {
+      animation: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Card reflow when one opens (src/scripts/faq-section.ts). The images keep
+     their natural size inside a clipping group, so text never stretches while
+     a card's box grows or shrinks. */
+  ::view-transition-group(.faq-card),
+  ::view-transition-group(.faq-foot) {
+    animation-duration: 320ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  ::view-transition-group(.faq-card) {
+    overflow: clip;
+    border-radius: 0.875rem;
+  }
+  ::view-transition-old(.faq-card),
+  ::view-transition-new(.faq-card) {
+    height: 100%;
+    object-fit: none;
+    object-position: left top;
+  }
+  /* Only the cards move — the rest of the page switches instantly instead of
+     cross-fading its old position into its new one. */
+  html.faq-vt::view-transition-old(root) {
+    display: none;
+  }
+  html.faq-vt::view-transition-new(root) {
+    animation: none;
   }
 </style>

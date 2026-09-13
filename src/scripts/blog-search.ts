@@ -6,7 +6,7 @@ type SearchIndex = {
   categories: { id: string; label: string }[];
 };
 
-type CategoryColors = Record<string, { bg: string }>;
+type CategoryColors = Record<string, string>;
 
 const CATEGORY_BG: CategoryColors = {
   "study-habits": "var(--color-sky)",

@@ -218,6 +218,20 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
         if (!id) return false;
         const target = document.getElementById(id);
         if (!target) return false;
+        // Let the owning component un-hide the target first (the homepage FAQ
+        // clears a search that filtered the linked question out).
+        target.dispatchEvent(new CustomEvent("reveal-hash-target", { bubbles: true }));
+        // A link to a question should arrive with its answer showing.
+        if (target instanceof HTMLDetailsElement) target.open = true;
+        // Reveal-on-scroll ancestors too: a target inside a stagger list that
+        // hasn't been scrolled to yet would otherwise land at opacity 0.
+        for (
+          let el: Element | null = target.closest("[data-reveal]");
+          el;
+          el = el.parentElement?.closest("[data-reveal]") ?? null
+        ) {
+          revealEl(el);
+        }
         target.querySelectorAll("[data-reveal]").forEach(revealEl);
         target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
         return true;
