@@ -60,6 +60,7 @@ export const FREE_PLAN: PricingPlan = {
     "Offline sync across devices",
     "Sharable notes via link",
     "Built-in Suggestions (automatically resurfaces the past)",
+    "90 days of history",
     "Reminders — an optional nudge, at a rhythm you choose, carrying the day's verse",
     "90 days of history",
   ],
