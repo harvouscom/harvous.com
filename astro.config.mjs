@@ -26,6 +26,11 @@ const releaseNoteRedirects = Object.fromEntries(
   ])
 );
 
+/** Review renamed to Review exercises — one entry, matching the rule above. */
+const addonSlugRedirects = {
+  "/add-ons/review/": "/add-ons/review-exercises/",
+};
+
 /**
  * Whether this build keeps draft marketing pages (src/lib/draft-pages.ts).
  *
@@ -108,7 +113,7 @@ export default defineConfig({
     stripDraftPages(),
     stagingNoindexHeaders(),
   ],
-  redirects: releaseNoteRedirects,
+  redirects: { ...releaseNoteRedirects, ...addonSlugRedirects },
   vite: {
     plugins: [tailwindcss()],
   },

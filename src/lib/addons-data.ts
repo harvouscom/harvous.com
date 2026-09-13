@@ -86,7 +86,7 @@ const ADDON_PAGES: AddonPage[] = [
         body: "Publish a thread as a study plan and the room reads along together — everyone on the same page, not catching up on their own.",
       },
     ],
-    relatedIds: ["review", "challenges", "connector"],
+    relatedIds: ["review-exercises", "challenges", "connector"],
     relatedHeading: "Harvous free + what's next",
     relatedLead:
       "Shared Spaces hosting is included with Harvous Plus. See the free plan — and what's coming next on the roadmap.",
@@ -99,20 +99,20 @@ const ADDON_PAGES: AddonPage[] = [
   },
   {
     kind: "addon",
-    slug: "review",
-    href: "/add-ons/review/",
-    title: "Review",
+    slug: "review-exercises",
+    href: "/add-ons/review-exercises/",
+    title: "Review exercises",
     tagline: "Short questions built from your own study, with answers Harvous checks.",
-    seoTitle: "Review — deliberate practice for what you've studied | Harvous Plus",
+    seoTitle: "Review exercises — deliberate practice for what you've studied | Harvous Plus",
     seoDescription:
-      "Review turns your own notes, the verses you keep, and the chapters you read into short questions with real answers. No question is written by AI, and there is no score, streak, or leaderboard.",
+      "Review exercises turn your own notes, the verses you keep, and the chapters you read into short questions with real answers. No question is written by AI, and there is no score, streak, or leaderboard.",
     icon: "fa7-solid:clock-rotate-left",
     ink: "var(--study-dock-accent-violet)",
     image: "/images/auth-hero/ai_bg_075.webp",
     comingSoon: false,
     heroTitle: "A deliberate way to hold onto what you've studied.",
     heroLead:
-      "Suggestions brings things back when they happen to be worth another look. Review is the version you ask for — a short question drawn from what you actually wrote, kept, or read, with an answer Harvous can check.",
+      "Suggestions brings things back when they happen to be worth another look. Review exercises are the version you ask for — a short question drawn from what you actually wrote, kept, or read, with an answer Harvous can check.",
     sections: [
       {
         heading: "Your own material, and a real answer",
@@ -155,9 +155,9 @@ const ADDON_PAGES: AddonPage[] = [
     relatedIds: ["shared-spaces", "connector"],
     relatedHeading: "Harvous free + what's next",
     relatedLead:
-      "Review is included with Harvous Plus — there's no free tier for it. See the free plan, and what else is on the roadmap.",
+      "Review exercises are included with Harvous Plus — there's no free tier for them. See the free plan, and what else is on the roadmap.",
     closingHeading: "Hold onto what you've studied, on purpose.",
-    closingLead: "Get Harvous Plus for Review — spaced practice built from your own notes.",
+    closingLead: "Get Harvous Plus for Review exercises — spaced practice built from your own notes.",
     closingHref: APP_UPGRADE_URL,
     closingLabel: "Get Harvous Plus",
     draft: false,

@@ -34,8 +34,8 @@ export type HarvousPosition = {
 /*
   Ids here become proof links under "Choose Harvous if…", rendered as
   /features/<id>/. Categories are fair game (they live at that path); addons are
-  NOT — Review sits at /add-ons/review/, so it is named in prose only, never
-  added here, or all 59 pages would carry the same broken link.
+  NOT — Review exercises sit at /add-ons/review-exercises/, so they are named in
+  prose only, never added here, or all 59 pages would carry the same broken link.
 */
 export const COMPARE_FEATURE_LABELS: Record<string, string> = {
   "scripture-pills": "Scripture pills",
@@ -172,7 +172,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
 
   "Bible Notes": {
     chooseIf:
-      "You want a dedicated Bible notes app built around threading, scripture pills, highlights, and Suggestions — not live sermon transcription, SOAP-plus-reader bundles, or handwriting-first journals. It opens on Activity, a week of what you actually studied, and Review (on Plus) asks you about your own notes afterwards.",
+      "You want a dedicated Bible notes app built around threading, scripture pills, highlights, and Suggestions — not live sermon transcription, SOAP-plus-reader bundles, or handwriting-first journals. It opens on Activity, a week of what you actually studied, and Review exercises (on Plus) ask you about your own notes afterwards.",
     bestAt: "Threading and resurfacing written scripture-linked study notes",
     primaryUse: "Bible study notes with pills, highlights, threads, @ mentions, and Suggestions",
     idealFor: "People choosing among Bible notes apps who care most about finding what they wrote later",
@@ -248,7 +248,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
 
   "AI Guided Bible": {
     chooseIf:
-      "You want a human-authored record of what you studied — scripture pills, threads, and Suggestions — more than AI-led reading, chat, or generated journeys. Review (on Plus) asks you about your own notes and you answer from memory: no AI-written question, no generated answer, no score.",
+      "You want a human-authored record of what you studied — scripture pills, threads, and Suggestions — more than AI-led reading, chat, or generated journeys. Review exercises (on Plus) ask you about your own notes and you answer from memory: no AI-written question, no generated answer, no score.",
     bestAt: "Keeping your own written reflections findable later",
     primaryUse: "Notes you write and revisit, linked to Scripture",
     idealFor: "People who use AI guides for prompts but want their own notes to last",
@@ -277,7 +277,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Testing what stuck",
-        harvous: "Review (Plus) — you answer from memory",
+        harvous: "Review exercises (Plus) — you answer from memory",
         competitorHint: "AI supplies the answer",
       },
     ],
@@ -324,7 +324,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
 
   "Bible Education": {
     chooseIf:
-      "You’re in a course, curriculum, or teaching context and want personal scripture-linked notes that last after the lesson ends — pills, threads, and Suggestions beside the content. Review (on Plus) turns those notes back into questions you answer from memory, which is the part a finished course stops doing for you.",
+      "You’re in a course, curriculum, or teaching context and want personal scripture-linked notes that last after the lesson ends — pills, threads, and Suggestions beside the content. Review exercises (on Plus) turn those notes back into questions you answer from memory, which is the part a finished course stops doing for you.",
     bestAt: "Personal notes that outlast a course or curriculum module",
     primaryUse: "Scripture-linked study notes alongside teaching content",
     idealFor: "Learners and teachers who want notes that aren’t trapped in a course player",
@@ -353,7 +353,7 @@ const POSITIONS: Record<string, HarvousPosition> = {
       },
       {
         label: "Holding onto it",
-        harvous: "Review (Plus) — recall from your own notes",
+        harvous: "Review exercises (Plus) — recall from your own notes",
         competitorHint: "Quizzes scoped to the course, if any",
       },
     ],

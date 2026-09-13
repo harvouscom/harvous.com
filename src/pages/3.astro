@@ -48,8 +48,8 @@ const activityCategory = getFeatureCategoryBySlug("activity");
 const readCategory = getFeatureCategoryBySlug("read");
 const writeCategory = getFeatureCategoryBySlug("write");
 const findCategory = getFeatureCategoryBySlug("find");
-const review = getAddonBySlug("review");
-const reviewHref = getAddonDetailHref("review") ?? "/add-ons/review/";
+const review = getAddonBySlug("review-exercises");
+const reviewHref = getAddonDetailHref("review-exercises") ?? "/add-ons/review-exercises/";
 const sharedSpaces = getAddonBySlug("shared-spaces");
 const sharedSpacesHref = getAddonDetailHref("shared-spaces") ?? "/add-ons/shared-spaces/";
 
@@ -148,14 +148,14 @@ const newSlides = [
     cta: "How spaces work",
   },
   review && {
-    title: "Review",
+    title: "Review exercises",
     plan: "Plus",
-    tagline: "Write an answer from memory, then say how it went — from your own notes and verses.",
+    tagline: "Write an answer from memory, then say how well you remembered it — from your own notes and verses.",
     href: reviewHref,
     icon: review.icon,
     ink: review.ink,
     image: review.image,
-    shot: v3Shot("review", "A Review question in Harvous, with the answer written from memory and the source still hidden."),
+    shot: v3Shot("review", "A question from Review exercises in Harvous, with the answer written from memory and the source still hidden."),
     cta: "How it works",
   },
   noteTemplates && writeCategory && {
@@ -226,8 +226,8 @@ const newSlides = [
 /*
   What changed: what each thing was, what it is now, one line on why. Links
   point at the category pages rather than /features/sidebar-modes/, whose slug
-  predates this release. Review is an addition, not a move, so it lives in
-  What's new.
+  predates this release. Review exercises are an addition, not a move, so they
+  live in What's new.
 */
 const movedRows = [
   {
@@ -252,7 +252,7 @@ const movedRows = [
 
 const pageUrl = `${site}/3/`;
 const pageDescription =
-  "What changed in Harvous 3, for people who already use it: Activity, Search, Suggestions, Review — and why the sidebar went.";
+  "What changed in Harvous 3, for people who already use it: Activity, Search, Suggestions, Review exercises — and why the sidebar went.";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -500,8 +500,9 @@ const jsonLd = {
             </p>
             <p>
               Recall became Suggestions, because the name only covered half the job. And Review
-              is for everyone who's written asking how to hold onto what they've studied — you
-              answer from memory, then say how it went. I left the scoring out on purpose.
+              exercises are for everyone who's written asking how to hold onto what they've
+              studied — you answer from memory, then say how well you remembered it. I left the
+              scoring out on purpose.
             </p>
             <p>
               None of this touches what you've already built. Your notes, highlights, threads,

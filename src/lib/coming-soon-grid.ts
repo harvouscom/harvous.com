@@ -24,11 +24,11 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
     comingSoon: false,
   },
   {
-    id: "review",
+    id: "review-exercises",
     icon: "fa7-solid:clock-rotate-left",
-    title: "Review",
-    desc: "Write an answer from memory, then say how it went — from your own notes, never an invented question. Included with Harvous Plus.",
-    href: "/add-ons/review/",
+    title: "Review exercises",
+    desc: "Write an answer from memory, then say how well you remembered it — from your own notes, never an invented question. Included with Harvous Plus.",
+    href: "/add-ons/review-exercises/",
     comingSoon: false,
   },
   {
