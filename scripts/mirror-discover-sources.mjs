@@ -15,17 +15,29 @@
  * that reason), and mirroring is what keeps that true.
  *
  * Two smaller reasons: a fetched file has real dimensions, so the poster can
- * carry honest `width`/`height` and shift nothing; and a hand-written curated
- * row is never re-fetched the way a synced one is, so a rotted remote URL would
+ * carry honest `width`/`height` and shift nothing; and a reference's own row
+ * is never re-fetched the way a page render is, so a rotted remote URL would
  * decay silently to a grey box on a page nobody rebuilds.
  *
- * A publisher who would rather we hot-linked theirs sets `source.mirrorPoster:
- * false` and the reader falls back to the authored URL. `source.embedOnly`
- * governs *media* — we never host anyone's video, only a poster frame that
- * credits and links back, which is what every link preview on the web does.
+ * **Where the source/video/resource-type data comes from.** It used to live
+ * in `data/discover-curated.json`, hand-authored here. The app owns the
+ * catalog now — `src/data/curated-resources.ts`, published through
+ * `discover-seed-curated-resources.ts` — and delivers it back through the
+ * very file this repo already reads for everything else,
+ * `data/discover-listings.json`, under each resource's `preview.source` /
+ * `preview.video`. This script reads *that* file for what to fetch, and
+ * `discover-curated.json` for the much smaller thing this disk still knows
+ * that the app's database cannot: a path already sitting here, for the rare
+ * entry the mirroring convention is wrong for (see `deriveSourceLogo` and
+ * `resolveDiscoverImage` in `src/lib/discover-data.ts`, which read the same
+ * two files by the same convention at build time).
+ *
+ * `source.embedOnly` governs *media* — we never host anyone's video, only a
+ * poster frame that credits and links back, which is what every link preview
+ * on the web does.
  *
  * Nothing here is required for a correct build: `resolveDiscoverImage` checks
- * the disk and degrades to whatever the entry authored, so a forgotten run
+ * the disk and degrades to whatever the row authored, so a forgotten run
  * costs a hot-linked image rather than a broken page. Same operating model as
  * `npm run og:pages` — generated locally, committed, not run in CI.
  *
@@ -39,6 +51,7 @@ import { join } from "node:path";
 import sharp from "sharp";
 
 const ROOT = join(import.meta.dirname, "..");
+const CATALOG_PATH = join(ROOT, "data/discover-listings.json");
 const CURATED_PATH = join(ROOT, "data/discover-curated.json");
 const OUT_DIR = join(ROOT, "public/images/discover-sources");
 const LOGO_DIR = join(OUT_DIR, "logos");
@@ -352,8 +365,39 @@ function normalizeTone({ r, g, b }) {
   return `#${hex(chan(h + 1 / 3))}${hex(chan(h))}${hex(chan(h - 1 / 3))}`;
 }
 
+/**
+ * The same merge `discover-data.ts` does at build time, in one pass: every
+ * seeded reference from the synced catalog, with this disk's presentation
+ * override (if any) laid on top by slug.
+ *
+ * `discover-listings.json` is what the app's export actually calls these
+ * fields — `preview.source`, `preview.video` — so this reads them by the same
+ * names rather than inventing a second vocabulary for the same data.
+ */
+function readEffectiveListings() {
+  const { listings: synced } = JSON.parse(readFileSync(CATALOG_PATH, "utf-8"));
+  const { listings: curated } = JSON.parse(readFileSync(CURATED_PATH, "utf-8"));
+  const overrides = new Map(curated.map((entry) => [entry.slug, entry]));
+
+  return synced
+    .filter((row) => row.kind === "resource" && row.preview?.source)
+    .map((row) => {
+      const override = overrides.get(row.slug);
+      return {
+        slug: row.slug,
+        source: row.preview.source,
+        video: row.preview.video ?? null,
+        /* A local override is already ours — an existing blog thumb, most
+           often — so there is nothing to fetch. A missing one just means no
+           picture of this reference's own; nothing here forces one. */
+        image: override?.image ?? null,
+        logoOverride: override?.logo ?? null,
+      };
+    });
+}
+
 async function main() {
-  const { listings } = JSON.parse(readFileSync(CURATED_PATH, "utf-8"));
+  const listings = readEffectiveListings();
   mkdirSync(OUT_DIR, { recursive: true });
   mkdirSync(LOGO_DIR, { recursive: true });
 
@@ -371,8 +415,6 @@ async function main() {
     } else if (existsSync(out) && !FORCE) {
       skipped.push({ slug: entry.slug, why: "already mirrored" });
     } else {
-      /* A local `image` is already ours — an existing blog thumb, most often —
-         so there is nothing to fetch and nothing to copy. */
       const local = entry.image?.startsWith("/");
       if (local) {
         skipped.push({ slug: entry.slug, why: `local: ${entry.image}` });
@@ -404,11 +446,15 @@ async function main() {
     }
 
     const source = entry.source;
-    /* Only fetch a mark this script is meant to own. A `logo` pointing anywhere
-       else is an asset we already ship — Harvous's own icon, most obviously —
-       and re-fetching a favicon over it would be a worse picture of ourselves. */
-    if (!source?.logo?.startsWith("/images/discover-sources/logos/")) continue;
+    /* Mirroring by convention is the default now that the app's export carries
+       no `logo` field at all — asking it to would mean teaching the catalog's
+       database about a filename this repo owns. A `logoOverride` set to
+       anywhere *other* than that convention path is the one thing this script
+       must not step on: an asset we already ship, Harvous's own icon most
+       obviously, that re-fetching a favicon over would only make worse. */
     const logoSlug = sourceSlug(source.name);
+    const bySlugLogo = `/images/discover-sources/logos/${logoSlug}.webp`;
+    if (entry.logoOverride && entry.logoOverride !== bySlugLogo) continue;
     const logoOut = join(LOGO_DIR, `${logoSlug}.webp`);
     if (logos.some((l) => l.source === source.name) || (existsSync(logoOut) && !FORCE)) continue;
     try {
@@ -419,7 +465,7 @@ async function main() {
         .toFile(logoOut);
       logos.push({
         source: source.name,
-        out: `/images/discover-sources/logos/${logoSlug}.webp`,
+        out: bySlugLogo,
         bytes: info.size,
       });
     } catch (error) {
@@ -443,15 +489,22 @@ async function main() {
        still belongs to somebody, and their mark is the one colour on the card
        that is genuinely theirs. Falling back to it is what stops those cards
        drawing a `DOCUMENT_ART` plate picked by hashing the slug, which is how
-       Working Preacher ended up on an orange wash it has nothing to do with. */
-    const logo = entry.source?.logo?.startsWith("/")
-      ? join(ROOT, "public", entry.source.logo.slice(1))
+       Working Preacher ended up on an orange wash it has nothing to do with.
+       Same by-convention-then-override lookup as the fetch pass above, since
+       either one could be what actually exists on disk for this source. */
+    const logoSlug = sourceSlug(entry.source.name);
+    const bySlugLogo = join(LOGO_DIR, `${logoSlug}.webp`);
+    const overrideLogo = entry.logoOverride?.startsWith("/")
+      ? join(ROOT, "public", entry.logoOverride.slice(1))
+      : null;
+    const logo =
+      existsSync(bySlugLogo) ? bySlugLogo
+      : overrideLogo && existsSync(overrideLogo) ? overrideLogo
       : null;
     const from =
       existsSync(mirrored) ? mirrored
       : local && existsSync(local) ? local
-      : logo && existsSync(logo) ? logo
-      : null;
+      : logo;
     if (!from) continue;
     try {
       const tone = await toneOf(readFileSync(from));
