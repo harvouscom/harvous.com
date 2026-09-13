@@ -480,6 +480,15 @@ const searchText = [
     gap: 0.5rem;
     padding: 0.625rem;
   }
+  /* On the plain card only, the specimen stops claiming a fixed 58% of the
+     plate and sizes to what it actually holds: the masthead's clamped text and
+     the picture above, now a fixed-ratio box rather than a stretched one (see
+     `.dcard__link-image`). `flex: 0 1 auto` can still shrink under real
+     pressure; the flanks, already `flex: 1 1 0`, take up whatever room this
+     gives back rather than leaving the poster to make up the difference. */
+  .dcard[data-kind="resource"]:not(.dcard--compact) .dcard__specimen {
+    flex: 0 1 auto;
+  }
 
   /* Stacked, not a row. Side by side, "DESIRINGGOD.ORG" took most of a 174px
      specimen and clipped the title to "Read the…" — the one line that has to
@@ -665,6 +674,48 @@ const searchText = [
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+  }
+
+  /* On the plain (non-compact) card, `width: 100%` above stretches the picture
+     to whatever the specimen's `flex: 0 0 58%` happens to be — a fraction of
+     the *plate*, which is a fixed 11.5rem tall at every viewport width. Width
+     shrinks with the grid column, height never does, so the box the poster is
+     cropped into swings with the screen: 1.98:1 in a two-up desktop row
+     (cropping top and bottom), 1.54:1 in mobile's single column (cropping the
+     sides by 13%) — neither matches a 16:9 poster, and nothing in between does
+     either. `bibleproject-genesis-1-11`'s "Mark" cover lost its bookmark
+     corner on a phone for exactly this reason.
+
+     The picture's height is already whatever remains after the masthead —
+     fixed at 6rem regardless of viewport, since the masthead's own height
+     (icon plus two clamped lines) never scales — so its width can be fixed to
+     match 16:9 outright instead of chasing the ratio per breakpoint.
+
+     Tried `aspect-ratio` deriving width from a flex-grown height first: it
+     sized the picture itself correctly (measured 170.66×96, exactly 16:9) but
+     the specimen around it did not grow to match, because a cross-size that
+     comes from an aspect-ratio applied to a main-axis flex-grow result is a
+     case flex's own intrinsic-sizing pass does not reliably feed back into an
+     ancestor's max-content width — the specimen kept its old, narrower
+     content-based width and the poster spilled 20px past each edge, visible
+     and unclipped despite the specimen's `overflow: hidden`. Explicit numbers
+     sidestep the cyclic dependency entirely: an authored length always
+     propagates correctly, which is the same reason the compact card's related-
+     listing thumbnail (below) is dimensioned in plain rem rather than derived.
+
+     `align-self: center` stops the column layout stretching it back out to
+     fill the specimen's width; `flex: 0 0 auto` stops it growing or shrinking
+     off that number. The specimen's own width (below) is sized to match
+     explicitly for the same reason, and the two flanks — already `flex: 1 1
+     0` — absorb whatever room that gives back, so the poster's shape is never
+     what pays for a narrow screen. Scoped off `--compact`: that variant's
+     thumbnail was already sized this way by hand (190×120 plate, tuned mats)
+     and needs no second ratio applied on top. */
+  .dcard[data-kind="resource"]:not(.dcard--compact) .dcard__link-image {
+    flex: 0 0 auto;
+    align-self: center;
+    height: 6rem;
+    width: calc(6rem * 16 / 9);
   }
 
   /* ── The source masthead ──────────────────────────────────────────────
