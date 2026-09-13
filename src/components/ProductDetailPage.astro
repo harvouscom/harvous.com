@@ -79,8 +79,8 @@ const backHref = page.kind === "feature" ? (category?.href ?? "/#features") : "/
 const backLabel = page.kind === "feature" ? (category?.title ?? "Features") : "Pricing";
 /*
   A feature page's closing CTA is the try-it-free handoff. An addon page's is the Plus-upgrade
-  button instead — Review and Shared Spaces both set closingHref/closingLabel below to send it
-  to APP_UPGRADE_URL — which isn't a guest visit, so it keeps the signup event.
+  button instead — Review exercises and Shared Spaces both set closingHref/closingLabel below to
+  send it to APP_UPGRADE_URL — which isn't a guest visit, so it keeps the signup event.
 */
 const fathomTrack =
   page.kind === "feature"

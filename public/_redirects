@@ -19,6 +19,10 @@
 /features/recall         /features/suggestions/   301
 /features/recall/        /features/suggestions/   301
 
+# Review renamed to Review exercises
+/add-ons/review          /add-ons/review-exercises/   301
+/add-ons/review/         /add-ons/review-exercises/   301
+
 /updates                 /release-notes/          301
 /updates/*               /release-notes/          301
 /changelog               /release-notes/          301

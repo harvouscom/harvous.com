@@ -86,9 +86,10 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     },
     // The first three follow the heading's own sequence — filed, threaded,
     // brought back — so the row reads left to right in the same order the
-    // sentence above it does. Review is a fourth, appended rather than folded
-    // into that sentence: it's a Harvous Plus add-on (see /add-ons/review/),
-    // not one of the three free-tier behaviors the headline is naming.
+    // sentence above it does. Review exercises are a fourth, appended rather
+    // than folded into that sentence: it's a Harvous Plus add-on (see
+    // /add-ons/review-exercises/), not one of the three free-tier behaviors
+    // the headline is naming.
     items: [
       {
         icons: ["fa7-solid:folder-tree", "fa7-solid:thumbtack"],
@@ -107,8 +108,8 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
       },
       {
         icons: ["fa7-solid:clock-rotate-left"],
-        title: "Review",
-        desc: "Write an answer from memory, then say how it went — from your own notes and verses, with Harvous Plus.",
+        title: "Review exercises",
+        desc: "Write an answer from memory, then say how well you remembered it — from your own notes and verses, with Harvous Plus.",
       },
     ],
   },

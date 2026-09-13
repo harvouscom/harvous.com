@@ -112,10 +112,10 @@ const categories: FeatureCategory[] = [
         body: "Collect the notes that belong to the same line of thinking, however many weeks apart they were written.",
       },
     ],
-    // "review" resolves via getComingSoonGridItem() to the addon page, the same
-    // mechanism Share uses for "shared-spaces" — a Plus add-on housed inside a
-    // free category's grid, not a fourth item on the homepage tour card.
-    featureIds: ["suggestions", "daily-passage", "threads", "review", "reminders"],
+    // "review-exercises" resolves via getComingSoonGridItem() to the addon page,
+    // the same mechanism Share uses for "shared-spaces" — a Plus add-on housed
+    // inside a free category's grid, not a fourth item on the homepage tour card.
+    featureIds: ["suggestions", "daily-passage", "threads", "review-exercises", "reminders"],
     featuresHeading: "What keeps Activity worth opening",
     featuresLead:
       "Activity is built out of what Harvous already logs — nothing new to maintain, which is why it can show you a trail reaching back further than the feature itself.",
@@ -383,7 +383,7 @@ export function getCategoryForFeature(featureId: string): FeatureCategory | unde
  * a version of Write's yellow, not an unrelated teal.
  */
 /* Five now: Activity gained Reminders, and a clamped fifth would have shared
-   Review's shade — two cards in one grid reading as a pair. */
+   Review exercises' shade — two cards in one grid reading as a pair. */
 const INK_VARIANT_TIERS = [55, 42, 32, 24, 18];
 
 export function getFeatureInk(featureId: string): string {

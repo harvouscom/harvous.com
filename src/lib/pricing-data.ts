@@ -82,7 +82,7 @@ export const PLUS_PLAN: PricingPlan = {
   features: [
     "Everything in free",
     "Unlimited history",
-    "Review — helps you remember what you studied",
+    "Review exercises",
     "Unlimited shared spaces",
     "Up to 12 people per space",
     "Turn a thread into a shared study plan",
