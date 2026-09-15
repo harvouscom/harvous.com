@@ -78,7 +78,7 @@ export const PLUS_PLAN: PricingPlan = {
   name: "Harvous Plus",
   priceDisplay: "$6/mo",
   priceDisplaySecondary: "$36/yr",
-  tagline: "For study you return to, together",
+  tagline: "For study you return to, alone or together",
   features: [
     "Everything in free",
     "Unlimited history",
