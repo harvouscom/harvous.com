@@ -98,7 +98,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Open a verse, capture the thought while it's warm, and find it again days later — the Harvous pieces people lean on most for a daily rhythm.",
     compareSlugs: ["youversion", "dwell", "readscripture", "spirit-notes", "church-notes", "abide"],
-    testimonialId: "theo",
+    testimonialId: "yeish",
   },
   {
     slug: "sermon-notes",
@@ -294,7 +294,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Chapter by chapter, cross-reference by cross-reference — the Harvous pieces that help one book compound instead of scatter.",
     compareSlugs: ["logos", "bibleproject", "faithstudy", "life-bible"],
-    testimonialId: "theo",
+    testimonialId: "yeish",
   },
   {
     slug: "topical-study",
@@ -409,7 +409,7 @@ const useCases: UseCase[] = [
     featuresLead:
       "Scripture nearby, a dictionary in reach, highlights that stick — and a way for the sit to come back when life has moved on.",
     compareSlugs: ["logos", "obsidian", "life-bible", "faithstudy"],
-    testimonialId: "theo",
+    testimonialId: "yeish",
   },
   {
     slug: "small-group",

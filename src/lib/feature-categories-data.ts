@@ -121,7 +121,7 @@ const categories: FeatureCategory[] = [
       "Activity is built out of what Harvous already logs — nothing new to maintain, which is why it can show you a trail reaching back further than the feature itself.",
     useCaseSlugs: ["daily-journal", "deep-study"],
     compareSlugs: ["best-apps-to-remember-bible-study", "youversion", "obsidian", "apple-notes"],
-    testimonialId: "theo",
+    testimonialId: "yeish",
   },
   {
     slug: "read",

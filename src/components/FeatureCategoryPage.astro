@@ -19,7 +19,7 @@ import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
 import ComparePreview from "./ComparePreview.astro";
 import TourShotFrame from "./TourShotFrame.astro";
 import { Icon } from "astro-icon/components";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { FeatureCategory } from "../lib/feature-categories-data.ts";
 import { getTourChapter } from "../lib/app-tour-chapters.ts";
@@ -75,6 +75,11 @@ const shot = getTourChapter(category.tourKey)?.shot;
   fixed there — it belongs to the ink choice, not the badge.
 */
 const glyphInk = category.ink;
+
+const testimonialEntry = category.testimonialId
+  ? await getEntry("testimonials", category.testimonialId)
+  : undefined;
+const testimonialRender = testimonialEntry ? await render(testimonialEntry) : undefined;
 
 const pageUrl = `https://harvous.com${category.href}`;
 const jsonLd = {
@@ -247,6 +252,21 @@ const jsonLd = {
           fathomTrack={fathomCompare.detailRelated}
           fathomAllTrack={fathomCompare.homeAll}
         />
+      )
+    }
+
+    {
+      testimonialRender && testimonialEntry && (
+        <section class="fade-rule-t">
+          <div class="detail-content max-w-2xl py-16 text-center use-case-testimonial">
+            <blockquote class="use-case-testimonial__quote font-display text-3xl leading-snug md:text-4xl">
+              <testimonialRender.Content />
+            </blockquote>
+            <figcaption class="mt-6 text-sm italic text-[var(--color-ink-soft)]">
+              &mdash;{testimonialEntry.data.name}
+            </figcaption>
+          </div>
+        </section>
       )
     }
   </article>
