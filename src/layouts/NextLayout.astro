@@ -1,15 +1,20 @@
 ---
 /**
- * NextLayout — the /next/ redesign's chrome around BaseLayout's head.
+ * NextLayout — the site's marketing chrome around BaseLayout's head.
  *
  * BaseLayout renders `bare` here, so its head, analytics, and the reveal / hash
  * / try-CTA scripts are shared, while the site Header, Footer, and page-frame
  * rails give way to a floating pill nav, a sticky "Try Harvous free" pill, and
- * a quieter footer. Every /next/ page is a draft (src/lib/draft-pages.ts):
- * noindex here, out of the sitemap, and stripped from production builds.
+ * a quieter footer.
+ *
+ * `noindex` defaults off — this is the live site now — but a page can still
+ * opt in (release notes keeps individual changelog entries out of the index,
+ * same as before the redesign).
  *
  * next.css is imported from this file, not BaseLayout, so none of it reaches a
- * live page; it is scoped under `.nx` besides.
+ * page still on the old chrome; it is scoped under `.nx` besides. (Some
+ * component and directory names still carry a "next" prefix from when this
+ * was built beside the live site — cosmetic, harmless to rename later.)
  */
 import BaseLayout from "./BaseLayout.astro";
 import NextHeader from "../components/next/NextHeader.astro";
@@ -22,12 +27,13 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  noindex?: boolean;
 }
 
-const { title, description, ogImage } = Astro.props;
+const { title, description, ogImage, noindex = false } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage} noindex bare>
+<BaseLayout title={title} description={description} ogImage={ogImage} noindex={noindex} bare>
   <Fragment slot="head">
     {/* Margin notes only. Self-host before cutover, like Google Sans Flex. */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />

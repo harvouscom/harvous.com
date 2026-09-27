@@ -1,25 +1,17 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PageIntro from "../components/PageIntro.astro";
+/** /privacy/ — the live privacy policy, word for word, in the /next chrome. */
+import LegalPage from "../components/next/LegalPage.astro";
 import PrivacyPolicyBody from "../components/legal/PrivacyPolicyBody.astro";
 import { PRIVACY_UPDATED } from "../lib/legal.ts";
-
-const updated = PRIVACY_UPDATED;
 ---
 
-<BaseLayout
+<LegalPage
+  doc="privacy"
   title="Privacy Policy — Harvous"
   description="How Harvous collects, uses, and protects your data."
+  heading="Privacy Policy"
+  updated={PRIVACY_UPDATED}
+  summary="The short version: your notes are private unless you share a link, I don't sell your information, and analytics stay light, with no session recording and Do Not Track respected."
 >
-  <section class="border-b border-[var(--color-rule)]">
-    <PageIntro>
-      <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">Legal</div>
-      <h1 class="mt-3 font-display text-5xl leading-[1.0] md:text-6xl">Privacy Policy</h1>
-      <p class="mt-4 text-sm text-[var(--color-ink-faint)]">Last updated {updated}</p>
-    </PageIntro>
-  </section>
-
-  <section class="mx-auto max-w-3xl px-5 py-16 md:py-20" data-reveal style="--reveal-delay: 80ms;">
-    <PrivacyPolicyBody />
-  </section>
-</BaseLayout>
+  <PrivacyPolicyBody />
+</LegalPage>

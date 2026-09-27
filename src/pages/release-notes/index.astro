@@ -1,5 +1,274 @@
 ---
-import ReleaseNotesIndexPage from "../../components/ReleaseNotesIndexPage.astro";
+/**
+ * /release-notes/ — every release, in the /next chrome but still in the
+ * release notes' own dress: the drifting grid, the paper-stack cards. The
+ * newest release leads as an open sheet with its entries listed; the rest
+ * follow a month at a time, each card led by its first reader-facing line
+ * (lib/next/releases.ts). A compact month menu pins as you scroll.
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+import SectionNav from "../../components/next/SectionNav.astro";
+import ReleaseNotesIndexCard from "../../components/ReleaseNotesIndexCard.astro";
+import { getReleaseNotes } from "../../lib/release-notes-data.ts";
+import { releaseHeadline } from "../../lib/next/releases.ts";
+
+const releases = getReleaseNotes();
+const [latest, ...rest] = releases;
+const href = (slug: string) => `/release-notes/${slug}/`;
+
+const totals = releases.reduce(
+  (t, r) => ({ features: t.features + r.featureCount, fixes: t.fixes + r.fixCount }),
+  { features: 0, fixes: 0 }
+);
+const first = releases.at(-1);
+const since = first ? new Date(first.date).toLocaleDateString("en-US", { month: "long", year: "numeric" }) : "";
+
+/* The rest, a month at a time. */
+const months: { id: string; label: string; items: typeof rest }[] = [];
+for (const r of rest) {
+  const d = new Date(r.date);
+  const label = d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const id = `m-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  const last = months.at(-1);
+  if (last?.id === id) last.items.push(r);
+  else months.push({ id, label, items: [r] });
+}
+
+const ROT = [-1.1, 0.8, -0.5, 1.2, -0.9, 0.4, -1.4, 0.6];
+const latestEntries = latest?.entries.slice(0, 5) ?? [];
 ---
 
-<ReleaseNotesIndexPage currentPage={1} />
+<NextLayout
+  title="Release Notes — Harvous"
+  description="Release notes and updates for Harvous, the Bible study notes app."
+>
+  <section class="rn-hero release-notes-frame">
+    <div class="release-notes-frame__grid rn-grid" aria-hidden="true"></div>
+    <header class="nx-wrap rn-intro">
+      <p class="nx-kicker">Release notes</p>
+      <h1 class="nx-display rn-title">Everything I've shipped.</h1>
+      <p class="nx-lead rn-lead">
+        {releases.length} releases since {since}, straight from the app's changelog. The big
+        features and the small fixes, as they went out.
+      </p>
+      <p class="rn-stats">
+        <span><b>{releases.length}</b> releases</span>
+        <span><b>{totals.features}</b> features</span>
+        <span><b>{totals.fixes}</b> fixes</span>
+      </p>
+    </header>
+
+    {latest && (
+      <div class="nx-wrap rn-latest">
+        <a class="rn-sheet" href={href(latest.slug)}>
+          <span class="rn-sheet__leaf rn-sheet__leaf--back" aria-hidden="true" />
+          <span class="rn-sheet__leaf rn-sheet__leaf--mid" aria-hidden="true" />
+          <span class="rn-sheet__paper">
+            <span class="rn-sheet__fold" aria-hidden="true" />
+            <span class="rn-sheet__meta">
+              <span class="rn-sheet__badge">Latest</span>
+              <span class="rn-sheet__version">v{latest.version}</span>
+              {latest.date && <time>{latest.date}</time>}
+            </span>
+            <span class="rn-sheet__summary">{latest.excerpt}</span>
+            <ul class="rn-sheet__list" role="list">
+              {latestEntries.map((e) => (
+                <li>
+                  <span class:list={["rn-cat", `rn-cat--${e.category.toLowerCase()}`]}>{e.category}</span>
+                  <span class="rn-sheet__entry">{e.title}</span>
+                </li>
+              ))}
+            </ul>
+            <span class="rn-sheet__more">
+              {latest.entries.length > latestEntries.length
+                ? `Read all ${latest.entries.length} →`
+                : "Read the release →"}
+            </span>
+          </span>
+        </a>
+      </div>
+    )}
+  </section>
+
+  <SectionNav
+    compact
+    label="Months"
+    items={months.map((m) => ({ href: `#${m.id}` as `#${string}`, label: m.label }))}
+  />
+
+  {months.map((m) => (
+    <section id={m.id} class="nx-wrap rn-month" aria-labelledby={`${m.id}-h`}>
+      <div class="rn-month__head">
+        <h2 id={`${m.id}-h`} class="rn-month__title">{m.label}</h2>
+        <p class="rn-month__count">{m.items.length} {m.items.length === 1 ? "release" : "releases"}</p>
+      </div>
+      <div class="rn-cards">
+        {m.items.map((r, i) => (
+          <ReleaseNotesIndexCard
+            release={r}
+            headline={releaseHeadline(r)}
+            href={href(r.slug)}
+            rotation={ROT[i % ROT.length]}
+          />
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <div class="rn-end" />
+</NextLayout>
+
+<style>
+  /* The release notes' own ground: the drifting grid, fading out below. */
+  .rn-hero { position: relative; isolation: isolate; overflow: hidden; }
+  .rn-grid {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+  .rn-intro {
+    position: relative;
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
+  }
+  .rn-title { margin: 1rem auto 0; font-size: clamp(2.75rem, 7vw, 5rem); }
+  .rn-lead { margin: 1.5rem auto 0; }
+  .rn-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1.75rem 0 0;
+  }
+  .rn-stats span {
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+    background: color-mix(in srgb, var(--color-paper) 80%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink) 7%, transparent);
+    font-variant-numeric: tabular-nums;
+  }
+  .rn-stats b { font-weight: 600; color: var(--color-ink); }
+
+  /* The newest release, open on its stack. */
+  .rn-latest {
+    position: relative;
+    max-width: calc(40rem + 2 * var(--nx-gutter));
+    padding-top: clamp(2.5rem, 6vw, 3.5rem);
+    padding-bottom: clamp(2.5rem, 6vw, 3.5rem);
+  }
+  .rn-sheet { position: relative; display: block; color: inherit; text-decoration: none; }
+  .rn-sheet__leaf,
+  .rn-sheet__paper { border-radius: 2px; background-color: var(--paper-sheet); }
+  .rn-sheet__leaf {
+    position: absolute;
+    inset: 0;
+    box-shadow: 0 8px 24px -12px rgba(20, 18, 12, 0.12);
+  }
+  .rn-sheet__leaf--back { rotate: 1.6deg; }
+  .rn-sheet__leaf--mid { rotate: -1.8deg; }
+  .rn-sheet__paper {
+    position: relative;
+    display: block;
+    padding: clamp(1.5rem, 4vw, 2.25rem) clamp(1.25rem, 4vw, 2.25rem);
+    background-image:
+      radial-gradient(var(--pds-paper-grain-a) 1px, transparent 1px),
+      radial-gradient(var(--pds-paper-grain-b) 1px, transparent 1px);
+    background-size: 28px 28px, 17px 17px;
+    background-position: 0 0, 9px 9px;
+    box-shadow: var(--pds-paper-shadow);
+    transition: translate 250ms var(--nx-ease);
+  }
+  .rn-sheet:hover .rn-sheet__paper { translate: 0 -3px; }
+  .rn-sheet__fold {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(225deg, var(--pds-paper-fold-a) 0%, var(--pds-paper-fold-b) 40%, transparent 60%);
+  }
+  .rn-sheet__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .rn-sheet__badge {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--color-ink);
+  }
+  .rn-sheet__version {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .rn-sheet__summary { display: block; margin-top: 0.35rem; font-size: 0.875rem; color: var(--color-ink-faint); }
+  .rn-sheet__list {
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid color-mix(in oklab, var(--color-rule) 70%, transparent);
+  }
+  .rn-sheet__list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-rule) 55%, transparent);
+  }
+  .rn-sheet__entry { font-size: 1rem; line-height: 1.4; color: var(--color-ink); }
+  .rn-cat {
+    flex: none;
+    width: 6.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .rn-cat--feature { color: var(--color-ink); }
+  .rn-cat--fix { color: #047857; }
+  .rn-sheet__more { display: inline-block; margin-top: 1.1rem; font-weight: 500; color: var(--color-ink); }
+
+  /* The rest, a month at a time. */
+  .rn-month { padding-top: clamp(2.5rem, 6vw, 4rem); scroll-margin-top: 7.5rem; }
+  .rn-month__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .rn-month__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.6rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .rn-month__count { font-size: 0.9375rem; color: var(--color-ink-faint); font-variant-numeric: tabular-nums; }
+  .rn-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+    gap: 1.75rem 1.35rem;
+    margin-top: 1.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .rn-end { height: clamp(4rem, 10vw, 6rem); }
+
+  @media (max-width: 40rem) {
+    .rn-cat { width: auto; }
+    .rn-sheet__list li { flex-direction: column; gap: 0.15rem; }
+  }
+</style>

@@ -1,25 +1,17 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PageIntro from "../components/PageIntro.astro";
+/** /terms/ — the live terms of service, word for word, in the /next chrome. */
+import LegalPage from "../components/next/LegalPage.astro";
 import TermsBody from "../components/legal/TermsBody.astro";
 import { TERMS_UPDATED } from "../lib/legal.ts";
-
-const updated = TERMS_UPDATED;
 ---
 
-<BaseLayout
+<LegalPage
+  doc="terms"
   title="Terms of Service — Harvous"
   description="Terms for using Harvous, a Bible study notes app."
+  heading="Terms of Service"
+  updated={TERMS_UPDATED}
+  summary="The short version: what you write is yours, use Harvous lawfully and kindly, and it's a tool for your study, not a substitute for your church or your own judgment."
 >
-  <section class="border-b border-[var(--color-rule)]">
-    <PageIntro>
-      <div class="text-xs uppercase tracking-[0.14em] text-[var(--color-ink-faint)]">Legal</div>
-      <h1 class="mt-3 font-display text-5xl leading-[1.0] md:text-6xl">Terms of Service</h1>
-      <p class="mt-4 text-sm text-[var(--color-ink-faint)]">Last updated {updated}</p>
-    </PageIntro>
-  </section>
-
-  <section class="mx-auto max-w-3xl px-5 py-16 md:py-20" data-reveal style="--reveal-delay: 80ms;">
-    <TermsBody />
-  </section>
-</BaseLayout>
+  <TermsBody />
+</LegalPage>

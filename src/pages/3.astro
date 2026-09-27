@@ -1,1161 +1,687 @@
 ---
 /**
- * /3/ — the Harvous 3 release page.
+ * /next/3/ — the Harvous 3 release page in the /next/ design system.
  *
- * Written for people who already use Harvous 2, in three bands: what's new,
- * what changed, and why. Each band takes a different shape on purpose — a
- * gradient-numeral hero with a three-line TL;DR, a bleeding scroll-snap slider
- * of the new things (the use-cases preview's pattern), a ruled list of what
- * moved (About's list rhythm), and a left-stacked head over the founder letter
- * — so the page reads as a sequence, not a template.
+ * Same substance as the live /3/ (src/pages/3.astro), in the order people who
+ * already use Harvous 2 want it: what's new, what changed, and why. The three
+ * big views get a Scene each (the tour's rhythm, real screenshots); the six
+ * smaller things sit on one even grid; the renames are a plain before → after
+ * list; the letter is Derek's, word for word where it was already good.
  *
- * Every band is a plain <section> that paints nothing, so the page frame's
- * vertical rails (z-index -1) run the whole way down, and every band starts
- * on a frame-divider hairline. Rows inside a band are separated by the same
- * hairline, the way About and the feature grid do it. Not layout/Section —
- * it paints even tone="paper" as an opaque ground, which covers the rails.
- * That is the reason no page on the site uses it.
- *
- * Draft-gated via src/lib/draft-pages.ts until launch — that one array controls
- * noindex, the banner, the sitemap, the production strip, and the two links
- * pointing here (footer + homepage tour).
+ * Copy is first person and stage-honest: every line here is on the live /3/.
  */
-import { existsSync } from "node:fs";
-import path from "node:path";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Container from "../components/layout/Container.astro";
-import OptimizedImage from "../components/OptimizedImage.astro";
+import AppIcon from "../components/next/app/AppIcon.astro";
+import { getCollection } from "astro:content";
+import NextLayout from "../layouts/NextLayout.astro";
+import Scene from "../components/next/Scene.astro";
+import MarginNote from "../components/next/MarginNote.astro";
+import ClosingCall from "../components/next/ClosingCall.astro";
+import SectionNav from "../components/next/SectionNav.astro";
 import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
 import Harvous3Numeral from "../components/Harvous3Numeral.astro";
-import CTAButton from "../components/CTAButton.astro";
 import FounderLetter from "../components/FounderLetter.astro";
-import BlogCard from "../components/BlogCard.astro";
-import PageClosingCTA from "../components/PageClosingCTA.astro";
-import { Icon } from "astro-icon/components";
-import { getCollection } from "astro:content";
-import { getFeatureCategoryBySlug, getFeatureInk } from "../lib/feature-categories-data.ts";
-import { getAddonBySlug, getAddonDetailHref } from "../lib/addons-data.ts";
+import { getAddonDetailHref } from "../lib/addons-data.ts";
 import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
-import { isDraftPageSlug } from "../lib/draft-pages.ts";
-import { fathomSignup } from "../lib/fathom-events.ts";
+import { SHOTS, type Backdrop, type MarginNoteSpec, type Shot } from "../lib/next/content.ts";
 
-const PAGE_SLUG = "3";
-const isDraft = isDraftPageSlug(PAGE_SLUG);
-const site = "https://harvous.com";
 const APP_URL = "https://app.harvous.com/";
 
-const activityCategory = getFeatureCategoryBySlug("activity");
-const readCategory = getFeatureCategoryBySlug("read");
-const writeCategory = getFeatureCategoryBySlug("write");
-const findCategory = getFeatureCategoryBySlug("find");
-const review = getAddonBySlug("review-exercises");
-const reviewHref = getAddonDetailHref("review-exercises") ?? "/add-ons/review-exercises/";
-const sharedSpaces = getAddonBySlug("shared-spaces");
-const sharedSpacesHref = getAddonDetailHref("shared-spaces") ?? "/add-ons/shared-spaces/";
+/* The three views — each gets a Scene, the tour's way. Targets are points in
+   the 1920-wide screenshot; MarginNote lands the arrowhead on them. */
+type Big = {
+  key: string;
+  kicker: string;
+  title: string;
+  lead: string;
+  link: { label: string; href: string };
+  shot: Shot;
+  backdrop: Backdrop;
+  zoom: number;
+  focus: number;
+  note: MarginNoteSpec;
+};
 
-/* Feature pages carry their own icon and art; a slide borrows both. */
-const features = await getCollection("features");
-const feat = (id: string) => features.find((f) => f.id === id)?.data;
-const bibleReader = feat("bible-reader");
-const noteTemplates = feat("note-templates");
-const resourceLibrary = feat("resource-library");
-const reminders = feat("reminders");
-
-/*
-  Each slide carries a screenshot slot, TourShotFrame's way: a build-time
-  filesystem check, so dropping the PNG into public/tour/3/ is the whole step.
-  Until then the slide keeps its icon badge — a tile with a loud placeholder in
-  it would read as unfinished, where a badge reads as a choice.
-
-  These live in their own folder rather than reusing the homepage tour's files.
-  Four of them used to borrow tour shots, which meant a visitor who had just
-  scrolled the homepage met the same four pictures again here — and it tied the
-  framing of a tour card to the framing of a slide, which want different things.
-
-  Square, because the tile is: .v3-slide__art is 1:1.05 and the window inside it
-  is 1.161:1, so a square file is centre-cropped ~7% top and bottom. Frame with
-  that in mind — nothing load-bearing in the top or bottom eighth.
-*/
-type Shot = { src: string; alt: string; width: number; height: number };
-const shotExists = (src: string) =>
-  existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
-/* 475px is the widest the window gets (a 2560px display), so 1400 is ~3x. */
-const V3_SHOT = { width: 1400, height: 1400 };
-const v3Shot = (name: string, alt: string): Shot => ({ src: `/tour/3/${name}.png`, alt, ...V3_SHOT });
-
-/*
-  Hand-picked rather than scored: these two are the release's argument, in the
-  order it should be read. In production drafts are excluded, so this is empty
-  until they publish — the essays block hides itself.
-*/
-const SERIES = ["study-you-can-follow-and-return-to", "the-sidebar-did-too-much"];
-const listedPosts = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
-const byId = new Map(listedPosts.map((p) => [p.id, p]));
-const series = SERIES.map((id) => byId.get(id)).filter(
-  (p): p is NonNullable<typeof p> => p !== undefined
-);
-const [featuredEssay, ...restEssays] = series;
-
-/*
-  What's new, as art cards — the use-cases preview's slide: the thing's own
-  auth-hero image under an ink wash, its icon in a badge, a caption. Nothing
-  here waits on a screenshot. The set and its order follow the release note
-  sent to users: the three views first, then what's new to write with.
-*/
-const newSlides = [
-  activityCategory && {
-    title: "Activity",
-    tagline: "What was My Home in the sidebar is a view of its own — with room to show a week.",
-    href: activityCategory.href,
-    icon: activityCategory.icon,
-    ink: activityCategory.ink,
-    image: activityCategory.image,
-    shot: v3Shot("activity", "The Activity view in Harvous: a day sheet listing the passages read and notes written, with the days before it stacked behind."),
-    cta: "See the view",
+const BIG: Big[] = [
+  {
+    key: "activity",
+    kicker: "Activity",
+    title: "It opens on what you've studied.",
+    lead: "What was My Home in the sidebar is a view of its own now, with room to actually show a week. Today sits on top, with the days before it stacked behind.",
+    link: { label: "More about Activity", href: "/features/activity/" },
+    shot: SHOTS.activity,
+    backdrop: "044",
+    zoom: 1.3,
+    focus: 0.45,
+    /* The "Yesterday" sheet behind today. Short enough for one line, so the paper fits above the target on a phone. */
+    note: { text: "The week, stacked.", at: { top: "4%", right: "4%" }, arrow: "down-left", tilt: 3, target: [1300, 382] },
   },
-  readCategory && {
-    title: "Bible reader",
-    tagline: "Eleven translations — NLT, ESV, NIV, CSB, KJV. Open it, or expand into it from a Scripture pill in a note.",
-    href: "/features/bible-reader/",
-    icon: bibleReader?.icon ?? readCategory.icon,
-    /* Links to the feature page, not the category hub, so its ink is the
-       tiered variant that page actually renders — same rule as note
-       templates and resources below. */
-    ink: getFeatureInk("bible-reader"),
-    image: bibleReader?.image ?? readCategory.image,
-    shot: v3Shot("bible-reader", "The Harvous Bible reader open on a chapter, with the reader's own notes and highlights beside the verse."),
-    cta: "See the reader",
+  {
+    key: "reader",
+    kicker: "Bible reader",
+    title: "Your notes beside the verse.",
+    lead: "Eleven translations, including NLT, ESV, NIV, CSB, and KJV. Open it on its own, or expand into it from a Scripture pill in a note.",
+    link: { label: "More about the reader", href: "/features/bible-reader/" },
+    shot: SHOTS.read,
+    backdrop: "076",
+    zoom: 1.4,
+    focus: 0.4,
+    /* The margin bars beside verses 1–5 (the tour points at the same spot). */
+    note: { text: "My notes, already in the margin.", at: { bottom: "10%", left: "8%" }, arrow: "up-left", side: "start", tilt: -3, target: [322, 560] },
   },
-  findCategory && {
-    title: "Search",
-    tagline: "Top middle now. Search everything you've saved, or browse it by kind the way you could in the sidebar.",
-    href: findCategory.href,
-    icon: findCategory.icon,
-    ink: findCategory.ink,
-    image: findCategory.image,
-    shot: v3Shot("search", "Search open from the top middle of Harvous, listing matches across notes, highlights, and passages."),
-    cta: "See how it works",
+  {
+    key: "search",
+    kicker: "Search",
+    title: "Search lives in the top middle.",
+    lead: "Search everything you've saved from one place. Or skip the typing and browse it by kind, the way you could in the sidebar.",
+    link: { label: "More about Search", href: "/features/find/" },
+    shot: SHOTS.library,
+    backdrop: "058",
+    zoom: 1.5,
+    focus: 0.6,
+    /* The "Everything" kind picker, from below-left so the open menu stays clear. */
+    note: { text: "Or browse it by kind.", at: { top: "30%", left: "20%" }, arrow: "up-right", side: "end", tilt: -2, target: [1300, 238] },
   },
-  sharedSpaces && {
+];
+
+/* Six, so the grid is whole at three columns and at two. Live /3/'s order. */
+const SMALL = [
+  {
     title: "Shared spaces",
-    plan: "Plus",
-    tagline: "Share or create notes for a group, and turn a thread into a study plan. Free to join; it costs to start one.",
-    href: sharedSpacesHref,
-    icon: sharedSpaces.icon,
-    ink: sharedSpaces.ink,
-    image: sharedSpaces.image,
-    shot: v3Shot("shared-spaces", "A shared space in Harvous, with a thread the group has been adding notes to."),
-    cta: "How spaces work",
+    tone: "peach",
+    visual: "space",
+    plus: true,
+    icon: "fa7-solid:user-group",
+    body: "Share or create notes for a group, and turn a thread into a study plan. Free to join; it costs to start one.",
+    href: getAddonDetailHref("shared-spaces") ?? "/add-ons/shared-spaces/",
   },
-  review && {
+  {
     title: "Review exercises",
-    plan: "Plus",
-    tagline: "Write an answer from memory, then say how well you remembered it — from your own notes and verses.",
-    href: reviewHref,
-    icon: review.icon,
-    ink: review.ink,
-    image: review.image,
-    shot: v3Shot("review", "A question from Review exercises in Harvous, with the answer written from memory and the source still hidden."),
-    cta: "How it works",
+    tone: "lilac",
+    visual: "review",
+    plus: true,
+    icon: "fa7-solid:clock-rotate-left",
+    body: "Write an answer from memory, then say how well you remembered it. The questions come from your own notes and verses.",
+    href: getAddonDetailHref("review-exercises") ?? "/add-ons/review-exercises/",
   },
-  noteTemplates && writeCategory && {
+  {
     title: "Note templates",
-    tagline: "Start a note from SOAP or one of your own, from the right side panel.",
+    tone: "cream",
+    visual: "templates",
+    icon: "fa7-solid:list-check",
+    body: "Start a note from SOAP or one of your own, from the right side panel.",
     href: "/features/note-templates/",
-    icon: noteTemplates.icon,
-    /* Its own feature page's ink — a tiered variant of Write's, not Write's
-       raw colour — over its own yellow photo, not Write's borrowed one, so
-       no two cards in this carousel share art. */
-    ink: getFeatureInk("note-templates"),
-    image: noteTemplates.image ?? writeCategory.image,
-    shot: v3Shot("note-templates", "The right side panel in Harvous open on the note templates, with SOAP listed."),
-    cta: "See templates",
   },
-  resourceLibrary && findCategory && {
+  {
     title: "Resources",
-    tagline: "A link from The Bible Project, or a PDF your church sent — kept where you can pull it into a note.",
+    tone: "sky",
+    visual: "resources",
+    icon: "fa7-solid:newspaper",
+    body: "A link from The Bible Project, or a PDF your church sent, kept where you can pull it into a note.",
     href: "/features/resource-library/",
-    icon: resourceLibrary.icon,
-    /* Its own feature page's ink — a tiered, green variant of Find's, not
-       Find's raw colour — over its own green photo, a different one than
-       Search's, so the two don't read as the same card. */
-    ink: getFeatureInk("resource-library"),
-    image: resourceLibrary.image ?? findCategory.image,
-    shot: v3Shot("resources", "A resource saved in Harvous — a PDF — with its pill placed in a note beside it."),
-    cta: "See resources",
   },
-  /* Free, so no plan badge — the two Plus slides above are the only ones. Sits
-     after the writing tools because it is the one thing here that reaches you
-     rather than waiting to be opened.
-
-     Activity's own ink and photo, not reminders.mdx's — deliberately, unlike
-     note-templates and resources below. Those two wanted art that DIDN'T match
-     their category, so no two cards would share a look. Reminders wants the
-     opposite: it isn't a visual sub-brand of its own, it's Activity reaching
-     out to you, so it should read as Activity's blue on sight. getFeatureInk's
-     tiered dilution (18% at this position) and reminders.mdx's own photo
-     (chosen only for being unused, not for its color — it's orange) both
-     fought that on a card with no screenshot yet, where the photo is the
-     entire visible background. */
-  reminders && activityCategory && {
-        title: "Reminders",
-        tagline:
-          "An optional nudge, at a rhythm you choose — Sunday and midweek, or every day — carrying the passage.",
-        href: "/features/reminders/",
-        icon: reminders.icon ?? "fa7-solid:bell",
-        ink: activityCategory.ink,
-        image: activityCategory.image,
-        shot: v3Shot(
-          "reminders",
-          "A Harvous reminder on a phone lock screen, carrying the day's verse, with the passage open behind it."
-        ),
-        cta: "See how it works",
-      },
-  writeCategory && {
+  {
+    title: "Reminders",
+    tone: "mint",
+    visual: "reminders",
+    icon: "fa7-solid:bell",
+    body: "An optional nudge at a rhythm you choose, Sunday and midweek or every day, carrying the passage.",
+    href: "/features/reminders/",
+  },
+  {
     title: "@ mentions",
-    tagline: "Type @ in a note to drop in a note, folder, thread, or resource — and jump to it later.",
-    href: writeCategory.href,
+    tone: "pink",
+    visual: "mentions",
     icon: "fa7-solid:at",
-    ink: writeCategory.ink,
-    image: writeCategory.image,
-    shot: v3Shot("mentions", "A note in Harvous mid-sentence, with the @ picker open listing notes, folders, threads, and resources."),
-    cta: "See how it works",
+    body: "Type @ in a note to drop in a note, folder, thread, or resource, and jump to it later.",
+    href: "/features/write/",
   },
-].filter((s): s is NonNullable<typeof s> => Boolean(s));
+];
 
-/*
-  What changed: what each thing was, what it is now, one line on why. Links
-  point at the category pages rather than /features/sidebar-modes/, whose slug
-  predates this release. Review exercises are an addition, not a move, so they
-  live in What's new.
-*/
-const movedRows = [
+const MOVED = [
   {
     before: "My Home",
     after: "Activity",
-    body: "What sat in the sidebar under My Home is a view of its own now, with room to actually show a week. Three views, left to right in the top left: Activity, the Bible reader, and a note.",
+    body: "What sat in the sidebar under My Home is a view of its own now. Three views, left to right in the top left: Activity, the Bible reader, and a note.",
     link: { label: "See Activity", href: "/features/activity/" },
   },
   {
     before: "The sidebar",
     after: "Search, top middle",
-    body: "You could search everything you'd saved from the sidebar. With the sidebar gone, search is in the top middle — and from there you can still just browse the lists of things, the way you could before.",
+    body: "You could search everything you'd saved from the sidebar. With the sidebar gone, search is in the top middle, and from there you can still browse the lists of things the way you could before.",
     link: { label: "See Search", href: "/features/find/" },
   },
   {
     before: "Recall",
     after: "Suggestions",
-    body: "The same job under a truer name: some of these bring back a fading note, and some propose something new to make from what you already saved. Links to the old name still land in the right place.",
+    body: "The same job under a truer name: some bring back a fading note, and some propose something new to make from what you already saved. Links to the old name still land in the right place.",
     link: { label: "See Suggestions", href: "/features/suggestions/" },
   },
 ];
 
-const pageUrl = `${site}/3/`;
-const pageDescription =
-  "What changed in Harvous 3, for people who already use it: Activity, Search, Suggestions, Review exercises — and why the sidebar went.";
+/* The two essays behind the release, in reading order. Hidden until listed. */
+const SERIES = ["study-you-can-follow-and-return-to", "the-sidebar-did-too-much"];
+const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
+const essays = SERIES.map((id) => listed.find((p) => p.id === id)).filter(
+  (p): p is NonNullable<typeof p> => p !== undefined
+);
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebPage",
-      name: "Harvous 3",
-      description: pageDescription,
-      url: pageUrl,
-      isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
-      about: {
-        "@type": "SoftwareApplication",
-        name: "Harvous",
-        softwareVersion: "3.0",
-        applicationCategory: "ProductivityApplication",
-        operatingSystem: "Web",
-        url: site,
-      },
-    },
-    {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Harvous", item: `${site}/` },
-        { "@type": "ListItem", position: 2, name: "Harvous 3", item: pageUrl },
-      ],
-    },
-  ],
-};
+const pad = (n: number) => String(n + 1).padStart(2, "0");
 ---
 
-<BaseLayout
+<NextLayout
   title="Harvous 3 — study you can follow and return to"
-  description={pageDescription}
+  description="What changed in Harvous 3, for people who already use it: Activity, the Bible reader, Search, Suggestions, Review exercises, and why the sidebar went."
   ogImage="/images/3/og.webp"
-  noindex={isDraft}
-  jsonLd={jsonLd}
 >
-  {
-    isDraft && (
-      <div class="draft-page-banner" role="status">
-        Draft — not indexed or deployed. Remove <code>"3"</code> from DRAFT_PAGE_SLUGS to publish.
-      </div>
-    )
-  }
-
-  <!--
-    Hero. The numeral is Harvous3Numeral — the font's own "3", traced in as an
-    SVG. Decorative; the h1 is the line beneath it. The square grid behind is
-    the ground /release-notes/ sits on, masked so it fades before the frame
-    rails.
-  -->
-  <section class="v3-hero">
+  {/*
+    The live /3/ hero's two signatures, kept: the ruled paper (global
+    .release-notes-frame__grid, fading in then drifting) and the traced "3"
+    (Harvous3Numeral — the same glyph and motion as live). The words arrive
+    after the numeral has filled, one thing at a time.
+  */}
+  <header class="v3-hero">
     <div class="release-notes-frame__grid v3-hero__grid" aria-hidden="true"></div>
-    <Container size="xl">
-      <div class="v3-hero__inner">
-        <Harvous3Numeral size="clamp(8rem, 21vw, 21rem)" />
-        <!--
-          The copy arrives after the numeral has filled (its fill starts at
-          1.25s), not while the outline is still tracing — one thing at a time.
-        -->
-        <h1 class="v3-hero__lead v3-arrive" data-reveal style="--reveal-delay: 1300ms;">
-          Harvous 3 is here.
-        </h1>
-        <!--
-          Names only what 3.0 added. Search itself isn't new — it was Recall,
-          and the sidebar had its own search — so its clause says what it
-          does (finds what you've saved) rather than claiming that as new.
-          Where it moved to is covered just below, in What's new.
-        -->
-        <p class="v3-hero__sub lead v3-arrive" data-reveal style="--reveal-delay: 1520ms;">
-          The sidebar is gone. <strong>Activity</strong> opens on what you've already
-          studied, the <strong>Bible reader</strong> keeps your notes beside the verse, and
-          <strong>Search</strong> finds anything you've saved — <mark>all of it right where you left it</mark>.
-        </p>
-        <div class="v3-hero__cta" data-reveal style="--reveal-delay: 1740ms;">
-          <CTAButton href="#whats-new" size="lg">
-            See what's new
-            <svg class="v3-hero__cta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l5 5 5-5" /></svg>
-          </CTAButton>
-          {/*
-            Read it or watch it, offered together at the top. The walkthrough
-            has no screenshot to sit on here, so it takes the inline trigger
-            and opens the same lightbox.
-          */}
-          <HeroVideoLightbox
-            src="/harvous-3-walkthrough.mp4"
-            label="Watch the 4 min walkthrough"
-            variant="inline"
-          />
+    <div class="v3-intro nx-wrap">
+      <Harvous3Numeral size="clamp(7rem, 19vw, 17rem)" />
+      <h1 class="v3-intro__title" data-reveal style="--reveal-delay: 1300ms;">Harvous 3 is here.</h1>
+      <p class="nx-lead" data-reveal style="--reveal-delay: 1500ms;">
+        The sidebar is gone. <strong>Activity</strong> opens on what you've studied, the
+        <strong>Bible reader</strong> keeps your notes beside the verse, and <strong>Search</strong>
+        finds anything you've saved.
+      </p>
+      <div class="v3-intro__watch" data-reveal style="--reveal-delay: 1700ms;">
+        <HeroVideoLightbox
+          src="/harvous-3-walkthrough.mp4"
+          label="Watch me walk through it in 4 min"
+          variant="inline"
+          avatar="/derek-avatar.webp"
+        />
+      </div>
+    </div>
+  </header>
+
+  <SectionNav
+    items={[
+      { href: "#whats-new", label: "What's new" },
+      { href: "#what-changed", label: "What changed" },
+      { href: "#why", label: "Why" },
+    ]}
+  />
+
+  <!-- What's new: the three views, one Scene each -->
+  <section id="whats-new" class="nx-section v3-new" aria-labelledby="new-title">
+    <div class="nx-wrap">
+      <div class="v3-head" data-reveal>
+        <p class="nx-kicker">What's new</p>
+        <h2 id="new-title" class="nx-title">Three views, each with room to work.</h2>
+      </div>
+    </div>
+
+    {BIG.map((b, i) => (
+      <div class:list={["v3-row", i % 2 === 1 && "v3-row--flip"]} id={b.key}>
+        <div class="nx-wrap v3-row__grid">
+          <div class="v3-row__text" data-reveal>
+            <p class="nx-kicker"><span class="v3-row__num">{pad(i)}</span> {b.kicker}</p>
+            <h3 class="nx-title">{b.title}</h3>
+            <p class="nx-lead">{b.lead}</p>
+            <a class="nx-link" href={b.link.href}>{b.link.label} →</a>
+          </div>
+          <div class="v3-row__visual" data-reveal="scale">
+            <Scene backdrop={b.backdrop} shot={b.shot} aspect="4 / 5" inset={9} zoom={b.zoom} focus={b.focus} eager={i === 0}>
+              <MarginNote {...b.note} />
+            </Scene>
+          </div>
         </div>
       </div>
-    </Container>
-  </section>
+    ))}
 
-  <!--
-    What's new, as the use-cases preview's slider: a left-aligned head with the
-    arrows pushed right, then a scroll-snap row that bleeds past the framed
-    column so the next card peeks in. The head lives inside the Container; the
-    track sits beside it so it can run to the frame rails.
-  -->
-  <section id="whats-new" class="v3-band v3-new frame-divider">
-    <Container size="xl">
-      <div class="v3-new__head v3-arrive" data-reveal>
-        <div class="v3-new__head-text">
-          <h2 class="section-title">What's new</h2>
-        </div>
-        <div class="v3-new__controls">
-          <button type="button" class="v3-new__arrow" data-dir="prev" aria-label="Previous" disabled>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5" /></svg>
-          </button>
-          <button type="button" class="v3-new__arrow" data-dir="next" aria-label="Next">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
-          </button>
-        </div>
+    <div class="nx-wrap v3-more">
+      <div class="v3-head" data-reveal>
+        <p class="nx-kicker">Also new</p>
+        <h2 class="nx-title">Six more things to study with.</h2>
+        <p class="nx-lead">Two are part of Plus, and say so. The rest come with every account.</p>
       </div>
-    </Container>
-
-    <div class="v3-new__track-wrap carousel-track-wrap" data-reveal="scale" style="--reveal-delay: 120ms;">
-      <ul
-        class="v3-new__track"
-        role="list"
-        aria-label="New in Harvous 3"
-        tabindex="0"
-        data-reveal="stagger"
-        style="--reveal-stagger: 110ms; --reveal-delay: 200ms;"
-      >
-        {
-          newSlides.map((s, i) => (
-            <li class="v3-new__slide carousel-slide">
-              <a href={s.href} class="v3-slide" style={`--cat-ink: ${s.ink};`}>
-                <span
-                  class:list={["v3-slide__art", s.shot && shotExists(s.shot.src) && "v3-slide__art--shot"]}
-                  style={`--v3-art: url('${s.image}');`}
-                >
-                  <span class="v3-slide__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                  {
-                    s.shot && shotExists(s.shot.src) ? (
-                      <span class="v3-slide__shot">
-                        <OptimizedImage
-                          src={s.shot.src}
-                          alt={s.shot.alt}
-                          width={s.shot.width}
-                          height={s.shot.height}
-                          loading={i === 0 ? "eager" : "lazy"}
-                        />
-                      </span>
-                    ) : (
-                      <span class="v3-slide__badge">
-                        <Icon name={s.icon} />
-                      </span>
-                    )
-                  }
-                </span>
-                <span class="v3-slide__caption">
-                  <span class="v3-slide__title">
-                    {s.title}
-                    {"plan" in s && s.plan && <span class="v3-slide__plan">{s.plan}</span>}
+      <ul class="v3-grid" role="list" data-reveal="stagger">
+        {SMALL.map((s) => (
+          <li>
+            <a class:list={["v3-card", `v3-card--${s.tone}`]} href={s.href}>
+              {/* A small moment from the feature, drawn with the app's own pieces. */}
+              <span class="v3-card__stage aui" aria-hidden="true">
+                {s.visual === "space" && (
+                  <span class="aui-card mini mini--space">
+                    <img src="/images/auth-hero/ai_bg_076.webp" alt="" loading="lazy" />
+                    <span class="mini__space-row">
+                      <span class="mini__space-icon"><AppIcon name="user-group" /></span>
+                      <span><span class="aui-title">Family</span><span class="aui-sub">Just you<i>·</i>Invite</span></span>
+                    </span>
                   </span>
-                  <span class="v3-slide__tagline">{s.tagline}</span>
-                  <span class="v3-slide__cta">{s.cta} →</span>
-                </span>
-              </a>
-            </li>
-          ))
-        }
+                )}
+                {s.visual === "review" && (
+                  <span class="mini__tiles">
+                    <span>hope</span><span class="is-on">character</span><span>faith</span>
+                  </span>
+                )}
+                {s.visual === "templates" && (
+                  <span class="mini__tiles mini__tiles--chips">
+                    <span class="is-on">SOAP</span><span>Inductive</span><span>Sermon outline</span>
+                  </span>
+                )}
+                {s.visual === "resources" && (
+                  <span class="aui-card mini">
+                    <span class="aui-row">
+                      <span class="aui-tile mini__thumb"><img src="/images/discover-sources/bibleproject-the-story-of-the-bible.webp" alt="" loading="lazy" /></span>
+                      <span><span class="aui-title">The Story of the Bible</span><span class="aui-sub">BibleProject<i>·</i>Video</span></span>
+                    </span>
+                  </span>
+                )}
+                {s.visual === "reminders" && (
+                  <span class="aui-card mini">
+                    <span class="aui-row">
+                      <span class="aui-tile"><AppIcon name="bell" /></span>
+                      <span><span class="aui-title">Psalm 46</span><span class="aui-sub">Today's passage<i>·</i>Sunday</span></span>
+                    </span>
+                  </span>
+                )}
+                {s.visual === "mentions" && (
+                  <span class="aui-paper mini mini--line">
+                    Picks up from <span class="mini__mention"><AppIcon name="arrow-right-arrow-left" /> Faith before it made sense</span>
+                  </span>
+                )}
+              </span>
+              <span class="v3-card__text">
+                <h3 class="v3-card__title">
+                  {s.title}
+                  {s.plus && <span class="nx-plus">Plus</span>}
+                </h3>
+                <p class="v3-card__body">{s.body}</p>
+              </span>
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   </section>
 
-  <!--
-    What changed, as a ruled list — About's "What Harvous cares about" rhythm:
-    a left head, then rows on hairlines. One device per row: the old name
-    struck, an arrow, the new name. On paper, so the frame's rails run through
-    it and the next band's divider draws as normal.
-  -->
-  <section id="what-changed" class="v3-band frame-divider">
-    <Container size="xl">
-      <div class="v3-changed__head v3-arrive" data-reveal>
-        <h2 class="section-title">What changed</h2>
-        <p class="lead v3-changed__lead">
-          Everything you wrote is where you left it. These are the parts that moved, and where
-          each one went.
-        </p>
+  <!-- What changed: before → after -->
+  <section id="what-changed" class="nx-section v3-changed" aria-labelledby="changed-title">
+    <div class="nx-wrap nx-wrap--narrow">
+      <div class="v3-head" data-reveal>
+        <p class="nx-kicker">What changed</p>
+        <h2 id="changed-title" class="nx-title">Three things moved.</h2>
+        <p class="nx-lead">Everything you wrote is where you left it. Here's what moved, and where each one went.</p>
       </div>
-
-      <ul class="v3-moved" role="list" data-reveal="stagger">
-        {
-          movedRows.map((row) => (
-            <li class="v3-moved__row">
-              <h3 class="v3-moved__head">
-                <span class="v3-moved__before">{row.before}</span>
-                <span class="v3-moved__arrow" aria-hidden="true">→</span>
-                <span class="v3-moved__after">{row.after}</span>
-              </h3>
-              <div class="v3-moved__body">
-                <p>
-                  {row.body} <a href={row.link.href}>{row.link.label} →</a>
-                </p>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-
-      <p class="v3-changed__foot" data-reveal style="--reveal-delay: 120ms;">
-        Notes, highlights, threads, and folders are exactly where they were — nothing to move or
-        re-file. Also in this release: more keyboard shortcuts (Settings, from your avatar) and
-        a better time of it on a phone.
-        <a href="/release-notes/">Every fix and improvement is in the release notes →</a>
+      <ol class="v3-moved" role="list" data-reveal="stagger">
+        {MOVED.map((m) => (
+          <li>
+            <p class="v3-moved__names">
+              <span class="v3-moved__before">{m.before}</span>
+              <span class="v3-moved__arrow" aria-label="became">→</span>
+              <span class="v3-moved__after">{m.after}</span>
+            </p>
+            <p class="v3-moved__body">
+              {m.body} <a class="nx-link" href={m.link.href}>{m.link.label} →</a>
+            </p>
+          </li>
+        ))}
+      </ol>
+      <p class="v3-changed__foot">
+        Notes, highlights, threads, and folders are exactly where they were, with nothing to move or
+        re-file. Also in this release: more keyboard shortcuts (Settings, from your avatar) and a
+        better time of it on a phone.
+        <a class="nx-link" href="/release-notes/">Every fix is in the release notes →</a>
       </p>
-    </Container>
+    </div>
   </section>
 
-  <section id="why" class="v3-band v3-why frame-divider">
-    <Container size="xl">
-      <div class="v3-why__head section-head v3-arrive" data-reveal>
-        <h2 class="section-title">Why the change</h2>
+  <!-- Why: Derek's letter -->
+  <section id="why" class="nx-section v3-why" aria-labelledby="why-title">
+    <div class="nx-wrap">
+      <div class="v3-head v3-head--center" data-reveal>
+        <p class="nx-kicker">Why the change</p>
+        <h2 id="why-title" class="nx-title">The sidebar did too much.</h2>
       </div>
-
-      <div class="v3-why__letter" data-reveal="scale" style="--reveal-delay: 100ms;">
+      <div class="v3-letter" data-reveal="scale">
         <FounderLetter variant="full">
           <Fragment slot="left">
             <p>Hey there,</p>
             <p>
-              The sidebar tried to do too much — your recent study, what was worth revisiting,
-              every view, and search, all squeezed into one narrow column. Each is a fair thing
-              to want. Together, everything only got a glimpse.
+              The sidebar tried to do too much: your recent study, what was worth revisiting, every
+              view, and search, all squeezed into one narrow column. Each is a fair thing to want.
+              Together, everything only got a glimpse.
             </p>
             <p>
               So I asked a different question: what's each of these actually worth in screen?
-              Seeing what you've studied wanted the whole thing, so it became Activity. Finding
-              an old note wanted none of it until you actually asked, so it became Search — a
-              spotlight you summon from the top middle.
+              Seeing what you've studied wanted the whole thing, so it became Activity. Finding an
+              old note wanted none of it until you actually asked, so it became Search, a spotlight
+              you summon from the top middle.
             </p>
             <p>
-              While I was in there, I settled something else too. The days you rest stay. A
-              month that hides them would look better and tell you less.
+              While I was in there, I settled something else too. The days you rest stay. A month
+              that hides them would look better and tell you less.
             </p>
           </Fragment>
           <Fragment slot="right">
             <p>
-              For the longest time I pushed against a Bible reader. Then I kept noticing how
-              much I wanted to see the notes I'd linked to a verse, right there beside it — so
-              Harvous has one now, in eleven translations.
+              For the longest time I pushed against a Bible reader. Then I kept noticing how much I
+              wanted to see the notes I'd linked to a verse, right there beside it. So Harvous has
+              one now, in eleven translations.
             </p>
             <p>
               Recall became Suggestions, because the name only covered half the job. And Review
               exercises are for everyone who's written asking how to hold onto what they've
-              studied — you answer from memory, then say how well you remembered it. I left the
+              studied: you answer from memory, then say how well you remembered it. I left the
               scoring out on purpose.
             </p>
             <p>
-              None of this touches what you've already built. Your notes, highlights, threads,
-              and folders are exactly where you left them. Harvous just opens on your study now,
+              None of this touches what you've already built. Your notes, highlights, threads, and
+              folders are exactly where you left them. Harvous just opens on your study now,
               instead of a blank page.
             </p>
             <p>
-              If something's off, write me at{" "}
-              <a
-                class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-                href="mailto:derek@harvous.com"
-              >
-                derek@harvous.com
-              </a>{" "}
+              If something's off, write me at <a href="mailto:derek@harvous.com">derek@harvous.com</a>
               and tell me what you were trying to do.
             </p>
           </Fragment>
         </FounderLetter>
       </div>
 
-      {
-        featuredEssay && (
-          <div class="v3-why__essays" data-reveal="scale" style="--reveal-delay: 60ms;">
-            <div class="v3-why__essays-head">
-              <h3 class="v3-why__essays-title">Read the reasoning in full</h3>
-              <p class="v3-why__essays-lead">Two essays, in the order to read them.</p>
-            </div>
-            <div class="v3-why__pair">
-              <BlogCard
-                title={featuredEssay.data.title}
-                description={featuredEssay.data.description}
-                publishDate={featuredEssay.data.publishDate}
-                category={featuredEssay.data.category}
-                slug={featuredEssay.id}
-                readingTime={blogReadingMinutes(featuredEssay.body)}
-                draft={featuredEssay.data.draft}
-                variant="featured"
-              />
-              {restEssays[0] && (
-                <BlogCard
-                  title={restEssays[0].data.title}
-                  description={restEssays[0].data.description}
-                  publishDate={restEssays[0].data.publishDate}
-                  category={restEssays[0].data.category}
-                  slug={restEssays[0].id}
-                  readingTime={blogReadingMinutes(restEssays[0].body)}
-                  draft={restEssays[0].data.draft}
-                  variant="featured"
-                />
-              )}
-            </div>
-            <p class="v3-why__more">
-              <a href="/blog/how-we-think" class="btn-pill inline-flex items-center gap-1.5">
-                More from How we think
-              </a>
-            </p>
-          </div>
-        )
-      }
-    </Container>
+      {essays.length > 0 && (
+        <div class="v3-essays" data-reveal>
+          <p class="nx-kicker">Read the reasoning in full</p>
+          <ol class="v3-essays__list" role="list">
+            {essays.map((e, i) => (
+              <li>
+                <a href={`/blog/${e.id}/`}>
+                  <span class="v3-essays__n">{pad(i)}</span>
+                  <span>
+                    <span class="v3-essays__title">{e.data.title}</span>
+                    <span class="v3-essays__meta">{blogReadingMinutes(e.body)} min read</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      <p class="v3-open">
+        Already use Harvous? <a class="nx-link" href={APP_URL}>Open Harvous 3 →</a>
+      </p>
+    </div>
   </section>
 
-  <PageClosingCTA
-    heading="Open Harvous 3."
-    lead="Your notes, highlights, threads, and folders are already there — filed, waiting in Activity, and a search away from wherever you're writing."
-    href={APP_URL}
-    label="Open Harvous"
-    external
-    fathomTrack={fathomSignup.v3}
-    secondaryHref="/"
-    secondaryLabel="New here? See what Harvous is"
-  />
-</BaseLayout>
+  <ClosingCall title="See it with your own notes." />
+</NextLayout>
 
 <style>
-  /*
-    A band: no background, ever — the page frame's rails sit at z-index -1 and
-    show only where nothing paints over them. Vertical rhythm matches the
-    use-cases preview's. The header is sticky (~57px, a floating pill when
-    scrolled) and the site sets no scroll-margin, so hash targets get one.
-  */
-  .v3-band {
-    padding-block: clamp(3.5rem, 7vw, 5rem);
-    scroll-margin-top: 5rem;
-  }
-  .v3-why {
-    /* The founder letter's paper fan is clipped at the band, not the 64rem wrapper. */
-    overflow-x: clip;
-  }
-  .v3-new {
-    /* The slider bleeds to the frame rails; nothing past them may widen the page. */
-    overflow-x: hidden;
-  }
-
-  /* ---------- Hero ---------- */
+  /* ── Intro ── */
   .v3-hero {
     position: relative;
+    isolation: isolate;
+    padding-top: clamp(5.5rem, 11vw, 8rem);
   }
   .v3-hero__grid {
-    /* Dissolve toward the edges so it reads as ruled paper under the numeral,
-       not wallpaper. The ::before inside paints the squares (global.css). */
-    mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
-    -webkit-mask-image: radial-gradient(70% 80% at 50% 42%, #000 20%, transparent 100%);
-    /* So the shifted mask below tiles nothing. */
+    /* The global grid insets by the live page frame; here it spans the page. */
+    inset-inline: 0;
+    /* Dissolve toward the edges so it reads as ruled paper under the numeral. */
+    mask-image: radial-gradient(60% 75% at 50% 40%, #000 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(60% 75% at 50% 40%, #000 20%, transparent 100%);
     mask-repeat: no-repeat;
     -webkit-mask-repeat: no-repeat;
   }
-  /*
-    The pool of visible ruling drifts on the numeral's fourteen seconds, so the
-    two read as one light source. The ruling itself never moves — travelling
-    lines are conspicuous, which would undo the point of it.
-
-    mask-position, not the gradient's own `at`: gradient images interpolate
-    discretely, so animating mask-image snaps between the two halfway through
-    instead of drifting. Pixels rather than percentages, because the mask is
-    exactly the size of its box and percentage offsets would resolve against
-    zero free space.
-  */
-  @keyframes v3-grid-drift {
-    0%, 100% {
-      mask-position: -14px 10px;
-      -webkit-mask-position: -14px 10px;
-    }
-    50% {
-      mask-position: 14px -10px;
-      -webkit-mask-position: 14px -10px;
-    }
-  }
-  @keyframes v3-grid-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .v3-hero__inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding-top: clamp(3rem, 7vw, 5.5rem);
-    padding-bottom: clamp(2.5rem, 5vw, 4rem);
-  }
-  /*
-    Harvous3Numeral is sized by width, not height, because the constraint that
-    matters is the heading beneath it. The h1 is one fixed line at
-    clamp(2rem, 4.6vw, 3.5rem), so both track the same curve and the ratio
-    holds across widths — the numeral sits at ~58% of the heading's text width,
-    down from ~69%, where it was reading as the page's subject rather than its
-    mark.
-  */
-  .v3-hero__lead {
-    margin: clamp(1.25rem, 3vw, 2rem) 0 0;
-    /* Wide enough that the line never breaks — it's four short words, and a
-       wrapped "is here." reads as an accident. */
-    max-width: 20ch;
-    font-family: var(--font-display);
-    /* Was capped at 34px, under the 48px of an ordinary .section-title. This is
-       the page's h1 under a 248px numeral, so it takes the hero scale. */
-    font-size: clamp(2rem, 4.6vw, 3.5rem);
-    font-weight: 600;
-    line-height: 1.12;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-    text-wrap: balance;
-  }
-  /* The TL;DR — the homepage tour lead's shape: bolded names, a highlight to close,
-     three lines at most (verified with the Range API, not scrollHeight). */
-  .v3-hero__sub {
-    margin: 0.9rem auto 0;
-    max-width: 36rem;
-  }
-  .v3-hero__sub strong {
-    color: var(--color-ink);
-    font-weight: 600;
-  }
-
-  /* The cue is the primary button — the same gradient the numeral wears. */
-  .v3-hero__cta {
-    margin-top: clamp(1.75rem, 4vw, 2.5rem);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-  }
-  .v3-hero__cta-icon {
-    width: 0.85rem;
-    height: 0.85rem;
-  }
-
-  /* ---------- What's new: the slider ---------- */
-  /* Head: text left, arrows right, bottom-aligned — the use-cases preview's recipe. */
-  .v3-new__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1.5rem 2rem;
-  }
-  .v3-new__head-text {
-    max-width: 34rem;
-  }
-  .v3-new__head-text > * + * {
-    margin-top: 0.85rem;
-  }
-  .v3-new__controls {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex: none;
-  }
-  .v3-new__arrow {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    flex: none;
-    border-radius: 999px;
-    border: 1px solid var(--color-rule);
-    background: var(--color-card);
-    color: var(--color-ink-soft);
-    cursor: pointer;
-    transition: color 150ms ease, background-color 150ms ease, opacity 150ms ease;
-  }
-  .v3-new__arrow svg {
-    width: 0.8rem;
-    height: 0.8rem;
-  }
-  .v3-new__arrow:hover:not(:disabled) {
-    color: var(--color-ink);
-    background: var(--color-warm);
-  }
-  .v3-new__arrow:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  /* Track: bleeds past the framed column to the frame rails; the first slide
-     lines up with the contained head. Same peek as the use-cases preview — the
-     site default of 3.5, not a local override — these cards read closer to
-     square than the homepage tour's, so 2.5 sat them too large on wide screens. */
-  .v3-new__track-wrap {
-    position: relative;
-    overflow: hidden;
-    margin-inline: var(--frame-inset);
-    margin-top: clamp(2.25rem, 5vw, 3.25rem);
-  }
-  .v3-new__track {
-    display: flex;
-    align-items: stretch;
-    gap: var(--carousel-slide-gap);
-    margin: 0;
-    padding-block: 0.25rem;
-    padding-left: max(
-      var(--frame-inset),
-      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
-    );
-    padding-right: var(--frame-inset);
-    scroll-padding-left: max(
-      var(--frame-inset),
-      calc((100vw - 72rem) / 2 + var(--frame-content-pad) - var(--frame-inset))
-    );
-    list-style: none;
-    /* overflow-x: auto makes overflow-y auto too, and the reveal's translateY
-       pushes unrevealed slides past the box — the track becomes its own
-       vertical scroller and swallows page scroll as you pass over it. */
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .v3-new__track::-webkit-scrollbar {
-    display: none;
-  }
-  .v3-new__track:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 4px;
-  }
-
-  /*
-    A slide: the use-cases preview's art card. The thing's own auth-hero image
-    under a wash that starts in its category ink and settles toward ink at the
-    foot, its icon in a white badge, and a large rounded index in the corner
-    that echoes the hero's numeral. Nothing here waits on a screenshot.
-  */
-  /* Hover is the site's card lift — 2px, 150ms — and nothing else. */
-  .v3-slide {
-    --cat-glyph: color-mix(in oklab, var(--cat-ink) 55%, var(--color-ink));
-    display: flex;
-    flex-direction: column;
-    gap: 0.95rem;
-    height: 100%;
-    color: inherit;
-    text-decoration: none;
-    border-radius: 0.25rem;
-    transition: transform 0.15s ease;
-  }
-  .v3-slide:hover {
-    transform: translateY(-2px);
-  }
-  .v3-slide:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 4px;
-  }
-  .v3-slide__art {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 1 / 1.05;
-    border-radius: clamp(20px, 2.2vw, 28px);
-    overflow: hidden;
-    background-color: var(--color-warm);
-    background-image: var(--v3-art);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .v3-slide__art::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--cat-ink) 14%, transparent) 0%,
-      transparent 45%,
-      color-mix(in oklab, var(--color-ink) 34%, transparent) 100%
-    );
-    pointer-events: none;
-  }
-  /*
-    The screenshot, when one exists: a window laid on the wash, offset so it
-    runs off the tile's bottom and right — the tour card's bleed, which keeps
-    the UI near 1:1 instead of shrinking a whole app into a small square.
-    The wash stays underneath as the tile's ground.
-  */
-  .v3-slide__shot {
-    position: absolute;
-    top: 26%;
-    left: 9%;
-    right: -9%;
-    bottom: -8%;
-    z-index: 1;
-    overflow: hidden;
-    border-radius: 12px;
-    background: var(--color-paper);
-    box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--color-ink) 8%, transparent),
-      var(--shadow-float);
-  }
-  .v3-slide__shot :global(picture),
-  .v3-slide__shot :global(img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top left;
-  }
-  .v3-slide__index {
-    position: absolute;
-    top: 1rem;
-    left: 1.15rem;
-    z-index: 2;
-    font-family: var(--font-display);
-    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    /* The hero's rounded cut, so the numbering and the "3" are one family. */
-    font-variation-settings: "ROND" 100, "wdth" 100;
-    color: color-mix(in oklab, var(--color-paper) 92%, transparent);
-    text-shadow: 0 1px 12px color-mix(in oklab, var(--color-ink) 22%, transparent);
-  }
-  .v3-slide__badge {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 4.25rem;
-    height: 4.25rem;
-    border-radius: 1rem;
-    background: var(--color-card);
-    box-shadow: var(--shadow-card);
-    color: var(--cat-glyph);
-  }
-  .v3-slide__badge :global(svg) {
-    width: 1.65rem;
-    height: 1.65rem;
-  }
-  .v3-slide__caption {
-    display: block;
-    font-size: 0.9375rem;
-    line-height: 1.55;
-    color: var(--color-ink-soft);
-  }
-  .v3-slide__title {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    color: var(--color-ink);
-  }
-  .v3-slide__plan {
-    display: inline-flex;
-    align-items: center;
-    margin-left: 0.45em;
-    padding: 0.15em 0.6em;
-    border-radius: 999px;
-    background: var(--color-warm);
-    vertical-align: middle;
-    font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--color-ink-soft);
-  }
-  .v3-slide__tagline {
-    display: block;
-    margin-top: 0.3rem;
-  }
-  .v3-slide__cta {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--color-accent);
-  }
-
-  /* ---------- What changed: a ruled list ---------- */
-  .v3-changed__head {
-    max-width: 38rem;
-  }
-  .v3-changed__lead {
-    margin-top: 0.85rem;
-    max-width: 32rem;
-  }
-
-  /* About's list: rows on hairlines, title cell left, body right. Capped well
-     inside the 72rem column — at full width a three-word "My Home → Activity"
-     sat marooned from its own sentence, which is what made the section read
-     as unfinished rather than as a deliberate ledger. */
-  .v3-moved {
-    list-style: none;
-    margin: clamp(2rem, 4.5vw, 2.75rem) 0 0;
-    padding: 0;
-    max-width: 58rem;
-  }
-  .v3-moved__row {
-    display: grid;
-    gap: 0.65rem 2rem;
-    padding-block: 1.5rem;
-    border-top: 1px solid var(--color-rule);
-  }
-  .v3-moved__row:last-child {
-    padding-bottom: 0;
-  }
-  .v3-moved__head {
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.5rem;
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-  }
-  .v3-moved__before {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--color-ink-faint);
-    text-decoration: line-through;
-    text-decoration-color: var(--color-rule);
-  }
-  .v3-moved__arrow {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--color-ink-faint);
-  }
-  .v3-moved__body p {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--color-ink-soft);
-  }
-  /* A word in the sentence, not a button under it — the row was already
-     prose, and a bordered pill beneath three lines of text is what made
-     each row run tall. Shares the foot note's own link recipe below. */
-  .v3-moved__body a,
-  .v3-changed__foot a {
-    color: var(--color-accent);
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .v3-moved__body a:hover,
-  .v3-changed__foot a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  @media (min-width: 768px) {
-    .v3-moved__row {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
-      align-items: start;
-      gap: 1.25rem 2rem;
-      padding-block: 1.75rem;
-    }
-    .v3-moved__head {
-      font-size: 1.35rem;
-    }
-  }
-  .v3-changed__foot {
-    margin: clamp(1.5rem, 3vw, 2rem) 0 0;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-rule);
-    max-width: 44rem;
-    font-size: 0.9375rem;
-    line-height: 1.65;
-    color: var(--color-ink-soft);
-  }
-
-  /* ---------- Why: letter + essays ---------- */
-  .v3-why__letter {
-    margin: clamp(2rem, 5vw, 3rem) auto 0;
-    max-width: 64rem;
-  }
-  /* The essays sit under a rule, so the band reads as two parts the way the
-     research band on /about closes on one. */
-  .v3-why__essays {
-    margin-top: clamp(2.5rem, 6vw, 4rem);
-    padding-top: clamp(2rem, 4.5vw, 3rem);
-    border-top: 1px solid var(--color-rule);
-  }
-  /* A small centered head — the blog post's "Keep reading" form — not an eyebrow. */
-  .v3-why__essays-head {
-    text-align: center;
-    margin-bottom: clamp(1.5rem, 3vw, 2rem);
-  }
-  .v3-why__essays-title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 2.4vw, 1.875rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    color: var(--color-ink);
-  }
-  .v3-why__essays-lead {
-    margin: 0.5rem auto 0;
-    max-width: 28rem;
-    font-size: 1rem;
-    line-height: 1.55;
-    color: var(--color-ink-soft);
-  }
-  /* The featured card ships white because on /blog/ it sits on a warm tray.
-     Here it sits on paper, so it takes the homepage card's ground instead —
-     the tcard mix — or its edge disappears. */
-  .v3-why__essays :global(.blog-featured) {
-    background: color-mix(in oklab, var(--color-warm) 60%, var(--color-paper));
-  }
-  .v3-why__essays :global(.blog-featured:hover) {
-    background: color-mix(in oklab, var(--color-warm) 85%, var(--color-paper));
-  }
-  /* Two essays, equal weight — the "featured" card doing double duty rather
-     than one large card plus a small one underneath it. */
-  .v3-why__pair {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  @media (min-width: 768px) {
-    .v3-why__pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-  /* Title only, no preview line — the card's own description column is
-     dropped rather than left empty beside the title. */
-  .v3-why__pair :global(.blog-featured .grid) {
-    grid-template-columns: 1fr;
-  }
-  .v3-why__pair :global(.blog-featured .grid > p) {
-    display: none;
-  }
-  .v3-why__more {
-    margin: 1.5rem 0 0;
-    text-align: center;
-  }
-
-  /* ---------- Arrival ----------
-     A release page should feel like it's being presented, so everything on it
-     arrives with more deliberation than the site default: longer, further,
-     headings sharpening from a blur, surfaces settling from a hair larger. All
-     of it rides the site's own IntersectionObserver reveal and native scroll —
-     nothing here pins, snaps, or drives the scroll position. Gated on the user
-     not asking for reduced motion; under that preference the global rules
-     make every reveal instant and these never apply. */
   @media (prefers-reduced-motion: no-preference) {
-    :global(html.js) [data-reveal] {
-      transform: translateY(28px);
-      transition-duration: 1000ms;
-    }
-    :global(html.js) [data-reveal="scale"] {
-      transform: translateY(24px) scale(0.985);
-      transition-duration: 1100ms;
-    }
-    :global(html.js) [data-reveal].revealed {
-      transform: none;
-    }
-    :global(html.js) [data-reveal="stagger"] > * {
-      transform: translateY(24px);
-      transition-duration: 900ms;
-    }
-    :global(html.js) [data-reveal="stagger"].revealed > * {
-      transform: none;
-    }
-    /* Headings: soft, then sharp. */
-    :global(html.js) .v3-arrive[data-reveal] {
-      filter: blur(10px);
-      transition:
-        opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1),
-        transform 1000ms cubic-bezier(0.22, 1, 0.36, 1),
-        filter 1000ms cubic-bezier(0.22, 1, 0.36, 1);
-      transition-delay: var(--reveal-delay, 0ms);
-    }
-    :global(html.js) .v3-arrive[data-reveal].revealed {
-      filter: blur(0);
-    }
-    /* The ruled paper emerges after the page opens on clean white, then keeps
-       drifting. Two animations on one declaration — separate properties
-       (opacity, mask-position), so they do not fight. */
     .v3-hero__grid {
       animation:
         v3-grid-in 1800ms ease-out 200ms both,
         v3-grid-drift 14000ms ease-in-out 2400ms infinite;
     }
   }
+  @keyframes v3-grid-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes v3-grid-drift {
+    0%, 100% { mask-position: -14px 10px; -webkit-mask-position: -14px 10px; }
+    50% { mask-position: 14px -10px; -webkit-mask-position: 14px -10px; }
+  }
+  .v3-intro {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .v3-intro__title {
+    margin: clamp(1rem, 2.5vw, 1.75rem) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+  }
+  .v3-intro .nx-lead { margin: 1.5rem auto 0; }
+  .v3-intro .nx-lead strong { color: var(--color-ink); font-weight: 600; }
+  .v3-intro__watch { margin-top: 2rem; }
+  .v3-intro__watch :global(.hero-video-inline) {
+    padding: 0.45rem 1rem 0.45rem 1.05rem;
+    font-size: 0.9375rem;
+    background: #fff;
+    border-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
+    box-shadow: 0 8px 24px -14px rgba(15, 23, 42, 0.35);
+  }
+  .v3-intro__watch :global(.hero-video-inline__face) { margin-left: -0.55rem; }
+
+
+  /* ── Section heads ── */
+  section[id] { scroll-margin-top: 4rem; }
+  .v3-head { max-width: 40rem; margin-bottom: clamp(2.5rem, 6vw, 4rem); }
+  .v3-head .nx-title { margin: 0.75rem 0 0; }
+  .v3-head .nx-lead { margin: 1rem 0 0; max-width: 30rem; }
+  .v3-head--center { margin-inline: auto; text-align: center; }
+
+  /* ── The three views ── */
+  .v3-row { scroll-margin-top: 4rem; }
+  .v3-row + .v3-row { margin-top: clamp(4rem, 10vw, 7rem); }
+  .v3-row__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 60rem) {
+    .v3-row__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 6rem); }
+    .v3-row--flip .v3-row__text { order: 2; }
+  }
+  @media (max-width: 59.99rem) {
+    .v3-row__visual { max-width: 40rem; }
+    .v3-row__visual :global(.scene) { aspect-ratio: 4 / 3; }
+  }
+  .v3-row__num { color: var(--color-ink-faint); margin-right: 0.35rem; font-variant-numeric: tabular-nums; }
+  .v3-row__text .nx-title { margin: 0.75rem 0 0; font-size: clamp(1.9rem, 3.6vw, 2.75rem); max-width: 14ch; }
+  .v3-row__text .nx-lead { margin: 1rem 0 1.5rem; max-width: 28rem; }
+
+  /* ── The six smaller things ── */
+  .v3-more { margin-top: clamp(6rem, 14vw, 10rem); }
+  .v3-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) { .v3-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .v3-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .v3-grid li { display: flex; }
+  .v3-card {
+    --tone: var(--color-sky);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.45rem;
+    border-radius: 1.4rem;
+    color: inherit;
+    text-decoration: none;
+    background: color-mix(in srgb, var(--tone) 20%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 5%, transparent);
+  }
+  .v3-card--peach { --tone: var(--color-peach); }
+  .v3-card--lilac { --tone: var(--color-lilac); }
+  .v3-card--cream { --tone: var(--color-cream); }
+  .v3-card--sky { --tone: var(--color-sky); }
+  .v3-card--mint { --tone: var(--color-mint); }
+  .v3-card--pink { --tone: var(--color-pink); }
+
+  /* The stage: the card's tone, a little stronger, with one small moment. */
+  .v3-card__stage {
+    display: grid;
+    place-items: center;
+    height: 8.5rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1.05rem;
+    background: color-mix(in srgb, var(--tone) 58%, var(--color-paper));
+    transition: transform 300ms var(--nx-ease);
+  }
+  .v3-card:hover .v3-card__stage > * { transform: translateY(-3px); }
+  .v3-card__stage > * { transition: transform 300ms var(--nx-ease); }
+  .v3-card__text { display: block; padding: 1rem 1rem 1.1rem; }
+  .v3-card__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1.125rem;
+    letter-spacing: -0.015em;
+  }
+  .v3-card__body {
+    margin: 0.4rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  /* Mini app moments (next-app-ui.css pieces, sized down to fit a stage). */
+  .mini {
+    width: 100%;
+    max-width: 17rem;
+    font-size: 13px;
+    box-shadow: var(--pds-shadow-popover) !important;
+  }
+  .mini :global(.aui-row) { padding: 8px 12px 8px 10px; }
+  .mini :global(.aui-title) { font-size: 14px; }
+  .mini :global(.aui-sub) { font-size: 12px; }
+  .mini__thumb { overflow: hidden; padding: 0; }
+  .mini__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mini--space img { display: block; width: 100%; height: 38px; object-fit: cover; }
+  .mini__space-row { display: flex; align-items: center; gap: 10px; padding: 0 12px 10px; }
+  .mini__space-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    margin-top: -12px;
+    border-radius: 9px;
+    color: var(--pds-highlight-violet);
+    background: color-mix(in srgb, var(--pds-highlight-violet) 16%, var(--pds-bg-main));
+    box-shadow: 0 0 0 2px var(--pds-bg-main);
+  }
+  .mini__space-icon :global(svg) { width: 13px; height: 13px; }
+  .mini__tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .mini__tiles span {
+    padding: 6px 12px;
+    border-radius: var(--pds-radius-format);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-main);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card);
+  }
+  .mini__tiles--chips span { border-radius: 999px; }
+  .mini__tiles .is-on { color: #fff; background: var(--pds-text-primary); box-shadow: none; }
+  .mini--line { padding: 12px 14px; font-size: 13px; line-height: 1.5; text-align: left; }
+  .mini__mention {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-chip);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium);
+    white-space: nowrap;
+  }
+  .mini__mention :global(svg) { width: 10px; height: 10px; color: var(--pill-thread); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v3-card__stage > * { transition: none; }
+    .v3-card:hover .v3-card__stage > * { transform: none; }
+  }
+
+  /* ── What changed ── */
+  .v3-changed { padding-top: 0; }
+  .v3-changed .nx-lead { max-width: 26rem; }
+  .v3-moved { margin: 0; padding: 0; list-style: none; }
+  .v3-moved li { padding-block: 1.5rem; border-top: 1px solid var(--color-rule); }
+  .v3-moved__names {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.6rem;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .v3-moved__before {
+    font-weight: 500;
+    color: var(--color-ink-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--color-rule);
+  }
+  .v3-moved__arrow { font-weight: 400; color: var(--color-ink-faint); }
+  .v3-moved__body {
+    margin: 0.6rem 0 0;
+    max-width: 32rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .v3-moved__body .nx-link { white-space: nowrap; }
+  .v3-changed__foot {
+    margin: 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    max-width: 32rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+
+  /* ── Why ── */
+  .v3-why { padding-top: 0; overflow-x: clip; }
+  .v3-letter { max-width: 64rem; margin-inline: auto; }
+  .v3-letter :global(.prose-letter a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 4px;
+  }
+  .v3-letter :global(.prose-letter a:hover) { text-decoration-color: var(--color-ink); }
+  .v3-essays {
+    max-width: 32rem;
+    margin: clamp(3.5rem, 8vw, 5rem) auto 0;
+    text-align: center;
+  }
+  .v3-essays__list { margin: 1.25rem 0 0; padding: 0; list-style: none; text-align: left; }
+  .v3-essays__list a {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .v3-essays__list li:last-child a { border-bottom: 1px solid var(--color-rule); }
+  .v3-essays__list a:hover .v3-essays__title { text-decoration: underline; text-underline-offset: 0.2em; }
+  .v3-essays__n { font-size: 0.75rem; font-weight: 600; color: var(--color-ink-faint); font-variant-numeric: tabular-nums; }
+  .v3-essays__title { display: block; font-size: 1.125rem; font-weight: 600; letter-spacing: -0.015em; }
+  .v3-essays__meta { display: block; margin-top: 0.2rem; font-size: 0.875rem; color: var(--color-ink-faint); }
+  .v3-open { margin: 2.5rem 0 0; text-align: center; color: var(--color-ink-soft); }
 </style>
-
-<script>
-  import { bindCarouselFit } from "../lib/carousel-fit.ts";
-
-  document.querySelectorAll<HTMLElement>(".v3-new").forEach((root) => {
-    const track = root.querySelector<HTMLElement>(".v3-new__track");
-    if (!track) return;
-    bindCarouselFit({
-      track,
-      slideSelector: ".v3-new__slide",
-      prevBtn: root.querySelector<HTMLButtonElement>('.v3-new__arrow[data-dir="prev"]'),
-      nextBtn: root.querySelector<HTMLButtonElement>('.v3-new__arrow[data-dir="next"]'),
-    });
-  });
-</script>

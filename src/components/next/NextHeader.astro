@@ -10,11 +10,11 @@ import OptimizedImage from "../OptimizedImage.astro";
 import { fathomSignin } from "../../lib/fathom-events.ts";
 
 const links = [
-  { href: "/next/tour/", label: "Tour" },
-  { href: "/next/discover/", label: "Discover" },
-  { href: "/next/blog/", label: "Blog" },
-  { href: "/next/pricing/", label: "Pricing" },
-  { href: "/next/now/", label: "Now", wide: true },
+  { href: "/tour/", label: "Tour" },
+  { href: "/discover/", label: "Discover" },
+  { href: "/blog/", label: "Blog" },
+  { href: "/pricing/", label: "Pricing" },
+  { href: "/now/", label: "Now", wide: true },
 ];
 
 const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
@@ -22,7 +22,7 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
 
 <header class="nxh">
   <nav class="nxh__pill" aria-label="Primary">
-    <a href="/next/" class="nxh__logo" aria-label="Harvous — Home">
+    <a href="/" class="nxh__logo" aria-label="Harvous — Home">
       <OptimizedImage src="/images/harvous-icon-sm.png" alt="" width={28} height={28} loading="eager" />
     </a>
     <ul class="nxh__links">

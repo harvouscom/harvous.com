@@ -3,7 +3,7 @@
  * MakerNote — the home page's "who made this." A short letter on the left and,
  * on the right, the latest release, straight from release notes, so the page
  * shows someone is here working on it without saying so. One card, not a
- * changelog — /next/now/ has the longer view.
+ * changelog — /now/ has the longer view.
  */
 import OptimizedImage from "../OptimizedImage.astro";
 import ReleaseNotesIndexCard from "../ReleaseNotesIndexCard.astro";
@@ -38,7 +38,7 @@ const recent = recentReleases(count);
         <OptimizedImage src="/derek-signiture.png" alt="Derek Castelli" width={3262} height={809} class="maker__signature signature-img" />
       </div>
       <p class="maker__links">
-        <a class="nx-link" href="/next/about/">The longer story →</a>
+        <a class="nx-link" href="/about/">The longer story →</a>
         <a class="nx-link" href="mailto:derek@harvous.com">derek@harvous.com</a>
       </p>
     </div>
@@ -50,10 +50,10 @@ const recent = recentReleases(count);
       {/* The release notes' own paper index cards, so "shipped" looks the same here as on /release-notes/. */}
       <div class="maker__cards">
         {recent.map(({ release, headline }, i) => (
-          <ReleaseNotesIndexCard release={release} headline={headline} href={`/next/release-notes/${release.slug}/`} rotation={[-0.8, 0.7, 0.5, -0.6][i % 4]} />
+          <ReleaseNotesIndexCard release={release} headline={headline} href={`/release-notes/${release.slug}/`} rotation={[-0.8, 0.7, 0.5, -0.6][i % 4]} />
         ))}
       </div>
-      <a class="nx-link maker__more" href="/next/now/">What I'm working on now →</a>
+      <a class="nx-link maker__more" href="/now/">What I'm working on now →</a>
     </div>
   </div>
 </section>

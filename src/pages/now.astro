@@ -1,17 +1,17 @@
 ---
 /**
- * /next/now/ — a /now page (nownownow.com): what has my attention this month.
+ * /now/ — a /now page (nownownow.com): what has my attention this month.
  *
  * Three blocks, and only the first is written by hand (NOW_WORKING_ON in
  * lib/next/content.ts). "Just shipped" reads release notes and "Next up" reads
  * the roadmap grid, so the page keeps itself honest between edits.
  */
 import { Icon } from "astro-icon/components";
-import NextLayout from "../../layouts/NextLayout.astro";
-import ReleaseNotesIndexCard from "../../components/ReleaseNotesIndexCard.astro";
-import { NOW_UPDATED, NOW_WORKING_ON } from "../../lib/next/content.ts";
-import { recentReleases } from "../../lib/next/releases.ts";
-import { COMING_SOON_GRID_ITEMS } from "../../lib/coming-soon-grid.ts";
+import NextLayout from "../layouts/NextLayout.astro";
+import ReleaseNotesIndexCard from "../components/ReleaseNotesIndexCard.astro";
+import { NOW_UPDATED, NOW_WORKING_ON } from "../lib/next/content.ts";
+import { recentReleases } from "../lib/next/releases.ts";
+import { COMING_SOON_GRID_ITEMS } from "../lib/coming-soon-grid.ts";
 
 const shipped = recentReleases(6);
 const updated = new Date(`${NOW_UPDATED}T12:00:00Z`).toLocaleDateString("en-US", {
@@ -57,10 +57,10 @@ const updated = new Date(`${NOW_UPDATED}T12:00:00Z`).toLocaleDateString("en-US",
       </h2>
       <div class="now__cards">
         {shipped.map(({ release, headline }, i) => (
-          <ReleaseNotesIndexCard release={release} headline={headline} href={`/next/release-notes/${release.slug}/`} rotation={[-0.7, 0.6, -0.4, 0.8, -0.5, 0.4][i % 6]} />
+          <ReleaseNotesIndexCard release={release} headline={headline} href={`/release-notes/${release.slug}/`} rotation={[-0.7, 0.6, -0.4, 0.8, -0.5, 0.4][i % 6]} />
         ))}
       </div>
-      <a class="nx-link" href="/next/release-notes/">Every release note →</a>
+      <a class="nx-link" href="/release-notes/">Every release note →</a>
     </section>
 
     <section class="now__block" aria-labelledby="now-next">

@@ -29,5 +29,5 @@
 /changelog/              /release-notes/          301
 /changelog/*             /release-notes/:splat    301
 
-/release-notes/page/1    /release-notes/          301
-/release-notes/page/1/   /release-notes/          301
+# Pagination retired — the index now lists every release on one page.
+/release-notes/page/*    /release-notes/          301

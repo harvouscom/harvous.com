@@ -203,7 +203,7 @@ export const BENTO_CARDS: BentoCardSpec[] = [
     label: "Discover",
     title: "A good place to start.",
     body: "Templates and resources from people I trust. Take a copy and it's yours.",
-    href: "/next/discover/",
+    href: "/discover/",
     tone: "sky",
     visual: "discover",
   },
@@ -270,7 +270,7 @@ export const PRIVACY_TOGGLES: ToggleSpec[] = [
 ];
 
 /* ────────────────────────────────────────────────────────────────────────── */
-/* /next/now/                                                                 */
+/* /now/                                                                 */
 /* ────────────────────────────────────────────────────────────────────────── */
 
 /**

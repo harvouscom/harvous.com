@@ -1,420 +1,173 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PageIntro from "../components/PageIntro.astro";
-import PageClosingCTA from "../components/PageClosingCTA.astro";
+/**
+ * /about/ — the story page, led by the person rather than the product:
+ * who's making it, the letter, where the name comes from, what it cares about.
+ * The letter and beliefs are the live About page's own (FounderLetter,
+ * lib/about-beliefs.ts), so there's one version of each to keep true.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
 import FounderLetter from "../components/FounderLetter.astro";
-import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
-import WordCycle from "../components/WordCycle.astro";
-import AboutResearchGap from "../components/AboutResearchGap.astro";
-import { fathomTry } from "../lib/fathom-events.ts";
-import { ABOUT_BELIEFS as beliefs } from "../lib/about-beliefs.ts";
-
-const site = "https://harvous.com";
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "AboutPage",
-      name: "About Harvous",
-      description:
-        "Harvous is a place for Bible study to live — a notes hub so what you learn from Scripture doesn't disappear. Humans help humans. Tools only help.",
-      url: `${site}/about/`,
-      isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
-    },
-    {
-      "@type": "Organization",
-      name: "Testament Made LLC",
-      url: site,
-      logo: `${site}/images/harvous-2-icon.png`,
-      founder: {
-        "@type": "Person",
-        name: "Derek Castelli",
-        email: "derek@harvous.com",
-      },
-    },
-    {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Harvous", item: site },
-        { "@type": "ListItem", position: 2, name: "About", item: `${site}/about/` },
-      ],
-    },
-  ],
-};
+import ClosingCall from "../components/next/ClosingCall.astro";
+import { ABOUT_BELIEFS } from "../lib/about-beliefs.ts";
+import { backdropSrc } from "../lib/next/content.ts";
 ---
 
-<BaseLayout
+<NextLayout
   title="About — Harvous"
-  description="Harvous is a place for Bible study to live — a notes hub so what you learn from Scripture doesn't disappear. Humans help humans. Tools only help."
-  jsonLd={jsonLd}
+  description="Harvous is made by Derek Castelli, on his own, under Testament Made LLC. Why it exists, where the name comes from, and what it cares about."
 >
-  <section>
-    <PageIntro>
-      <span class="eyebrow-pill">About</span>
-      <h1 class="about-hero__title section-title display-xl mt-4 text-pretty">
-        <span class="about-hero__line">A place for Bible</span>
-        <span class="about-hero__line about-hero__line--tail">
-          study to <WordCycle words={["live", "stick", "grow", "return", "deepen"]} />.
-        </span>
-      </h1>
-      <p class="about-hero__lead mt-5 text-lg text-[var(--color-ink-soft)] text-pretty">
-        For believers who search Scripture, pastors who teach it, and churches that learn together.
-        A tool for education. Never a substitute for the body.
-      </p>
-    </PageIntro>
+  <header class="nx-wrap about-intro">
+    <OptimizedImage src="/derek-avatar.jpeg" alt="Derek Castelli" width={1680} height={1680} class="about-intro__avatar" loading="eager" />
+    <p class="nx-kicker">About</p>
+    <h1 class="nx-display">Hey, I'm Derek.</h1>
+    <p class="nx-lead">
+      I make Harvous on my own, under Testament Made LLC. It's the place I wanted for my own Bible
+      study, built in public a release at a time.
+    </p>
+  </header>
+
+  <section class="nx-wrap about-letter" aria-label="A letter from Derek">
+    <FounderLetter variant="full" />
   </section>
 
-  <!-- What Harvous is -->
-  <section class="about-mission frame-divider">
-    <div class="about-mission__inner">
-      <div class="about-mission__shotwrap" data-reveal="scale" style="--reveal-delay: 80ms;">
-        <div class="about-mission__shot-frame">
-          <OptimizedImage
-            class="about-mission__shot"
-            src="/app-full.png"
-            alt="The Harvous app: My Home on the left and an open note on the right — scripture shown as tap-able pills, a highlighted phrase, and today's passage."
-            width={2624}
-            height={1360}
-            loading="lazy"
-          />
-          <HeroVideoLightbox src="/touring-harvous-short.mp4" />
-        </div>
-      </div>
-      <div class="about-mission__copy" data-reveal style="--reveal-delay: 120ms;">
-        <div class="about-mission__prose">
+  <section class="nx-wrap" aria-labelledby="name-title">
+    <figure class="about-name" data-reveal="scale">
+      <img class="about-name__sky" src={backdropSrc("074")} alt="" loading="lazy" />
+      <p id="name-title" class="nx-kicker about-name__kicker">Where the name comes from</p>
+      <blockquote class="about-name__quote">
+        “It is the glory of God to conceal a matter; to search out a matter is the glory of kings.”
+      </blockquote>
+      <figcaption>Proverbs 25:2</figcaption>
+      <p class="about-name__note">
+        Studying the Bible is searching. Harvous is where the search settles into something you can
+        come back to.
+      </p>
+    </figure>
+  </section>
+
+  <section class="nx-section nx-wrap" aria-labelledby="cares-title">
+    <p class="nx-kicker">What it cares about</p>
+    <h2 id="cares-title" class="nx-title about-cares__title">Humans help humans. Tools only help.</h2>
+    <ol class="about-cares" data-reveal="stagger">
+      {ABOUT_BELIEFS.map((b, i) => (
+        <li>
+          <span class="about-cares__n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <h3>{b.title}</h3>
           <p>
-            Harvous is a notes app made for Bible study. Scripture-linked notes, highlights,
-            and threads live here so what you notice doesn't disappear.
+            {"bodyBefore" in b ? (
+              <>
+                {b.bodyBefore}
+                <a class="nx-link" href={b.linkHref}>{b.linkLabel}</a>
+                {b.bodyAfter}
+              </>
+            ) : (
+              b.body
+            )}
           </p>
-        </div>
-      </div>
-    </div>
+        </li>
+      ))}
+    </ol>
   </section>
 
-  <AboutResearchGap />
-
-  <!-- What we believe -->
-  <section class="about-believe frame-divider" data-reveal style="--reveal-delay: 100ms;">
-    <div class="about-believe__inner">
-      <h2 class="section-title about-believe__heading text-pretty">
-        What Harvous cares about
-      </h2>
-      <ul class="about-believe__list" role="list" data-reveal="stagger">
-        {
-          beliefs.map((belief, i) => (
-            <li class="about-believe__item">
-              <span class="about-believe__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-              <h3 class="about-believe__title">{belief.title}</h3>
-              <p class="about-believe__body">
-                {"bodyBefore" in belief ? (
-                  <>
-                    {belief.bodyBefore}
-                    <a
-                      href={belief.linkHref}
-                      {...(belief.linkHref.startsWith("http")
-                        ? { target: "_blank", rel: "noopener noreferrer" }
-                        : {})}
-                    >
-                      {belief.linkLabel}
-                    </a>
-                    {belief.bodyAfter}
-                  </>
-                ) : (
-                  belief.body
-                )}
-              </p>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+  <section class="nx-wrap about-who" aria-labelledby="who-title">
+    <h2 id="who-title" class="nx-title">One person, for now.</h2>
+    <p class="nx-lead">
+      Design, code, support, and this website are me. Questions go straight to
+      <a href="mailto:derek@harvous.com">derek@harvous.com</a>. God-willing, it's full-time with a
+      small team one day.
+    </p>
+    <p class="about-who__links">
+      <a class="nx-link" href="/now/">What I'm working on now →</a>
+      <a class="nx-link" href="/release-notes/">Every release →</a>
+    </p>
   </section>
 
-  <!-- Founder letter — personal proof after the mission -->
-  <section id="letter" class="about-letter frame-divider" data-reveal style="--reveal-delay: 120ms;">
-    <div class="about-letter__head section-head" data-reveal>
-      <span class="eyebrow-pill">From the founder</span>
-      <h2 class="section-title text-pretty">A letter from Derek</h2>
-      <p class="about-letter__lead">
-        Why this exists, from the person building it.
-      </p>
-    </div>
-    <div class="about-letter__inner">
-      <FounderLetter variant="full" />
-    </div>
-  </section>
-
-  <!-- Who's behind it -->
-  <section class="frame-divider" data-reveal style="--reveal-delay: 140ms;">
-    <div class="about-who detail-content py-14 md:py-16 text-center">
-      <h2 class="section-title text-pretty">Who's behind it</h2>
-      <p class="mt-4 text-[var(--color-ink-soft)] text-pretty">
-        I'm making Harvous solo under Testament Made LLC — building the memory tool I needed,
-        designing and shipping in public, one note at a time. Questions, bugs, or ideas: write me at
-        <a
-          class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-          href="mailto:derek@harvous.com"
-        >
-          derek@harvous.com
-        </a>.
-      </p>
-      <p class="about-who__note">
-        <mark>God-willing, I'll work on Harvous full-time one day with a small team — and keep at it for many years to come.</mark>
-      </p>
-    </div>
-  </section>
-
-  <PageClosingCTA
-    heading="Give your study somewhere to live."
-    lead="Try it free and start writing notes that stay with Scripture."
-    fathomTrack={fathomTry.about}
-  />
-</BaseLayout>
+  <ClosingCall title="Give your study somewhere to live." />
+</NextLayout>
 
 <style>
-  /* Small screens: one flowing sentence (natural wrap).
-     md+: two lines — “A place for Bible” / “study to [word].” */
-  .about-hero__line + .about-hero__line::before {
-    content: " ";
+  .about-intro {
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
   }
-  @media (min-width: 768px) {
-    .about-hero__line {
-      display: block;
-    }
-    .about-hero__line + .about-hero__line::before {
-      content: none;
-    }
-  }
-
-  .about-hero__lead {
-    max-width: 32rem;
-    margin-inline: auto;
-  }
-
-  .detail-content {
-    margin-inline: auto;
-    max-width: 40rem;
-    padding-inline: var(--frame-content-pad);
-  }
-
-  .about-mission {
-    padding-block: clamp(2.5rem, 6vw, 4rem);
-    padding-inline: var(--frame-content-pad);
-    overflow: clip;
-  }
-
-  .about-mission__inner {
-    margin-inline: auto;
-    width: 100%;
-    max-width: 56rem;
-  }
-
-  /* Relative shot stage — same role as .hero__shotwrap / .hero__shot-frame. */
-  .about-mission__shotwrap {
-    width: 100%;
-  }
-
-  .about-mission__shot-frame {
-    position: relative;
-    width: 100%;
-    border-radius: clamp(16px, 2vw, 28px);
-    overflow: hidden;
-    box-shadow: var(--shadow-float);
-  }
-
-  .about-mission__shot,
-  .about-mission__shot-frame :global(img) {
-    width: 100%;
-    height: auto;
+  .about-intro :global(.about-intro__avatar) {
     display: block;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin: 0 auto 1.5rem;
+    border-radius: 999px;
+    object-fit: cover;
+    box-shadow: 0 0 0 4px var(--color-paper), 0 0 0 5px var(--color-rule), 0 18px 40px -18px rgba(15, 23, 42, 0.4);
+  }
+  .about-intro .nx-display { margin: 0.75rem 0 0; }
+  .about-intro .nx-lead { margin: 1.5rem auto 0; }
+
+  .about-letter {
+    max-width: calc(64rem + 2 * var(--nx-gutter));
+    margin-top: clamp(3.5rem, 8vw, 5.5rem);
   }
 
-  @media (max-width: 639px) {
-    .about-mission__shot-frame {
-      aspect-ratio: unset;
-      width: 100%;
-      height: calc((min(100vw, 56rem) - 2 * var(--frame-content-pad)) * 1360 / 2624);
-    }
-    .about-mission__shot-frame :global(picture) {
-      position: absolute;
-      inset: 0;
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-    .about-mission__shot,
-    .about-mission__shot-frame :global(img) {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top left;
-    }
+  .about-name {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin: clamp(5rem, 12vw, 8rem) 0 0;
+    padding: clamp(3.5rem, 10vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+    border-radius: var(--nx-radius-scene);
+    text-align: center;
+    color: #fff;
   }
-
-  /* Darken bottom-left so the "Watch the tour" callout reads clearly. */
-  .about-mission__shot-frame::after {
+  .about-name__sky {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .about-name::before {
     content: "";
     position: absolute;
     inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    border-radius: inherit;
-    background:
-      radial-gradient(
-        ellipse 90% 75% at 6% 96%,
-        color-mix(in srgb, #0d0e12 52%, transparent) 0%,
-        color-mix(in srgb, #0d0e12 22%, transparent) 38%,
-        transparent 62%
-      ),
-      linear-gradient(
-        28deg,
-        color-mix(in srgb, #0d0e12 28%, transparent) 0%,
-        transparent 45%
-      );
+    z-index: -1;
+    background: radial-gradient(80% 80% at 50% 50%, rgba(10, 18, 40, 0.45), rgba(10, 18, 40, 0.15));
   }
-
-  .about-mission__copy {
-    margin: clamp(2rem, 4.5vw, 3rem) auto 0;
-    max-width: 40rem;
-    text-align: center;
-  }
-
-  .about-mission__prose {
-    margin-top: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .about-mission__prose p {
-    margin: 0;
-    font-size: 1.0625rem;
-    line-height: 1.65;
-    color: var(--color-ink-soft);
-    text-wrap: pretty;
-  }
-
-  /* Full-bleed clip so the paper-stack fan can't force horizontal page scroll. */
-  .about-letter {
-    overflow-x: clip;
-  }
-
-  .about-letter__head {
-    margin-inline: auto;
-    max-width: 40rem;
-    padding: clamp(3rem, 7vw, 4.5rem) var(--frame-content-pad) 0;
-    text-align: center;
-  }
-
-  .about-letter__lead {
-    margin: 0.75rem auto 0;
-    max-width: 28rem;
-    font-size: 1.05rem;
-    line-height: 1.55;
-    color: var(--color-ink-soft);
-    text-wrap: pretty;
-  }
-
-  .about-letter__inner {
-    margin-inline: auto;
-    max-width: 64rem;
-    padding: clamp(2rem, 5vw, 3rem) var(--frame-content-pad) clamp(3.5rem, 7vw, 5rem);
-  }
-
-  .about-believe__inner {
-    margin-inline: auto;
-    max-width: 64rem;
-    padding: clamp(3rem, 7vw, 5rem) var(--frame-content-pad);
-  }
-
-  .about-believe__heading {
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .about-believe__list {
-    list-style: none;
-    margin: clamp(2.25rem, 5vw, 3.25rem) 0 0;
-    padding: 0;
-    display: grid;
-    gap: 0;
-  }
-
-  .about-believe__item {
-    display: grid;
-    gap: 0.65rem 1.5rem;
-    padding-block: 1.5rem;
-    border-top: 1px solid var(--color-rule);
-  }
-
-  .about-believe__item:last-child {
-    padding-bottom: 0;
-  }
-
-  .about-believe__index {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--color-accent);
-  }
-
-  .about-believe__title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-    color: var(--color-ink);
-    text-wrap: pretty;
-  }
-
-  .about-believe__body {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--color-ink-soft);
-    text-wrap: pretty;
-  }
-
-  .about-believe__body a {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: color-mix(in oklab, var(--color-accent) 35%, transparent);
-  }
-
-  .about-believe__body a:hover {
-    text-decoration-color: var(--color-accent);
-  }
-
-  .about-who > p:not(.about-who__note) {
-    font-size: 1.0625rem;
-    line-height: 1.65;
-  }
-
-  .about-who__note {
+  .about-name__kicker { color: rgba(255, 255, 255, 0.8); }
+  .about-name__quote {
+    max-width: 22ch;
     margin: 1.25rem auto 0;
-    max-width: 22rem;
-    font-size: 0.75rem;
-    line-height: 1.55;
-    color: var(--color-ink-soft);
-    text-wrap: pretty;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4.4vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
   }
+  .about-name figcaption { margin-top: 1rem; font-weight: 500; opacity: 0.85; }
+  .about-name__note { max-width: 30rem; margin: 1.75rem auto 0; font-size: 1.0625rem; line-height: 1.55; opacity: 0.9; }
 
-  @media (min-width: 768px) {
-    .about-believe__item {
-      grid-template-columns: 2.5rem minmax(0, 1fr) minmax(0, 1.35fr);
-      align-items: start;
-      gap: 1.25rem 2rem;
-      padding-block: 1.75rem;
-    }
-
-    .about-believe__title {
-      font-size: 1.35rem;
-    }
+  .about-cares__title { margin: 0.75rem 0 0; max-width: 16ch; }
+  .about-cares {
+    display: grid;
+    gap: 2rem 3rem;
+    margin: clamp(2.5rem, 6vw, 3.5rem) 0 0;
+    padding: 0;
+    list-style: none;
   }
+  @media (min-width: 48rem) {
+    .about-cares { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 64rem) {
+    .about-cares { grid-template-columns: repeat(3, 1fr); }
+  }
+  .about-cares li { padding-top: 1.25rem; border-top: 1px solid var(--color-rule); }
+  .about-cares__n { font-size: 0.75rem; font-weight: 600; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+  .about-cares h3 { margin: 0.5rem 0 0; font-size: 1.25rem; letter-spacing: -0.015em; }
+  .about-cares p { margin: 0.5rem 0 0; line-height: 1.55; color: var(--color-ink-soft); }
+
+  .about-who { text-align: center; padding-bottom: clamp(3rem, 8vw, 5rem); }
+  .about-who .nx-lead { margin: 1.25rem auto 0; }
+  .about-who .nx-lead a { color: var(--color-ink); }
+  .about-who__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; margin: 1.5rem 0 0; }
 </style>

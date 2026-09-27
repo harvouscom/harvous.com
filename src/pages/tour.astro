@@ -1,20 +1,20 @@
 ---
 /**
- * /next/tour/ — the whole app on one page, standing in for the five feature
+ * /tour/ — the whole app on one page, standing in for the five feature
  * category pages in the nav. Copy and items come from APP_TOUR_CHAPTERS (the
  * same source as the live home tour), so the two can't drift; this page only
  * decides how each chapter is shown. Every chapter still links to its deep
  * category page for search and for anyone who wants the long version.
  */
 import { Icon } from "astro-icon/components";
-import NextLayout from "../../layouts/NextLayout.astro";
-import Scene from "../../components/next/Scene.astro";
-import MarginNote from "../../components/next/MarginNote.astro";
-import ClosingCall from "../../components/next/ClosingCall.astro";
-import SectionNav from "../../components/next/SectionNav.astro";
-import ComparePreview from "../../components/next/ComparePreview.astro";
-import { APP_TOUR_CHAPTERS } from "../../lib/app-tour-chapters.ts";
-import { SHOTS, type Backdrop, type MarginNoteSpec, type Shot } from "../../lib/next/content.ts";
+import NextLayout from "../layouts/NextLayout.astro";
+import Scene from "../components/next/Scene.astro";
+import MarginNote from "../components/next/MarginNote.astro";
+import ClosingCall from "../components/next/ClosingCall.astro";
+import SectionNav from "../components/next/SectionNav.astro";
+import ComparePreview from "../components/next/ComparePreview.astro";
+import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
+import { SHOTS, type Backdrop, type MarginNoteSpec, type Shot } from "../lib/next/content.ts";
 
 type Staging = { shot: Shot; backdrop: Backdrop; zoom: number; focus: number; note: MarginNoteSpec };
 
@@ -122,7 +122,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   </div>
 
   <p class="tour-uses">
-    That's what it does. <a class="nx-link" href="/next/use-cases/">Here's how people use it →</a>
+    That's what it does. <a class="nx-link" href="/use-cases/">Here's how people use it →</a>
   </p>
 
   <ClosingCall title="See it with your own notes." />

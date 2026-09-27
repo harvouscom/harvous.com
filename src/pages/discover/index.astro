@@ -1,41 +1,46 @@
 ---
 /**
- * `/discover` — the whole catalog on one page.
+ * /discover/ — the Discover catalog in the /next chrome.
  *
- * One grid, filtered in place, rather than a page per topic. The topic pages
- * only ever regrouped the same handful of cards, and a reader who wants Sermon
- * notes wants them *here*, beside everything else — so the topics became
- * filters, and `/discover/?use=sermon-notes` is the address a use-case page
- * links to.
+ * Same catalog, same order, same filters as the live `/discover/`: every card
+ * comes from `sortedDiscoverListings()` and links to the existing
+ * `/discover/<slug>/` detail page, and the grid filters in place from
+ * `?kind=`, `?use=` and `?from=` (plus the search field, which is not written
+ * to the URL). Without JS every card is simply shown.
  *
- * **One bar, not two.** The first cut stacked a row of topic chips above a row
- * of kind chips, which is two full-width bands of controls over a catalog of
- * nine things — the controls outweighed the content. Topics moved into a
- * dropdown beside the kinds, which is the shape `BlogLibraryNav` already uses
- * for exactly this job (a topics menu and a search field on one line). Kinds
- * stay visible because there are only five and they are the coarser cut;
- * topics fold away because there are nine and most readers want one.
+ * What changes is the look: a centred intro, calm pill controls, and cards in
+ * the Bento's shape — a tinted stage with the artifact on it (a template's own
+ * page; for a resource, the live card's plate: the publisher's masthead over
+ * its picture), then the words underneath.
  *
- * Topics borrow their glyph from the use-case page of the same slug
- * (`discoverTopicIcon`), so Sermon notes wears the same church here as on
- * `/for/`. Their colour is the same one their listings' pills wear.
- *
- * Filtering is a few lines of `hidden` toggling, not a search library: every
- * card is in the HTML already, and the catalog is scanned, not queried.
+ * The grid is six tracks wide on desktop with each card spanning two, so the
+ * last row can be rebalanced rather than left with one lonely card: a
+ * remainder of two becomes two half-width cards, a remainder of one turns the
+ * last four into two rows of two. The script re-marks this after every filter;
+ * the server marks it for the full, unfiltered set.
  */
+import AppIcon from "../../components/next/app/AppIcon.astro";
 import { Icon } from "astro-icon/components";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import PageIntro from "../../components/PageIntro.astro";
-import PageClosingCTA from "../../components/PageClosingCTA.astro";
-import DiscoverCard from "../../components/DiscoverCard.astro";
-import { breadcrumbJsonLd } from "../../lib/breadcrumb-jsonld.ts";
-import { isDraftPageSlug } from "../../lib/draft-pages.ts";
+import NextLayout from "../../layouts/NextLayout.astro";
+import ClosingCall from "../../components/next/ClosingCall.astro";
+import ResourcePlate from "../../components/next/ResourcePlate.astro";
+import { sanitizeListingHtml } from "../../lib/sanitize-listing-html.ts";
 import {
   DISCOVER_KIND_ICON,
+  DISCOVER_KIND_NOUN,
+  DISCOVER_RESOURCE_TYPE_NOUN,
+  discoverListingCta,
   discoverListingHref,
+  discoverListingIcon,
+  discoverListingInk,
+  discoverArtPosition,
+  discoverDocumentArt,
+  discoverSourceSlug,
+  discoverTopicArt,
   getDiscoverTopics,
   sortedDiscoverListings,
   type DiscoverKind,
+  type DiscoverListing,
 } from "../../lib/discover-data.ts";
 
 const listings = sortedDiscoverListings();
@@ -43,23 +48,10 @@ const topics = getDiscoverTopics();
 const total = listings.length;
 
 const KINDS: DiscoverKind[] = ["template", "note", "pack", "resource"];
-const kindCounts = Object.fromEntries(
-  KINDS.map((kind) => [kind, listings.filter((l) => l.kind === kind).length]),
-) as Record<DiscoverKind, number>;
-const presentKinds = KINDS.filter((kind) => kindCounts[kind] > 0);
-
-/*
- * A control that cannot change what you see is not a control.
- *
- * While the catalog holds one kind, "All" and "Templates" select the same
- * cards, and the row reads as a promise that there is something else in here.
- * Same for the use-case menu with one topic in it. Each comes back on its own
- * the day a second one is approved — the same rule the header's Resources menu
- * follows, so the two never disagree about what the catalog contains.
- */
+const presentKinds = KINDS.filter((kind) => listings.some((l) => l.kind === kind));
+/* Same rule as the live page: a control that can't change what you see isn't shown. */
 const showKinds = presentKinds.length > 1;
 const showTopics = topics.length > 1;
-/* Plural, the way the app's own tabs say it. */
 const KIND_TAB: Record<DiscoverKind, string> = {
   template: "Templates",
   note: "Notes",
@@ -67,316 +59,347 @@ const KIND_TAB: Record<DiscoverKind, string> = {
   resource: "Resources",
 };
 
-/* noindex whenever `discover` is a draft slug — including staging, which is the
-   one environment that actually builds and serves these pages. `draftPageIsReachable`
-   is the wrong question here: it asks whether *links* should render, and is true on
-   staging, which would leave the built page indexable. */
-const isDraft = isDraftPageSlug("discover");
+/* Tail marks for the unfiltered grid — the script recomputes these after it
+   filters, using the same function body. */
+function tailMarks(n: number): string[][] {
+  const marks: string[][] = Array.from({ length: n }, () => []);
+  if (n % 2 === 1) marks[n - 1].push("is-t2-odd");
+  if (n === 1) marks[0].push("is-t3-solo");
+  else if (n % 3 === 2) for (let i = n - 2; i < n; i++) marks[i].push("is-t3-wide");
+  else if (n % 3 === 1) for (let i = n - 4; i < n; i++) marks[i].push("is-t3-wide");
+  return marks;
+}
+const initialMarks = tailMarks(total);
 
-const siteOrigin = Astro.site ?? "https://harvous.com";
-const pageUrl = new URL("/discover/", siteOrigin).toString();
+type Card = {
+  listing: DiscoverListing;
+  href: string;
+  tone: string;
+  label: string;
+  by: string | null;
+  logo: string | null;
+  stage: "paper" | "stack" | "plate";
+  typeLabel: string;
+  plateTone: string | null;
+  art: string | null;
+  artPos: string;
+  docArt: string | null;
+  bodyHtml: string;
+  excerpt: string;
+  titles: string[];
+  titlesMore: number;
+  image: string | null;
+  isVideo: boolean;
+  duration: string | null;
+  icon: string;
+  cta: string;
+  search: string;
+};
 
-/**
- * The catalog, to a crawler.
- *
- * An `ItemList` of what is actually on the page, in the order it is drawn, so
- * the hub is legible as a collection rather than as one more marketing page
- * with cards on it. `url` per item points where the card points — which for a
- * pass-through entry is the publisher, not a page of ours, because that is
- * genuinely where the thing lives.
- */
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "Discover",
-    description:
-      "Free Bible study templates, notes and Threads shared by people who use Harvous, " +
-      "plus videos and guides from BibleProject and others.",
-    url: pageUrl,
-    isAccessibleForFree: true,
-    mainEntity: {
-      "@type": "ItemList",
-      numberOfItems: listings.length,
-      itemListElement: listings.map((listing, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: listing.title,
-        /* Via the shared helper, so the list and the cards can never disagree
-           about where a listing lives. */
-        url: new URL(discoverListingHref(listing), siteOrigin).toString(),
-      })),
-    },
-  },
-  breadcrumbJsonLd(
-    [
-      { name: "Harvous", path: "/" },
-      { name: "Discover", path: "/discover/" },
-    ],
-    siteOrigin,
-  ),
-];
+const cards: Card[] = listings.map((listing) => {
+  const preview = listing.preview ?? {};
+  const source = listing.source ?? null;
+  const kindNoun = DISCOVER_KIND_NOUN[listing.kind] ?? "Item";
+  const resourceType = listing.resourceType ?? null;
+  const typeLabel = resourceType ? DISCOVER_RESOURCE_TYPE_NOUN[resourceType] : kindNoun;
+  const fileType = (preview.fileType ?? "").trim().toUpperCase();
+
+  /* The byline, exactly as the live card decides it. */
+  const by = source
+    ? typeLabel
+    : preview.official
+      ? "Included"
+      : listing.authorDisplayName || preview.sourceName || null;
+
+  const bodyHtml = sanitizeListingHtml(preview.bodyHtml ?? "");
+  const titles = (preview.titles ?? []).slice(0, 3);
+  const image = preview.sourceImage ?? null;
+
+  const stage: Card["stage"] =
+    listing.kind === "template" || listing.kind === "note"
+      ? "paper"
+      : listing.kind === "pack"
+        ? "stack"
+        : "plate";
+
+  /* The plate's ground, as the live card decides it: the publisher's own
+     colour when it has one, otherwise the topic's wash. */
+  const plateTone = listing.plateTone ?? null;
+
+  return {
+    listing,
+    href: discoverListingHref(listing),
+    tone: listing.plateTone ?? discoverListingInk(listing),
+    label: source ? source.name : kindNoun,
+    by: source ? by : (by ?? (listing.kind === "resource" ? fileType || preview.sourceDomain || null : null)),
+    logo: source?.logo ?? null,
+    stage,
+    typeLabel: source ? typeLabel : fileType || preview.sourceDomain || typeLabel,
+    plateTone,
+    art: plateTone ? null : discoverTopicArt(listing.category),
+    artPos: discoverArtPosition(listing.slug),
+    docArt: source && plateTone ? null : discoverDocumentArt(listing.slug),
+    bodyHtml,
+    excerpt: preview.excerpt ?? "",
+    titles,
+    titlesMore: (preview.noteCount ?? 0) - titles.length,
+    image,
+    isVideo: resourceType === "video" && Boolean(listing.video),
+    duration: listing.video?.durationLabel ?? null,
+    icon: discoverListingIcon(listing),
+    cta: discoverListingCta(listing).primary.label,
+    /* Same fields the live card searches. */
+    search: [
+      listing.title,
+      listing.description,
+      listing.authorDisplayName,
+      kindNoun,
+      source?.name,
+      source?.domain,
+      typeLabel,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase(),
+  };
+});
 ---
 
-<BaseLayout
-  title="Discover — Bible study templates and notes people have shared — Harvous"
-  description="Free Bible study templates, notes and Threads shared by people who use Harvous, plus videos and guides from BibleProject and others. Take a copy into your own account."
-  ogImage="/images/discover/og.webp"
-  jsonLd={jsonLd}
-  noindex={isDraft}
+<NextLayout
+  title="Discover — Bible study templates and resources — Harvous"
+  description="Free Bible study templates shared by people who use Harvous, plus videos and guides from BibleProject and others. Take a copy into your own account."
 >
-  {
-    isDraft && (
-      <div class="draft-page-banner" role="status">
-        Draft — not indexed or deployed. Remove <code>"discover"</code> from DRAFT_PAGE_SLUGS to publish.
-      </div>
-    )
-  }
-
-  <section>
-    <PageIntro flushBottom>
-      <h1 class="section-title display-xl text-balance">A good place to start.</h1>
-      <p class="lead mx-auto mt-6 max-w-xl text-pretty">
-        Templates to write into, notes to read, Threads to work through — and a few things
-        worth watching or reading, from people we trust. All of it free, and the moment you
-        take a copy, <mark>it's yours to change</mark>.
-      </p>
-    </PageIntro>
-  </section>
+  <header class="nx-wrap dx-intro">
+    <p class="nx-kicker">Discover</p>
+    <h1 class="nx-display">A good place to start.</h1>
+    <p class="nx-lead">
+      Templates to write into, and things worth watching or reading from people I trust. All
+      free, and once you take a copy, it's yours.
+    </p>
+  </header>
 
   {
     total === 0 ? (
-      <section class="dhub__empty-catalog">
-        <p class="text-[var(--color-ink-soft)]">
+      <section class="nx-wrap nx-wrap--narrow dx-none">
+        <p>
           Nothing has been shared yet. When someone offers a template or a study and it has been
           looked over, it turns up here.
         </p>
       </section>
     ) : (
-      <div class="dhub" data-dhub>
-        {/* ── One bar: kinds, a use-case menu, and search ──────────── */}
-        <div
-          class:list={["dhub__bar", !showKinds && "dhub__bar--tools-only"]}
-          data-reveal
-        >
+      <section class="nx-wrap dx" data-dx aria-label="Catalog">
+        <div class="dx-bar">
           {showKinds && (
-            <div class="dhub__kinds" role="group" aria-label="Kind">
-              <button type="button" class="dhub__kind is-active" data-dhub-kind="" aria-pressed="true">
+            <div class="dx-kinds" role="group" aria-label="Kind">
+              <button type="button" class="dx-chip is-on" data-dx-kind="" aria-pressed="true">
                 All
               </button>
               {presentKinds.map((kind) => (
-                <button type="button" class="dhub__kind" data-dhub-kind={kind} aria-pressed="false">
-                  <span class="dhub__kind-icon">
-                    <Icon name={DISCOVER_KIND_ICON[kind]} />
-                  </span>
+                <button type="button" class="dx-chip" data-dx-kind={kind} aria-pressed="false">
+                  <Icon name={DISCOVER_KIND_ICON[kind]} aria-hidden="true" />
                   {KIND_TAB[kind]}
                 </button>
               ))}
             </div>
           )}
-
-          <div class="dhub__tools">
+          <div class="dx-tools">
             {showTopics && (
-            <div class="dhub__topics" data-dhub-topics>
-              <button
-                type="button"
-                class="dhub__topics-trigger"
-                data-dhub-topics-trigger
-                aria-expanded="false"
-                aria-haspopup="true"
-                aria-controls="dhub-topics-menu"
-              >
-                <span class="dhub__topics-dot" aria-hidden="true">
-                  <svg viewBox="0 0 640 640"><path fill="currentColor" d="M296.5 69.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0l-218.6-101c-8.5-4-13.9-12.5-13.9-21.8s5.4-17.9 13.9-21.8zM112.1 282.4l164.3 75.9c27.7 12.8 59.6 12.8 87.3 0L528 282.4l34.1 15.8c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0l-218.6-101c-8.5-4-13.9-12.5-13.9-21.8s5.4-17.9 13.9-21.8l34.1-15.8zM77.9 426.2l34.1-15.8l164.3 75.9c27.7 12.8 59.6 12.8 87.3 0l164.3-75.9l34.1 15.8c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0l-218.5-101c-8.5-4-13.9-12.5-13.9-21.8s5.4-17.9 13.9-21.8"></path></svg>
-                </span>
-                <span data-dhub-topics-label>Use cases</span>
-                <svg class="dhub__chevron" viewBox="0 0 12 12" aria-hidden="true">
+              <label class="dx-select" data-dx-topic-wrap>
+                <span class="sr-only">Use case</span>
+                <select data-dx-topic>
+                  <option value="">All use cases</option>
+                  {topics.map((topic) => (
+                    <option value={topic.id}>{topic.label}</option>
+                  ))}
+                </select>
+                <svg viewBox="0 0 12 12" aria-hidden="true">
                   <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
-              </button>
-              <div class="dhub__menu" id="dhub-topics-menu" role="menu" data-dhub-topics-menu hidden>
-                <button type="button" class="dhub__menu-item is-active" role="menuitemradio" aria-checked="true" data-dhub-topic="">
-                  <span class="dhub__menu-icon">
-                    <Icon name="fa7-solid:layer-group" />
-                  </span>
-                  <span class="dhub__menu-label">All use cases</span>
-                </button>
-                {topics.map((topic) => (
-                  <button
-                    type="button"
-                    class="dhub__menu-item"
-                    role="menuitemradio"
-                    aria-checked="false"
-                    data-dhub-topic={topic.id}
-                    data-dhub-topic-icon={topic.icon}
-                    style={`--ink: ${topic.ink};`}
-                  >
-                    <span class="dhub__menu-icon">
-                      <Icon name={topic.icon} />
-                    </span>
-                    <span class="dhub__menu-label">
-                      {topic.label}
-                      <span class="dhub__menu-blurb">{topic.blurb}</span>
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
+              </label>
             )}
-
-            <label class="dhub__search">
+            <label class="dx-search">
               <span class="sr-only">Search the catalog</span>
-              <span class="dhub__search-icon" aria-hidden="true">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
-                  <circle cx="7" cy="7" r="4.25"></circle>
-                  <path d="M10.25 10.25 13.5 13.5"></path>
-                </svg>
-              </span>
-              <input
-                type="search"
-                class="dhub__search-input"
-                placeholder="Search…"
-                autocomplete="off"
-                data-dhub-search
-              />
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+                <circle cx="7" cy="7" r="4.25"></circle>
+                <path d="M10.25 10.25 13.5 13.5"></path>
+              </svg>
+              <input type="search" placeholder="Search" autocomplete="off" data-dx-search />
             </label>
           </div>
         </div>
 
-        {/* ── The grid ──────────────────────────────────────────────── */}
-        {/* Named by the script from a matching card, because the publisher's
-            name exists on this page only on the cards themselves. Hidden until
-            a `?from=` is in play — which only a listing page's "More from …"
-            link puts there. */}
-        {/* A filter token, not a sentence. It says the same thing in the
-            language the rest of this bar already speaks — a pill wearing the
-            publisher's own mark — and carries its own dismiss, so the way out
-            is on the thing that narrowed the grid rather than a link beside it.
-
-            Named by the script from a matching card, because the publisher's
-            name and mark exist on this page only on the cards themselves. */}
-        <div class="dhub__from" data-dhub-from hidden>
-          <span class="dhub__from-chip">
-            <img
-              class="dhub__from-mark"
-              data-dhub-from-mark
-              alt=""
-              width="18"
-              height="18"
-              decoding="async"
-              hidden
-            />
-            <span class="dhub__from-name" data-dhub-from-name></span>
-            <button
-              type="button"
-              class="dhub__from-x"
-              data-dhub-reset
-              aria-label="Show everything, not just this source"
-            >
+        {/* The publisher filter has no control of its own — only a listing
+            page's "More from …" link sets `?from=` — so this token is what says
+            the grid is narrowed, and carries the way out. */}
+        <div class="dx-from" data-dx-from hidden>
+          <span class="dx-from__chip">
+            <img data-dx-from-mark alt="" width="18" height="18" decoding="async" hidden />
+            <span data-dx-from-name></span>
+            <button type="button" class="dx-from__x" data-dx-reset aria-label="Show everything, not just this source">
               <svg viewBox="0 0 12 12" aria-hidden="true">
-                <path
-                  d="M3.2 3.2 8.8 8.8M8.8 3.2 3.2 8.8"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                ></path>
+                <path d="M3.2 3.2 8.8 8.8M8.8 3.2 3.2 8.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
               </svg>
             </button>
           </span>
-          <span class="dhub__from-count" data-dhub-from-count></span>
+          <span class="dx-from__count" data-dx-from-count></span>
         </div>
 
-        <ul class="dhub__grid" data-dhub-grid data-reveal="stagger">
-          {listings.map((listing) => (
-            <DiscoverCard listing={listing} />
-          ))}
+        <ul class="dx-grid" role="list" data-dx-grid>
+          {cards.map((card, i) => {
+            const { listing } = card;
+            const source = listing.source ?? null;
+            const leaves = /^https?:/.test(card.href);
+            return (
+              <li
+                class:list={["dc", `dc--${card.stage}`, ...initialMarks[i]]}
+                style={`--tone: ${card.tone};`}
+                data-kind={listing.kind}
+                data-topic={listing.category ?? ""}
+                data-source={source ? discoverSourceSlug(source) : ""}
+                data-source-name={source?.name ?? ""}
+                data-source-logo={source?.logo ?? ""}
+                data-search={card.search}
+              >
+                <a class="dc__link" href={card.href} {...(leaves ? { target: "_blank", rel: "noopener" } : {})}>
+                  <div class="dc__stage" aria-hidden="true">
+                    {card.stage === "paper" && (
+                      <div class="aui aui-paper dc__paper">
+                        <p class="aui-h">{listing.title}</p>
+                        {card.bodyHtml ? (
+                          <div class="dc__body" set:html={card.bodyHtml} />
+                        ) : (
+                          <p class="dc__body">{card.excerpt}</p>
+                        )}
+                      </div>
+                    )}
+
+                    {card.stage === "stack" && (
+                      <div class="aui aui-card aui-card--float dc__rows">
+                        {card.titles.map((t) => (
+                          <div class="aui-row">
+                            <span class="aui-tile"><AppIcon name={DISCOVER_KIND_ICON.note} /></span>
+                            <span><span class="aui-title">{t}</span></span>
+                            <span />
+                          </div>
+                        ))}
+                        {card.titlesMore > 0 && (
+                          <div class="aui-row">
+                            <span class="aui-tile"><AppIcon name={DISCOVER_KIND_ICON.pack} /></span>
+                            <span><span class="aui-sub">+{card.titlesMore} more</span></span>
+                            <span />
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {card.stage === "plate" && (
+                      <ResourcePlate
+                        tone={card.plateTone}
+                        art={card.art}
+                        artPos={card.artPos}
+                        logo={card.logo}
+                        name={source ? source.name : listing.title}
+                        type={card.typeLabel}
+                        image={card.image}
+                        video={card.isVideo}
+                        duration={card.duration}
+                        icon={card.icon}
+                        docArt={card.docArt}
+                      />
+                    )}
+                  </div>
+
+                  <div class="dc__text">
+                    <p class="dc__label">
+                      {!source && <Icon class="dc__kind-icon" name={card.icon} aria-hidden="true" />}
+                      <span>{card.label}</span>
+                      {card.by && <span class="dc__by">{card.by}</span>}
+                    </p>
+                    <h2 class="dc__title">{listing.title}</h2>
+                    {listing.description && <p class="dc__desc">{listing.description}</p>}
+                    <p class="dc__foot">
+                      <span class="dc__cta">{card.cta}</span>
+                      {listing.installCount > 1 && <span class="dc__count">saved by {listing.installCount}</span>}
+                    </p>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
         </ul>
-        <div class="dhub__empty" data-dhub-empty hidden>
+
+        <div class="dx-empty" data-dx-empty hidden>
           <p>Nothing matches that yet.</p>
-          <button type="button" class="dhub__reset" data-dhub-reset>Show everything</button>
+          <button type="button" class="nx-btn nx-btn--ghost" data-dx-reset>Show everything</button>
         </div>
-        {/* Only rendered into once there is more than a page to walk — a
-            catalog of nine never shows it. */}
-        <nav class="dhub__pager" data-dhub-pager aria-label="Pages" hidden>
-          <button type="button" class="dhub__page-btn" data-dhub-prev>Previous</button>
-          <span class="dhub__page-of" data-dhub-page-of aria-live="polite"></span>
-          <button type="button" class="dhub__page-btn" data-dhub-next>Next</button>
+
+        <nav class="dx-pager" data-dx-pager aria-label="Pages" hidden>
+          <button type="button" class="nx-btn nx-btn--ghost" data-dx-prev>Previous</button>
+          <span data-dx-page-of aria-live="polite"></span>
+          <button type="button" class="nx-btn nx-btn--ghost" data-dx-next>Next</button>
         </nav>
-      </div>
+      </section>
     )
   }
 
-  <PageClosingCTA
-    heading={total > 0 ? "Take one, and make it yours" : "Somewhere for your study to live"}
-    lead="Harvous keeps what you write where you can find it again — and lets you pass it on."
+  <ClosingCall
+    title={total > 0 ? "Take one, and make it yours." : "Somewhere for your study to live."}
   />
-</BaseLayout>
+</NextLayout>
 
 <script>
   /*
-   * Filter in place. State is (topic, kind, query); the URL carries topic and
-   * kind so a use-case page can link straight to `?use=sermon-notes` and a
-   * reader can share what they were looking at. The query is not written to
-   * the URL — it changes on every keystroke and is nobody's address.
+   * Filter in place — the live /discover/ script's behaviour, re-pointed at
+   * this page's markup. State is (topic, kind, from, query, page). The URL
+   * carries `use`, `kind` and `from`; the query changes on every keystroke and
+   * is nobody's address, so it stays out.
    */
-  const root = document.querySelector<HTMLElement>("[data-dhub]");
+  const root = document.querySelector<HTMLElement>("[data-dx]");
   if (root) {
-    const cards = Array.from(root.querySelectorAll<HTMLElement>(".dcard"));
-    const kindButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dhub-kind]"));
-    const topicItems = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dhub-topic]"));
-    const topicsWrap = root.querySelector<HTMLElement>("[data-dhub-topics]");
-    const trigger = root.querySelector<HTMLButtonElement>("[data-dhub-topics-trigger]");
-    const menu = root.querySelector<HTMLElement>("[data-dhub-topics-menu]");
-    const triggerLabel = root.querySelector<HTMLElement>("[data-dhub-topics-label]");
-    const search = root.querySelector<HTMLInputElement>("[data-dhub-search]");
-    const pager = root.querySelector<HTMLElement>("[data-dhub-pager]");
-    const pageOf = root.querySelector<HTMLElement>("[data-dhub-page-of]");
-    const prevBtn = root.querySelector<HTMLButtonElement>("[data-dhub-prev]");
-    const nextBtn = root.querySelector<HTMLButtonElement>("[data-dhub-next]");
-    /* Enough that the catalog has to grow a long way before anyone meets a
-       pager; small enough that it exists before the page gets unscrollable. */
+    const cards = Array.from(root.querySelectorAll<HTMLElement>(".dc"));
+    const kindButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dx-kind]"));
+    const topicSelect = root.querySelector<HTMLSelectElement>("[data-dx-topic]");
+    const topicWrap = root.querySelector<HTMLElement>("[data-dx-topic-wrap]");
+    const search = root.querySelector<HTMLInputElement>("[data-dx-search]");
+    const grid = root.querySelector<HTMLElement>("[data-dx-grid]");
+    const empty = root.querySelector<HTMLElement>("[data-dx-empty]");
+    const pager = root.querySelector<HTMLElement>("[data-dx-pager]");
+    const pageOf = root.querySelector<HTMLElement>("[data-dx-page-of]");
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-dx-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-dx-next]");
+    const fromStrip = root.querySelector<HTMLElement>("[data-dx-from]");
+    const fromName = root.querySelector<HTMLElement>("[data-dx-from-name]");
+    const fromMark = root.querySelector<HTMLImageElement>("[data-dx-from-mark]");
+    const fromCount = root.querySelector<HTMLElement>("[data-dx-from-count]");
+
+    /* Same page size as the live hub. */
     const PAGE_SIZE = 24;
     let page = 0;
-    const empty = root.querySelector<HTMLElement>("[data-dhub-empty]");
-    const grid = root.querySelector<HTMLElement>("[data-dhub-grid]");
 
+    const topicValues = topicSelect ? Array.from(topicSelect.options).map((o) => o.value) : [];
     const params = new URLSearchParams(location.search);
     let topic = params.get("use") ?? "";
     let kind = params.get("kind") ?? "";
-    /* Publisher, and URL-only on purpose. The bar already carries two rows of
-       controls and this file learned once that a third outweighed the cards
-       under it — so "More from BibleProject" is a link into this filter rather
-       than a chip nobody would use twice. */
     let from = params.get("from") ?? "";
     let query = "";
 
-    /* An unknown value in the URL is nobody's filter — fall back to everything
-       rather than showing an empty grid for a typo. */
-    if (topic && !topicItems.some((b) => b.dataset.dhubTopic === topic)) topic = "";
-    if (kind && !kindButtons.some((b) => b.dataset.dhubKind === kind)) kind = "";
+    /* An unknown value is nobody's filter — fall back to everything. */
+    if (topic && !topicValues.includes(topic)) topic = "";
+    if (kind && !kindButtons.some((b) => b.dataset.dxKind === kind)) kind = "";
     if (from && !cards.some((c) => c.dataset.source === from)) from = "";
 
-    const fromStrip = root.querySelector<HTMLElement>("[data-dhub-from]");
-    const fromName = root.querySelector<HTMLElement>("[data-dhub-from-name]");
-    const fromMark = root.querySelector<HTMLImageElement>("[data-dhub-from-mark]");
-    const fromCount = root.querySelector<HTMLElement>("[data-dhub-from-count]");
-
-    const closeMenu = () => {
-      if (!menu || !trigger) return;
-      menu.hidden = true;
-      trigger.setAttribute("aria-expanded", "false");
-    };
-    const openMenu = () => {
-      if (!menu || !trigger) return;
-      menu.hidden = false;
-      trigger.setAttribute("aria-expanded", "true");
+    const TAIL = ["is-t2-odd", "is-t3-solo", "is-t3-wide"];
+    const markTail = (shown: HTMLElement[]) => {
+      for (const c of cards) c.classList.remove(...TAIL);
+      const n = shown.length;
+      if (n % 2 === 1) shown[n - 1].classList.add("is-t2-odd");
+      if (n === 1) shown[0].classList.add("is-t3-solo");
+      else if (n % 3 === 2) shown.slice(-2).forEach((c) => c.classList.add("is-t3-wide"));
+      else if (n % 3 === 1) shown.slice(-4).forEach((c) => c.classList.add("is-t3-wide"));
     };
 
     const apply = (resetPage = true) => {
       if (resetPage) page = 0;
-      /* Two passes: which cards match, then which of those this page shows.
-         Doing it in one would page over the unfiltered list. */
       const matched = cards.filter(
         (card) =>
           (!topic || card.dataset.topic === topic) &&
@@ -386,69 +409,38 @@ const jsonLd = [
       );
       const pages = Math.max(1, Math.ceil(matched.length / PAGE_SIZE));
       page = Math.min(page, pages - 1);
-      /* `offset`, not `from` — `from` is the publisher filter in the closure
-         above, and a `const from` here shadowed it inside the very filter that
-         reads it, which is a temporal-dead-zone throw rather than a wrong
-         answer. */
       const offset = page * PAGE_SIZE;
-      const visible = new Set(matched.slice(offset, offset + PAGE_SIZE));
+      const onPage = matched.slice(offset, offset + PAGE_SIZE);
+      const visible = new Set(onPage);
       for (const card of cards) card.hidden = !visible.has(card);
-      const shown = matched.length;
+      markTail(onPage);
 
       for (const b of kindButtons) {
-        const on = (b.dataset.dhubKind ?? "") === kind;
-        b.classList.toggle("is-active", on);
+        const on = (b.dataset.dxKind ?? "") === kind;
+        b.classList.toggle("is-on", on);
         b.setAttribute("aria-pressed", on ? "true" : "false");
       }
+      if (topicSelect) topicSelect.value = topic;
+      topicWrap?.classList.toggle("is-set", Boolean(topic));
 
-      let current: HTMLButtonElement | undefined;
-      for (const b of topicItems) {
-        const on = (b.dataset.dhubTopic ?? "") === topic;
-        b.classList.toggle("is-active", on);
-        b.setAttribute("aria-checked", on ? "true" : "false");
-        if (on) current = b;
-      }
-      /* The trigger names the axis at rest and wears the choice once there is
-         one, so a folded-away filter is still visible at a glance. Reading the
-         "All use cases" row's own text would put that whole phrase in a control
-         that has to fit beside a search field. */
-      if (triggerLabel) {
-        triggerLabel.textContent = topic
-          ? (current?.querySelector<HTMLElement>(".dhub__menu-label")?.childNodes[0]?.textContent?.trim() ??
-            "Use cases")
-          : "Use cases";
-      }
-      if (topicsWrap) {
-        topicsWrap.style.cssText = topic && current ? current.style.cssText : "";
-        topicsWrap.classList.toggle("is-set", Boolean(topic));
-      }
-      /* The stack glyph stays put; only the fill and the label change. Swapping
-         in the topic's own glyph meant cloning an <svg> whose <use> points at a
-         <symbol> defined inside the original — the clone left the symbol behind
-         and rendered an empty circle. */
-
+      const shown = matched.length;
       if (empty) empty.hidden = shown > 0;
       if (grid) grid.hidden = shown === 0;
       if (pager) pager.hidden = pages < 2;
       if (pageOf) pageOf.textContent = `Page ${page + 1} of ${pages}`;
       if (prevBtn) prevBtn.disabled = page === 0;
       if (nextBtn) nextBtn.disabled = page >= pages - 1;
-      /* The token names the publisher from a card rather than from a lookup —
-         the cards are the only place that name and mark exist on this page. */
+
       if (fromStrip) fromStrip.hidden = !from;
       if (from) {
         const card = cards.find((c) => c.dataset.source === from);
         if (fromName) fromName.textContent = card?.dataset.sourceName ?? from;
         if (fromMark) {
           const logo = card?.dataset.sourceLogo ?? "";
-          /* Hidden rather than left with an empty src, which browsers render
-             as a broken-image glyph inside the pill. */
           fromMark.hidden = !logo;
           if (logo) fromMark.src = logo;
         }
-        if (fromCount) {
-          fromCount.textContent = shown === 1 ? "1 thing" : `${shown} things`;
-        }
+        if (fromCount) fromCount.textContent = shown === 1 ? "1 thing" : `${shown} things`;
       }
 
       const next = new URLSearchParams();
@@ -461,43 +453,27 @@ const jsonLd = [
 
     for (const b of kindButtons) {
       b.addEventListener("click", () => {
-        const value = b.dataset.dhubKind ?? "";
+        const value = b.dataset.dxKind ?? "";
         kind = kind === value ? "" : value;
         apply();
       });
     }
-    for (const b of topicItems) {
-      b.addEventListener("click", () => {
-        topic = b.dataset.dhubTopic ?? "";
-        closeMenu();
-        apply();
-      });
-    }
-    trigger?.addEventListener("click", () => {
-      if (menu?.hidden) openMenu();
-      else closeMenu();
-    });
-    document.addEventListener("click", (event) => {
-      if (!topicsWrap?.contains(event.target as Node)) closeMenu();
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeMenu();
+    topicSelect?.addEventListener("change", () => {
+      topic = topicSelect.value;
+      apply();
     });
     search?.addEventListener("input", () => {
       query = search.value.trim().toLowerCase();
       apply();
     });
-    prevBtn?.addEventListener("click", () => {
-      page -= 1;
+    const turn = (delta: number) => {
+      page += delta;
       apply(false);
       grid?.scrollIntoView({ block: "start", behavior: "smooth" });
-    });
-    nextBtn?.addEventListener("click", () => {
-      page += 1;
-      apply(false);
-      grid?.scrollIntoView({ block: "start", behavior: "smooth" });
-    });
-    for (const button of root.querySelectorAll("[data-dhub-reset]")) {
+    };
+    prevBtn?.addEventListener("click", () => turn(-1));
+    nextBtn?.addEventListener("click", () => turn(1));
+    for (const button of root.querySelectorAll("[data-dx-reset]")) {
       button.addEventListener("click", () => {
         topic = "";
         kind = "";
@@ -513,515 +489,349 @@ const jsonLd = [
 </script>
 
 <style>
-  .dhub__empty-catalog {
-    max-width: 44rem;
-    margin: 0 auto;
-    padding: 0 var(--frame-content-pad) 3rem;
+  .dx-intro {
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
   }
+  .dx-intro .nx-display { margin: 1rem auto 0; }
+  .dx-intro .nx-lead { margin: 1.5rem auto 0; }
 
-  /*
-    Inside the frame rails. `.page-frame`'s hairlines sit at `--frame-inset`
-    from the viewport edge; a 72rem box with its own padding put the bar's
-    border a few pixels *past* them at ~1200px. `--frame-content-pad` is the
-    gap the rest of the site leaves between hairline and content.
-  */
-  .dhub {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: clamp(1.75rem, 4vw, 2.5rem) var(--frame-content-pad) 3rem;
-  }
-
-  /* ── The bar ── kinds on the left, topic menu and search on the right. */
-  /*
-    Capped and centred rather than spanning the grid. It is a floating pill
-    directly under another floating pill, and at the grid's full 72rem it read
-    as a different kind of object from the header — a page-width toolbar under
-    a content-width nav. 52rem sits with the header's own measured
-    `--pill-width` (~778px at 1280) without tying a static stylesheet to a
-    value the header's script computes at runtime.
-  */
-  .dhub__bar {
-    position: sticky;
-    top: 5.25rem;
-    z-index: 30;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
-    max-width: 52rem;
-    margin-inline: auto;
-    box-sizing: border-box;
-    padding: 0.375rem;
-    border: 1px solid var(--color-rule);
-    border-radius: 999px;
-    background: color-mix(in oklab, var(--color-card) 92%, transparent);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-card);
-  }
-
-  .dhub__kinds {
-    display: flex;
-    flex: 1 1 auto;
-    gap: 0.125rem;
-    min-width: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .dhub__kinds::-webkit-scrollbar {
-    display: none;
-  }
-  .dhub__kind {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-shrink: 0;
-    padding: 0.45rem 0.85rem;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    font-variation-settings: "wdth" 100, "ROND" 0;
+  .dx-none {
+    padding-block: 3rem;
+    text-align: center;
     color: var(--color-ink-soft);
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-  .dhub__kind:hover {
-    color: var(--color-ink);
-  }
-  /* The accent gradient every other primary control on this site uses — a
-     solid black chip was a shape borrowed from nowhere. */
-  .dhub__kind.is-active {
-    background: var(--accent-btn-bg);
-    box-shadow: var(--accent-btn-shadow-sm);
-    color: #fff;
-  }
-  .dhub__kind-icon {
-    display: inline-flex;
-  }
-  .dhub__kind-icon :global(svg) {
-    width: 0.875rem;
-    height: 0.875rem;
-    fill: currentColor;
   }
 
-  /* Nothing left but the tools, so they get the bar. 52rem of pill around one
-     menu and a search field is a lot of empty; the bar comes in to fit them. */
-  .dhub__bar--tools-only {
-    max-width: 34rem;
-  }
-  .dhub__bar--tools-only .dhub__tools,
-  .dhub__bar--tools-only .dhub__search {
-    flex: 1 1 auto;
-  }
+  .dx { margin-top: clamp(3rem, 7vw, 4.5rem); }
 
-  .dhub__tools {
+  /* ── Controls: one calm row, wrapping when it has to ─────────────────── */
+  .dx-bar {
     display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    /* Shrinkable, and `min-width: 0` so the search field inside can actually
-       give width back — without it the row keeps its content width and the
-       field runs past the bar's rounded edge. */
-    flex: 0 1 auto;
-    min-width: 0;
-  }
-
-  /* ── Topic menu ── */
-  .dhub__topics {
-    position: relative;
-  }
-  .dhub__topics-trigger {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    max-width: 100%;
-    min-width: 0;
-    height: 2.25rem;
-    padding: 0 0.75rem 0 0.3rem;
-    border: 1px solid var(--color-rule);
-    border-radius: 999px;
-    background: var(--color-card);
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    font-variation-settings: "wdth" 100, "ROND" 0;
-    color: var(--color-ink);
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    /* `border-color` only — deliberately NOT `background`. Picking a topic sets
-       `--ink` on the wrapper and toggles `.is-set` in the same frame, and a
-       transition whose endpoint reads that property never re-resolves against the
-       new custom property: the fill stayed white while the text went lilac.
-       The fill is a state, not a hover affordance, so it has no business
-       animating anyway. */
-    transition: border-color 0.15s ease;
-  }
-  .dhub__topics-trigger:hover {
-    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
-  }
-  .dhub__topics.is-set .dhub__topics-trigger {
-    background: color-mix(in oklab, var(--ink, var(--color-ink)) 12%, var(--color-paper));
-    border-color: color-mix(in oklab, var(--ink, var(--color-ink)) 30%, var(--color-rule));
-    color: var(--color-ink);
-  }
-  .dhub__topics-dot {
-    display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    width: 1.625rem;
-    height: 1.625rem;
-    border-radius: 999px;
-    background: var(--color-warm);
-    color: var(--color-ink-soft);
+    gap: 0.75rem 1rem;
   }
-  .dhub__topics.is-set .dhub__topics-dot {
-    background: var(--color-card);
-    color: var(--ink, var(--color-ink-soft));
-  }
-  .dhub__topics-dot svg {
-    width: 0.8125rem;
-    height: 0.8125rem;
-    display: block;
-    fill: currentColor;
-  }
-  .dhub__chevron {
-    flex-shrink: 0;
-    width: 0.7rem;
-    height: 0.7rem;
-    opacity: 0.55;
-  }
-  /* The chosen use case can be long ("Sunday, in my own words" is a listing,
-     but "Teaching prep" plus a chevron still needs somewhere to go). */
-  [data-dhub-topics-label] {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .dx-kinds,
+  .dx-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.375rem;
   }
 
-  .dhub__menu {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    right: 0;
-    z-index: 40;
-    display: grid;
-    gap: 0.125rem;
-    width: min(20rem, calc(100vw - 2 * var(--frame-content-pad)));
-    /* Cut through a row, deliberately.
-       Measured: the "All use cases" row is 44px, each topic row 57px including
-       its gap. At the old 24rem the sixth topic landed 49px into its 57 — near
-       enough to whole that the menu looked finished, so nothing told a reader
-       there were three more below. Half a row of peek is the only thing a menu
-       with no persistent scrollbar has to say "keep going", and it makes the
-       panel shorter at the same time.
-       0.375rem padding + 2.75rem "All" + four 3.5625rem rows + half a row. */
-    max-height: min(19.125rem, 60vh);
-    overflow-y: auto;
-    padding: 0.375rem;
-    border: 1px solid var(--color-rule);
-    border-radius: 1rem;
-    background: var(--color-card);
-    box-shadow: var(--shadow-float);
-  }
-  .dhub__menu-item {
-    display: grid;
-    grid-template-columns: 1.75rem 1fr;
+  .dx-chip,
+  .dx-select,
+  .dx-search {
+    display: inline-flex;
     align-items: center;
-    gap: 0.625rem;
-    padding: 0.5rem 0.625rem;
+    gap: 0.45rem;
+    height: 2.5rem;
+    padding: 0 1rem;
     border: 0;
-    border-radius: 0.625rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .dx-chip { cursor: pointer; }
+  .dx-chip :global(svg) { width: 0.8rem; height: 0.8rem; opacity: 0.8; }
+  .dx-chip:hover { background: color-mix(in srgb, var(--color-ink) 9%, transparent); color: var(--color-ink); }
+  /* Selected is ink, never the accent blue. */
+  .dx-chip.is-on,
+  .dx-chip.is-on:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .dx-chip:focus-visible,
+  .dx-select:focus-within,
+  .dx-search:focus-within {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  .dx-select {
+    position: relative;
+    padding: 0;
+  }
+  .dx-select select {
+    appearance: none;
+    height: 100%;
+    padding: 0 2.25rem 0 1rem;
+    border: 0;
     background: transparent;
     font: inherit;
-    text-align: left;
-    color: var(--color-ink);
+    color: inherit;
     cursor: pointer;
-    transition: background 0.12s ease;
+    outline: none;
   }
-  .dhub__menu-item:hover {
-    background: var(--color-warm);
+  .dx-select svg {
+    position: absolute;
+    right: 0.9rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    opacity: 0.6;
+    pointer-events: none;
   }
-  .dhub__menu-item.is-active {
-    background: color-mix(in oklab, var(--ink, var(--color-ink)) 7%, var(--color-paper));
-  }
-  /* "All use cases" sets no ink, so the mix above lands on plain grey and reads
-     as disabled rather than chosen. */
-  .dhub__menu-item.is-active:not([style]) {
-    background: var(--color-warm);
-  }
-  .dhub__menu-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: 999px;
-    background: color-mix(in oklab, var(--ink, var(--color-ink)) 14%, var(--color-paper));
-    color: var(--ink, var(--color-ink-soft));
-  }
-  .dhub__menu-icon :global(svg) {
-    width: 0.8125rem;
-    height: 0.8125rem;
-    fill: currentColor;
-  }
-  .dhub__menu-label {
-    display: grid;
-    min-width: 0;
-    font-family: var(--font-display);
-    font-size: 0.9375rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    font-variation-settings: "wdth" 100, "ROND" 0;
-  }
-  .dhub__menu-blurb {
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: 1.35;
-    color: var(--color-ink-faint);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  /* ── Search ── */
-  .dhub__search {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex: 0 1 11rem;
-    min-width: 0;
-    height: 2.25rem;
-    padding: 0 0.75rem;
-    border-radius: 999px;
-    background: var(--color-warm);
-  }
-  .dhub__search:focus-within {
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 28%, transparent);
-  }
-  .dhub__search-icon {
-    display: inline-flex;
-    width: 0.9rem;
-    height: 0.9rem;
-    color: var(--color-ink-faint);
-  }
-  .dhub__search-icon svg {
-    width: 100%;
-    height: 100%;
-  }
-  .dhub__search-input {
+  .dx-select:hover { background: color-mix(in srgb, var(--color-ink) 9%, transparent); color: var(--color-ink); }
+  .dx-select.is-set { background: var(--color-ink); color: var(--color-paper); }
+
+  .dx-search { width: 11rem; }
+  .dx-search svg { flex-shrink: 0; width: 0.9rem; height: 0.9rem; opacity: 0.6; }
+  .dx-search input {
     flex: 1;
     min-width: 0;
     border: 0;
     background: transparent;
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
+    font: inherit;
     color: var(--color-ink);
     outline: none;
   }
-  .dhub__search-input::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-  }
+  .dx-search input::placeholder { color: var(--color-ink-faint); }
+  .dx-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
 
-  /* ── Grid ── */
-  /* The publisher filter has no control in the bar, so this token is the only
-     thing saying the grid is narrowed — and it carries its own way out. */
-  /* Same box as the bar above it — 52rem, centred — so it sits in the page the
-     way the bar does rather than running out to the frame's edge, and the token
-     itself is centred within that box.
-
-     `.dhub__bar--tools-only` narrows to 34rem, and this does not follow it:
-     that state only exists while the catalog holds a single kind, and a
-     `?from=` filter cannot be reached without curated resources in it. */
-  .dhub__from {
+  /* ── Publisher token ─────────────────────────────────────────────────── */
+  .dx-from {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 0.625rem;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 52rem;
-    margin-inline: auto;
-    padding-inline: 0.375rem;
-    /* Even above and below: the grid brings its own 1.5rem, so this matches it
-       rather than halving the gap underneath the way it first did. */
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
   }
-
-  /* The bar's own pill vocabulary: full rule, 999px, warm ground. Sized off
-     `.dhub__topics-trigger` so a filter that came from a link looks like one
-     that came from a control. */
-  .dhub__from-chip {
+  .dx-from[hidden] { display: none; }
+  .dx-from__chip {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    min-width: 0;
-    padding: 0.3125rem 0.3125rem 0.3125rem 0.75rem;
-    border: 1px solid var(--color-rule);
+    padding: 0.3rem 0.3rem 0.3rem 0.8rem;
     border-radius: 999px;
-    background: var(--color-card);
-    box-shadow: var(--shadow-card);
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+    font-weight: 500;
   }
-
-  .dhub__from-mark {
-    display: block;
-    flex-shrink: 0;
-    width: 1.125rem;
-    height: 1.125rem;
-    border-radius: 5px;
-    object-fit: contain;
-  }
-
-  .dhub__from-name {
-    overflow: hidden;
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    font-variation-settings: "wdth" 100, "ROND" 0;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: var(--color-ink);
-  }
-
-  /* Inside the chip, so the dismiss is on the thing being dismissed. Its own
-     round hit area rather than a bare glyph — 1.75rem is the smallest target
-     that still reads as part of a 2.25rem pill. */
-  .dhub__from-x {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
+  .dx-from__chip img { width: 1.125rem; height: 1.125rem; border-radius: 5px; object-fit: contain; }
+  .dx-from__x {
+    display: inline-grid;
+    place-items: center;
     width: 1.75rem;
     height: 1.75rem;
     padding: 0;
     border: 0;
     border-radius: 999px;
-    background: var(--color-warm);
+    background: var(--color-paper);
     color: var(--color-ink-soft);
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
   }
+  .dx-from__x svg { width: 0.75rem; height: 0.75rem; }
+  .dx-from__count { font-size: 0.875rem; color: var(--color-ink-faint); }
 
-  .dhub__from-x svg {
-    width: 0.75rem;
-    height: 0.75rem;
-  }
-
-  .dhub__from-x:hover {
-    background: color-mix(in oklab, var(--color-ink) 10%, var(--color-warm));
-    color: var(--color-ink);
-  }
-
-  .dhub__from-x:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-
-  /* Outside the chip: the chip says which filter, this says what it did. */
-  .dhub__from-count {
-    font-size: 0.875rem;
-    color: var(--color-ink-faint);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .dhub__from-x {
-      transition: none;
-    }
-  }
-
-  .dhub__grid {
+  /* ── The grid ────────────────────────────────────────────────────────────
+     Six tracks, cards span two; the tail marks rebalance the last row. */
+  .dx-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
-    align-items: stretch;
-    margin-top: 1.5rem;
-    scroll-margin-top: 9rem;
+    margin: clamp(2rem, 5vw, 3rem) 0 0;
     padding: 0;
     list-style: none;
+    scroll-margin-top: 7rem;
+  }
+  .dx-grid[hidden] { display: none; }
+  @media (min-width: 44rem) {
+    .dx-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .dc { grid-column: span 2; }
+    .dc.is-t2-odd { grid-column: 2 / span 2; }
+  }
+  @media (min-width: 68rem) {
+    .dx-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; }
+    .dc,
+    .dc.is-t2-odd { grid-column: auto / span 2; }
+    .dc.is-t3-wide { grid-column: auto / span 3; }
+    .dc.is-t3-solo { grid-column: 3 / span 2; }
   }
 
-  .dhub__empty {
-    padding: 4rem 1rem;
-    text-align: center;
+  /* ── A card: the Bento's shape ──────────────────────────────────────── */
+  .dc {
+    --tone: var(--study-dock-accent-neutral);
+    border-radius: 1.6rem;
+    background: color-mix(in srgb, var(--tone) 7%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 12%, transparent);
+  }
+  .dc[hidden] { display: none; }
+  .dc__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .dc__stage {
+    position: relative;
+    flex-shrink: 0;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 1.15rem;
+    background:
+      radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, #fff 55%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone) 24%, var(--color-paper));
+  }
+
+  /* Template / note: the app's own page, running off the stage's floor. */
+  .dc--paper .dc__stage { padding: 1.5rem 1.5rem 0; }
+  .dc__paper {
+    width: 100%;
+    max-width: 22rem;
+    height: calc(100% + 1rem);
+    margin-bottom: -1rem;
+    padding: 16px 18px;
+    overflow: hidden;
+    font-size: 12.5px;
+    line-height: 1.5;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    transition: transform 450ms var(--nx-ease);
+  }
+  .dc__paper .aui-h {
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dc__body { margin: 0; color: var(--pds-text-secondary); }
+  .dc__body :global(h1),
+  .dc__body :global(h2),
+  .dc__body :global(h3) {
+    margin: 0.7em 0 0.1em;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--pds-text-primary);
+  }
+  .dc__body :global(:is(h1, h2, h3):first-child) { margin-top: 0; }
+  .dc__body :global(p) { margin: 0; }
+  .dc__body :global(p:has(> br:only-child)) { display: none; }
+  .dc__body :global(ul),
+  .dc__body :global(ol) { margin: 0; padding-left: 1.1em; }
+  .dc__body :global(img),
+  .dc__body :global(figure) { display: none; }
+
+  /* Thread: the notes, as rows. */
+  .dc--stack .dc__stage { padding: 1.5rem 1.5rem 0; }
+  .dc__rows {
+    width: 100%;
+    max-width: 22rem;
+    margin-bottom: -1rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    transition: transform 450ms var(--nx-ease);
+  }
+
+  .dc:hover .dc__paper,
+  .dc:hover .dc__rows { transform: translateY(-6px); }
+
+  /* Resource: the live card's plate (ResourcePlate) fills the stage. */
+  .dc--plate .dc__stage { background: none; }
+
+  /* The words. */
+  .dc__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 1rem 0.9rem;
+  }
+  .dc__label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .dc__label > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dc__label :global(.dc__kind-icon) { flex-shrink: 0; width: 0.75rem; height: 0.75rem; }
+  .dc__by::before { content: "·"; margin-right: 0.45rem; }
+  .dc__title {
+    margin: 0.55rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .dc__desc {
+    margin: 0.4rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .dc__foot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: auto 0 0;
+    padding-top: 1rem;
+    font-size: 0.875rem;
     color: var(--color-ink-soft);
   }
-  .dhub__pager {
+  .dc__cta { font-weight: 500; color: var(--color-ink); }
+  .dc__cta::after {
+    content: "→";
+    display: inline-block;
+    margin-left: 0.35em;
+    transition: transform 200ms var(--nx-ease);
+  }
+  .dc:hover .dc__cta::after { transform: translateX(3px); }
+  .dc__count { margin-left: auto; color: var(--color-ink-faint); }
+
+  /* Half-width cards on desktop lie on their side: stage left, words right. */
+  @media (min-width: 68rem) {
+    .dc.is-t3-wide .dc__link { flex-direction: row; gap: 0.25rem; }
+    .dc.is-t3-wide .dc__stage { flex: 0 0 56%; aspect-ratio: auto; min-height: 15rem; }
+    .dc.is-t3-wide .dc__text { padding: 1.25rem 1.25rem 1rem; }
+  }
+
+  /* ── Empty and pager ─────────────────────────────────────────────────── */
+  .dx-empty {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    padding: 4rem 1rem;
+    color: var(--color-ink-soft);
+  }
+  .dx-empty[hidden],
+  .dx-pager[hidden] { display: none; }
+  .dx-empty p { margin: 0; }
+  .dx-pager {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    margin-top: 2rem;
-    font-size: 0.875rem;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    font-size: 0.9375rem;
     color: var(--color-ink-faint);
   }
-  .dhub__page-btn {
-    padding: 0.45rem 0.9rem;
-    border: 1px solid var(--color-rule);
-    border-radius: 999px;
-    background: var(--color-card);
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    font-variation-settings: "wdth" 100, "ROND" 0;
-    color: var(--color-ink);
-    cursor: pointer;
-  }
-  .dhub__page-btn:hover:not(:disabled) {
-    border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-rule));
-  }
-  .dhub__page-btn:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-
-  .dhub__reset {
-    margin-top: 0.75rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-rule);
-    border-radius: 999px;
-    background: var(--color-card);
-    font: inherit;
-    font-weight: 600;
-    color: var(--color-ink);
-    cursor: pointer;
-  }
-
-  /* Narrow: the bar wraps to two lines of its own accord — kinds scroll on the
-     first, topic menu and search share the second. */
-  @media (max-width: 800px) {
-    .dhub__bar {
-      top: 4.5rem;
-      flex-wrap: wrap;
-      border-radius: 1.5rem;
-    }
-    .dhub__kinds {
-      flex: 1 1 100%;
-    }
-    .dhub__tools {
-      flex: 1 1 100%;
-      min-width: 0;
-    }
-    .dhub__search {
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-    .dhub__menu {
-      right: auto;
-      left: 0;
-    }
-  }
+  .dx-pager .nx-btn:disabled { opacity: 0.4; cursor: default; }
 
   @media (prefers-reduced-motion: reduce) {
-    .dhub__kind,
-    .dhub__topics-trigger,
-    .dhub__menu-item {
-      transition: none;
-    }
+    .dc__paper,
+    .dc__rows,
+    .dc__cta::after { transition: none; }
+    .dc:hover .dc__paper,
+    .dc:hover .dc__rows { transform: none; }
   }
 </style>

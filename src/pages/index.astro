@@ -1,65 +1,75 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import HeroCentered from "../components/HeroCentered.astro";
-import AppTour from "../components/AppTour.astro";
-import FeatureGrid from "../components/FeatureGrid.astro";
-import PageClosingCTA from "../components/PageClosingCTA.astro";
-import UseCasesPreview from "../components/UseCasesPreview.astro";
-import ComparePreview from "../components/ComparePreview.astro";
-import RelatedBlogPosts from "../components/RelatedBlogPosts.astro";
-import TestimonialsSection from "../components/TestimonialsSection.astro";
-import FaqSection from "../components/FaqSection.astro";
-import FounderLetterSection from "../components/FounderLetterSection.astro";
-import DownloadCTA from "../components/DownloadCTA.astro";
-import { getCollection } from "astro:content";
-import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
-import { fathomTry, fathomCta } from "../lib/fathom-events.ts";
-import { includeBlogDrafts, isBlogPostListed } from "../lib/blog";
-
-const homeJsonLd = await buildHomeJsonLd();
-const showDrafts = includeBlogDrafts();
-const homeBlogPosts = (await getCollection("blog"))
-  .filter((p) => isBlogPostListed(p, showDrafts))
-  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime())
-  .slice(0, 2);
+/**
+ * /next/ — the redesigned home. Seven beats instead of twelve: the hero, what
+ * people say (straight after it, as proof), how it works (01–03), however you
+ * study (the use cases), what else it does (bento), privacy, who makes it, and
+ * one closing line. FAQ, compare, use cases, and the blog strip moved off the home
+ * page; they're a footer link away.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import NextHero from "../components/next/NextHero.astro";
+import StoryScroller from "../components/next/StoryScroller.astro";
+import Bento from "../components/next/Bento.astro";
+import ToggleWall from "../components/next/ToggleWall.astro";
+import MakerNote from "../components/next/MakerNote.astro";
+import ProofStrip from "../components/next/ProofStrip.astro";
+import UseCaseRow from "../components/next/UseCaseRow.astro";
+import ClosingCall from "../components/next/ClosingCall.astro";
+import ComparePreview from "../components/next/ComparePreview.astro";
 ---
 
-<BaseLayout
-  title="Harvous — Bible study notes app"
-  description="Harvous is a Bible study notes app — not sermon transcription. Read a chapter or type a reference and your notes, highlights, and threads are right there with it, so you remember what you saved."
-  jsonLd={homeJsonLd}
-  preloadImage="/app-full.webp"
+<NextLayout
+  title="Harvous — a study Bible that remembers"
+  description="A quiet notes app for studying the Bible, made by one person. Write what you notice; Harvous keeps it with the verse and brings it back before it fades."
 >
-  <HeroCentered />
+  <NextHero />
 
-  <AppTour id="features" />
+  <ProofStrip />
 
-  <FeatureGrid />
+  <section class="nx-section" id="story" aria-labelledby="story-title">
+    <div class="nx-wrap">
+      <div class="home__head" data-reveal>
+        <p class="nx-kicker">How it works</p>
+        <h2 id="story-title" class="nx-title">A study Bible that remembers.</h2>
+      </div>
+      <StoryScroller />
+    </div>
+  </section>
 
-  <PageClosingCTA
-    heading="Ready to try it?"
-    lead="Everything above is free — unlimited notes, scripture pills, highlights, and offline sync. No credit card."
-    fathomTrack={fathomTry.included}
-    secondaryHref="/#faq"
-    secondaryLabel="Read the FAQs"
-    secondaryFathomTrack={fathomCta.faqAnchor}
-  />
+  <UseCaseRow />
 
-  <UseCasesPreview />
+  <section class="nx-section home__bento" aria-labelledby="bento-title">
+    <div class="nx-wrap">
+      <div class="home__head" data-reveal>
+        <p class="nx-kicker">Everything else</p>
+        <h2 id="bento-title" class="nx-title">Built for how you actually study.</h2>
+        <p class="nx-lead">
+          The pieces you notice most when they're missing. All free, apart from the two marked Plus.
+        </p>
+      </div>
+      <Bento />
+      <p class="home__more">
+        <a class="nx-link" href="/tour/">Take the full tour →</a>
+      </p>
+    </div>
+  </section>
 
-  <TestimonialsSection />
+  <ToggleWall />
 
-  <ComparePreview />
+  <MakerNote />
 
-  <RelatedBlogPosts
-    posts={homeBlogPosts}
-    lead="Notes, habits, and teaching that show up after Sunday."
-  />
+  <div class="nx-wrap"><ComparePreview /></div>
 
-  <!-- Founder letter — a contrast "card" that breaks the grid frame on purpose. -->
-  <FounderLetterSection />
+  <ClosingCall />
+</NextLayout>
 
-  <FaqSection />
-
-  <DownloadCTA />
-</BaseLayout>
+<style>
+  .home__head {
+    max-width: 40rem;
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+  .home__head .nx-title { margin: 0.75rem 0 0; }
+  .home__head .nx-lead { margin: 1rem 0 0; }
+  .home__more { margin: 2rem 0 0; text-align: center; }
+  .home__bento { padding-top: 0; }
+</style>

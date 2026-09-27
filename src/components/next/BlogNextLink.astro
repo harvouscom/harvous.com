@@ -1,12 +1,10 @@
 ---
 /**
- * The `a` override for MDX on /next/blog/<slug>/: markdown links between posts
- * go to their /next/ copies; every other link renders exactly as authored.
+ * The `a` override for MDX on /blog/<slug>/. Historically rewrote links to
+ * their /next/ preview copies while the redesign lived in parallel; now that
+ * /blog/ is canonical, every link just renders as authored.
  */
-import { isBlogCategory } from "../../lib/blog";
-import { nextBlogHref } from "../../pages/next/blog/_links";
-
 const { href, ...rest } = Astro.props as Record<string, unknown> & { href?: string };
 ---
 
-<a href={nextBlogHref(href, isBlogCategory)} {...rest}><slot /></a>
+<a href={href} {...rest}><slot /></a>

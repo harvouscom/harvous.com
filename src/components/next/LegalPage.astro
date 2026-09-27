@@ -1,6 +1,6 @@
 ---
 /**
- * LegalPage — /next/privacy/ and /next/terms/: a quiet centred head with a
+ * LegalPage — /privacy/ and /terms/: a quiet centred head with a
  * Privacy · Terms switch, the date, a plain-language line in my voice, then
  * the document in one readable column. The wording itself is the live page's
  * (components/legal/*), restyled here — never rewritten.
@@ -18,8 +18,8 @@ interface Props {
 
 const { doc, title, description, heading, updated, summary } = Astro.props;
 const DOCS = [
-  { key: "privacy", label: "Privacy", href: "/next/privacy/" },
-  { key: "terms", label: "Terms", href: "/next/terms/" },
+  { key: "privacy", label: "Privacy", href: "/privacy/" },
+  { key: "terms", label: "Terms", href: "/terms/" },
 ] as const;
 ---
 

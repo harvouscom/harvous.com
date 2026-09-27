@@ -1,110 +1,960 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Container from "../../components/layout/Container.astro";
-import CompareCarousel from "../../components/CompareCarousel.astro";
-import CompareSectionNav from "../../components/CompareSectionNav.astro";
-import PageClosingCTA from "../../components/PageClosingCTA.astro";
-import IntroChip from "../../components/IntroChip.astro";
-import { getCompareTypes, getCompareByType, compareTypeToId, getCompareEntries } from "../../lib/compare-data.ts";
+/**
+ * /compare/ — the Compare hub in the /next chrome, laid out like an app
+ * store: collection cards for each lane in data/compare.csv (the member apps'
+ * icons running off the card), one featured comparison, then every app as a
+ * small row in an A–Z index. Every card links to the live pages: collections
+ * to their lane on `/compare/#<lane>`, apps to `/compare/<slug>/`.
+ *
+ * Collections sit on a 12-track grid so the sizes can vary without leaving a
+ * lonely last card: large = 8, featured = 4, medium = 6, small = 4, and the
+ * layout below fills every row at three and two columns. If the lanes in the
+ * data change and the layout no longer fits, they fall back to a plain run
+ * of smalls with the tail widened.
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+import ClosingCall from "../../components/next/ClosingCall.astro";
+import SectionNav from "../../components/next/SectionNav.astro";
+import ResourcePlate from "../../components/next/ResourcePlate.astro";
+import {
+  compareTypeToId,
+  getCompareByType,
+  getCompareBySlug,
+  getCompareEntries,
+  getCompareTypes,
+  type CompareEntry,
+} from "../../lib/compare-data.ts";
 import { getHarvousHubLane } from "../../lib/compare-harvous-positioning.ts";
-import { fathomCompare, fathomTry } from "../../lib/fathom-events.ts";
-import "../../styles/compare.css";
+import { fathomCompare } from "../../lib/fathom-events.ts";
+import { backdropForImage } from "../../lib/next/icon-backdrop.ts";
+import {
+  getCompareSeoPagesForBuild,
+  harvousTypeForSeoPage,
+  isCompareSeoPageDraft,
+  resolvePickSlugs,
+} from "../../lib/compare-seo-pages.ts";
 
+const entries = getCompareEntries();
+const total = entries.length;
 const types = getCompareTypes();
-const navItems = types.map((type) => ({ id: compareTypeToId(type), label: type }));
-const compareAppCount = getCompareEntries().length;
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebPage",
-      name: "Compare Harvous",
-      description:
-        "See how Harvous compares to other Bible apps, notes apps, and study tools — a Bible notes alternative focused on remembering what you saved.",
-      url: "https://harvous.com/compare/",
-      isPartOf: { "@type": "WebSite", name: "Harvous", url: "https://harvous.com" },
-    },
-    {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
-        { "@type": "ListItem", position: 2, name: "Compare", item: "https://harvous.com/compare/" },
-      ],
-    },
-  ],
+/* The live homepage's compare row leads with Apple Notes. */
+const FEATURED_SLUG = "apple-notes";
+const featured = getCompareBySlug(FEATURED_SLUG) ?? entries[0];
+
+const iconSrc = (e: CompareEntry) => `/images/compare/icons/${e.slug}.png`;
+
+/* The featured card's sky takes the featured app's colour. */
+const featuredSky = await backdropForImage(iconSrc(featured));
+
+/** "Apple Notes is great at quick capture" — the competitor's half of the CSV intro. */
+const theirHalf = (e: CompareEntry) => {
+  const intro = e.intro.trim();
+  const match = intro.match(/^(.*?);\s*Harvous\b/i);
+  return (match?.[1] ?? intro).trim().replace(/[.;]$/, "");
 };
+
+/** The hub lane one-liner, without its "In this lane," preamble. */
+const laneLine = (type: string) => {
+  const s = getHarvousHubLane(type).replace(/^In this lane,\s*/i, "");
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
+type Size = "large" | "medium" | "small";
+type Slot = { kind: "featured" } | { kind: "lane"; type: string; size: Size };
+
+/* Rows (12 tracks): L8+F4 · S4 S4 S4 · M6 M6 · S4+L8 · M6 M6.
+   At two columns, L and F run full width and the rest pair off evenly. */
+const LAYOUT: { type: string; size: Size }[] = [
+  { type: "General Notes", size: "large" },
+  { type: "Prayer & Meditation", size: "small" },
+  { type: "AI Guided Bible", size: "small" },
+  { type: "Sermon Prep", size: "small" },
+  { type: "Bible Notes", size: "medium" },
+  { type: "Bible Reader", size: "medium" },
+  { type: "Group Study", size: "small" },
+  { type: "Small Groups", size: "large" },
+  { type: "Bible Study Suite", size: "medium" },
+  { type: "Bible Education", size: "medium" },
+];
+
+const layoutFits =
+  LAYOUT.length === types.length && LAYOUT.every((slot) => types.includes(slot.type));
+
+let slots: Slot[];
+if (layoutFits) {
+  slots = LAYOUT.map((s) => ({ kind: "lane" as const, ...s }));
+  slots.splice(1, 0, { kind: "featured" });
+} else {
+  /* Fallback: featured + smalls. Widen the tail so no row ends with one card. */
+  const lanes: Slot[] = types.map((type) => ({ kind: "lane" as const, type, size: "small" as Size }));
+  slots = [{ kind: "featured" }, ...lanes];
+  const rem = slots.length % 3;
+  if (rem === 1) {
+    const last = slots[slots.length - 1];
+    if (last.kind === "lane") last.size = "large"; // 12 / full width
+  } else if (rem === 2) {
+    slots.slice(-2).forEach((s) => s.kind === "lane" && (s.size = "medium"));
+  }
+}
+
+const TONES = ["sky", "mint", "lilac", "peach", "cream", "pink"] as const;
+
+/* A–Z index, filled down the columns so the columns come out even. */
+const byName = [...entries].sort((a, b) =>
+  a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+);
+const rows2 = Math.ceil(byName.length / 2);
+const rows3 = Math.ceil(byName.length / 3);
+
+/* The written guides (/compare/<slug>/), in the order they were written.
+   Shortlists ("Best Bible notes apps") are cards in the Discover resource
+   style — Harvous's masthead over the guide's cover; switching guides
+   ("Logos alternative") are leaflets in a list. */
+const guidePages = getCompareSeoPagesForBuild().filter((p) => !isCompareSeoPageDraft(p));
+
+/* A guide's colour and cover follow the kind of app it's about. */
+const GUIDE_LOOK: Record<string, { tone: string; cover: string }> = {
+  "Bible Notes": { tone: "var(--color-sky)", cover: "ai_bg_053" },
+  "General Notes": { tone: "var(--color-cream)", cover: "ai_bg_051" },
+  "Sermon Prep": { tone: "var(--color-lilac)", cover: "ai_bg_076" },
+  "Group Study": { tone: "var(--color-mint)", cover: "ai_bg_075" },
+  "Small Groups": { tone: "var(--color-peach)", cover: "ai_bg_045" },
+};
+
+const guides = guidePages
+  .filter((p) => p.kind === "category")
+  .map((page, i) => {
+    const picks = resolvePickSlugs(page.pickSlugs, harvousTypeForSeoPage(page));
+    const others = picks.filter((p) => !p.isHarvous);
+    const look = GUIDE_LOOK[harvousTypeForSeoPage(page)] ?? GUIDE_LOOK["General Notes"];
+    return {
+      page,
+      tone: look.tone,
+      cover: `/images/auth-hero/${look.cover}.webp`,
+      picks: picks.length,
+      icons: others.slice(0, 3).map((p) => `/images/compare/icons/${p.slug}.png`),
+      more: Math.max(0, others.length - 3),
+    };
+  });
+
+
+const leaflets = guidePages
+  .filter((p) => p.kind === "alternative")
+  .map((page) => {
+    const target = page.kind === "alternative" ? getCompareBySlug(page.targetSlug) : undefined;
+    return { page, icon: target ? iconSrc(target) : null };
+  });
+const leafletRows2 = Math.ceil(leaflets.length / 2);
+const leafletRows3 = Math.ceil(leaflets.length / 3);
 ---
 
-<BaseLayout
-  title="Compare Harvous — Bible notes app alternative"
-  description="Compare Harvous to YouVersion, Logos, Obsidian, Bible Note, and 40+ other apps. Harvous is notes-first — no sermon transcription — built so you remember what you saved, with Scripture right there when you write."
-  jsonLd={jsonLd}
+<NextLayout
+  title="Compare — Harvous next to the apps you already use"
+  description={`See how Harvous, a notes-first Bible study app, sits next to ${total} apps you might already use for reading, notes, devotionals, sermon prep, and small groups.`}
 >
-  <section class="compare-hub-intro frame-divider">
-    <Container size="xl">
-      <header class="compare-hub-intro__head section-head" data-reveal>
-        <span class="eyebrow-pill">Compare</span>
-        <h1 class="section-title mt-3 text-pretty">
-          Where Harvous fits next to what you already use.
-        </h1>
-        <p class="compare-hub-intro__lead">
-          Harvous is a Bible study notes app — not sermon transcription. See how it
-          compares to <IntroChip><span class="tabular-nums">{compareAppCount}</span> apps</IntroChip> you might
-          already use for reading, notes, or devotionals.
-        </p>
-      </header>
-    </Container>
+  <header class="nx-wrap cmp-intro">
+    <p class="nx-kicker">Compare</p>
+    <h1 class="nx-display">Where Harvous fits.</h1>
+    <p class="nx-lead">
+      I built Harvous for your notes, not sermon transcription. Here's how it sits next to
+      {total} apps you might already use, and what each of them does best.
+    </p>
+  </header>
+
+  <SectionNav
+    items={[
+      { href: "#collections", label: "By kind of app" },
+      { href: "#guides", label: "Guides" },
+      { href: "#every-app", label: `All ${total} apps` },
+    ]}
+  />
+
+  <section id="collections" class="nx-wrap cmp-sec" aria-labelledby="collections-title">
+    <h2 id="collections-title" class="cmp-h2">By kind of app</h2>
+
+    <ul class="cmp-grid" role="list" data-reveal="stagger">
+      {
+        slots.map((slot, i) => {
+          if (slot.kind === "featured") {
+            return (
+              <li class="cmp-slot cmp-slot--featured">
+                <a
+                  class="cf"
+                  href={`/compare/${featured.slug}/`}
+                  data-fathom-track={fathomCompare.hubCard}
+                >
+                  {/* A sky in the featured app's own colour (icon-backdrop.ts). */}
+                  <img class="cf__sky" src={`/images/auth-hero/ai_bg_${featuredSky}.webp`} alt="" loading="lazy" />
+                  <span class="cf__icon">
+                    <img src={iconSrc(featured)} alt="" width="112" height="112" loading="lazy" />
+                  </span>
+                  <span class="cf__text">
+                    <span class="cf__label">Featured</span>
+                    <span class="cf__name">Harvous vs {featured.name}</span>
+                    <span class="cf__line">{featured.intro}</span>
+                    <span class="cf__btn">See the comparison</span>
+                  </span>
+                </a>
+              </li>
+            );
+          }
+          const apps = getCompareByType(slot.type);
+          const tone = TONES[i % TONES.length];
+          return (
+            <li class:list={["cmp-slot", `cmp-slot--${slot.size}`]}>
+              <a
+                class:list={["cc", `cc--${slot.size}`, `cc--${tone}`]}
+                href={`/compare/#${compareTypeToId(slot.type)}`}
+                data-fathom-track={fathomCompare.hubCard}
+              >
+                <span class="cc__strip" aria-hidden="true">
+                  {apps.map((app) => (
+                    <span class="cc__tile">
+                      <img src={iconSrc(app)} alt="" width="96" height="96" loading="lazy" />
+                    </span>
+                  ))}
+                </span>
+                <span class="cc__text">
+                  <span class="cc__meta">
+                    {apps.length} {apps.length === 1 ? "app" : "apps"}
+                  </span>
+                  <span class="cc__title">{slot.type}</span>
+                  <span class="cc__line">{laneLine(slot.type)}</span>
+                  <span class="cmp-sr">Includes {apps.map((a) => a.name).join(", ")}.</span>
+                </span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
   </section>
 
-  <div class="compare-hub-main" data-hub-section-nav-main>
-    <CompareSectionNav items={navItems} />
+  <section id="guides" class="cmp-sec gb-sec" aria-labelledby="guides-title" data-gbrow>
+    <div class="nx-wrap gb-head">
+      <div>
+        <div class="cmp-head">
+          <h2 id="guides-title" class="cmp-h2">The guides</h2>
+        </div>
+        <p class="cmp-sub">
+          Longer write-ups for a specific job, like sermon notes or a small group. Each one is an
+          honest shortlist, and Harvous isn't always first.
+        </p>
+      </div>
+      <div class="gb-nav" aria-hidden="true">
+        <button type="button" class="gb-btn" data-gbrow-prev tabindex="-1">
+          <svg viewBox="0 0 16 16"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        </button>
+        <button type="button" class="gb-btn" data-gbrow-next tabindex="-1">
+          <svg viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5" /></svg>
+        </button>
+      </div>
+    </div>
 
-    {
-      types.map((type, index) => {
-        const sectionId = compareTypeToId(type);
-        return (
-          <section
-            id={sectionId}
-            class:list={["compare-hub__band compare-slider-band", { "frame-divider": index > 0 }]}
-            aria-labelledby={`${sectionId}-title`}
-          >
-            <CompareCarousel
-              entries={getCompareByType(type)}
-              groupTitle={type}
-              groupTitleId={`${sectionId}-title`}
-              laneBlurb={getHarvousHubLane(type)}
-              trackLabel={`${type} app comparisons`}
-              fathomTrack={fathomCompare.hubCard}
-            />
-          </section>
-        );
-      })
-    }
-  </div>
+    <ul class="gb-track" role="list" data-gbrow-track>
+      {
+        guides.map((b) => (
+          <li class="gb" style={`--tone: ${b.tone};`}>
+            <a class="gb__link" href={`/compare/${b.page.slug}/`} data-fathom-track={fathomCompare.hubCard}>
+              <span class="gb__stage">
+                <ResourcePlate tone={b.tone} logo="/images/app-icon.webp" name="Harvous" type="Guide">
+                  <span slot="picture" class="gb__cover" style={`background-image: url("${b.cover}")`}>
+                    <span class="gb__icons">
+                      {b.icons.map((src) => (
+                        <span class="gb__icon"><img src={src} alt="" width="64" height="64" loading="lazy" decoding="async" /></span>
+                      ))}
+                      {b.more > 0 && <span class="gb__more">+{b.more}</span>}
+                    </span>
+                  </span>
+                </ResourcePlate>
+              </span>
+              <span class="gb__text">
+                <span class="gb__label">
+                  <span>Harvous</span>
+                  <span class="gb__by">Guide</span>
+                  <span class="gb__count">{b.picks} apps</span>
+                </span>
+                <span class="gb__title">{b.page.guideLabel}</span>
+                <span class="gb__desc">{b.page.guideDescription}</span>
+                <span class="gb__cta">Read the guide</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
 
-  <PageClosingCTA
-    heading="You've seen how Harvous compares."
-    lead="Try it free — a notes-first Bible study app built to help you remember what you saved."
-    fathomTrack={fathomTry.compareHub}
-  />
-</BaseLayout>
+    <div class="nx-wrap">
+    <h3 class="gl-h">Switching from something?</h3>
+    <ul
+      class="cmp-index gl-index"
+      role="list"
+      style={`--rows-2: ${leafletRows2}; --rows-3: ${leafletRows3};`}
+      data-reveal
+    >
+      {
+        leaflets.map((l) => (
+          <li class="ct">
+            <a class="ct__link" href={`/compare/${l.page.slug}/`} data-fathom-track={fathomCompare.hubCard}>
+              <span class="gl__leaf" aria-hidden="true">
+                {l.icon && <img src={l.icon} alt="" width="48" height="48" loading="lazy" />}
+              </span>
+              <span class="ct__text">
+                <span class="ct__name">{l.page.guideLabel}</span>
+                <span class="ct__line">{l.page.guideDescription}</span>
+              </span>
+              <svg class="ct__chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 3l5 5-5 5" />
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    </div>
+  </section>
+
+  <section id="every-app" class="nx-wrap cmp-sec" aria-labelledby="every-app-title">
+    <div class="cmp-head">
+      <h2 id="every-app-title" class="cmp-h2">Every comparison</h2>
+      <p class="cmp-count">{total} apps, A to Z</p>
+    </div>
+
+    <ul
+      class="cmp-index"
+      role="list"
+      style={`--rows-2: ${rows2}; --rows-3: ${rows3};`}
+      data-reveal
+    >
+      {
+        byName.map((e) => (
+          <li class="ct">
+            <a class="ct__link" href={`/compare/${e.slug}/`} data-fathom-track={fathomCompare.hubCard}>
+              <span class="ct__icon">
+                <img src={iconSrc(e)} alt="" width="64" height="64" loading="lazy" />
+              </span>
+              <span class="ct__text">
+                <span class="ct__name">Harvous vs {e.name}</span>
+                <span class="ct__line">{theirHalf(e)}.</span>
+              </span>
+              <svg class="ct__chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 3l5 5-5 5" />
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="cmp-row" data-reveal>
+      <p class="cmp-row__text">
+        Still wondering how Harvous fits next to your app? I read everything.
+      </p>
+      <a class="cmp-row__btn" href="mailto:derek@harvous.com">Email me</a>
+    </div>
+  </section>
+
+  <ClosingCall title="Keep your app. Add a home for your notes." />
+</NextLayout>
 
 <style>
-  .compare-hub-intro {
-    padding-block: clamp(3rem, 7vw, 5rem) 0;
+  .cmp-intro {
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
   }
-  .compare-hub-intro__lead {
-    max-width: 34rem;
-    margin-inline: auto;
-    margin-top: 0.75rem;
-    font-size: 1.05rem;
-    line-height: 1.55;
+  .cmp-intro .nx-display { margin: 1rem auto 0; }
+  .cmp-intro .nx-lead { margin: 1.5rem auto 0; }
+
+  .cmp-sec { padding-top: clamp(1rem, 3vw, 2rem); }
+  .cmp-sec + .cmp-sec { padding-top: clamp(4rem, 9vw, 6.5rem); }
+
+  .cmp-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+  }
+  .cmp-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+  .cmp-count {
+    font-size: 0.9375rem;
+    color: var(--color-ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cmp-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ── Collections grid: 12 tracks, sizes vary ─────────────────────────── */
+  .cmp-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cmp-slot { display: flex; min-width: 0; }
+  .cmp-slot > * { flex: 1; min-width: 0; }
+
+  @media (min-width: 44rem) {
+    .cmp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cmp-slot--large,
+    .cmp-slot--featured { grid-column: span 2; }
+  }
+  @media (min-width: 68rem) {
+    .cmp-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1.25rem; }
+    .cmp-slot--large { grid-column: span 8; }
+    .cmp-slot--featured,
+    .cmp-slot--small { grid-column: span 4; }
+    .cmp-slot--medium { grid-column: span 6; }
+    /* The fallback's full-width tail. */
+    .cmp-slot--large:last-child { grid-column: span 12; }
+  }
+
+  /* ── Collection card ─────────────────────────────────────────────────── */
+  .cc {
+    --tone: var(--color-sky);
+    --tone-ink: var(--color-sky-ink);
+    --tile: 4.75rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    /* One light grey for every category — the featured card is the only colour. */
+    background: var(--color-warm);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 5%, transparent),
+      0 1px 2px rgba(15, 23, 42, 0.03);
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 300ms var(--nx-ease), transform 300ms var(--nx-ease);
+  }
+  .cc--sky { --tone: var(--color-sky); --tone-ink: var(--color-sky-ink); }
+  .cc--mint { --tone: var(--color-mint); --tone-ink: var(--color-mint-ink); }
+  .cc--lilac { --tone: var(--color-lilac); --tone-ink: var(--color-lilac-ink); }
+  .cc--peach { --tone: var(--color-peach); --tone-ink: var(--color-peach-ink); }
+  .cc--cream { --tone: var(--color-cream); --tone-ink: var(--color-cream-ink); }
+  .cc--pink { --tone: var(--color-pink); --tone-ink: var(--color-pink-ink); }
+  .cc--large { --tile: clamp(4.75rem, 8vw, 6.5rem); }
+  .cc--medium { --tile: clamp(4.75rem, 6.5vw, 5.5rem); }
+
+  .cc:hover {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 8%, transparent),
+      0 22px 44px -26px rgba(15, 23, 42, 0.28);
+  }
+  .cc:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+
+  /* The icons: one row, centred, running off both edges when there are enough. */
+  /* Only whole icons: the row wraps, and everything past the first line is
+     hidden, so a card shows as many complete tiles as fit, centred — none cut
+     at the edge. The row is tall enough to hold the tiles' shadows, so those
+     aren't sliced either. Still, not moving. */
+  .cc__strip {
+    --shadow-room: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    gap: var(--shadow-room) calc(var(--tile) * 0.18);
+    height: calc(var(--tile) + var(--shadow-room));
+    padding: clamp(2rem, 3.5vw, 2.75rem) clamp(1rem, 2.5vw, 1.75rem) 0;
+    box-sizing: content-box;
+    overflow: hidden;
+  }
+  .cc__tile {
+    flex: none;
+    width: var(--tile);
+    height: var(--tile);
+    overflow: hidden;
+    border-radius: 23%;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.05),
+      0 12px 24px -14px rgba(15, 23, 42, 0.35);
+  }
+  .cc__tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  .cc__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: clamp(1.25rem, 2.4vw, 1.75rem);
+    padding-top: clamp(1.25rem, 2.4vw, 1.6rem);
+    margin-top: auto;
+  }
+  .cc__meta {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .cc__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .cc--large .cc__title { font-size: clamp(1.4rem, 2.4vw, 1.9rem); }
+  .cc__line {
+    max-width: 30rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  /* ── Featured card ───────────────────────────────────────────────────── */
+  .cf {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-radius: 1.75rem;
+    background: var(--color-card);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent),
+      0 18px 40px -26px rgba(15, 23, 42, 0.25);
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 300ms var(--nx-ease);
+  }
+  /* Sky behind, softening to white where the words sit — the Plus card's recipe. */
+  .cf__sky {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .cf::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.9) 55%);
+  }
+  .cf:hover {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 8%, transparent),
+      0 24px 48px -24px rgba(15, 23, 42, 0.32);
+  }
+  .cf:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+  .cf__icon {
+    flex: none;
+    width: 6.5rem;
+    height: 6.5rem;
+    overflow: hidden;
+    border-radius: 23%;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.06),
+      0 16px 32px -16px rgba(15, 23, 42, 0.4);
+  }
+  .cf__icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .cf__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    flex: 1;
+  }
+  .cf__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .cf__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+  .cf__line {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    margin-bottom: 0.9rem;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .cf__btn {
+    display: inline-flex;
+    align-items: center;
+    margin-top: auto;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  /* Full width at two columns: icon beside the words. */
+  @media (min-width: 44rem) and (max-width: 67.999rem) {
+    .cf { flex-direction: row; align-items: center; gap: 1.75rem; }
+    .cf__line { max-width: 28rem; }
+  }
+
+  /* ── Every comparison: an A–Z index, filled down the columns ────────── */
+  .cmp-index {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 2rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) {
+    .cmp-index {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(var(--rows-2), auto);
+      grid-auto-flow: column;
+    }
+  }
+  @media (min-width: 68rem) {
+    .cmp-index {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(var(--rows-3), auto);
+      column-gap: 2.5rem;
+    }
+  }
+
+  .ct { min-width: 0; }
+  .ct__link {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.7rem 0.5rem 0.7rem 0;
+    border-bottom: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .ct__link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
+  .ct__icon {
+    flex: none;
+    width: 3.25rem;
+    height: 3.25rem;
+    overflow: hidden;
+    border-radius: 23%;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.06),
+      0 6px 14px -10px rgba(15, 23, 42, 0.35);
+    transition: transform 300ms var(--nx-ease);
+  }
+  .ct__icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .ct__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .ct__name {
+    font-size: 0.9875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-ink);
+  }
+  .ct__line {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.84rem;
+    line-height: 1.4;
+    color: var(--color-ink-soft);
+  }
+  .ct__chev {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    color: var(--color-ink-faint);
+    transition: transform 200ms ease, color 200ms ease;
+  }
+  .ct__link:hover .ct__chev { transform: translateX(2px); color: var(--color-ink); }
+
+
+  /* ── Guides: Discover resource cards ────────────────────────────────────────── */
+  .cmp-sub {
+    max-width: 32rem;
+    margin: 0.6rem 0 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  /* A row you swipe (or step with the arrows): it starts on the page's
+     content column and runs to the window's edge, so the next guide peeks in. */
+  .gb-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .gb-nav { display: none; gap: 0.5rem; flex-shrink: 0; }
+  @media (min-width: 48rem) { .gb-nav { display: flex; } }
+  .gb-btn {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0;
+    border-radius: 999px;
+    color: var(--color-ink);
+    background: var(--color-warm);
+    cursor: pointer;
+    transition: background-color 150ms ease, opacity 150ms ease;
+  }
+  .gb-btn:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .gb-btn:disabled { opacity: 0.35; cursor: default; }
+  .gb-btn svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .gb-track {
+    --edge: max(var(--nx-gutter), calc((100vw - var(--nx-wide)) / 2));
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(82vw, 23rem);
+    gap: 1rem;
+    margin: 1.75rem 0 0;
+    padding: 0.25rem var(--edge) 0.5rem;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--edge);
+    scrollbar-width: none;
+  }
+  .gb-track::-webkit-scrollbar { display: none; }
+  .gb { scroll-snap-align: start; }
+
+  /* The card is a Discover card: a tinted plate, a stage, the words below. */
+  /* Tinted in the guide's own colour, the way a Discover card takes its
+     publisher's. */
+  .gb {
+    min-width: 0;
+    border-radius: 1.6rem;
+    background: color-mix(in srgb, var(--tone) 22%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 40%, transparent);
+  }
+  .gb__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .gb__link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; border-radius: 1.6rem; }
+
+  .gb__stage {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 1.15rem;
+  }
+
+  /* The guide's cover: a sky in its colour, with the apps it weighs up. */
+  .gb__cover {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+  }
+  .gb__icons { display: flex; align-items: center; }
+  .gb__icon {
+    flex: none;
+    width: 2.6rem;
+    height: 2.6rem;
+    overflow: hidden;
+    border-radius: 23%;
+    background: #fff;
+    box-shadow:
+      0 0 0 2px #fff,
+      0 8px 18px -10px rgba(15, 23, 42, 0.45);
+  }
+  .gb__icon + .gb__icon { margin-left: -0.55rem; }
+  .gb__icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .gb__more {
+    display: grid;
+    place-items: center;
+    height: 1.6rem;
+    margin-left: 0.4rem;
+    padding: 0 0.5rem;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 6px 14px -8px rgba(15, 23, 42, 0.4);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
     color: var(--color-ink-soft);
   }
 
-  .compare-hub-main {
-    /* Sticky nav must share a tall ancestor with the bands it tracks. */
-    position: relative;
+  /* The words, as a Discover card sets them. */
+  .gb__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 1rem 0.9rem;
   }
+  .gb__label {
+    display: flex;
+    gap: 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .gb__by::before { content: "·"; margin-right: 0.45rem; }
+  .gb__count { margin-left: auto; letter-spacing: 0.04em; text-transform: none; font-weight: 500; font-size: 0.8rem; }
+  .gb__title {
+    margin-top: 0.55rem;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .gb__desc {
+    margin-top: 0.4rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .gb__cta {
+    margin-top: auto;
+    padding-top: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .gb__cta::after {
+    content: "→";
+    display: inline-block;
+    margin-left: 0.35em;
+    transition: transform 200ms var(--nx-ease);
+  }
+  .gb__link:hover .gb__cta::after { transform: translateX(3px); }
+
+  /* ── Guides: switching leaflets ──────────────────────────────────────── */
+  .gl-h {
+    margin: clamp(2.5rem, 5vw, 3.25rem) 0 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .gl-index { margin-top: 0.5rem; }
+  /* A folded leaflet with the app it's about printed on the front. */
+  .gl__leaf {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 3.25rem;
+    margin: 0 0.3rem 0 0.1rem;
+    border-radius: 2px 4px 4px 2px;
+    background:
+      linear-gradient(90deg, rgba(15, 23, 42, 0.08), transparent 18%),
+      #fbfaf7;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.07),
+      3px 3px 0 -1px #f1efe9,
+      3px 3px 0 0 rgba(15, 23, 42, 0.06),
+      0 8px 16px -10px rgba(15, 23, 42, 0.4);
+    rotate: -3deg;
+  }
+  .gl__leaf img {
+    width: 1.55rem;
+    height: 1.55rem;
+    border-radius: 23%;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06);
+  }
+
+  /* ── Slim row card ───────────────────────────────────────────────────── */
+  .cmp-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem 1.5rem;
+    margin: clamp(2.5rem, 5vw, 3.5rem) 0 clamp(3rem, 8vw, 5rem);
+    padding: 1rem 1rem 1rem 1.5rem;
+    border-radius: 1.5rem;
+    background: var(--color-warm);
+  }
+  .cmp-row__text {
+    flex: 1 1 18rem;
+    font-size: 1rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+  }
+  .cmp-row__btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0 1.15rem;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 150ms ease;
+  }
+  .cmp-row__btn:hover { opacity: 0.88; color: var(--color-paper); }
 </style>
+
+<script>
+  /* The guides row's arrows: a card's width per step, disabled at either end. */
+  document.querySelectorAll<HTMLElement>("[data-gbrow]").forEach((root) => {
+    const track = root.querySelector<HTMLElement>("[data-gbrow-track]");
+    const prev = root.querySelector<HTMLButtonElement>("[data-gbrow-prev]");
+    const next = root.querySelector<HTMLButtonElement>("[data-gbrow-next]");
+    if (!track || !prev || !next) return;
+    const step = () => (track.querySelector<HTMLElement>(".gb")?.getBoundingClientRect().width ?? 300) + 16;
+    const sync = () => {
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+    };
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const go = (dir: number) => track.scrollBy({ left: dir * step(), behavior: reduce ? "auto" : "smooth" });
+    prev.addEventListener("click", () => go(-1));
+    next.addEventListener("click", () => go(1));
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    sync();
+  });
+</script>

@@ -2,7 +2,7 @@
 /**
  * A Bright Enough post as a /next card: the post's art on a soft stage,
  * then category, title, a short description, and date · read time.
- * Used on /next/blog/ and under each /next/blog/<slug>/ post.
+ * Used on /blog/ and under each /blog/<slug>/ post.
  */
 import type { CollectionEntry } from "astro:content";
 import {
@@ -24,7 +24,7 @@ const H = headingLevel;
 const color = blogCategoryColor(post.data.category);
 ---
 
-<a class="bnc" href={`/next/blog/${post.id}/`} style={`--tone: ${color.bg};`}>
+<a class="bnc" href={`/blog/${post.id}/`} style={`--tone: ${color.bg};`}>
   <div class="bnc__stage">
     <img
       src={blogThumbUrl(post.id, "feat")}

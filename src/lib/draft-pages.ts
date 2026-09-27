@@ -15,11 +15,12 @@
  * and the catalog holds curated references (BibleProject, Bible Engagement
  * Project, and others) alongside them, not templates alone.
  *
- * `next` is the whole indie-maker redesign (src/pages/next/), built beside the
- * live site so the two can be compared. It is a prefix, not one page — see
- * `isDraftPageUrl` — and the post-build strip removes the entire `dist/next/`.
+ * The indie-maker redesign (formerly src/pages/next/, built beside the live
+ * site so the two could be compared) cut over — its pages were promoted to
+ * the site root and its own draft entry ("next") removed. Empty for now;
+ * the next page built ahead of its launch goes here the same way.
  */
-export const DRAFT_PAGE_SLUGS = ["next"] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
 /**
  * Whether links to a draft page should render — i.e. whether the page will be
