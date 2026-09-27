@@ -1,0 +1,141 @@
+---
+/**
+ * A Bright Enough post as a /next card: the post's art on a soft stage,
+ * then category, title, a short description, and date · read time.
+ * Used on /next/blog/ and under each /next/blog/<slug>/ post.
+ */
+import type { CollectionEntry } from "astro:content";
+import {
+  blogCardDescription,
+  blogCategoryColor,
+  blogCategoryLabel,
+  blogReadingMinutes,
+  blogThumbUrl,
+  formatBlogDate,
+} from "../../lib/blog";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  headingLevel?: "h2" | "h3";
+}
+
+const { post, headingLevel = "h3" } = Astro.props;
+const H = headingLevel;
+const color = blogCategoryColor(post.data.category);
+---
+
+<a class="bnc" href={`/next/blog/${post.id}/`} style={`--tone: ${color.bg};`}>
+  <div class="bnc__stage">
+    <img
+      src={blogThumbUrl(post.id, "feat")}
+      alt=""
+      width="1400"
+      height="780"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="bnc__words">
+    <span class="bnc__cat">
+      {blogCategoryLabel(post.data.category)}
+      {post.data.draft && <span class="bnc__draft">Draft</span>}
+    </span>
+    <H class="bnc__title">{post.data.title}</H>
+    <p class="bnc__desc">{blogCardDescription(post.data.description)}</p>
+    <span class="bnc__meta">
+      <time datetime={post.data.publishDate.toISOString()}>{formatBlogDate(post.data.publishDate)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{blogReadingMinutes(post.body)} min read</span>
+    </span>
+  </div>
+</a>
+
+<style>
+  .bnc {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0.5rem;
+    border-radius: 1.6rem;
+    background: color-mix(in srgb, var(--color-ink) 2.5%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent);
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 200ms ease;
+  }
+  .bnc:hover { background: color-mix(in srgb, var(--color-ink) 4.5%, var(--color-paper)); }
+  .bnc:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+
+  .bnc__stage {
+    position: relative;
+    display: block;
+    /* A host grid can widen a card (e.g. a row of two in a three-up grid);
+       it sets --bnc-ratio so the art keeps the same height as its neighbours. */
+    aspect-ratio: var(--bnc-ratio, 1400 / 780);
+    overflow: hidden;
+    border-radius: 1.15rem;
+    background: color-mix(in oklab, var(--tone) 45%, var(--color-warm));
+  }
+  .bnc__stage img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms var(--nx-ease);
+  }
+  .bnc:hover .bnc__stage img { transform: scale(1.025); }
+
+  .bnc__words {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 0.85rem 0.9rem;
+  }
+  .bnc__cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .bnc__draft {
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    letter-spacing: 0.08em;
+  }
+  .bnc__title {
+    margin: 0.55rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .bnc__desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    margin: 0.5rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .bnc__meta {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-faint);
+  }
+</style>

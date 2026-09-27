@@ -1,0 +1,17 @@
+---
+/** /next/privacy/ — the live privacy policy, word for word, in the /next chrome. */
+import LegalPage from "../../components/next/LegalPage.astro";
+import PrivacyPolicyBody from "../../components/legal/PrivacyPolicyBody.astro";
+import { PRIVACY_UPDATED } from "../../lib/legal.ts";
+---
+
+<LegalPage
+  doc="privacy"
+  title="Privacy Policy — Harvous"
+  description="How Harvous collects, uses, and protects your data."
+  heading="Privacy Policy"
+  updated={PRIVACY_UPDATED}
+  summary="The short version: your notes are private unless you share a link, I don't sell your information, and analytics stay light, with no session recording and Do Not Track respected."
+>
+  <PrivacyPolicyBody />
+</LegalPage>

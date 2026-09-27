@@ -1,0 +1,173 @@
+---
+/**
+ * /next/about/ — the story page, led by the person rather than the product:
+ * who's making it, the letter, where the name comes from, what it cares about.
+ * The letter and beliefs are the live About page's own (FounderLetter,
+ * lib/about-beliefs.ts), so there's one version of each to keep true.
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+import FounderLetter from "../../components/FounderLetter.astro";
+import OptimizedImage from "../../components/OptimizedImage.astro";
+import ClosingCall from "../../components/next/ClosingCall.astro";
+import { ABOUT_BELIEFS } from "../../lib/about-beliefs.ts";
+import { backdropSrc } from "../../lib/next/content.ts";
+---
+
+<NextLayout
+  title="About — Harvous"
+  description="Harvous is made by Derek Castelli, on his own, under Testament Made LLC. Why it exists, where the name comes from, and what it cares about."
+>
+  <header class="nx-wrap about-intro">
+    <OptimizedImage src="/derek-avatar.jpeg" alt="Derek Castelli" width={1680} height={1680} class="about-intro__avatar" loading="eager" />
+    <p class="nx-kicker">About</p>
+    <h1 class="nx-display">Hey, I'm Derek.</h1>
+    <p class="nx-lead">
+      I make Harvous on my own, under Testament Made LLC. It's the place I wanted for my own Bible
+      study, built in public a release at a time.
+    </p>
+  </header>
+
+  <section class="nx-wrap about-letter" aria-label="A letter from Derek">
+    <FounderLetter variant="full" />
+  </section>
+
+  <section class="nx-wrap" aria-labelledby="name-title">
+    <figure class="about-name" data-reveal="scale">
+      <img class="about-name__sky" src={backdropSrc("074")} alt="" loading="lazy" />
+      <p id="name-title" class="nx-kicker about-name__kicker">Where the name comes from</p>
+      <blockquote class="about-name__quote">
+        “It is the glory of God to conceal a matter; to search out a matter is the glory of kings.”
+      </blockquote>
+      <figcaption>Proverbs 25:2</figcaption>
+      <p class="about-name__note">
+        Studying the Bible is searching. Harvous is where the search settles into something you can
+        come back to.
+      </p>
+    </figure>
+  </section>
+
+  <section class="nx-section nx-wrap" aria-labelledby="cares-title">
+    <p class="nx-kicker">What it cares about</p>
+    <h2 id="cares-title" class="nx-title about-cares__title">Humans help humans. Tools only help.</h2>
+    <ol class="about-cares" data-reveal="stagger">
+      {ABOUT_BELIEFS.map((b, i) => (
+        <li>
+          <span class="about-cares__n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <h3>{b.title}</h3>
+          <p>
+            {"bodyBefore" in b ? (
+              <>
+                {b.bodyBefore}
+                <a class="nx-link" href={b.linkHref}>{b.linkLabel}</a>
+                {b.bodyAfter}
+              </>
+            ) : (
+              b.body
+            )}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="nx-wrap about-who" aria-labelledby="who-title">
+    <h2 id="who-title" class="nx-title">One person, for now.</h2>
+    <p class="nx-lead">
+      Design, code, support, and this website are me. Questions go straight to
+      <a href="mailto:derek@harvous.com">derek@harvous.com</a>. God-willing, it's full-time with a
+      small team one day.
+    </p>
+    <p class="about-who__links">
+      <a class="nx-link" href="/next/now/">What I'm working on now →</a>
+      <a class="nx-link" href="/next/release-notes/">Every release →</a>
+    </p>
+  </section>
+
+  <ClosingCall title="Give your study somewhere to live." />
+</NextLayout>
+
+<style>
+  .about-intro {
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
+  }
+  .about-intro :global(.about-intro__avatar) {
+    display: block;
+    width: 5.5rem;
+    height: 5.5rem;
+    margin: 0 auto 1.5rem;
+    border-radius: 999px;
+    object-fit: cover;
+    box-shadow: 0 0 0 4px var(--color-paper), 0 0 0 5px var(--color-rule), 0 18px 40px -18px rgba(15, 23, 42, 0.4);
+  }
+  .about-intro .nx-display { margin: 0.75rem 0 0; }
+  .about-intro .nx-lead { margin: 1.5rem auto 0; }
+
+  .about-letter {
+    max-width: calc(64rem + 2 * var(--nx-gutter));
+    margin-top: clamp(3.5rem, 8vw, 5.5rem);
+  }
+
+  .about-name {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin: clamp(5rem, 12vw, 8rem) 0 0;
+    padding: clamp(3.5rem, 10vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+    border-radius: var(--nx-radius-scene);
+    text-align: center;
+    color: #fff;
+  }
+  .about-name__sky {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .about-name::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(80% 80% at 50% 50%, rgba(10, 18, 40, 0.45), rgba(10, 18, 40, 0.15));
+  }
+  .about-name__kicker { color: rgba(255, 255, 255, 0.8); }
+  .about-name__quote {
+    max-width: 22ch;
+    margin: 1.25rem auto 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4.4vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .about-name figcaption { margin-top: 1rem; font-weight: 500; opacity: 0.85; }
+  .about-name__note { max-width: 30rem; margin: 1.75rem auto 0; font-size: 1.0625rem; line-height: 1.55; opacity: 0.9; }
+
+  .about-cares__title { margin: 0.75rem 0 0; max-width: 16ch; }
+  .about-cares {
+    display: grid;
+    gap: 2rem 3rem;
+    margin: clamp(2.5rem, 6vw, 3.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 48rem) {
+    .about-cares { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 64rem) {
+    .about-cares { grid-template-columns: repeat(3, 1fr); }
+  }
+  .about-cares li { padding-top: 1.25rem; border-top: 1px solid var(--color-rule); }
+  .about-cares__n { font-size: 0.75rem; font-weight: 600; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+  .about-cares h3 { margin: 0.5rem 0 0; font-size: 1.25rem; letter-spacing: -0.015em; }
+  .about-cares p { margin: 0.5rem 0 0; line-height: 1.55; color: var(--color-ink-soft); }
+
+  .about-who { text-align: center; padding-bottom: clamp(3rem, 8vw, 5rem); }
+  .about-who .nx-lead { margin: 1.25rem auto 0; }
+  .about-who .nx-lead a { color: var(--color-ink); }
+  .about-who__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; margin: 1.5rem 0 0; }
+</style>

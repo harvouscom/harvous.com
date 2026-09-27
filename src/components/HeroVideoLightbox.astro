@@ -11,9 +11,14 @@ interface Props {
    * places with no screenshot to sit on — a CTA row, say.
    */
   variant?: "overlay" | "inline";
+  /**
+   * A face in place of the inline play circle (with a small play badge on
+   * it), for when the video is someone showing you around rather than a demo.
+   */
+  avatar?: string;
 }
 
-const { src, label = "Watch the 5 min tour", variant = "overlay" } = Astro.props;
+const { src, label = "Watch the 5 min tour", variant = "overlay", avatar } = Astro.props;
 const isInline = variant === "inline";
 ---
 
@@ -25,11 +30,22 @@ const isInline = variant === "inline";
     data-hero-video-trigger
     data-fathom-track={fathomCta.videoTour}
   >
-    <span class:list={[isInline ? "hero-video-inline__play" : "hero-video-callout__play"]} aria-hidden="true">
-      <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-        <path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.2-5.2c.5-.3.5-1 0-1.3L5.7 2.1c-.5-.3-1.2.1-1.2.7z"></path>
-      </svg>
-    </span>
+    {isInline && avatar ? (
+      <span class="hero-video-inline__face" aria-hidden="true">
+        <img src={avatar} alt="" width="64" height="64" loading="eager" />
+        <span class="hero-video-inline__badge">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="8" height="8">
+            <path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.2-5.2c.5-.3.5-1 0-1.3L5.7 2.1c-.5-.3-1.2.1-1.2.7z"></path>
+          </svg>
+        </span>
+      </span>
+    ) : (
+      <span class:list={[isInline ? "hero-video-inline__play" : "hero-video-callout__play"]} aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+          <path d="M4.5 2.8v10.4c0 .6.7 1 1.2.7l8.2-5.2c.5-.3.5-1 0-1.3L5.7 2.1c-.5-.3-1.2.1-1.2.7z"></path>
+        </svg>
+      </span>
+    )}
     <span class:list={[isInline ? "hero-video-inline__label" : "hero-video-callout__label"]}>{label}</span>
   </button>
 
@@ -125,6 +141,35 @@ const isInline = variant === "inline";
     height: 0.6rem;
     margin-left: 0.08em;
   }
+
+  .hero-video-inline__face {
+    position: relative;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-left: -0.6rem;
+  }
+  .hero-video-inline__face img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-video-inline__badge {
+    position: absolute;
+    right: -0.2rem;
+    bottom: -0.15rem;
+    display: grid;
+    place-items: center;
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 50%;
+    color: #fff;
+    background: var(--accent-btn-bg);
+    box-shadow: 0 0 0 2px var(--color-card);
+  }
+  .hero-video-inline__badge svg { margin-left: 1px; }
 
   .hero-video-callout {
     position: absolute;

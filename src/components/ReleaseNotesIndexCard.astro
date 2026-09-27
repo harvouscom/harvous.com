@@ -7,11 +7,15 @@ import type { ChangelogRelease } from "../lib/release-notes-data.ts";
 interface Props {
   release: ChangelogRelease;
   rotation?: number;
+  /** Override the one-line headline (defaults to the release's first entry). */
+  headline?: string;
+  /** Where the card goes (defaults to the live release page). */
+  href?: string;
 }
 
-const { release, rotation = 0 } = Astro.props;
-const href = `/release-notes/${release.slug}/`;
-const headline = release.entries[0]?.title ?? release.excerpt;
+const { release, rotation = 0, headline: headlineOverride, href: hrefOverride } = Astro.props;
+const href = hrefOverride ?? `/release-notes/${release.slug}/`;
+const headline = headlineOverride ?? release.entries[0]?.title ?? release.excerpt;
 ---
 
 <a

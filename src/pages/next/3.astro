@@ -1,0 +1,687 @@
+---
+/**
+ * /next/3/ — the Harvous 3 release page in the /next/ design system.
+ *
+ * Same substance as the live /3/ (src/pages/3.astro), in the order people who
+ * already use Harvous 2 want it: what's new, what changed, and why. The three
+ * big views get a Scene each (the tour's rhythm, real screenshots); the six
+ * smaller things sit on one even grid; the renames are a plain before → after
+ * list; the letter is Derek's, word for word where it was already good.
+ *
+ * Copy is first person and stage-honest: every line here is on the live /3/.
+ */
+import AppIcon from "../../components/next/app/AppIcon.astro";
+import { getCollection } from "astro:content";
+import NextLayout from "../../layouts/NextLayout.astro";
+import Scene from "../../components/next/Scene.astro";
+import MarginNote from "../../components/next/MarginNote.astro";
+import ClosingCall from "../../components/next/ClosingCall.astro";
+import SectionNav from "../../components/next/SectionNav.astro";
+import HeroVideoLightbox from "../../components/HeroVideoLightbox.astro";
+import Harvous3Numeral from "../../components/Harvous3Numeral.astro";
+import FounderLetter from "../../components/FounderLetter.astro";
+import { getAddonDetailHref } from "../../lib/addons-data.ts";
+import { blogReadingMinutes, isBlogPostListed } from "../../lib/blog.ts";
+import { SHOTS, type Backdrop, type MarginNoteSpec, type Shot } from "../../lib/next/content.ts";
+
+const APP_URL = "https://app.harvous.com/";
+
+/* The three views — each gets a Scene, the tour's way. Targets are points in
+   the 1920-wide screenshot; MarginNote lands the arrowhead on them. */
+type Big = {
+  key: string;
+  kicker: string;
+  title: string;
+  lead: string;
+  link: { label: string; href: string };
+  shot: Shot;
+  backdrop: Backdrop;
+  zoom: number;
+  focus: number;
+  note: MarginNoteSpec;
+};
+
+const BIG: Big[] = [
+  {
+    key: "activity",
+    kicker: "Activity",
+    title: "It opens on what you've studied.",
+    lead: "What was My Home in the sidebar is a view of its own now, with room to actually show a week. Today sits on top, with the days before it stacked behind.",
+    link: { label: "More about Activity", href: "/features/activity/" },
+    shot: SHOTS.activity,
+    backdrop: "044",
+    zoom: 1.3,
+    focus: 0.45,
+    /* The "Yesterday" sheet behind today. Short enough for one line, so the paper fits above the target on a phone. */
+    note: { text: "The week, stacked.", at: { top: "4%", right: "4%" }, arrow: "down-left", tilt: 3, target: [1300, 382] },
+  },
+  {
+    key: "reader",
+    kicker: "Bible reader",
+    title: "Your notes beside the verse.",
+    lead: "Eleven translations, including NLT, ESV, NIV, CSB, and KJV. Open it on its own, or expand into it from a Scripture pill in a note.",
+    link: { label: "More about the reader", href: "/features/bible-reader/" },
+    shot: SHOTS.read,
+    backdrop: "076",
+    zoom: 1.4,
+    focus: 0.4,
+    /* The margin bars beside verses 1–5 (the tour points at the same spot). */
+    note: { text: "My notes, already in the margin.", at: { bottom: "10%", left: "8%" }, arrow: "up-left", side: "start", tilt: -3, target: [322, 560] },
+  },
+  {
+    key: "search",
+    kicker: "Search",
+    title: "Search lives in the top middle.",
+    lead: "Search everything you've saved from one place. Or skip the typing and browse it by kind, the way you could in the sidebar.",
+    link: { label: "More about Search", href: "/features/find/" },
+    shot: SHOTS.library,
+    backdrop: "058",
+    zoom: 1.5,
+    focus: 0.6,
+    /* The "Everything" kind picker, from below-left so the open menu stays clear. */
+    note: { text: "Or browse it by kind.", at: { top: "30%", left: "20%" }, arrow: "up-right", side: "end", tilt: -2, target: [1300, 238] },
+  },
+];
+
+/* Six, so the grid is whole at three columns and at two. Live /3/'s order. */
+const SMALL = [
+  {
+    title: "Shared spaces",
+    tone: "peach",
+    visual: "space",
+    plus: true,
+    icon: "fa7-solid:user-group",
+    body: "Share or create notes for a group, and turn a thread into a study plan. Free to join; it costs to start one.",
+    href: getAddonDetailHref("shared-spaces") ?? "/add-ons/shared-spaces/",
+  },
+  {
+    title: "Review exercises",
+    tone: "lilac",
+    visual: "review",
+    plus: true,
+    icon: "fa7-solid:clock-rotate-left",
+    body: "Write an answer from memory, then say how well you remembered it. The questions come from your own notes and verses.",
+    href: getAddonDetailHref("review-exercises") ?? "/add-ons/review-exercises/",
+  },
+  {
+    title: "Note templates",
+    tone: "cream",
+    visual: "templates",
+    icon: "fa7-solid:list-check",
+    body: "Start a note from SOAP or one of your own, from the right side panel.",
+    href: "/features/note-templates/",
+  },
+  {
+    title: "Resources",
+    tone: "sky",
+    visual: "resources",
+    icon: "fa7-solid:newspaper",
+    body: "A link from The Bible Project, or a PDF your church sent, kept where you can pull it into a note.",
+    href: "/features/resource-library/",
+  },
+  {
+    title: "Reminders",
+    tone: "mint",
+    visual: "reminders",
+    icon: "fa7-solid:bell",
+    body: "An optional nudge at a rhythm you choose, Sunday and midweek or every day, carrying the passage.",
+    href: "/features/reminders/",
+  },
+  {
+    title: "@ mentions",
+    tone: "pink",
+    visual: "mentions",
+    icon: "fa7-solid:at",
+    body: "Type @ in a note to drop in a note, folder, thread, or resource, and jump to it later.",
+    href: "/features/write/",
+  },
+];
+
+const MOVED = [
+  {
+    before: "My Home",
+    after: "Activity",
+    body: "What sat in the sidebar under My Home is a view of its own now. Three views, left to right in the top left: Activity, the Bible reader, and a note.",
+    link: { label: "See Activity", href: "/features/activity/" },
+  },
+  {
+    before: "The sidebar",
+    after: "Search, top middle",
+    body: "You could search everything you'd saved from the sidebar. With the sidebar gone, search is in the top middle, and from there you can still browse the lists of things the way you could before.",
+    link: { label: "See Search", href: "/features/find/" },
+  },
+  {
+    before: "Recall",
+    after: "Suggestions",
+    body: "The same job under a truer name: some bring back a fading note, and some propose something new to make from what you already saved. Links to the old name still land in the right place.",
+    link: { label: "See Suggestions", href: "/features/suggestions/" },
+  },
+];
+
+/* The two essays behind the release, in reading order. Hidden until listed. */
+const SERIES = ["study-you-can-follow-and-return-to", "the-sidebar-did-too-much"];
+const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p));
+const essays = SERIES.map((id) => listed.find((p) => p.id === id)).filter(
+  (p): p is NonNullable<typeof p> => p !== undefined
+);
+
+const pad = (n: number) => String(n + 1).padStart(2, "0");
+---
+
+<NextLayout
+  title="Harvous 3 — study you can follow and return to"
+  description="What changed in Harvous 3, for people who already use it: Activity, the Bible reader, Search, Suggestions, Review exercises, and why the sidebar went."
+  ogImage="/images/3/og.webp"
+>
+  {/*
+    The live /3/ hero's two signatures, kept: the ruled paper (global
+    .release-notes-frame__grid, fading in then drifting) and the traced "3"
+    (Harvous3Numeral — the same glyph and motion as live). The words arrive
+    after the numeral has filled, one thing at a time.
+  */}
+  <header class="v3-hero">
+    <div class="release-notes-frame__grid v3-hero__grid" aria-hidden="true"></div>
+    <div class="v3-intro nx-wrap">
+      <Harvous3Numeral size="clamp(7rem, 19vw, 17rem)" />
+      <h1 class="v3-intro__title" data-reveal style="--reveal-delay: 1300ms;">Harvous 3 is here.</h1>
+      <p class="nx-lead" data-reveal style="--reveal-delay: 1500ms;">
+        The sidebar is gone. <strong>Activity</strong> opens on what you've studied, the
+        <strong>Bible reader</strong> keeps your notes beside the verse, and <strong>Search</strong>
+        finds anything you've saved.
+      </p>
+      <div class="v3-intro__watch" data-reveal style="--reveal-delay: 1700ms;">
+        <HeroVideoLightbox
+          src="/harvous-3-walkthrough.mp4"
+          label="Watch me walk through it in 4 min"
+          variant="inline"
+          avatar="/derek-avatar.webp"
+        />
+      </div>
+    </div>
+  </header>
+
+  <SectionNav
+    items={[
+      { href: "#whats-new", label: "What's new" },
+      { href: "#what-changed", label: "What changed" },
+      { href: "#why", label: "Why" },
+    ]}
+  />
+
+  <!-- What's new: the three views, one Scene each -->
+  <section id="whats-new" class="nx-section v3-new" aria-labelledby="new-title">
+    <div class="nx-wrap">
+      <div class="v3-head" data-reveal>
+        <p class="nx-kicker">What's new</p>
+        <h2 id="new-title" class="nx-title">Three views, each with room to work.</h2>
+      </div>
+    </div>
+
+    {BIG.map((b, i) => (
+      <div class:list={["v3-row", i % 2 === 1 && "v3-row--flip"]} id={b.key}>
+        <div class="nx-wrap v3-row__grid">
+          <div class="v3-row__text" data-reveal>
+            <p class="nx-kicker"><span class="v3-row__num">{pad(i)}</span> {b.kicker}</p>
+            <h3 class="nx-title">{b.title}</h3>
+            <p class="nx-lead">{b.lead}</p>
+            <a class="nx-link" href={b.link.href}>{b.link.label} →</a>
+          </div>
+          <div class="v3-row__visual" data-reveal="scale">
+            <Scene backdrop={b.backdrop} shot={b.shot} aspect="4 / 5" inset={9} zoom={b.zoom} focus={b.focus} eager={i === 0}>
+              <MarginNote {...b.note} />
+            </Scene>
+          </div>
+        </div>
+      </div>
+    ))}
+
+    <div class="nx-wrap v3-more">
+      <div class="v3-head" data-reveal>
+        <p class="nx-kicker">Also new</p>
+        <h2 class="nx-title">Six more things to study with.</h2>
+        <p class="nx-lead">Two are part of Plus, and say so. The rest come with every account.</p>
+      </div>
+      <ul class="v3-grid" role="list" data-reveal="stagger">
+        {SMALL.map((s) => (
+          <li>
+            <a class:list={["v3-card", `v3-card--${s.tone}`]} href={s.href}>
+              {/* A small moment from the feature, drawn with the app's own pieces. */}
+              <span class="v3-card__stage aui" aria-hidden="true">
+                {s.visual === "space" && (
+                  <span class="aui-card mini mini--space">
+                    <img src="/images/auth-hero/ai_bg_076.webp" alt="" loading="lazy" />
+                    <span class="mini__space-row">
+                      <span class="mini__space-icon"><AppIcon name="user-group" /></span>
+                      <span><span class="aui-title">Family</span><span class="aui-sub">Just you<i>·</i>Invite</span></span>
+                    </span>
+                  </span>
+                )}
+                {s.visual === "review" && (
+                  <span class="mini__tiles">
+                    <span>hope</span><span class="is-on">character</span><span>faith</span>
+                  </span>
+                )}
+                {s.visual === "templates" && (
+                  <span class="mini__tiles mini__tiles--chips">
+                    <span class="is-on">SOAP</span><span>Inductive</span><span>Sermon outline</span>
+                  </span>
+                )}
+                {s.visual === "resources" && (
+                  <span class="aui-card mini">
+                    <span class="aui-row">
+                      <span class="aui-tile mini__thumb"><img src="/images/discover-sources/bibleproject-the-story-of-the-bible.webp" alt="" loading="lazy" /></span>
+                      <span><span class="aui-title">The Story of the Bible</span><span class="aui-sub">BibleProject<i>·</i>Video</span></span>
+                    </span>
+                  </span>
+                )}
+                {s.visual === "reminders" && (
+                  <span class="aui-card mini">
+                    <span class="aui-row">
+                      <span class="aui-tile"><AppIcon name="bell" /></span>
+                      <span><span class="aui-title">Psalm 46</span><span class="aui-sub">Today's passage<i>·</i>Sunday</span></span>
+                    </span>
+                  </span>
+                )}
+                {s.visual === "mentions" && (
+                  <span class="aui-paper mini mini--line">
+                    Picks up from <span class="mini__mention"><AppIcon name="arrow-right-arrow-left" /> Faith before it made sense</span>
+                  </span>
+                )}
+              </span>
+              <span class="v3-card__text">
+                <h3 class="v3-card__title">
+                  {s.title}
+                  {s.plus && <span class="nx-plus">Plus</span>}
+                </h3>
+                <p class="v3-card__body">{s.body}</p>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- What changed: before → after -->
+  <section id="what-changed" class="nx-section v3-changed" aria-labelledby="changed-title">
+    <div class="nx-wrap nx-wrap--narrow">
+      <div class="v3-head" data-reveal>
+        <p class="nx-kicker">What changed</p>
+        <h2 id="changed-title" class="nx-title">Three things moved.</h2>
+        <p class="nx-lead">Everything you wrote is where you left it. Here's what moved, and where each one went.</p>
+      </div>
+      <ol class="v3-moved" role="list" data-reveal="stagger">
+        {MOVED.map((m) => (
+          <li>
+            <p class="v3-moved__names">
+              <span class="v3-moved__before">{m.before}</span>
+              <span class="v3-moved__arrow" aria-label="became">→</span>
+              <span class="v3-moved__after">{m.after}</span>
+            </p>
+            <p class="v3-moved__body">
+              {m.body} <a class="nx-link" href={m.link.href}>{m.link.label} →</a>
+            </p>
+          </li>
+        ))}
+      </ol>
+      <p class="v3-changed__foot">
+        Notes, highlights, threads, and folders are exactly where they were, with nothing to move or
+        re-file. Also in this release: more keyboard shortcuts (Settings, from your avatar) and a
+        better time of it on a phone.
+        <a class="nx-link" href="/next/release-notes/">Every fix is in the release notes →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Why: Derek's letter -->
+  <section id="why" class="nx-section v3-why" aria-labelledby="why-title">
+    <div class="nx-wrap">
+      <div class="v3-head v3-head--center" data-reveal>
+        <p class="nx-kicker">Why the change</p>
+        <h2 id="why-title" class="nx-title">The sidebar did too much.</h2>
+      </div>
+      <div class="v3-letter" data-reveal="scale">
+        <FounderLetter variant="full">
+          <Fragment slot="left">
+            <p>Hey there,</p>
+            <p>
+              The sidebar tried to do too much: your recent study, what was worth revisiting, every
+              view, and search, all squeezed into one narrow column. Each is a fair thing to want.
+              Together, everything only got a glimpse.
+            </p>
+            <p>
+              So I asked a different question: what's each of these actually worth in screen?
+              Seeing what you've studied wanted the whole thing, so it became Activity. Finding an
+              old note wanted none of it until you actually asked, so it became Search, a spotlight
+              you summon from the top middle.
+            </p>
+            <p>
+              While I was in there, I settled something else too. The days you rest stay. A month
+              that hides them would look better and tell you less.
+            </p>
+          </Fragment>
+          <Fragment slot="right">
+            <p>
+              For the longest time I pushed against a Bible reader. Then I kept noticing how much I
+              wanted to see the notes I'd linked to a verse, right there beside it. So Harvous has
+              one now, in eleven translations.
+            </p>
+            <p>
+              Recall became Suggestions, because the name only covered half the job. And Review
+              exercises are for everyone who's written asking how to hold onto what they've
+              studied: you answer from memory, then say how well you remembered it. I left the
+              scoring out on purpose.
+            </p>
+            <p>
+              None of this touches what you've already built. Your notes, highlights, threads, and
+              folders are exactly where you left them. Harvous just opens on your study now,
+              instead of a blank page.
+            </p>
+            <p>
+              If something's off, write me at <a href="mailto:derek@harvous.com">derek@harvous.com</a>
+              and tell me what you were trying to do.
+            </p>
+          </Fragment>
+        </FounderLetter>
+      </div>
+
+      {essays.length > 0 && (
+        <div class="v3-essays" data-reveal>
+          <p class="nx-kicker">Read the reasoning in full</p>
+          <ol class="v3-essays__list" role="list">
+            {essays.map((e, i) => (
+              <li>
+                <a href={`/blog/${e.id}/`}>
+                  <span class="v3-essays__n">{pad(i)}</span>
+                  <span>
+                    <span class="v3-essays__title">{e.data.title}</span>
+                    <span class="v3-essays__meta">{blogReadingMinutes(e.body)} min read</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      <p class="v3-open">
+        Already use Harvous? <a class="nx-link" href={APP_URL}>Open Harvous 3 →</a>
+      </p>
+    </div>
+  </section>
+
+  <ClosingCall title="See it with your own notes." />
+</NextLayout>
+
+<style>
+  /* ── Intro ── */
+  .v3-hero {
+    position: relative;
+    isolation: isolate;
+    padding-top: clamp(5.5rem, 11vw, 8rem);
+  }
+  .v3-hero__grid {
+    /* The global grid insets by the live page frame; here it spans the page. */
+    inset-inline: 0;
+    /* Dissolve toward the edges so it reads as ruled paper under the numeral. */
+    mask-image: radial-gradient(60% 75% at 50% 40%, #000 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(60% 75% at 50% 40%, #000 20%, transparent 100%);
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .v3-hero__grid {
+      animation:
+        v3-grid-in 1800ms ease-out 200ms both,
+        v3-grid-drift 14000ms ease-in-out 2400ms infinite;
+    }
+  }
+  @keyframes v3-grid-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes v3-grid-drift {
+    0%, 100% { mask-position: -14px 10px; -webkit-mask-position: -14px 10px; }
+    50% { mask-position: 14px -10px; -webkit-mask-position: 14px -10px; }
+  }
+  .v3-intro {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .v3-intro__title {
+    margin: clamp(1rem, 2.5vw, 1.75rem) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+  }
+  .v3-intro .nx-lead { margin: 1.5rem auto 0; }
+  .v3-intro .nx-lead strong { color: var(--color-ink); font-weight: 600; }
+  .v3-intro__watch { margin-top: 2rem; }
+  .v3-intro__watch :global(.hero-video-inline) {
+    padding: 0.45rem 1rem 0.45rem 1.05rem;
+    font-size: 0.9375rem;
+    background: #fff;
+    border-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
+    box-shadow: 0 8px 24px -14px rgba(15, 23, 42, 0.35);
+  }
+  .v3-intro__watch :global(.hero-video-inline__face) { margin-left: -0.55rem; }
+
+
+  /* ── Section heads ── */
+  section[id] { scroll-margin-top: 4rem; }
+  .v3-head { max-width: 40rem; margin-bottom: clamp(2.5rem, 6vw, 4rem); }
+  .v3-head .nx-title { margin: 0.75rem 0 0; }
+  .v3-head .nx-lead { margin: 1rem 0 0; max-width: 30rem; }
+  .v3-head--center { margin-inline: auto; text-align: center; }
+
+  /* ── The three views ── */
+  .v3-row { scroll-margin-top: 4rem; }
+  .v3-row + .v3-row { margin-top: clamp(4rem, 10vw, 7rem); }
+  .v3-row__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 60rem) {
+    .v3-row__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 6rem); }
+    .v3-row--flip .v3-row__text { order: 2; }
+  }
+  @media (max-width: 59.99rem) {
+    .v3-row__visual { max-width: 40rem; }
+    .v3-row__visual :global(.scene) { aspect-ratio: 4 / 3; }
+  }
+  .v3-row__num { color: var(--color-ink-faint); margin-right: 0.35rem; font-variant-numeric: tabular-nums; }
+  .v3-row__text .nx-title { margin: 0.75rem 0 0; font-size: clamp(1.9rem, 3.6vw, 2.75rem); max-width: 14ch; }
+  .v3-row__text .nx-lead { margin: 1rem 0 1.5rem; max-width: 28rem; }
+
+  /* ── The six smaller things ── */
+  .v3-more { margin-top: clamp(6rem, 14vw, 10rem); }
+  .v3-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) { .v3-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .v3-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .v3-grid li { display: flex; }
+  .v3-card {
+    --tone: var(--color-sky);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.45rem;
+    border-radius: 1.4rem;
+    color: inherit;
+    text-decoration: none;
+    background: color-mix(in srgb, var(--tone) 20%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 5%, transparent);
+  }
+  .v3-card--peach { --tone: var(--color-peach); }
+  .v3-card--lilac { --tone: var(--color-lilac); }
+  .v3-card--cream { --tone: var(--color-cream); }
+  .v3-card--sky { --tone: var(--color-sky); }
+  .v3-card--mint { --tone: var(--color-mint); }
+  .v3-card--pink { --tone: var(--color-pink); }
+
+  /* The stage: the card's tone, a little stronger, with one small moment. */
+  .v3-card__stage {
+    display: grid;
+    place-items: center;
+    height: 8.5rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1.05rem;
+    background: color-mix(in srgb, var(--tone) 58%, var(--color-paper));
+    transition: transform 300ms var(--nx-ease);
+  }
+  .v3-card:hover .v3-card__stage > * { transform: translateY(-3px); }
+  .v3-card__stage > * { transition: transform 300ms var(--nx-ease); }
+  .v3-card__text { display: block; padding: 1rem 1rem 1.1rem; }
+  .v3-card__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1.125rem;
+    letter-spacing: -0.015em;
+  }
+  .v3-card__body {
+    margin: 0.4rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  /* Mini app moments (next-app-ui.css pieces, sized down to fit a stage). */
+  .mini {
+    width: 100%;
+    max-width: 17rem;
+    font-size: 13px;
+    box-shadow: var(--pds-shadow-popover) !important;
+  }
+  .mini :global(.aui-row) { padding: 8px 12px 8px 10px; }
+  .mini :global(.aui-title) { font-size: 14px; }
+  .mini :global(.aui-sub) { font-size: 12px; }
+  .mini__thumb { overflow: hidden; padding: 0; }
+  .mini__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mini--space img { display: block; width: 100%; height: 38px; object-fit: cover; }
+  .mini__space-row { display: flex; align-items: center; gap: 10px; padding: 0 12px 10px; }
+  .mini__space-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    margin-top: -12px;
+    border-radius: 9px;
+    color: var(--pds-highlight-violet);
+    background: color-mix(in srgb, var(--pds-highlight-violet) 16%, var(--pds-bg-main));
+    box-shadow: 0 0 0 2px var(--pds-bg-main);
+  }
+  .mini__space-icon :global(svg) { width: 13px; height: 13px; }
+  .mini__tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .mini__tiles span {
+    padding: 6px 12px;
+    border-radius: var(--pds-radius-format);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-main);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card);
+  }
+  .mini__tiles--chips span { border-radius: 999px; }
+  .mini__tiles .is-on { color: #fff; background: var(--pds-text-primary); box-shadow: none; }
+  .mini--line { padding: 12px 14px; font-size: 13px; line-height: 1.5; text-align: left; }
+  .mini__mention {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-chip);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium);
+    white-space: nowrap;
+  }
+  .mini__mention :global(svg) { width: 10px; height: 10px; color: var(--pill-thread); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v3-card__stage > * { transition: none; }
+    .v3-card:hover .v3-card__stage > * { transform: none; }
+  }
+
+  /* ── What changed ── */
+  .v3-changed { padding-top: 0; }
+  .v3-changed .nx-lead { max-width: 26rem; }
+  .v3-moved { margin: 0; padding: 0; list-style: none; }
+  .v3-moved li { padding-block: 1.5rem; border-top: 1px solid var(--color-rule); }
+  .v3-moved__names {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.6rem;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .v3-moved__before {
+    font-weight: 500;
+    color: var(--color-ink-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--color-rule);
+  }
+  .v3-moved__arrow { font-weight: 400; color: var(--color-ink-faint); }
+  .v3-moved__body {
+    margin: 0.6rem 0 0;
+    max-width: 32rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .v3-moved__body .nx-link { white-space: nowrap; }
+  .v3-changed__foot {
+    margin: 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-rule);
+    max-width: 32rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+
+  /* ── Why ── */
+  .v3-why { padding-top: 0; overflow-x: clip; }
+  .v3-letter { max-width: 64rem; margin-inline: auto; }
+  .v3-letter :global(.prose-letter a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule);
+    text-underline-offset: 4px;
+  }
+  .v3-letter :global(.prose-letter a:hover) { text-decoration-color: var(--color-ink); }
+  .v3-essays {
+    max-width: 32rem;
+    margin: clamp(3.5rem, 8vw, 5rem) auto 0;
+    text-align: center;
+  }
+  .v3-essays__list { margin: 1.25rem 0 0; padding: 0; list-style: none; text-align: left; }
+  .v3-essays__list a {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .v3-essays__list li:last-child a { border-bottom: 1px solid var(--color-rule); }
+  .v3-essays__list a:hover .v3-essays__title { text-decoration: underline; text-underline-offset: 0.2em; }
+  .v3-essays__n { font-size: 0.75rem; font-weight: 600; color: var(--color-ink-faint); font-variant-numeric: tabular-nums; }
+  .v3-essays__title { display: block; font-size: 1.125rem; font-weight: 600; letter-spacing: -0.015em; }
+  .v3-essays__meta { display: block; margin-top: 0.2rem; font-size: 0.875rem; color: var(--color-ink-faint); }
+  .v3-open { margin: 2.5rem 0 0; text-align: center; color: var(--color-ink-soft); }
+</style>

@@ -1,0 +1,179 @@
+---
+/**
+ * /next/tour/ — the whole app on one page, standing in for the five feature
+ * category pages in the nav. Copy and items come from APP_TOUR_CHAPTERS (the
+ * same source as the live home tour), so the two can't drift; this page only
+ * decides how each chapter is shown. Every chapter still links to its deep
+ * category page for search and for anyone who wants the long version.
+ */
+import { Icon } from "astro-icon/components";
+import NextLayout from "../../layouts/NextLayout.astro";
+import Scene from "../../components/next/Scene.astro";
+import MarginNote from "../../components/next/MarginNote.astro";
+import ClosingCall from "../../components/next/ClosingCall.astro";
+import SectionNav from "../../components/next/SectionNav.astro";
+import ComparePreview from "../../components/next/ComparePreview.astro";
+import { APP_TOUR_CHAPTERS } from "../../lib/app-tour-chapters.ts";
+import { SHOTS, type Backdrop, type MarginNoteSpec, type Shot } from "../../lib/next/content.ts";
+
+type Staging = { shot: Shot; backdrop: Backdrop; zoom: number; focus: number; note: MarginNoteSpec };
+
+const STAGING: Record<string, Staging> = {
+  activity: {
+    shot: SHOTS.activity,
+    backdrop: "044",
+    zoom: 1.3,
+    focus: 0.45,
+    note: { text: "Each day gets its own sheet.", at: { top: "4%", right: "4%" }, arrow: "down-left", tilt: 3, target: [1290, 376] },
+  },
+  read: {
+    shot: SHOTS.read,
+    backdrop: "076",
+    zoom: 1.4,
+    focus: 0.4,
+    note: { text: "My notes, already in the margin.", at: { bottom: "10%", left: "8%" }, arrow: "up-left", side: "start", tilt: -3, target: [322, 560] },
+  },
+  write: {
+    /* Anchored from the note's top (breadcrumb, title, the highlight) rather
+       than its toolbar, so the highlight this note points at stays in view. */
+    shot: { ...SHOTS.write, crop: { ...SHOTS.write.crop, y: 0, hang: "bottom" } },
+    backdrop: "047",
+    zoom: 1.6,
+    focus: 0.45,
+    note: { text: "Highlight it once, find it for good.", at: { top: "8%", right: "4%" }, arrow: "down-left", tilt: 3, target: [716, 424] },
+  },
+  find: {
+    shot: SHOTS.library,
+    backdrop: "058",
+    zoom: 1.5,
+    focus: 0.6,
+    note: { text: "Pick a kind, or type what you remember.", at: { top: "4%", right: "4%" }, arrow: "down-left", tilt: 3, target: [1420, 214] },
+  },
+  share: {
+    shot: SHOTS.share,
+    backdrop: "045",
+    zoom: 1.45,
+    focus: 0.45,
+    note: { text: "Its own cover, its own threads.", at: { top: "5%", right: "5%" }, arrow: "down-left", tilt: 4, target: [900, 250] },
+  },
+};
+
+const chapters = APP_TOUR_CHAPTERS.filter((c) => STAGING[c.key]);
+const pad = (n: number) => String(n + 1).padStart(2, "0");
+---
+
+<NextLayout
+  title="Tour — Harvous"
+  description="Everything Harvous does, shown plainly: Activity, the Bible reader, writing with scripture pills, finding old notes, and studying with your group."
+>
+  <header class="tour-intro nx-wrap">
+    <p class="nx-kicker">The tour</p>
+    <h1 class="nx-display">Everything it does, shown plainly.</h1>
+    <p class="nx-lead">
+      Five places, one app. I've tried to keep each one doing a single thing well, so here's each
+      of them, one at a time.
+    </p>
+  </header>
+
+  <SectionNav
+    label="Tour chapters"
+    items={chapters.map((c, i) => ({ href: `#${c.key}` as `#${string}`, label: c.eyebrow, num: pad(i) }))}
+  />
+
+  {chapters.map((c, i) => {
+    const s = STAGING[c.key];
+    return (
+      <section class:list={["tour-ch nx-section", i % 2 === 1 && "tour-ch--flip"]} id={c.key} aria-labelledby={`${c.key}-title`}>
+        <div class="nx-wrap tour-ch__grid">
+          <div class="tour-ch__text" data-reveal>
+            <p class="nx-kicker"><span class="tour-ch__num">{pad(i)}</span> {c.eyebrow}</p>
+            <h2 id={`${c.key}-title`} class="nx-title">{c.title}</h2>
+            <p class="nx-lead">{c.lead}</p>
+            <ul class="tour-ch__items">
+              {c.items.map((item) => (
+                <li>
+                  <span class="tour-ch__icons" aria-hidden="true">
+                    {item.icons.map((icon) => <Icon name={icon} />)}
+                  </span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <a class="nx-link" href={`/features/${c.categorySlug}/`}>More about {c.eyebrow} →</a>
+          </div>
+          <div class="tour-ch__visual" data-reveal="scale">
+            <Scene backdrop={s.backdrop} shot={s.shot} aspect="4 / 5" inset={9} zoom={s.zoom} focus={s.focus}>
+              <MarginNote {...s.note} />
+            </Scene>
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  <div class="nx-wrap tour-compare">
+    <ComparePreview
+      title="Already reading in another app?"
+      slugs={["youversion", "esv-bible", "bible-gateway", "readscripture", "life-bible", "olive-tree"]}
+    />
+  </div>
+
+  <p class="tour-uses">
+    That's what it does. <a class="nx-link" href="/next/use-cases/">Here's how people use it →</a>
+  </p>
+
+  <ClosingCall title="See it with your own notes." />
+</NextLayout>
+
+<style>
+  .tour-intro {
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
+  }
+  .tour-intro .nx-display { margin: 1rem auto 0; max-width: 13ch; }
+  .tour-intro .nx-lead { max-width: 32rem; margin: 1.5rem auto 0; }
+
+
+  .tour-ch { scroll-margin-top: 4rem; }
+  .tour-uses { margin: 0 auto clamp(2rem, 5vw, 3rem); text-align: center; color: var(--color-ink-soft); }
+  .tour-ch__grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .tour-ch__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 6rem); }
+    .tour-ch--flip .tour-ch__text { order: 2; }
+  }
+  @media (max-width: 59.99rem) {
+    .tour-ch__visual { max-width: 40rem; }
+    .tour-ch__visual :global(.scene) { aspect-ratio: 4 / 3; }
+  }
+  .tour-ch__num { color: var(--color-accent); margin-right: 0.35rem; }
+  .tour-ch__text .nx-title { margin: 0.75rem 0 0; font-size: clamp(1.9rem, 3.6vw, 2.75rem); }
+  .tour-ch__text .nx-lead { margin: 1rem 0 0; }
+
+  .tour-ch__items {
+    display: grid;
+    gap: 1.25rem;
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tour-ch__items li { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .tour-ch__icons {
+    display: inline-flex;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    padding: 0.55rem;
+    border-radius: 0.75rem;
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+  .tour-ch__icons :global(svg) { width: 1rem; height: 1rem; }
+  .tour-ch__items h3 { margin: 0; font-size: 1.0625rem; }
+  .tour-ch__items p { margin: 0.25rem 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--color-ink-soft); }
+</style>

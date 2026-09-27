@@ -1,0 +1,164 @@
+---
+/**
+ * AppActivity — Activity as it opened on Derek's account (September 26): the
+ * day sheets stacked behind Today, the line Harvous writes about what he keeps
+ * coming back to, and the Suggested group, each row carrying the app's own
+ * reason and prompt. All wording is the app's, from app.harvous.com.
+ */
+import AppIcon from "./AppIcon.astro";
+
+interface Props {
+  /** Include Today's passage card (taller); off shows Suggested sooner. */
+  passage?: boolean;
+  /** Include the Review exercises group (Plus), as the app shows it. */
+  review?: boolean;
+}
+const { passage = false, review = false } = Astro.props;
+---
+
+<div class="aact">
+  <div class="aact__edge">Thursday</div>
+  <div class="aact__edge aact__edge--2">Yesterday</div>
+  <div class="aact__sheet">
+    <div class="aact__head">
+      <span class="aact__today">Today <small>September 26</small></span>
+      <span class="aact__all">All <AppIcon name="caret-down" /></span>
+    </div>
+    <p class="aact__line">
+      <strong>Good afternoon, Derek.</strong> You keep coming back to
+      <span class="aact__chip"><AppIcon name="book" /> Exodus</span>, with
+      <span class="aact__chip">43 notes</span> saved so far, often on Sunday nights, lately returning to
+      <span class="aact__chip"><AppIcon name="magnifying-glass" /> God's timing</span>.
+    </p>
+
+    {passage && (
+      <>
+        <p class="aui-label aact__label">Today's passage</p>
+        <div class="aui-card aact__passage">
+          <p class="aact__ref">Psalms 56:3–4 · NLT</p>
+          <p><sup>3</sup>But when I am afraid, I will put my trust in you. <sup>4</sup>I praise God for what he has promised. I trust in God, so why should I be afraid?</p>
+        </div>
+      </>
+    )}
+
+    {review && (
+      <>
+        <p class="aui-label aact__label">Review exercises</p>
+        <div class="aui-card aact__review" data-aact-review>
+          <div class="aui-row">
+            <span class="aui-tile"><AppIcon name="note-sticky" /></span>
+            <span>
+              <span class="aui-title aact__rtitle">No Condemnation <span class="aact__steps" aria-hidden="true"><i class="is-on" /><i /><i /></span></span>
+              <span class="aui-sub">Folder<i>·</i>Pick a folder it is in</span>
+            </span>
+            <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+          </div>
+          <div class="aui-row">
+            <span class="aui-tile"><AppIcon name="book-open-reader" /></span>
+            <span>
+              <span class="aui-title">Romans 3 · NLT</span>
+              <span class="aui-sub">Blanks<i>·</i>Finish a verse from it<i>·</i>You marked a verse here.</span>
+            </span>
+            <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+          </div>
+          <p class="aact__more">0 of 8 today <AppIcon name="caret-down" /></p>
+        </div>
+      </>
+    )}
+
+    <p class="aui-label aact__label">Suggested</p>
+    <div class="aui-card" data-aact-suggested>
+      <div class="aui-row">
+        <span class="aui-tile"><AppIcon name="magnifying-glass" /></span>
+        <span><span class="aui-title">God's timing</span><span class="aui-sub">Seems to be on your mind<i>·</i>Returning to this since June</span></span>
+        <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+      </div>
+      <div class="aui-row">
+        <span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span>
+        <span><span class="aui-title">Holy Spirit</span><span class="aui-sub">A Thread to think through<i>·</i>What is still unresolved in your Holy Spirit Thread?</span></span>
+        <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+      </div>
+      <div class="aui-row">
+        <span class="aui-tile"><AppIcon name="pen-to-square" /></span>
+        <span><span class="aui-title">filled with joy</span><span class="aui-sub">Add a thought<i>·</i>Worth a quick reflection</span></span>
+        <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .aact { position: relative; height: 100%; padding: 0 9%; font-size: 14px; }
+  .aact__edge {
+    margin: 0 3%;
+    padding: 4px 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--pds-text-tertiary);
+    background: var(--pds-bg-main);
+    box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.1);
+  }
+  .aact__edge--2 { margin: 0 1.5%; }
+  .aact__sheet {
+    height: 100%;
+    padding: 16px 20px 0;
+    background: var(--pds-bg-main);
+    box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.1);
+  }
+  .aact__head { display: flex; align-items: center; justify-content: space-between; }
+  .aact__today {
+    font-family: var(--pds-font-display);
+    font-variation-settings: "ROND" 0, "wght" 700;
+    font-weight: 700;
+    font-size: 19px;
+  }
+  .aact__today small { font-size: 12px; font-weight: 500; margin-left: 6px; color: var(--pds-text-secondary); font-variation-settings: "wght" 500; }
+  .aact__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 9px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    background: var(--pds-bg-chip);
+  }
+  .aact__all :global(svg) { width: 9px; height: 9px; }
+  .aact__line { margin: 12px 0 4px; line-height: 1.75; font-size: 13.5px; color: var(--pds-text-secondary); }
+  .aact__line strong { color: var(--pds-text-primary); font-weight: 600; }
+  .aact__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-chip);
+    white-space: nowrap;
+  }
+  .aact__chip :global(svg) { width: 11px; height: 11px; }
+  .aact__label { margin: 14px 0 6px 2px !important; font-size: 12.5px !important; }
+  .aact__rtitle { display: flex; align-items: center; gap: 8px; }
+  /* The exercise's progress: three short dashes, the first done. */
+  .aact__steps { display: inline-flex; gap: 2px; }
+  .aact__steps i { width: 6px; height: 2px; border-radius: 1px; background: var(--pds-border); }
+  .aact__steps i.is-on { background: var(--pds-highlight-sky-blue); }
+  .aact__more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin: 0;
+    padding: 7px 0 9px;
+    font-size: 12px;
+    color: var(--pds-text-primary);
+    box-shadow: inset 0 0.5px 0 var(--pds-border);
+  }
+  .aact__more :global(svg) { width: 9px; height: 9px; }
+  .aact__passage { padding: 10px 12px; font-size: 13px; line-height: 1.6; }
+  .aact__passage p { margin: 0; }
+  .aact__ref { font-size: 11px; color: var(--pds-text-secondary); margin-bottom: 4px !important; }
+  .aact__passage sup { font-size: 0.65em; color: var(--pds-text-tertiary); margin-right: 2px; }
+</style>

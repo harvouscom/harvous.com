@@ -14,10 +14,14 @@ type PillType = "note" | "scripture" | "highlight" | "folder" | "thread";
 
 interface Props {
   type: PillType;
+  /** Override the label (e.g. a plural) — the icon still follows `type`. */
+  word?: string;
+  /** Ink instead of the type's colour, for places the colour would compete. */
+  mono?: boolean;
   class?: string;
 }
 
-const { type, class: className = "" } = Astro.props;
+const { type, word: wordOverride, mono = false, class: className = "" } = Astro.props;
 
 const PILLS: Record<PillType, { word: string; icon: string }> = {
   note: { word: "note", icon: "fa7-solid:note-sticky" },
@@ -27,10 +31,11 @@ const PILLS: Record<PillType, { word: string; icon: string }> = {
   thread: { word: "thread", icon: "fa7-solid:arrow-right-arrow-left" },
 };
 
-const { word, icon } = PILLS[type];
+const { word: defaultWord, icon } = PILLS[type];
+const word = wordOverride ?? defaultWord;
 ---
 
-<span class:list={["cpill", `cpill--${type}`, className]}>
+<span class:list={["cpill", mono ? "cpill--mono" : `cpill--${type}`, className]}>
   <span class="cpill__icon"><Icon name={icon} /></span>
   <span class="cpill__word">{word}</span>
 </span>
@@ -65,4 +70,8 @@ const { word, icon } = PILLS[type];
   .cpill--highlight { --pill: var(--pill-highlight); }
   .cpill--folder    { --pill: var(--pill-folder); }
   .cpill--thread    { --pill: var(--pill-thread); }
+  .cpill--mono {
+    --pill: var(--color-ink);
+    background: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  }
 </style>

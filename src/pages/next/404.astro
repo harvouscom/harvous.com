@@ -1,0 +1,139 @@
+---
+/**
+ * /next/404/ — the not-found page in the /next chrome, previewed at this URL
+ * (Astro only serves src/pages/404.astro for real misses; at cutover this
+ * replaces it). A faint 404 over the sky, one line in my voice, and a short
+ * list of places to pick back up, in the hubs' light rows. If someone was
+ * looking for a note, it points them at the app, where notes live.
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+import AppIcon from "../../components/next/app/AppIcon.astro";
+import { backdropSrc } from "../../lib/next/content.ts";
+
+const PLACES = [
+  { label: "Home", line: "Start from the top.", href: "/next/", icon: "house" },
+  { label: "Tour", line: "Everything Harvous does, one screen at a time.", href: "/next/tour/", icon: "book-open" },
+  { label: "Discover", line: "Templates and resources to start from.", href: "/next/discover/", icon: "compass" },
+  { label: "Blog", line: "What helps Scripture stick after you close it.", href: "/next/blog/", icon: "newspaper" },
+  { label: "Support", line: "Ask me anything.", href: "/next/support/", icon: "circle-question" },
+];
+---
+
+<NextLayout
+  title="Page not found — Harvous"
+  description="This page doesn't exist. Head back to Harvous — the Bible study notes app."
+>
+  <section class="nf">
+    <img class="nf__sky" src={backdropSrc("053")} alt="" />
+    <div class="nx-wrap nf__head">
+      <p class="nf__code" aria-hidden="true">404</p>
+      <h1 class="nx-display nf__title">This page got lost.</h1>
+      <p class="nx-lead nf__lead">
+        An old link or a typo, probably. Happens to the best notes too, which is sort of why I
+        built Harvous.
+      </p>
+    </div>
+  </section>
+
+  <section class="nx-wrap nf__places" aria-label="Places to pick back up">
+    <ul class="nf__list" role="list">
+      {PLACES.map((p) => (
+        <li>
+          <a class="nf__row" href={p.href}>
+            <span class="nf__icon"><AppIcon name={p.icon} /></span>
+            <span class="nf__text">
+              <span class="nf__label">{p.label}</span>
+              <span class="nf__line">{p.line}</span>
+            </span>
+            <svg class="nf__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="nf__app">
+      Looking for one of your notes? Those live in the app:
+      <a href="https://app.harvous.com">app.harvous.com</a>
+    </p>
+  </section>
+</NextLayout>
+
+<style>
+  .nf {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(8rem, 16vw, 11rem) 0 clamp(3rem, 7vw, 4.5rem);
+    text-align: center;
+  }
+  /* The sky, fading to the page before the list starts. */
+  .nf__sky {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .nf::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--color-paper) 30%, transparent), var(--color-paper) 92%);
+  }
+  .nf__code {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 16vw, 10rem);
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  }
+  .nf__title { margin: 0.75rem auto 0; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .nf__lead { margin: 1.25rem auto 0; }
+
+  .nf__places {
+    max-width: calc(36rem + 2 * var(--nx-gutter));
+    padding-bottom: clamp(4rem, 10vw, 6rem);
+  }
+  .nf__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-rule); }
+  .nf__row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 0.25rem;
+    border-bottom: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .nf__row:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
+  .nf__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-warm);
+    color: var(--color-ink);
+  }
+  .nf__icon :global(svg) { width: 1rem; height: 1rem; }
+  .nf__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .nf__label { font-weight: 600; color: var(--color-ink); }
+  .nf__line { font-size: 0.9375rem; color: var(--color-ink-soft); }
+  .nf__chev {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--color-ink-faint);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 200ms ease, stroke 200ms ease;
+  }
+  .nf__row:hover .nf__chev { transform: translateX(2px); stroke: var(--color-ink); }
+  .nf__app { margin: 1.5rem 0 0; text-align: center; font-size: 0.9375rem; color: var(--color-ink-soft); }
+  .nf__app a { color: var(--color-ink); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+</style>

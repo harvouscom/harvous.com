@@ -1,0 +1,148 @@
+---
+/**
+ * AppNote — one of Derek's real notes, "The cost of obedience", as the editor
+ * shows it: breadcrumb, title, scripture pills inline (the reference becomes a
+ * pill), underlined dictionary words, a numbered list. With `dock`, the pill's
+ * passage is open in the scripture panel docked at the bottom of the note,
+ * the way tapping a pill opens it — "the verse comes with it."
+ *
+ * With `note="faithful"` it's a different note of his, "God is faithful, even
+ * here" — sermon notes on Joseph that end at Romans 8:28, with the words he
+ * highlighted underlined in amber, the way the editor draws them.
+ *
+ * (A pastor's name at the start of the first line is left out; the rest is as
+ * written, bar a typo.)
+ */
+import AppIcon from "./AppIcon.astro";
+
+interface Props {
+  dock?: boolean;
+  /** Fewer lines, for a card floating over something else. */
+  compact?: boolean;
+  note?: "obedience" | "faithful";
+  class?: string;
+}
+const { dock = false, compact = false, note = "obedience", class: className } = Astro.props;
+---
+
+<div class:list={["anote", compact && "anote--compact", className]}>
+  {note === "faithful" ? (
+  <div class="anote__page">
+    <p class="aui-crumb"><AppIcon name="user-group" /> In My Home, Family</p>
+    <p class="aui-h anote__title">God is faithful, even here</p>
+    <p>God hadn’t forgotten Joseph.<br />God hasn’t forgotten you.</p>
+    <p>
+      <span class="aui-ul">Joseph</span> was in this place as a slave and prisoner for 13 years. God’s
+      timing then to allow Joseph to interpret <span class="aui-ul">Pharaoh’s dreams</span>.
+      <span class="aui-pill">Genesis 41 <span class="aui-tr">NLT</span></span>
+    </p>
+    <p>Overnight Joseph wasn’t a <span class="aui-ul">prisoner anymore</span>.</p>
+    {!compact && <p>Exodus isn’t a story about escape. It’s a story about His promise.</p>}
+    <p><span class="aui-pill" data-anote-pill>Romans 8:28 <span class="aui-tr">NLT</span></span></p>
+  </div>
+  ) : (
+  <div class="anote__page">
+    <p class="aui-crumb"><AppIcon name="house" /> In My Home</p>
+    <p class="aui-h anote__title">The cost of obedience</p>
+    <p>
+      <span class="aui-pill" data-anote-pill>Exodus 5:1–5 <span class="aui-tr">NLT</span></span>
+      Pharaoh is a title like “President”.
+    </p>
+    <p>He was viewed as more God-like than Human. <span class="aui-ul">Amenhotep II</span> is most likely his name.</p>
+    <p>Obedience doesn’t always mean easy.</p>
+    {!compact && (
+      <>
+        <p>If you actually know God you can’t help but obey. It flows from my relationship with God.</p>
+        <p>The more I obey, the more I trust, the more I know. The cycle of relationship.</p>
+      </>
+    )}
+    <ol class="anote__list">
+      <li>Obedience flows from relationship with God</li>
+      <li>
+        True obedience comes with a cost
+        <span class="aui-pill">Luke 14:27–28 <span class="aui-tr">NLT</span></span>
+        … we tend to negotiate with God
+      </li>
+      {!compact && <li>Even though, God is faithful</li>}
+    </ol>
+  </div>
+  )}
+
+  {dock && (
+    <div class="anote__dock" data-anote-dock>
+      <div class="anote__dock-head">
+        <span class="anote__dock-ref"><AppIcon name="book" /> Exodus 5:1–5 <span class="aui-tr">NLT</span></span>
+        <span class="anote__dock-tools"><AppIcon name="up-right-and-down-left-from-center" /><AppIcon name="xmark" /></span>
+      </div>
+      <div class="anote__dock-pickers">
+        <span>NLT <AppIcon name="caret-down" /></span>
+        <span>Exodus <AppIcon name="caret-down" /></span>
+        <span>5 <AppIcon name="caret-down" /></span>
+        <span>1 <AppIcon name="caret-down" /></span>
+        <span>5 <AppIcon name="caret-down" /></span>
+      </div>
+      <p class="anote__dock-text">
+        <sup>1</sup>After this presentation to Israel’s leaders, Moses and Aaron went and spoke to
+        Pharaoh. They told him, “This is what the Lord, the God of Israel, says: Let my people go so
+        they may hold a festival in my honor in the wilderness.” <sup>2</sup>“Is that so?” retorted
+        Pharaoh. “And who is the Lord? Why should I listen to him and let Israel go?”
+      </p>
+    </div>
+  )}
+</div>
+
+<style>
+  .anote {
+    position: relative;
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--pds-text-primary);
+  }
+  .anote__page {
+    height: 100%;
+    margin: 0 8%;
+    padding: 20px 28px 0;
+    background: var(--pds-bg-main);
+    box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.1);
+  }
+  .anote__page > p { margin: 0 0 9px; }
+  .anote__title { font-size: 20px !important; margin-bottom: 10px !important; }
+  .anote__list { margin: 0; padding-left: 1.2em; }
+  .anote__list li { margin-bottom: 6px; }
+  .anote .aui-pill { font-size: 12.5px; vertical-align: 1px; }
+
+  /* The scripture panel, docked over the bottom of the note. */
+  .anote__dock {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    bottom: 10px;
+    padding: 12px 14px 14px;
+    border-radius: 14px;
+    background: var(--pds-bg-main);
+    box-shadow: var(--pds-shadow-popover), 0 -10px 30px -18px rgba(15, 23, 42, 0.3);
+    font-size: 12.5px;
+  }
+  .anote__dock-head { display: flex; align-items: center; justify-content: space-between; }
+  .anote__dock-ref { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+  .anote__dock-ref :global(svg) { width: 11px; height: 11px; }
+  .anote__dock-tools { display: inline-flex; gap: 12px; color: var(--pds-text-secondary); }
+  .anote__dock-tools :global(svg) { width: 12px; height: 12px; }
+  .anote__dock-pickers { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 8px; }
+  .anote__dock-pickers span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--pds-bg-chip);
+  }
+  .anote__dock-pickers :global(svg) { width: 9px; height: 9px; }
+  .anote__dock-text { margin: 0; line-height: 1.65; }
+  .anote__dock-text sup { font-size: 0.65em; color: var(--pds-text-tertiary); margin-right: 2px; }
+
+  .anote--compact .anote__page { margin: 0; padding: 18px 22px 22px; border-radius: 16px; height: auto; }
+</style>

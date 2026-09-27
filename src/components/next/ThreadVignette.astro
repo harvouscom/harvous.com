@@ -1,0 +1,108 @@
+---
+/**
+ * ThreadVignette — five notes from different months, stitched into one
+ * thread, in the app's row anatomy (next-app-ui.css).
+ *
+ * The thread is a timeline in its own gutter, left of the rows: a node for
+ * each note and a line between them, in the thread pill's green. It draws
+ * down on reveal, node by node. Nothing runs behind the icon tiles.
+ * The notes are illustrative.
+ */
+import AppIcon from "./app/AppIcon.astro";
+
+const NOTES = [
+  { title: "Abraham waits", ref: "Genesis 15", when: "Jan" },
+  { title: "Counted as righteousness", ref: "Romans 4", when: "Apr" },
+  { title: "By faith he went out", ref: "Hebrews 11", when: "Aug" },
+  { title: "The promise, again", ref: "Genesis 22", when: "Oct" },
+  { title: "Still waiting well", ref: "Psalm 27", when: "Dec" },
+];
+---
+
+<div class="aui thv" data-reveal aria-hidden="true" style={`--n:${NOTES.length}`}>
+  <p class="aui-label thv__label">
+    <AppIcon name="arrow-right-arrow-left" /> Faith before it made sense
+  </p>
+  <div class="aui-card thv__card">
+    <span class="thv__line"></span>
+    {NOTES.map((n, i) => (
+      <div class="aui-row thv__row" style={`--i:${i}`}>
+        <span class="thv__node"></span>
+        <span class="aui-tile"><AppIcon name="pen-to-square" /></span>
+        <span>
+          <span class="aui-title">{n.title}</span>
+          <span class="aui-sub">{n.ref}<i>·</i>{n.when}</span>
+        </span>
+        <span class="aui-acts"><AppIcon name="caret-right" /></span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .thv {
+    --thread: var(--pill-thread);
+    --gutter: 30px;
+    width: 100%;
+  }
+  .thv__label { display: flex; align-items: center; gap: 6px; }
+  .thv__label :global(svg) { width: 11px; height: 11px; color: var(--thread); }
+
+  .thv__card { position: relative; }
+  .thv .thv__row {
+    position: relative;
+    padding-left: var(--gutter);
+  }
+
+  /* One node per note, centred in the gutter on the row's middle. */
+  .thv__node {
+    position: absolute;
+    z-index: 2;
+    left: calc(var(--gutter) / 2 + 1px);
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+    border-radius: 50%;
+    background: var(--pds-bg-main);
+    box-shadow: inset 0 0 0 2px var(--thread);
+  }
+  /* The note you're on: filled. */
+  .thv__row:first-of-type .thv__node { background: var(--thread); }
+
+  /* The line runs node to node: from the first row's middle to the last's. */
+  .thv__line {
+    position: absolute;
+    z-index: 1;
+    left: calc(var(--gutter) / 2);
+    top: calc(var(--row-h, 61px) / 2);
+    /* Sized from the rows, not the card, so a card stretched taller than its
+       rows doesn't carry the line past the last node. */
+    height: calc((var(--n) - 1) * var(--row-h, 61px));
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--thread),
+      color-mix(in srgb, var(--thread) 55%, var(--pds-bg-main))
+    );
+    transform-origin: top;
+    transform: scaleY(var(--thv-draw, 1));
+    transition: transform 1100ms var(--nx-ease, ease) 300ms;
+  }
+
+  :global(html.js) .thv[data-reveal] { opacity: 1; transform: none; --thv-draw: 0; }
+  :global(html.js) .thv[data-reveal].revealed { --thv-draw: 1; }
+  :global(html.js) .thv[data-reveal] .thv__row {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 400ms ease, transform 500ms var(--nx-ease, ease);
+    transition-delay: calc(250ms + var(--i) * 300ms);
+  }
+  :global(html.js) .thv[data-reveal].revealed .thv__row { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .thv[data-reveal] { --thv-draw: 1; }
+    :global(html.js) .thv[data-reveal] .thv__row { opacity: 1; transform: none; transition: none; }
+    .thv__line { transition: none; }
+  }
+</style>

@@ -1,0 +1,213 @@
+---
+/**
+ * NextHero — Dia's hero shape in Harvous colours: one plain sentence set
+ * large — what it is (Bible study notes) and why it's different (they stay) —
+ * and the app window rising just beneath it. "notes" is the site's cycling
+ * pill, in ink rather than colour so the headline stays one quiet voice.
+ *
+ * The picture is the app itself, rebuilt from Derek's account in the app's
+ * own components: the reader with its notes rail, the note that rail points
+ * to, and a Suggestion — see the comment on the stage below.
+ */
+import AppIcon from "./app/AppIcon.astro";
+import AppWindow from "./app/AppWindow.astro";
+import AppReader from "./app/AppReader.astro";
+import AppNote from "./app/AppNote.astro";
+import HeroPillCycle from "../HeroPillCycle.astro";
+import HeroVideoLightbox from "../HeroVideoLightbox.astro";
+import { backdropSrc } from "../../lib/next/content.ts";
+
+/* Plurals, so the sentence reads for every pill; "verses" because "scripture
+   that stay" doesn't. The icons stay the app's own. */
+const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", folder: "folders", thread: "threads" };
+
+
+---
+
+<section class="hero">
+  {/* 053, the pale "breeze" streaks — light enough that ink reads on it without a scrim. */}
+  <img class="hero__sky" src={backdropSrc("053")} alt="" fetchpriority="high" />
+
+  <div class="nx-wrap hero__head">
+    <h1 class="hero__title">
+      <span class="hero__line">Bible study <HeroPillCycle mono words={NOUNS} /></span>
+      <span class="hero__line">worth keeping</span>
+    </h1>
+    {/* The Harvous 3 walkthrough (R2, via the Worker — see wrangler.jsonc). */}
+    <div class="hero__watch">
+      <HeroVideoLightbox
+        src="/harvous-3-walkthrough.mp4"
+        label="Watch me walk through it in 4 min"
+        variant="inline"
+        avatar="/derek-avatar.webp"
+      />
+    </div>
+  </div>
+
+  <div class="nx-wrap hero__stage">
+    {/*
+      All three rebuilt from Derek's own account (app.harvous.com), in the
+      app's own components: the reader on Exodus 5 with its notes rail lit and
+      "In 2 of your notes" open; the note that popover names, "The cost of
+      obedience", lifted off the left; and one Suggestion from Activity —
+      writing, reading, and remembering in one glance, and all about the same
+      passage.
+    */}
+    <div class="hero__window" data-reveal="scale" style="--reveal-delay: 150ms;">
+      <AppWindow view="bible"><AppReader select /></AppWindow>
+    </div>
+
+    <div
+      class="hero__note"
+      data-reveal="scale"
+      style="--reveal-delay: 350ms;"
+      role="img"
+      aria-label="Derek's note The cost of obedience, with Exodus 5:1–5 and Luke 14:27–28 as scripture pills."
+    >
+      <AppNote compact note="faithful" />
+    </div>
+
+    <div class="aui hero__suggest" data-reveal="scale" style="--reveal-delay: 550ms;" aria-hidden="true">
+      <p class="aui-label">Suggested</p>
+      <div class="aui-card aui-card--float">
+        <div class="aui-row">
+          <span class="aui-tile"><AppIcon name="magnifying-glass" /></span>
+          <span><span class="aui-title">God's timing</span><span class="aui-sub">Seems to be on your mind<i>·</i>Returning to this since June</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding-top: clamp(6rem, 11vw, 8.5rem);
+    overflow: hidden;
+  }
+  /* Everything in the stage — sky, window, note and their shadows — dissolves
+     into the page before the section ends, so there is no seam where the hero
+     stops and the next section's white begins. */
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: clamp(9rem, 22vw, 16rem);
+    z-index: 5;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-paper) 0%, transparent),
+      color-mix(in srgb, var(--color-paper) 70%, transparent) 55%,
+      var(--color-paper)
+    );
+  }
+  .hero__sky {
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
+    height: 92%;
+    object-fit: cover;
+    z-index: -2;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  }
+
+  .hero__head {
+    position: relative;
+    z-index: 0;
+    text-align: center;
+  }
+  /* Two fixed lines, broken after the pill, so the pill changing width never
+     re-wraps the sentence. */
+  /* The pill's word is set at the headline's weight, not the pill's own. */
+  .hero__title :global(.cpill) { font-weight: inherit; }
+  .hero__title {
+    margin: 0;
+    font-family: var(--font-display);
+    /* The site's own heading voice (600, gently tightened), just larger — not
+       a heavier cut that only this page would use. */
+    font-size: clamp(2.6rem, 6.2vw, 5.5rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    color: var(--color-ink);
+  }
+  .hero__line { display: block; }
+  .hero__watch { margin-top: clamp(1.25rem, 2.4vw, 1.75rem); }
+  .hero__watch :global(.hero-video-inline) {
+    padding: 0.45rem 1rem 0.45rem 1.05rem;
+    font-size: 0.9375rem;
+    background: color-mix(in srgb, #fff 72%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
+    box-shadow: 0 8px 24px -14px rgba(15, 23, 42, 0.35);
+  }
+  .hero__watch :global(.hero-video-inline__face) { margin-left: -0.55rem; }
+  @media (min-width: 40rem) {
+    .hero__line { white-space: nowrap; }
+  }
+
+  .hero__stage {
+    position: relative;
+    z-index: 1;
+    margin-top: clamp(0.75rem, 1.6vw, 1.5rem);
+  }
+  .hero__window {
+    position: relative;
+    max-width: 64rem;
+    height: clamp(20rem, 52vw, 40rem);
+    margin-inline: auto;
+    overflow: hidden;
+    border-radius: clamp(0.8rem, 1.6vw, 1.4rem) clamp(0.8rem, 1.6vw, 1.4rem) 0 0;
+    background: #fcfcfb;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.07),
+      0 -10px 60px -20px rgba(15, 23, 42, 0.25),
+      0 40px 90px -30px rgba(15, 23, 42, 0.45);
+    -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
+    mask-image: linear-gradient(to bottom, #000 78%, transparent);
+  }
+
+  /* The note, lifted off the reader's left side and past the window's edge. */
+  .hero__window :global(.aw) { height: 100%; }
+  .hero__note {
+    position: absolute;
+    z-index: 2;
+    left: max(0.5rem, calc(50% - 32rem - 3rem));
+    top: 20%;
+    width: min(42%, 24rem);
+    border-radius: 16px;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.08),
+      0 24px 40px -16px rgba(15, 23, 42, 0.35),
+      0 60px 110px -30px rgba(15, 23, 42, 0.4);
+  }
+  .hero__suggest {
+    position: absolute;
+    z-index: 3;
+    right: max(0.5rem, calc(50% - 32rem - 2rem));
+    top: 52%;
+    width: min(40%, 21rem);
+  }
+  /* It sits over the sky, so the label gets a ground of its own to be read on. */
+  .hero__suggest :global(.aui-label) {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, #fff 88%, transparent);
+    box-shadow: 0 0 0 0.5px var(--pds-border), 0 6px 14px -8px rgba(15, 23, 42, 0.3);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: var(--pds-text-primary);
+    font-weight: 600;
+  }
+
+  @media (max-width: 40rem) {
+    .hero__note { width: 70%; top: 24%; zoom: 0.72; }
+    .hero__suggest { display: none; }
+  }
+</style>
+

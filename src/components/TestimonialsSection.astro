@@ -8,7 +8,9 @@ import { getCollection, render } from "astro:content";
 import Container from "./layout/Container.astro";
 import TestimonialCard from "./TestimonialCard.astro";
 
-const entries = (await getCollection("testimonials")).sort((a, b) => a.data.order - b.data.order);
+const entries = (await getCollection("testimonials", ({ data }) => data.featured)).sort(
+  (a, b) => a.data.order - b.data.order
+);
 const items = await Promise.all(
   entries.map(async (t) => {
     const { Content } = await render(t);

@@ -1,0 +1,118 @@
+---
+/**
+ * UseCaseRow — "However you study" on the home page: all seven use cases in a
+ * row you swipe (or step with the arrows), the next card peeking so it reads
+ * as more. A row rather than a grid because seven never divides evenly into
+ * columns. Ends on the hub.
+ */
+import UseCaseCard from "./UseCaseCard.astro";
+import { getUseCases } from "../../lib/use-cases-data.ts";
+
+const useCases = getUseCases();
+---
+
+<section class="ucrow nx-section" aria-labelledby="ucrow-title" data-ucrow>
+  <div class="nx-wrap ucrow__head">
+    <div data-reveal>
+      <p class="nx-kicker">However you study</p>
+      <h2 id="ucrow-title" class="nx-title">Sunday notes, a book a month, or a passage a day.</h2>
+    </div>
+    <div class="ucrow__nav" aria-hidden="true">
+      <button type="button" class="ucrow__btn" data-ucrow-prev tabindex="-1">
+        <svg viewBox="0 0 16 16"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+      </button>
+      <button type="button" class="ucrow__btn" data-ucrow-next tabindex="-1">
+        <svg viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <ul class="ucrow__track" role="list" data-ucrow-track>
+    {useCases.map((uc) => (
+      <li class="ucrow__item"><UseCaseCard useCase={uc} /></li>
+    ))}
+  </ul>
+
+  <p class="nx-wrap ucrow__all">
+    <a class="nx-link" href="/next/use-cases/">All the ways people use it →</a>
+  </p>
+</section>
+
+<style>
+  .ucrow { padding-top: 0; }
+  .ucrow__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  .ucrow__head .nx-title { margin: 0.75rem 0 0; max-width: 20ch; }
+
+  .ucrow__nav { display: none; gap: 0.5rem; flex-shrink: 0; }
+  @media (min-width: 48rem) { .ucrow__nav { display: flex; } }
+  .ucrow__btn {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0;
+    border-radius: 999px;
+    color: var(--color-ink);
+    background: var(--color-warm);
+    cursor: pointer;
+    transition: background-color 150ms ease, opacity 150ms ease;
+  }
+  .ucrow__btn:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .ucrow__btn:disabled { opacity: 0.35; cursor: default; }
+  .ucrow__btn svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* The track starts aligned with the page's content column and runs to the
+     window's edge, so the next card peeks in from the right. */
+  .ucrow__track {
+    --edge: max(var(--nx-gutter), calc((100vw - var(--nx-wide)) / 2));
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 19rem);
+    gap: 1rem;
+    margin: 0;
+    padding: 0.25rem var(--edge) 0.5rem;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--edge);
+    scrollbar-width: none;
+  }
+  .ucrow__track::-webkit-scrollbar { display: none; }
+  .ucrow__item { scroll-snap-align: start; }
+
+  .ucrow__all { margin: 1.75rem auto 0; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-ucrow]").forEach((root) => {
+    const track = root.querySelector<HTMLElement>("[data-ucrow-track]");
+    const prev = root.querySelector<HTMLButtonElement>("[data-ucrow-prev]");
+    const next = root.querySelector<HTMLButtonElement>("[data-ucrow-next]");
+    if (!track || !prev || !next) return;
+
+    const step = () => {
+      const card = track.querySelector<HTMLElement>(".ucrow__item");
+      return card ? card.getBoundingClientRect().width + 16 : 300;
+    };
+    const sync = () => {
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+    };
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const go = (dir: number) =>
+      track.scrollBy({ left: dir * step(), behavior: reduce ? "auto" : "smooth" });
+
+    prev.addEventListener("click", () => go(-1));
+    next.addEventListener("click", () => go(1));
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    sync();
+  });
+</script>

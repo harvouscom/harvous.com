@@ -1,0 +1,49 @@
+---
+/**
+ * NextLayout — the /next/ redesign's chrome around BaseLayout's head.
+ *
+ * BaseLayout renders `bare` here, so its head, analytics, and the reveal / hash
+ * / try-CTA scripts are shared, while the site Header, Footer, and page-frame
+ * rails give way to a floating pill nav, a sticky "Try Harvous free" pill, and
+ * a quieter footer. Every /next/ page is a draft (src/lib/draft-pages.ts):
+ * noindex here, out of the sitemap, and stripped from production builds.
+ *
+ * next.css is imported from this file, not BaseLayout, so none of it reaches a
+ * live page; it is scoped under `.nx` besides.
+ */
+import BaseLayout from "./BaseLayout.astro";
+import NextHeader from "../components/next/NextHeader.astro";
+import NextFooter from "../components/next/NextFooter.astro";
+import StickyTryPill from "../components/next/StickyTryPill.astro";
+import "../styles/next.css";
+import "../styles/next-app-ui.css";
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+}
+
+const { title, description, ogImage } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage} noindex bare>
+  <Fragment slot="head">
+    {/* Margin notes only. Self-host before cutover, like Google Sans Flex. */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap"
+    />
+  </Fragment>
+
+  <div class="nx">
+    <NextHeader />
+    <main class="nx-main">
+      <slot />
+    </main>
+    <NextFooter />
+    <StickyTryPill />
+  </div>
+</BaseLayout>

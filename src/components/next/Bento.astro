@@ -1,0 +1,486 @@
+---
+/**
+ * Bento — "Built for how you actually study." Six cards, each built the same
+ * way (a framed stage in the card's tone with a piece of the app composed to
+ * fill it, then the words), laid out so the rows zig-zag rather than march:
+ *
+ *   3 columns   [ Threads ···· | Templates ]   wide cards lay out sideways,
+ *               [ Discover | ···· Compare ]    words beside the picture
+ *               [ Review ····· | Spaces    ]
+ *   2 columns   [ Threads ···· ] [ Templates | Discover ]
+ *               [ ···· Compare ] [ Review | Spaces ]
+ *
+ * Every row is full at both widths; one column is just a stack.
+ *
+ * The app pieces are drawn with next-app-ui.css (the app's own tokens), each
+ * copied from a real screen (Shared spaces from tour-share). The smaller
+ * features every account gets sit in a grid of chips below.
+ */
+import AppIcon from "./app/AppIcon.astro";
+import { Icon } from "astro-icon/components";
+import ThreadVignette from "./ThreadVignette.astro";
+import { ALSO_INCLUDED, BENTO_CARDS } from "../../lib/next/content.ts";
+/* Which cards run wide, and where the picture sits on them. */
+const WIDE: Record<string, { at: "2" | "3"; flip?: boolean }> = {
+  thread: { at: "2" },
+  compare: { at: "2", flip: true },
+  review: { at: "3" },
+};
+---
+
+<ul class="bento" role="list">
+  {BENTO_CARDS.map((card) => (
+    <li
+      class:list={[
+        "bcard",
+        `bcard--${card.tone}`,
+        WIDE[card.visual] && `bcard--wide${WIDE[card.visual].at}`,
+        WIDE[card.visual]?.flip && "bcard--flip",
+      ]}
+      data-reveal
+    >
+      <a class="bcard__link" href={card.href}>
+        <div class:list={["bcard__stage", `stage--${card.visual}`]} aria-hidden="true">
+          {card.visual === "thread" && <ThreadVignette />}
+
+          {card.visual === "templates" && (
+            <div class="aui stage__fill">
+              <div class="tpl__picker">
+                <span class="tpl__chip is-on">SOAP</span>
+                <span class="tpl__chip">Inductive</span>
+                <span class="tpl__chip">Sermon outline</span>
+              </div>
+              <div class="aui-paper tpl__paper">
+                <p class="aui-h">SOAP</p>
+                {["Scripture", "Observation", "Application", "Prayer"].map((h) => (
+                  <div class="tpl__sec">
+                    <strong>{h}</strong>
+                    <span class="tpl__lines"><i></i><i></i></span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {card.visual === "discover" && (
+            <div class="aui aui-card aui-card--float stage__fill">
+              <div class="aui-row">
+                <span class="aui-tile"><AppIcon name="list-check" /></span>
+                <span><span class="aui-title">SOAP</span><span class="aui-sub">Template</span></span>
+                <span class="aui-acts"><AppIcon name="plus" /></span>
+              </div>
+              <div class="aui-row">
+                <span class="aui-tile disc__thumb"><img src="/images/discover-sources/bibleproject-the-story-of-the-bible.webp" alt="" loading="lazy" /></span>
+                <span><span class="aui-title">The Story of the Bible</span><span class="aui-sub">BibleProject<i>·</i>Video</span></span>
+                <span class="aui-acts"><AppIcon name="plus" /></span>
+              </div>
+              <div class="aui-row">
+                <span class="aui-tile"><AppIcon name="book" /></span>
+                <span><span class="aui-title">Morning and Evening</span><span class="aui-sub">Spurgeon<i>·</i>Book</span></span>
+                <span class="aui-acts"><AppIcon name="plus" /></span>
+              </div>
+              <div class="aui-row">
+                <span class="aui-tile"><AppIcon name="list-check" /></span>
+                <span><span class="aui-title">Three-Point Sermon</span><span class="aui-sub">Template</span></span>
+                <span class="aui-acts"><AppIcon name="plus" /></span>
+              </div>
+            </div>
+          )}
+
+          {card.visual === "compare" && (
+            <div class="aui aui-card aui-card--float stage__fill cmp">
+              <div>
+                <span class="cmp__tr">NLT <AppIcon name="caret-down" /></span>
+                <p><sup>1</sup>The <span class="aui-ul">Lord</span> is my shepherd; I have all that I need.</p>
+                <p><sup>2</sup>He lets me rest in green meadows; he leads me beside peaceful streams.</p>
+              </div>
+              <div>
+                <span class="cmp__tr">KJV <AppIcon name="caret-down" /></span>
+                <p><sup>1</sup><span class="aui-hl">The LORD is my shepherd</span>; I shall not want.</p>
+                <p><sup>2</sup>He maketh me to lie down in green pastures: he leadeth me beside the still waters.</p>
+              </div>
+            </div>
+          )}
+
+          {card.visual === "review" && (
+            <div class="aui aui-card aui-card--float stage__fill rev">
+              <p class="rev__step">Fill in the blank</p>
+              <p class="rev__q">
+                We know that they help us develop <span class="rev__blank">endurance</span>. And
+                endurance develops strength of <span class="rev__gap"></span>…
+              </p>
+              <p class="rev__ref"><span class="aui-pill">Romans 5:3–4 <span class="aui-tr">NLT</span></span></p>
+              <div class="rev__tiles">
+                <span>hope</span><span class="is-picked">character</span><span>faith</span>
+              </div>
+            </div>
+          )}
+
+          {card.visual === "space" && (
+            <div class="aui aui-card aui-card--float stage__fill spc">
+              <img class="spc__cover" src="/images/auth-hero/ai_bg_076.webp" alt="" loading="lazy" />
+              <div class="spc__body">
+                <span class="spc__icon"><AppIcon name="user-group" /></span>
+                <p class="aui-h spc__name">Family</p>
+                <p class="spc__meta">Just you<i>·</i><strong>Invite</strong></p>
+                <p class="spc__greet"><strong>Good evening, Derek.</strong> You've been adding <span class="spc__count">4+ notes</span> here lately.</p>
+                <p class="aui-label spc__label">Current Thread</p>
+                <div class="aui-card spc__row">
+                  <div class="aui-row">
+                    <span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span>
+                    <span><span class="aui-title">Going through Romans</span><span class="aui-sub">Step 1 of 4</span></span>
+                    <span class="aui-acts"><AppIcon name="caret-right" /></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div class="bcard__text">
+          <p class="bcard__label">
+            <span>{card.label}</span>
+            {card.plus && <span class="nx-plus">Plus</span>}
+          </p>
+          <h3 class="bcard__title">{card.title}</h3>
+          <p class="bcard__body">{card.body}</p>
+        </div>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<div class="also" data-reveal>
+  <p class="also__label">Also in every account</p>
+  <ul class="also__list" role="list">
+    {ALSO_INCLUDED.map((item) => (
+      <li>
+        {item.href ? (
+          <a class="also__chip" href={item.href}><Icon name={item.icon} aria-hidden="true" /> {item.label}</a>
+        ) : (
+          <span class="also__chip"><Icon name={item.icon} aria-hidden="true" /> {item.label}</span>
+        )}
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .bento {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) {
+    .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bcard--wide2 { grid-column: span 2; }
+  }
+  @media (min-width: 68rem) {
+    .bento { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+    .bcard--wide3 { grid-column: span 2; }
+  }
+
+  /* A wide card lays out sideways: the picture on one side, the words beside
+     it, vertically centred. Flipped cards put the picture on the right. */
+  @media (min-width: 44rem) {
+    .bcard--wide2 .bcard__link {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: center;
+    }
+    .bcard--wide2 .bcard__stage { aspect-ratio: auto; height: 100%; min-height: 19rem; }
+    .bcard--wide2 .bcard__text { padding: 1.5rem 2rem 1.5rem 1.75rem; }
+    .bcard--wide2.bcard--flip .bcard__stage { order: 2; }
+    /* Flipped, the picture still gets the wider column. */
+    .bcard--wide2.bcard--flip .bcard__link { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+    .bcard--wide2.bcard--flip .bcard__text { padding: 1.5rem 1.5rem 1.5rem 1.5rem; }
+  }
+  @media (min-width: 68rem) {
+    .bcard--wide3 .bcard__link {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: center;
+    }
+    .bcard--wide3 .bcard__stage { aspect-ratio: auto; height: 100%; min-height: 19rem; }
+    .bcard--wide3 .bcard__text { padding: 1.5rem 2rem 1.5rem 1.75rem; }
+    .bcard--wide2 .bcard__title,
+    .bcard--wide3 .bcard__title { font-size: 1.6rem; }
+  }
+
+  .bcard {
+    --tone: var(--color-sky);
+    --tone-ink: var(--color-sky-ink);
+    border-radius: 1.6rem;
+    background: color-mix(in srgb, var(--tone) 22%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone-ink) 7%, transparent);
+  }
+  .bcard--sky { --tone: var(--color-sky); --tone-ink: var(--color-sky-ink); }
+  .bcard--mint { --tone: var(--color-mint); --tone-ink: var(--color-mint-ink); }
+  .bcard--lilac { --tone: var(--color-lilac); --tone-ink: var(--color-lilac-ink); }
+  .bcard--peach { --tone: var(--color-peach); --tone-ink: var(--color-peach-ink); }
+  .bcard--cream { --tone: var(--color-cream); --tone-ink: var(--color-cream-ink); }
+  .bcard--pink { --tone: var(--color-pink); --tone-ink: var(--color-pink-ink); }
+
+  .bcard__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* The stage: an inset frame in the card's stronger tone. The app piece sits
+     on its floor and is cut by its bottom edge. */
+  .bcard__stage {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1.75rem 1.5rem 0;
+    overflow: hidden;
+    border-radius: 1.15rem;
+    background:
+      radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, #fff 55%, transparent), transparent 70%),
+      color-mix(in srgb, var(--tone) 62%, var(--color-paper));
+  }
+  .bcard__stage > :global(*) {
+    width: 100%;
+    transition: transform 450ms var(--nx-ease);
+  }
+  .bcard:hover .bcard__stage > :global(*) { transform: translateY(-6px); }
+  .bcard__stage :global(.aui-card),
+  .bcard__stage :global(.aui-paper) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  /* Surfaces are taller than the stage on purpose: the floor crops them. */
+  .stage__fill { margin-bottom: -2.5rem; }
+
+  /* A wide card's stage is tall, so its piece is drawn larger and fills it
+     from near the top down through the floor, instead of sitting small at the
+     bottom. Only lengths scale with zoom; widths stay the stage's. */
+  @media (min-width: 44rem) {
+    .bcard--wide2 .bcard__stage { align-items: stretch; padding-top: 2.25rem; }
+    .bcard--wide2 .bcard__stage > :global(*) { zoom: 1.15; }
+    .bcard--wide2 .stage__fill { margin-bottom: -2rem; }
+    /* The thread's card grows under its label to meet the floor. */
+    .bcard--wide2 .stage--thread > :global(.thv) { display: flex; flex-direction: column; margin-bottom: -2rem; }
+    .bcard--wide2 .stage--thread :global(.thv__card) { flex: 1; }
+  }
+  @media (min-width: 68rem) {
+    .bcard--wide3 .bcard__stage { align-items: stretch; padding-top: 2.25rem; }
+    .bcard--wide3 .bcard__stage > :global(*) { zoom: 1.25; }
+    .bcard--wide3 .stage__fill { margin-bottom: -2rem; }
+  }
+
+  .bcard__text { padding: 1.1rem 1rem; }
+  .bcard__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tone-ink);
+    opacity: 0.8;
+  }
+  .bcard__title {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .bcard__body {
+    margin: 0.4rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  /* Threads — the list sits on the floor like the others. */
+  .stage--thread > :global(.thv) { margin-bottom: -1.5rem; }
+
+  /* Templates — the picker, then the chosen template's note. */
+  .tpl__picker { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
+  .tpl__chip {
+    padding: 5px 11px;
+    border-radius: var(--pds-radius-pill);
+    font-size: 12.5px;
+    font-weight: 500;
+    background: color-mix(in srgb, #fff 70%, transparent);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control);
+    color: var(--pds-text-secondary);
+  }
+  /* Selected states are ink, like the app's own selected chips — not the
+     accent blue, which reads as a default rather than as Harvous. */
+  .tpl__chip.is-on { color: #fff; background: var(--pds-text-primary); box-shadow: none; }
+  .tpl__paper { padding: 16px 18px 40px; font-size: 13px; line-height: 1.4; }
+  .tpl__paper :global(.aui-h) { font-size: 16px; margin-bottom: 10px; }
+  .tpl__sec + .tpl__sec { margin-top: 10px; }
+  .tpl__sec strong { display: block; font-weight: 600; font-variation-settings: "ROND" 0, "wght" 600; }
+  .tpl__lines { display: grid; gap: 5px; margin-top: 6px; }
+  .tpl__lines i { display: block; height: 5px; border-radius: 3px; background: var(--pds-bg-chip); }
+  .tpl__lines i:last-child { width: 58%; }
+
+  /* Discover — a thumbnail sits in the icon tile. */
+  .disc__thumb { overflow: hidden; padding: 0; }
+  .disc__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Compare — two translations of Psalm 23, the reader's chips on top. */
+  .cmp {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px 18px 40px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .cmp p { margin: 8px 0 0; }
+  .cmp sup { color: var(--pds-text-tertiary); font-size: 0.7em; margin-right: 2px; }
+  .cmp__tr {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    background: var(--pds-bg-chip);
+  }
+  .cmp__tr :global(svg) { width: 9px; height: 9px; }
+
+  /* Review — one fill-in-the-blank card with its word tiles. */
+  .rev { padding: 16px 18px 40px; font-size: 13.5px; }
+  .rev__step {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--pds-text-tertiary);
+  }
+  .rev__q { margin: 0; line-height: 1.55; color: var(--pds-text-primary); }
+  .rev__blank { font-weight: 500; }
+  .rev__gap {
+    display: inline-block;
+    width: 4.5em;
+    height: 1.1em;
+    vertical-align: -0.2em;
+    border-radius: 5px;
+    background: var(--pds-bg-chip);
+    box-shadow: inset 0 -1.5px 0 var(--pds-text-tertiary);
+  }
+  .rev__ref { margin: 10px 0 0; font-size: 11.5px; }
+  .rev__tiles { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .rev__tiles span {
+    padding: 6px 11px;
+    border-radius: var(--pds-radius-format);
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--pds-bg-main);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card);
+  }
+  .rev__tiles .is-picked { color: #fff; background: var(--pds-text-primary); box-shadow: none; }
+
+  /* Shared spaces — the space's page: cover, group tile, name, its thread. */
+  .spc { padding: 0; }
+  .spc__cover { display: block; width: 100%; height: 64px; object-fit: cover; }
+  .spc__body { position: relative; padding: 0 16px 40px; }
+  .spc__icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin-top: -20px;
+    border-radius: 11px;
+    color: var(--pds-highlight-violet);
+    background: color-mix(in srgb, var(--pds-highlight-violet) 16%, var(--pds-bg-main));
+    box-shadow: 0 0 0 3px var(--pds-bg-main);
+  }
+  .spc__icon :global(svg) { width: 16px; height: 16px; }
+  .spc__name { margin: 8px 0 0 !important; font-size: 18px !important; }
+  .spc__meta { margin: 1px 0 0; font-size: 11.5px; color: var(--pds-text-secondary); }
+  .spc__meta i { font-style: normal; padding-inline: 0.3em; }
+  .spc__meta strong { color: var(--pds-text-primary); font-weight: 600; }
+  .spc__greet { margin: 12px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--pds-text-secondary); }
+  .spc__greet strong { color: var(--pds-text-primary); font-weight: 600; }
+  .spc__count {
+    white-space: nowrap;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-chip);
+  }
+  .spc__label { margin: 12px 0 6px 2px !important; font-size: 12px !important; }
+  .spc__row { box-shadow: 0 0 0 0.5px var(--pds-border); border-radius: 12px !important; }
+  .spc__row :global(.aui-row) { padding: 8px 12px 8px 10px; }
+
+  /* Also in every account. */
+  .also {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+  }
+  .also__label {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  /* A grid, not a wrapping row, so six chips always break evenly —
+     6 across, then 3 × 2, then 2 × 3 — and none is left on a line alone. */
+  .also__list {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 36rem) {
+    .also__list { grid-template-columns: repeat(3, auto); }
+  }
+  @media (min-width: 80rem) {
+    .also__list { grid-template-columns: repeat(6, auto); }
+  }
+  .also__list li { display: flex; }
+  .also__list li > * { flex: 1; justify-content: center; }
+  .also__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+    background: var(--color-warm);
+    transition: background-color 150ms ease;
+  }
+  a.also__chip:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .also__chip :global(svg) { width: 0.85rem; height: 0.85rem; color: var(--color-ink-soft); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bcard__stage > :global(*) { transition: none; }
+    .bcard:hover .bcard__stage > :global(*) { transform: none; }
+  }
+</style>

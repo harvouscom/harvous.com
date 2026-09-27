@@ -85,6 +85,8 @@ function stagingNoindexHeaders() {
 }
 
 export default defineConfig({
+  /* Preview tooling may assign a port via PORT; plain `astro dev` keeps 4321. */
+  server: { port: Number(process.env.PORT) || 4321 },
   site: "https://harvous.com",
   // GFM footnotes (and tables/strikethrough) for Bright Enough MDX essays.
   markdown: {

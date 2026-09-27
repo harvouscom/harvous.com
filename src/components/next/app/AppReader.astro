@@ -1,0 +1,292 @@
+---
+/**
+ * AppReader — the Bible reader with the notes rail, from Derek's account:
+ * Romans 8 (NLT). The rail's lines in the left margin are where notes cite a
+ * passage (one line per group of notes, as the app draws them): all of 26–32
+ * sits under one note, and verse 28 under two more. Saved highlights are the
+ * app's own — a 2px underline in the chosen colour.
+ *
+ * With `lit`, verse 28 is lit the way a tap on its rail lights it, with the
+ * app's "In 2 of your notes" chip naming the two ("From Tragedy to Hope" and
+ * "God is faithful, even here"). With `select`, verse 31 is selected and the
+ * selection bar is up — Highlight, Annotate, Passages, Note — with the
+ * highlight colours open above it.
+ */
+import AppIcon from "./AppIcon.astro";
+
+interface Props {
+  lit?: boolean;
+  select?: boolean;
+}
+const { lit = false, select = false } = Astro.props;
+
+type Verse = { n: number; t: string; hl?: string };
+/* Verses 26–32, NLT, as the reader shows them. */
+const BEFORE: Verse[] = [
+  { n: 26, hl: "mintGreen", t: "And the Holy Spirit helps us in our weakness. For example, we don’t know what God wants us to pray for. But the Holy Spirit prays for us with groanings that cannot be expressed in words." },
+  { n: 27, t: "And the Father who knows all hearts knows what the Spirit is saying, for the Spirit pleads for us believers in harmony with God’s own will." },
+];
+const LIT: Verse[] = [
+  { n: 28, hl: "warmAmber", t: "And we know that God causes everything to work together for the good of those who love God and are called according to his purpose for them." },
+];
+const AFTER: Verse[] = [
+  { n: 29, t: "For God knew his people in advance, and he chose them to become like his Son, so that his Son would be the firstborn among many brothers and sisters." },
+  { n: 30, t: "And having chosen them, he called them to come to him. And having called them, he gave them right standing with himself. And having given them right standing, he gave them his glory." },
+];
+/* NLT starts a new paragraph at 31. */
+const TAIL: Verse[] = [
+  { n: 31, hl: select ? undefined : "skyBlue", t: "What shall we say about such wonderful things as these? If God is for us, who can ever be against us?" },
+  { n: 32, t: "Since he did not spare even his own Son but gave him up for us all, won’t he also give us everything else?" },
+];
+
+const COLOURS = ["neutral", "warmAmber", "skyBlue", "violet", "mintGreen", "coralRose"];
+const ACTIONS = [
+  { label: "Highlight", icon: "fa7-solid:highlighter" },
+  { label: "Annotate", icon: "fa7-solid:pen" },
+  { label: "Passages", icon: "fa7-solid:shuffle" },
+  { label: "Note", icon: "fa7-solid:note-sticky" },
+];
+---
+
+<div class:list={["ard", lit && "ard--lit"]}>
+  <div class="ard__prev">Romans 7</div>
+  <div class="ard__sheet">
+    <div class="ard__head">
+      <span class="ard__title">Romans <i>8</i></span>
+      <span class="ard__tr">NLT <AppIcon name="caret-down" /></span>
+    </div>
+    <div class="ard__text">
+      <p class="ard__block ard__block--rail1" data-ard-block="before">
+        {BEFORE.map((v) => (
+          <span class="ard__v" data-hl={v.hl}><sup>{v.n}</sup><span class="ard__t">{v.t}</span> </span>
+        ))}
+      </p>
+      <p class:list={["ard__block ard__block--rail2", lit && "is-lit"]} data-ard-block="0">
+        {lit && (
+          <span class="ard__pop" data-ard-pop>
+            <span class="ard__pop-label">In 2 of your notes</span>
+            <span class="ard__chip"><AppIcon name="note-sticky" /> From Tragedy to Hope <AppIcon name="caret-right" /></span>
+            <span class="ard__chip"><AppIcon name="note-sticky" /> God is faithful, even here <AppIcon name="caret-right" /></span>
+          </span>
+        )}
+        {LIT.map((v) => (
+          <span class="ard__v" data-hl={v.hl}><sup>{v.n}</sup><span class="ard__t">{v.t}</span> </span>
+        ))}
+      </p>
+      <p class="ard__block ard__block--rail1" data-ard-block="1">
+        {AFTER.map((v) => (
+          <span class="ard__v" data-hl={v.hl}><sup>{v.n}</sup><span class="ard__t">{v.t}</span> </span>
+        ))}
+      </p>
+      <p class="ard__block ard__block--rail1 ard__block--para" data-ard-block="2">
+        {select && (
+          <span class="ard__sel" data-ard-selbar>
+            <span class="ard__palette">
+              {COLOURS.map((c) => (
+                <span class:list={["ard__swatch", c === "skyBlue" && "is-on"]} data-c={c}><i /></span>
+              ))}
+            </span>
+            <span class="ard__bar">
+              {ACTIONS.map((a, i) => (
+                <>
+                  {i > 0 && <span class="ard__rule" />}
+                  <span class:list={["ard__btn", i === 0 && "is-on"]} title={a.label}><AppIcon name={a.icon} /></span>
+                </>
+              ))}
+            </span>
+          </span>
+        )}
+        {TAIL.map((v) => (
+          <span class:list={["ard__v", select && v.n === 31 && "is-selected"]} data-hl={v.hl}>
+            <sup>{v.n}</sup><span class="ard__t">{v.t}</span>{" "}
+          </span>
+        ))}
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ard {
+    position: relative;
+    height: 100%;
+    padding: 0 8% 0;
+    font-size: 14px;
+  }
+  .ard__prev {
+    margin: 0 4%;
+    padding: 5px 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--pds-text-tertiary);
+    background: var(--pds-bg-main);
+    box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.1);
+  }
+  .ard__sheet {
+    position: relative;
+    height: 100%;
+    padding: 22px 26px 0 34px;
+    background: var(--pds-bg-main);
+    box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.1);
+  }
+  .ard__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .ard__title {
+    font-family: var(--pds-font-display);
+    font-variation-settings: "ROND" 0, "wght" 700;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .ard__title i { font-style: normal; margin-left: 6px; }
+  .ard__tr {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    background: var(--pds-bg-chip);
+  }
+  .ard__tr :global(svg) { width: 9px; height: 9px; }
+
+  .ard__text { font-size: 13.5px; line-height: 1.75; color: var(--pds-text-primary); }
+  .ard__block { position: relative; margin: 0; }
+  .ard__v sup { font-size: 0.62em; color: var(--pds-text-tertiary); margin: 0 2px 0 3px; }
+
+  /* A saved highlight, as the reader draws it: the verse underlined in its colour. */
+  .ard__v[data-hl] .ard__t {
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--hl);
+  }
+  .ard__v[data-hl="warmAmber"] { --hl: var(--pds-highlight-warm-amber); }
+  .ard__v[data-hl="skyBlue"] { --hl: var(--pds-highlight-sky-blue); }
+  .ard__v[data-hl="mintGreen"] { --hl: var(--pds-highlight-mint-green); }
+  .ard__v[data-hl="violet"] { --hl: var(--pds-highlight-violet); }
+  .ard__v[data-hl="coralRose"] { --hl: var(--pds-highlight-coral-rose); }
+
+  /* The rail: a line in the left margin for each group of notes citing the
+     passage beside it. 26–32 are in one note; 28 in two more. */
+  .ard__block::before,
+  .ard__block::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    width: 1.5px;
+    border-radius: 1px;
+    background: color-mix(in srgb, var(--pds-text-primary) 24%, transparent);
+  }
+  .ard__block::before { left: -15px; }
+  .ard__block--rail2::after { left: -20px; }
+  .ard__block--rail1::after { display: none; }
+  /* The long rail runs unbroken through all three blocks. */
+  .ard__block + .ard__block::before { top: -5px; }
+  .ard__block:has(+ .ard__block)::before { bottom: -5px; }
+
+  /* Lit: the passage the rail was tapped for; the rest dims. */
+  .ard--lit .ard__block { color: var(--pds-text-tertiary); }
+  .ard--lit .ard__block.is-lit {
+    color: var(--pds-text-primary);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--pds-text-primary) 4.5%, transparent);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--pds-text-primary) 4.5%, transparent);
+  }
+  .ard--lit .ard__block.is-lit::after { background: var(--pds-text-primary); }
+
+  /* The chip naming the notes, just above the lit verse. */
+  .ard__pop {
+    position: absolute;
+    z-index: 2;
+    right: -6px;
+    bottom: calc(100% + 10px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 6px 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-main);
+    box-shadow: var(--pds-shadow-popover);
+    white-space: nowrap;
+  }
+  .ard__pop-label { color: var(--pds-text-secondary); margin-right: 2px; }
+  .ard__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    background: var(--pds-bg-chip);
+  }
+  .ard__chip :global(svg) { width: 10px; height: 10px; }
+
+  /* A selection (31, the first verse of its paragraph), with the bar up just
+     above it, over the end of the paragraph before. */
+  .ard__block--para { margin-top: 0.6em; }
+  .ard__block--para::before { top: calc(-0.6em - 5px) !important; }
+  .ard__v.is-selected .ard__t {
+    background: color-mix(in srgb, var(--pds-highlight-sky-blue) 28%, transparent);
+    border-radius: 2px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .ard__sel {
+    position: absolute;
+    z-index: 3;
+    left: var(--ard-sel-left, 40%);
+    bottom: calc(100% + 4px);
+    display: grid;
+    justify-items: start;
+    gap: 6px;
+    line-height: 1;
+  }
+  .ard__bar,
+  .ard__palette {
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--pds-border) 70%, transparent);
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14), 0 1px 2px rgba(15, 23, 42, 0.05);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .ard__bar { gap: 2px; height: 36px; padding: 0 2px; }
+  .ard__btn {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 32px;
+    border-radius: 9px;
+    color: var(--pds-text-primary);
+  }
+  .ard__btn.is-on { background: var(--pds-bg-row-selected, rgba(15, 23, 42, 0.07)); }
+  .ard__btn :global(svg) { width: 16px; height: 16px; }
+  .ard__rule { width: 0.5px; height: 22px; background: var(--pds-text-primary); opacity: 0.14; }
+
+  /* The highlight colours, the reader's six. */
+  .ard__palette { gap: 8px; padding: 8px 11px; }
+  .ard__swatch {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pds-text-primary) 18%, transparent);
+  }
+  .ard__swatch.is-on { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--pds-text-primary) 65%, transparent); }
+  .ard__swatch i { width: 17px; height: 17px; border-radius: 999px; background: var(--c); }
+  .ard__swatch[data-c="neutral"] { --c: var(--pds-highlight-neutral); }
+  .ard__swatch[data-c="warmAmber"] { --c: var(--pds-highlight-warm-amber); }
+  .ard__swatch[data-c="skyBlue"] { --c: var(--pds-highlight-sky-blue); }
+  .ard__swatch[data-c="violet"] { --c: var(--pds-highlight-violet); }
+  .ard__swatch[data-c="mintGreen"] { --c: var(--pds-highlight-mint-green); }
+  .ard__swatch[data-c="coralRose"] { --c: var(--pds-highlight-coral-rose); }
+</style>

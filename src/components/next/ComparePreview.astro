@@ -1,0 +1,202 @@
+---
+/**
+ * ComparePreview — a compact /next section that points to the Compare hub:
+ * kicker, a short title, one line, a tidy cluster of real competitor icons
+ * (from data/compare.csv, drawn from /images/compare/icons/), and one link to
+ * /next/compare/. Words on the left, icons on the right; stacked on a phone.
+ *
+ *   <ComparePreview />
+ *   <ComparePreview slugs={["youversion", "esv-bible", "bible-gateway", "readscripture", "life-bible", "olive-tree"]}
+ *                   title="Already reading in another app?" />
+ *
+ * `slugs` picks which apps show (unknown slugs are skipped; 6–8 reads best).
+ */
+import { getCompareBySlug, getCompareEntries } from "../../lib/compare-data.ts";
+import { fathomCompare } from "../../lib/fathom-events.ts";
+
+/* Same set, same order as the live homepage's compare row. */
+const DEFAULT_SLUGS = [
+  "apple-notes",
+  "notion",
+  "youversion",
+  "logos",
+  "bible-note",
+  "obsidian",
+  "olive-tree",
+  "evernote",
+];
+
+interface Props {
+  title?: string;
+  lead?: string;
+  kicker?: string;
+  slugs?: string[];
+  href?: string;
+  id?: string;
+}
+
+const total = getCompareEntries().length;
+
+const {
+  title = "Coming from another app?",
+  lead = `Not sermon transcription. See how Harvous sits next to ${total} apps you might already use for reading, notes, or devotionals.`,
+  kicker = "Compare",
+  slugs = DEFAULT_SLUGS,
+  href = "/next/compare/",
+  id = "compare",
+} = Astro.props;
+
+const apps = slugs
+  .map((slug) => getCompareBySlug(slug))
+  .filter((e): e is NonNullable<typeof e> => e !== undefined)
+  .slice(0, 8);
+
+const names = apps.map((a) => a.name).join(", ");
+
+/* Five or more: two rows, the second half a tile over. */
+const perRow = apps.length > 4 ? Math.ceil(apps.length / 2) : apps.length;
+const rows = apps.length > 4 ? [apps.slice(0, perRow), apps.slice(perRow)] : [apps];
+---
+
+<section class="cpv" id={id} aria-labelledby={`${id}-title`}>
+  <div class="cpv__wrap">
+    <div class="cpv__card" data-reveal>
+      <div class="cpv__text">
+        <p class="cpv__kicker">{kicker}</p>
+        <h2 class="cpv__title" id={`${id}-title`}>{title}</h2>
+        <p class="cpv__lead">{lead}</p>
+        <a class="cpv__link" href={href} data-fathom-track={fathomCompare.homeAll}>
+          See how Harvous compares <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      {
+        apps.length > 0 && (
+          <div
+            class:list={["cpv__icons", rows.length > 1 && "is-brick"]}
+            role="img"
+            aria-label={`App icons: ${names}`}
+            style={`--n: ${rows[0].length};`}
+          >
+            {rows.map((row) => (
+              <div class="cpv__row">
+                {row.map((app) => (
+                  <span class="cpv__tile" title={app.name}>
+                    <img
+                      src={`/images/compare/icons/${app.slug}.png`}
+                      alt=""
+                      width="88"
+                      height="88"
+                      loading="lazy"
+                    />
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cpv {
+    padding-block: clamp(3.5rem, 9vw, 6rem);
+  }
+  .cpv__wrap {
+    width: 100%;
+    max-width: calc(var(--nx-wide, 76rem) + 2 * var(--nx-gutter, 1rem));
+    margin-inline: auto;
+    padding-inline: var(--nx-gutter, 1rem);
+  }
+
+  .cpv__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 2rem;
+    padding: clamp(1.75rem, 4.5vw, 3.5rem);
+    border-radius: var(--nx-radius-scene, 1.75rem);
+    background: color-mix(in srgb, var(--color-sky) 22%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-sky-ink) 7%, transparent);
+    overflow: hidden;
+  }
+  @media (min-width: 52rem) {
+    .cpv__card {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+  }
+
+  .cpv__kicker {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .cpv__title {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .cpv__lead {
+    max-width: 26rem;
+    margin-top: 0.9rem;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .cpv__link {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .cpv__link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+  .cpv__link span { display: inline-block; transition: transform 150ms ease; }
+  .cpv__link:hover span { transform: translateX(2px); }
+
+  /* The icons: a neat brick of rounded tiles, the second row half a tile
+     over. Tiles size to the card's width, so nothing overflows on a phone. */
+  .cpv__icons {
+    --gap: clamp(0.5rem, 1.6vw, 0.875rem);
+    --shift: 0;
+    --tile: min(5.25rem, calc((100% - (var(--n) - 1 + var(--shift)) * var(--gap)) / (var(--n) + var(--shift))));
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    width: 100%;
+  }
+  .cpv__icons.is-brick { --shift: 0.5; }
+  .cpv__row {
+    display: flex;
+    gap: var(--gap);
+  }
+  .cpv__icons.is-brick .cpv__row:nth-child(2) {
+    padding-left: calc(var(--tile) / 2 + var(--gap) / 2);
+  }
+  @media (min-width: 52rem) {
+    .cpv__icons { width: calc(var(--n) * 5.25rem + (var(--n) - 1 + var(--shift)) * var(--gap) + var(--shift) * 5.25rem); }
+  }
+  .cpv__tile {
+    flex: none;
+    width: var(--tile);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 23%;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.05),
+      0 12px 24px -14px rgba(15, 23, 42, 0.35);
+  }
+  .cpv__tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
+</style>

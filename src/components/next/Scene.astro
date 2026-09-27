@@ -1,0 +1,141 @@
+---
+/**
+ * Scene — the /next/ imagery unit. A motion-blur photo backdrop, a real app
+ * window lifted out of its tour shot (see `Shot.crop`), and whatever floats on
+ * top: margin notes, live vignettes, pills — passed in the default slot and
+ * positioned by the caller.
+ *
+ * The window runs off the same edge it does in the original shot, so a Scene
+ * reads like looking over someone's shoulder rather than at a product photo.
+ */
+import OptimizedImage from "../OptimizedImage.astro";
+import { backdropSrc, shotCropStyle, type Backdrop, type Shot } from "../../lib/next/content.ts";
+
+interface Props {
+  backdrop: Backdrop;
+  shot?: Shot;
+  /** CSS aspect-ratio of the whole scene. */
+  aspect?: string;
+  /** How far in from the scene's sides the window sits, as a % of scene width. */
+  inset?: number;
+  /** Pull the window toward one side and off the other. */
+  align?: "center" | "left" | "right";
+  /**
+   * Lean in: scale the window up by this much so the app's text is readable,
+   * letting it run off the sides. `focus` is the point across the window
+   * (0 left edge, 1 right edge) that stays centred in the scene.
+   */
+  zoom?: number;
+  focus?: number;
+  eager?: boolean;
+  class?: string;
+}
+
+const {
+  backdrop,
+  shot,
+  aspect = "5 / 4",
+  inset = 8,
+  align = "center",
+  zoom = 1,
+  focus = 0.5,
+  eager = false,
+  class: className,
+} = Astro.props;
+
+const hang = shot?.crop.hang ?? "bottom";
+const imgStyle = shot ? shotCropStyle(shot) : "";
+let left = align === "left" ? -inset : align === "right" ? inset * 2 : inset;
+let right = align === "left" ? inset * 2 : align === "right" ? -inset : inset;
+if (zoom > 1) {
+  /* The window's `focus` point sits at the scene's centre, but its left edge
+     never comes further in than `inset` would put it. */
+  const width = (100 - 2 * inset) * zoom;
+  left = Math.min(inset, 50 - focus * width);
+  right = 100 - left - width;
+}
+---
+
+<figure
+  class:list={["scene", `scene--hang-${hang}`, className]}
+  style={`--scene-aspect:${aspect};--scene-left:${left.toFixed(2)}%;--scene-right:${right.toFixed(2)}%;`}
+>
+  <img class="scene__bg" src={backdropSrc(backdrop)} alt="" loading={eager ? "eager" : "lazy"} decoding="async" />
+  {shot && (
+    <div class="scene__window">
+      <div class="scene__shot" style={imgStyle}>
+        <OptimizedImage
+          src={shot.src}
+          alt={shot.alt}
+          width={shot.width}
+          height={shot.height}
+          loading={eager ? "eager" : "lazy"}
+          fetchpriority={eager ? "high" : undefined}
+        />
+      </div>
+    </div>
+  )}
+  <slot />
+</figure>
+
+<style>
+  .scene {
+    container-type: inline-size;
+    position: relative;
+    margin: 0;
+    aspect-ratio: var(--scene-aspect);
+    border-radius: var(--nx-radius-scene, 1.5rem);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--color-warm);
+  }
+  /* App pieces floating over a scene are drawn at the app's real pixel sizes;
+     shrink them with the scene so they stay in proportion to the screenshot. */
+  @container (max-width: 680px) { .scene > :global(.aui) { zoom: 0.9; } }
+  @container (max-width: 580px) { .scene > :global(.aui) { zoom: 0.8; } }
+  @container (max-width: 460px) { .scene > :global(.aui) { zoom: 0.7; } }
+  @container (max-width: 380px) { .scene > :global(.aui) { zoom: 0.6; } }
+
+  .scene__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    transform: scale(1.04);
+  }
+  .scene__window {
+    position: absolute;
+    left: var(--scene-left);
+    right: var(--scene-right);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #fcfcfb;
+    border-radius: clamp(0.6rem, 1.3vw, 1.1rem);
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.06),
+      0 30px 70px -25px rgba(15, 23, 42, 0.45),
+      0 8px 20px -10px rgba(15, 23, 42, 0.2);
+  }
+  .scene--hang-bottom .scene__window {
+    top: 9%;
+    bottom: -2rem;
+  }
+  .scene--hang-top .scene__window {
+    top: -2rem;
+    bottom: 9%;
+    justify-content: flex-end;
+  }
+  .scene__shot {
+    flex-shrink: 0;
+  }
+  .scene__shot :global(picture),
+  .scene__shot :global(img) {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+  }
+</style>

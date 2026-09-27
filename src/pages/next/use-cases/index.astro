@@ -1,0 +1,77 @@
+---
+/**
+ * /next/use-cases/ — every way people use Harvous, on one page. The same cards
+ * as the home row, laid out so seven always fills its grid: at three columns
+ * the first two cards run wide (2 + 2 + 5 = 9 cells, three full rows), at two
+ * columns only the first does (2 + 6 = 8 cells, four full rows). Detail pages
+ * are the live /use-cases/<slug>/ ones.
+ */
+import NextLayout from "../../../layouts/NextLayout.astro";
+import UseCaseCard from "../../../components/next/UseCaseCard.astro";
+import ClosingCall from "../../../components/next/ClosingCall.astro";
+import { getUseCases } from "../../../lib/use-cases-data.ts";
+
+const useCases = getUseCases();
+---
+
+<NextLayout
+  title="Use cases — Harvous"
+  description="How people use Harvous: a daily journal, sermon notes and prep, book, topical and deep study, and studying with a group."
+>
+  <header class="nx-wrap uc-intro">
+    <p class="nx-kicker">Use cases</p>
+    <h1 class="nx-display">However you study.</h1>
+    <p class="nx-lead">
+      I built Harvous for my own mornings, but people bring it to Sunday, a whole book, one hard
+      passage, and their small group. Here's how each works.
+    </p>
+  </header>
+
+  <section class="nx-wrap uc-grid-wrap" aria-label="Use cases">
+    <ul class="uc-grid" role="list" data-reveal="stagger">
+      {useCases.map((uc, i) => (
+        <li class:list={["uc-grid__item", i === 0 && "is-wide", i === 1 && "is-wide-3"]}>
+          <UseCaseCard useCase={uc} large={i < 2} />
+        </li>
+      ))}
+    </ul>
+    <p class="uc-also">
+      Looking for your role instead? <a class="nx-link" href="/next/for/">See who it's for →</a>
+    </p>
+  </section>
+
+  <ClosingCall title="Start with the way you already study." />
+</NextLayout>
+
+<style>
+  .uc-intro {
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
+  }
+  .uc-intro .nx-display { margin: 1rem auto 0; }
+  .uc-intro .nx-lead { margin: 1.5rem auto 0; }
+
+  .uc-grid-wrap { margin-top: clamp(3rem, 7vw, 4.5rem); }
+  .uc-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    grid-auto-flow: dense;
+  }
+  @media (min-width: 44rem) {
+    .uc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .uc-grid__item.is-wide { grid-column: span 2; }
+  }
+  @media (min-width: 68rem) {
+    .uc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+    .uc-grid__item.is-wide-3 { grid-column: span 2; }
+  }
+
+  .uc-also {
+    margin: 2rem 0 clamp(3rem, 8vw, 5rem);
+    text-align: center;
+    color: var(--color-ink-soft);
+  }
+</style>

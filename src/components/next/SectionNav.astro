@@ -1,0 +1,259 @@
+---
+/**
+ * SectionNav — the "on this page" chips (/3/'s What's new · What changed · Why,
+ * the Tour's five chapters). Sits in the page flow under the intro, then
+ * sticks just below the floating nav pill as you scroll, and marks the section
+ * you're in. Must be a direct child of <main> (or of something as tall as the
+ * sections it lists), or sticky has nowhere to travel.
+ *
+ * With `menu`, once the bar pins it folds into one small pill naming the
+ * section you're in, which opens the full list — the live hubs' behaviour,
+ * for lists too long to sit across the top of the page while you read.
+ * With `compact` it's that pill from the start, never the chip row.
+ */
+interface Item {
+  href: `#${string}`;
+  label: string;
+  /** Optional small number before the label (the Tour's 01–05). */
+  num?: string;
+}
+
+interface Props {
+  items: Item[];
+  label?: string;
+  /** Fold into a dropdown once pinned. */
+  menu?: boolean;
+  /** Always the dropdown pill. */
+  compact?: boolean;
+  class?: string;
+}
+
+const { items, label = "On this page", menu = false, compact = false, class: className } = Astro.props;
+const hasMenu = menu || compact;
+---
+
+<nav class:list={["snav", hasMenu && "snav--menu", compact && "snav--compact", className]} aria-label={label} data-snav>
+  <div class="snav__pill">
+    {items.map((item) => (
+      <a href={item.href} class="snav__link" data-snav-link>
+        {item.num && <span class="snav__num">{item.num}</span>}
+        {item.label}
+      </a>
+    ))}
+  </div>
+
+  {hasMenu && (
+    <div class="snav__menu" data-snav-menu>
+      <button type="button" class="snav__toggle" aria-expanded="false" data-snav-toggle>
+        <span data-snav-current>{items[0]?.label}</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg>
+      </button>
+      <div class="snav__list" data-snav-list hidden>
+        {items.map((item) => (
+          <a href={item.href} class="snav__item" data-snav-item>{item.label}</a>
+        ))}
+      </div>
+    </div>
+  )}
+</nav>
+
+<style>
+  .snav {
+    position: sticky;
+    top: 4.35rem;
+    z-index: 45;
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--nx-gutter, 1rem);
+    margin-block: 2rem;
+    pointer-events: none;
+  }
+  .snav__pill {
+    pointer-events: auto;
+    display: flex;
+    gap: 0.2rem;
+    max-width: 100%;
+    padding: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-paper) 82%, transparent);
+    backdrop-filter: saturate(1.6) blur(16px);
+    -webkit-backdrop-filter: saturate(1.6) blur(16px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent),
+      0 8px 24px -14px rgba(15, 23, 42, 0.22);
+  }
+  .snav__pill::-webkit-scrollbar { display: none; }
+  .snav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+  .snav__link:hover { color: var(--color-ink); }
+  /* The section you're in: ink, like every selected state in /next. */
+  .snav__link[aria-current="true"] {
+    color: #fff;
+    background: var(--color-ink);
+  }
+  /* Menu mode: pinned, the chip row gives way to one pill and its list. */
+  .snav__menu { display: none; position: relative; pointer-events: auto; }
+  .snav--menu.is-stuck .snav__pill,
+  .snav--compact .snav__pill { display: none; }
+  .snav--menu.is-stuck .snav__menu,
+  .snav--compact .snav__menu { display: block; }
+  .snav__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.85rem 0.6rem 1.1rem;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-paper) 82%, transparent);
+    backdrop-filter: saturate(1.6) blur(16px);
+    -webkit-backdrop-filter: saturate(1.6) blur(16px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent),
+      0 8px 24px -14px rgba(15, 23, 42, 0.22);
+    cursor: pointer;
+  }
+  .snav__toggle svg {
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--color-ink-soft);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 200ms ease;
+  }
+  .snav__toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .snav__toggle:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .snav__list {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 50%;
+    translate: -50% 0;
+    display: grid;
+    min-width: 13rem;
+    padding: 0.35rem;
+    border-radius: 1rem;
+    background: var(--color-paper);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 7%, transparent),
+      0 18px 40px -16px rgba(15, 23, 42, 0.3);
+  }
+  .snav__list[hidden] { display: none; }
+  .snav__item {
+    padding: 0.55rem 0.8rem;
+    border-radius: 0.7rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .snav__item:hover { color: var(--color-ink); background: var(--color-warm); }
+  .snav__item[aria-current="true"] { color: var(--color-ink); background: var(--color-warm); font-weight: 600; }
+
+  .snav__num {
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.6;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-snav]").forEach((nav) => {
+    const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>("[data-snav-link]"));
+    const sections = links
+      .map((a) => document.getElementById(a.hash.slice(1)))
+      .filter((el): el is HTMLElement => Boolean(el));
+    if (!sections.length) return;
+
+    // Land a jumped-to section clear of the nav pill and this bar.
+    sections.forEach((s) => (s.style.scrollMarginTop = "7.5rem"));
+
+    const pill = nav.querySelector<HTMLElement>(".snav__pill");
+
+    /* Menu mode. */
+    const toggle = nav.querySelector<HTMLButtonElement>("[data-snav-toggle]");
+    const list = nav.querySelector<HTMLElement>("[data-snav-list]");
+    const currentLabel = nav.querySelector<HTMLElement>("[data-snav-current]");
+    const items = Array.from(nav.querySelectorAll<HTMLAnchorElement>("[data-snav-item]"));
+    const setOpen = (open: boolean) => {
+      if (!toggle || !list) return;
+      toggle.setAttribute("aria-expanded", String(open));
+      list.hidden = !open;
+    };
+    toggle?.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+    items.forEach((a) => a.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("click", (e) => {
+      if (toggle && !nav.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    /* Pinned once its top reaches its sticky offset. */
+    const stickyTop = () => parseFloat(getComputedStyle(nav).top) || 0;
+    const syncStuck = () => {
+      if (!toggle) return;
+      const stuck = nav.getBoundingClientRect().top <= stickyTop() + 0.5;
+      if (!stuck && !nav.classList.contains("snav--compact")) setOpen(false);
+      nav.classList.toggle("is-stuck", stuck);
+    };
+
+    const setCurrent = (id: string | null) => {
+      const item = items.find((a) => a.hash.slice(1) === id) ?? items[0];
+      if (currentLabel && item) currentLabel.textContent = item.textContent;
+      items.forEach((a) => a.setAttribute("aria-current", a === item && id ? "true" : "false"));
+      links.forEach((a) => {
+        const on = a.hash.slice(1) === id;
+        a.setAttribute("aria-current", on ? "true" : "false");
+        // On a narrow screen the chips scroll sideways: keep the current one
+        // in view (the chip row only — never the page).
+        if (on && pill && pill.scrollWidth > pill.clientWidth) {
+          pill.scrollLeft = a.offsetLeft - (pill.clientWidth - a.offsetWidth) / 2;
+        }
+      });
+    };
+
+    /* The current section is the last one whose top has passed a line a third
+       of the way down the screen; none, above the first. */
+    const update = () => {
+      const line = window.innerHeight / 3;
+      let current: string | null = null;
+      for (const s of sections) if (s.getBoundingClientRect().top <= line) current = s.id;
+      setCurrent(current);
+      syncStuck();
+    };
+    let queued = false;
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        update();
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  });
+</script>

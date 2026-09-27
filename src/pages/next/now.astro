@@ -1,0 +1,156 @@
+---
+/**
+ * /next/now/ — a /now page (nownownow.com): what has my attention this month.
+ *
+ * Three blocks, and only the first is written by hand (NOW_WORKING_ON in
+ * lib/next/content.ts). "Just shipped" reads release notes and "Next up" reads
+ * the roadmap grid, so the page keeps itself honest between edits.
+ */
+import { Icon } from "astro-icon/components";
+import NextLayout from "../../layouts/NextLayout.astro";
+import ReleaseNotesIndexCard from "../../components/ReleaseNotesIndexCard.astro";
+import { NOW_UPDATED, NOW_WORKING_ON } from "../../lib/next/content.ts";
+import { recentReleases } from "../../lib/next/releases.ts";
+import { COMING_SOON_GRID_ITEMS } from "../../lib/coming-soon-grid.ts";
+
+const shipped = recentReleases(6);
+const updated = new Date(`${NOW_UPDATED}T12:00:00Z`).toLocaleDateString("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+
+---
+
+<NextLayout
+  title="Now — Harvous"
+  description="What Derek is working on in Harvous this month, what just shipped, and what's next."
+>
+  <div class="nx-wrap nx-wrap--narrow now">
+    <header class="now__intro">
+      <p class="nx-kicker">Now · updated {updated}</p>
+      <h1 class="nx-display">What I'm working on.</h1>
+      <p class="nx-lead">
+        Harvous is made by one person, so this is the whole roadmap: what has my attention now,
+        what just went out, and what's further off.
+      </p>
+    </header>
+
+    <section class="now__block" aria-labelledby="now-on">
+      <h2 id="now-on" class="now__h">This month</h2>
+      <ol class="now__on">
+        {NOW_WORKING_ON.map((item, i) => (
+          <li data-reveal>
+            <span class="now__n nx-hand" aria-hidden="true">{i + 1}.</span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="now__block" aria-labelledby="now-shipped">
+      <h2 id="now-shipped" class="now__h">
+        Just shipped
+      </h2>
+      <div class="now__cards">
+        {shipped.map(({ release, headline }, i) => (
+          <ReleaseNotesIndexCard release={release} headline={headline} href={`/next/release-notes/${release.slug}/`} rotation={[-0.7, 0.6, -0.4, 0.8, -0.5, 0.4][i % 6]} />
+        ))}
+      </div>
+      <a class="nx-link" href="/next/release-notes/">Every release note →</a>
+    </section>
+
+    <section class="now__block" aria-labelledby="now-next">
+      <h2 id="now-next" class="now__h">Further off</h2>
+      <ul class="now__next">
+        {COMING_SOON_GRID_ITEMS.map((item) => (
+          <li>
+            {item.icon && <span class="now__icon" aria-hidden="true"><Icon name={item.icon} /></span>}
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.desc}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <aside class="now__sign" data-hides-sticky>
+      <p>
+        Want something on this list, or off it? <a href="mailto:derek@harvous.com">Email me</a>. I
+        read every one.
+      </p>
+    </aside>
+  </div>
+</NextLayout>
+
+<style>
+  .now { padding-bottom: clamp(5rem, 10vw, 8rem); }
+  /* Centred like every other /next intro; the blocks below stay left-aligned
+     for reading, in a centred column. */
+  .now__intro { padding-top: clamp(8rem, 16vw, 11rem); text-align: center; }
+  .now__intro .nx-display { margin: 1rem auto 0; font-size: clamp(2.6rem, 6vw, 4.5rem); }
+  .now__intro .nx-lead { margin: 1.25rem auto 0; }
+
+  .now__block { margin-top: clamp(3.5rem, 8vw, 5rem); }
+  .now__h {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-rule);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .now__on { margin: 0; padding: 0; list-style: none; display: grid; gap: 1.75rem; }
+  .now__on li { display: grid; grid-template-columns: 2.25rem 1fr; gap: 0.5rem; }
+  .now__n { font-size: 2rem; line-height: 1; color: var(--color-accent); }
+  .now__on h3, .now__next h3 { margin: 0; font-size: 1.1875rem; letter-spacing: -0.015em; }
+  .now__on p, .now__next p { margin: 0.35rem 0 0; font-size: 1rem; line-height: 1.55; color: var(--color-ink-soft); }
+
+
+  .now__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+    margin-bottom: 1.75rem;
+  }
+  @media (max-width: 30rem) {
+    .now__cards { grid-template-columns: 1fr; }
+  }
+
+  .now__next { margin: 0; padding: 0; list-style: none; display: grid; gap: 1.5rem; }
+  .now__next li { display: flex; gap: 1rem; }
+  .now__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    padding: 0.6rem;
+    border-radius: 0.8rem;
+    height: fit-content;
+    color: var(--color-ink-soft);
+    background: var(--color-warm);
+  }
+  .now__icon :global(svg) { width: 1rem; height: 1rem; }
+
+  .now__sign {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: clamp(3.5rem, 8vw, 5rem);
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    background: var(--color-warm);
+  }
+  .now__sign p { margin: 0; line-height: 1.5; color: var(--color-ink-soft); }
+  .now__sign a { color: var(--color-ink); }
+
+</style>

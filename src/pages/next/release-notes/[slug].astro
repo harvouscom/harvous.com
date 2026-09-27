@@ -1,0 +1,102 @@
+---
+/**
+ * /next/release-notes/<slug>/ — one release on its paper stack (the same sheet
+ * as the live page), on the release notes' grid, in the /next chrome, with
+ * the releases either side of it underneath.
+ */
+import NextLayout from "../../../layouts/NextLayout.astro";
+import ReleaseNoteSheet from "../../../components/ReleaseNoteSheet.astro";
+import { getReleaseNotes, type ChangelogRelease } from "../../../lib/release-notes-data.ts";
+
+export function getStaticPaths() {
+  const all = getReleaseNotes();
+  return all.map((note, i) => ({
+    params: { slug: note.slug },
+    props: { note, newer: all[i - 1] ?? null, older: all[i + 1] ?? null },
+  }));
+}
+
+interface Props {
+  note: ChangelogRelease;
+  newer: ChangelogRelease | null;
+  older: ChangelogRelease | null;
+}
+const { note, newer, older } = Astro.props;
+---
+
+<NextLayout title={`v${note.version} Release Notes — Harvous`} description={note.excerpt}>
+  <article class="rnd release-notes-frame">
+    <div class="release-notes-frame__grid rnd__grid" aria-hidden="true"></div>
+    <div class="nx-wrap rnd__wrap">
+      <ReleaseNoteSheet note={note} backHref="/next/release-notes/" backLabel="All release notes" />
+    </div>
+
+    <nav class="nx-wrap rnd__pager" aria-label="Other releases">
+      {older ? (
+        <a class="rnd__step" href={`/next/release-notes/${older.slug}/`}>
+          <span class="rnd__dir">← Older</span>
+          <span class="rnd__v">v{older.version}</span>
+          <span class="rnd__d">{older.date}</span>
+        </a>
+      ) : <span />}
+      {newer ? (
+        <a class="rnd__step rnd__step--next" href={`/next/release-notes/${newer.slug}/`}>
+          <span class="rnd__dir">Newer →</span>
+          <span class="rnd__v">v{newer.version}</span>
+          <span class="rnd__d">{newer.date}</span>
+        </a>
+      ) : <span />}
+    </nav>
+  </article>
+</NextLayout>
+
+<style>
+  .rnd { position: relative; isolation: isolate; overflow: hidden; }
+  .rnd__grid {
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  }
+  .rnd__wrap { position: relative; padding-top: clamp(7rem, 14vw, 9rem); }
+
+  /* /next's own ink in place of the live page's blue and pill button. */
+  .rnd :global(.release-entry__category--feature) { color: var(--color-ink); }
+  .rnd :global(.release-notes-detail__back) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-warm);
+    box-shadow: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .rnd__pager {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    max-width: calc(46rem + 2 * var(--nx-gutter));
+    padding-top: clamp(2.5rem, 6vw, 3.5rem);
+    padding-bottom: clamp(4rem, 10vw, 6rem);
+  }
+  .rnd__step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1.2rem;
+    background: var(--color-warm);
+    color: inherit;
+    text-decoration: none;
+  }
+  .rnd__step:hover { background: color-mix(in srgb, var(--color-ink) 7%, var(--color-paper)); }
+  .rnd__step--next { text-align: right; }
+  .rnd__dir { font-size: 0.8125rem; color: var(--color-ink-faint); }
+  .rnd__v { font-family: var(--font-display); font-size: 1.25rem; font-weight: 500; color: var(--color-ink); }
+  .rnd__d { font-size: 0.875rem; color: var(--color-ink-soft); }
+</style>

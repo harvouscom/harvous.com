@@ -1,0 +1,271 @@
+---
+/**
+ * ResourcePlate — the live Discover card's resource plate (DiscoverCard's
+ * `.dcard__plate` for a `resource`), redrawn for the /next stages: a wash, two
+ * faded flanks, and between them a white card with a masthead (the publisher's
+ * mark, their name, what kind of thing it is) over the thing's own picture.
+ * Whose it is leads; what it is called is said once, in the words below.
+ *
+ * Fills its positioned parent. Everything is sized off that parent's height
+ * (`cqh`), and the picture's width is set from its height at 16:9, so a video
+ * poster is never cropped differently from one breakpoint to the next.
+ *
+ * With no picture, the specimen shows a wash (`docArt`, or the tone) with a
+ * glyph tile on it. The `picture` slot replaces the picture's contents.
+ */
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  /** The publisher's own colour — the plate is washed in it. */
+  tone?: string | null;
+  /** Artwork for the plate when there is no tone (a topic's wash). */
+  art?: string | null;
+  artPos?: string;
+  logo?: string | null;
+  name: string;
+  type: string;
+  image?: string | null;
+  video?: boolean;
+  duration?: string | null;
+  /** Glyph for the tile when there is no picture. */
+  icon?: string;
+  /** Artwork for the specimen when there is no picture and no tone. */
+  docArt?: string | null;
+}
+
+const {
+  tone = null,
+  art = null,
+  artPos = "center",
+  logo = null,
+  name,
+  type,
+  image = null,
+  video = false,
+  duration = null,
+  icon = "fa7-solid:file-lines",
+  docArt = null,
+} = Astro.props;
+
+const hasPicture = Astro.slots.has("picture");
+const style = [
+  tone && `--rp-tone: ${tone};`,
+  !tone && art && `--rp-art: url("${art}"); --rp-art-pos: ${artPos};`,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<span class:list={["rp", tone && "rp--tone", !tone && art && "rp--art"]} style={style || undefined} aria-hidden="true">
+  <span class="rp__plate">
+    <span class="rp__flank" />
+    <span class="rp__card">
+      <span class="rp__src">
+        {logo ? (
+          <span class="rp__mark"><img src={logo} alt="" width="40" height="40" loading="lazy" decoding="async" /></span>
+        ) : (
+          <span class="rp__mark rp__mark--letter">{name.slice(0, 1)}</span>
+        )}
+        <span class="rp__src-text">
+          <span class="rp__name">{name}</span>
+          <span class="rp__type">{type}</span>
+        </span>
+      </span>
+
+      {hasPicture ? (
+        <span class="rp__pic"><slot name="picture" /></span>
+      ) : image ? (
+        <span class="rp__pic" style={`background-image: url("${image}")`}>
+          {video && (
+            <>
+              <span class="rp__play"><Icon name="fa7-solid:play" /></span>
+              {duration && <span class="rp__time">{duration}</span>}
+            </>
+          )}
+        </span>
+      ) : (
+        <span
+          class:list={["rp__pic rp__pic--doc", tone && !docArt && "rp__pic--tone"]}
+          style={docArt ? `background-image: url("${docArt}")` : undefined}
+        >
+          <span class="rp__tile"><Icon name={icon} /></span>
+        </span>
+      )}
+    </span>
+    <span class="rp__flank" />
+  </span>
+</span>
+
+<style>
+  .rp {
+    position: absolute;
+    inset: 0;
+    container-type: size;
+    background-color: var(--color-warm);
+  }
+  /* The publisher's colour, raked across the plate so it reads as a wash. */
+  .rp--tone {
+    background-image: linear-gradient(
+      142deg,
+      color-mix(in oklab, var(--rp-tone) 34%, var(--color-paper)),
+      color-mix(in oklab, var(--rp-tone) 14%, var(--color-paper))
+    );
+  }
+  .rp--art {
+    background-image: var(--rp-art);
+    background-size: cover;
+    background-position: var(--rp-art-pos, center);
+  }
+
+  .rp__plate {
+    --pic-h: calc(100cqh - 8cqh - 7cqh - 2 * 0.7rem - 2.25rem - 0.6rem);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 8cqh 1rem 7cqh;
+  }
+
+  /* Faded panels either side, so the card reads as one of a set on a shelf. */
+  .rp__flank {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 5cqh 0;
+    border-radius: 12px;
+    background: color-mix(in oklab, var(--color-paper) 30%, transparent);
+  }
+  .rp:not(.rp--tone):not(.rp--art) .rp__flank {
+    background: color-mix(in oklab, var(--color-ink) 5%, transparent);
+  }
+
+  .rp__card {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.7rem;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid color-mix(in oklab, var(--color-paper) 60%, transparent);
+    background: var(--color-card, #fff);
+    box-shadow:
+      0 1px 2px rgba(15, 23, 42, 0.07),
+      0 16px 34px -18px rgba(15, 23, 42, 0.38);
+  }
+
+  /* The masthead: whose it is, and what kind of thing. */
+  .rp__src {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.55rem;
+    height: 2.25rem;
+    min-width: 0;
+  }
+  .rp__mark {
+    display: inline-flex;
+    flex: 0 0 2rem;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    overflow: hidden;
+    border: 1px solid var(--color-rule);
+    border-radius: 9px;
+    background: var(--color-card, #fff);
+  }
+  .rp__mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .rp__mark--letter {
+    background: var(--color-warm);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+  .rp__src-text { display: grid; min-width: 0; }
+  .rp__name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+  .rp__type {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  /* The picture: its width from its height, at 16:9. */
+  .rp__pic {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    align-self: center;
+    height: var(--pic-h);
+    width: calc(var(--pic-h) * 16 / 9);
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 9px;
+    background-color: var(--color-warm);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  .rp__pic--doc { display: grid; place-items: center; }
+  .rp__pic--tone {
+    background-image: linear-gradient(
+      142deg,
+      color-mix(in oklab, var(--rp-tone) 52%, var(--color-paper)),
+      color-mix(in oklab, var(--rp-tone) 26%, var(--color-paper))
+    );
+  }
+  .rp__tile {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.7rem;
+    background: var(--color-card, #fff);
+    color: var(--color-ink-soft);
+    box-shadow: var(--shadow-card, 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 18px -10px rgba(15, 23, 42, 0.3));
+  }
+  .rp__tile :global(svg) { width: 1.1rem; height: 1.1rem; }
+
+  /* A label, not a control — the playing happens on the listing page. */
+  .rp__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin: auto;
+    border-radius: 999px;
+    background: color-mix(in srgb, #0d0e12 62%, transparent);
+    color: #fff;
+  }
+  .rp__play :global(svg) { width: 0.75rem; height: 0.75rem; margin-left: 0.1em; }
+  .rp__time {
+    position: absolute;
+    right: 0.4rem;
+    bottom: 0.4rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, #0d0e12 78%, transparent);
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+  }
+</style>

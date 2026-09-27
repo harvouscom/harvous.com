@@ -1,0 +1,126 @@
+---
+/**
+ * NextHeader — one small floating pill, always. The live header is a full bar
+ * that becomes a pill on scroll and carries a mega-menu; this one only ever
+ * holds five places to go (the blog is Bright Enough) and a way back into the
+ * app. Everything else lives
+ * in the footer. Trying Harvous is the sticky pill's job, not this one's.
+ */
+import OptimizedImage from "../OptimizedImage.astro";
+import { fathomSignin } from "../../lib/fathom-events.ts";
+
+const links = [
+  { href: "/next/tour/", label: "Tour" },
+  { href: "/next/discover/", label: "Discover" },
+  { href: "/next/blog/", label: "Blog" },
+  { href: "/next/pricing/", label: "Pricing" },
+  { href: "/next/now/", label: "Now", wide: true },
+];
+
+const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+---
+
+<header class="nxh">
+  <nav class="nxh__pill" aria-label="Primary">
+    <a href="/next/" class="nxh__logo" aria-label="Harvous — Home">
+      <OptimizedImage src="/images/harvous-icon-sm.png" alt="" width={28} height={28} loading="eager" />
+    </a>
+    <ul class="nxh__links">
+      {links.map((l) => (
+        <li class:list={[l.wide && "nxh__wide"]}>
+          <a href={l.href} class="nxh__link" aria-current={path.startsWith(l.href) ? "page" : undefined}>
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a
+      href="https://app.harvous.com/sign-in"
+      class="nxh__signin"
+      data-fathom-track={fathomSignin.header}
+    >
+      Sign in
+    </a>
+  </nav>
+</header>
+
+<style>
+  .nxh {
+    position: fixed;
+    inset: 0.75rem 0 auto;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    padding-inline: 0.75rem;
+    pointer-events: none;
+  }
+  .nxh__pill {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    /* More on the left than the top: the pill's round end eats into the
+       space beside the square-ish icon, so equal padding looks cramped. */
+    padding: 0.35rem 0.35rem 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-paper) 78%, transparent);
+    backdrop-filter: saturate(1.6) blur(18px);
+    -webkit-backdrop-filter: saturate(1.6) blur(18px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 7%, transparent),
+      0 8px 28px -12px rgba(15, 23, 42, 0.22);
+  }
+  .nxh__logo {
+    display: flex;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+    border-radius: 0.55rem;
+    overflow: hidden;
+  }
+  .nxh__logo :global(img) { width: 28px; height: 28px; display: block; }
+  .nxh__links {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nxh__link,
+  .nxh__signin {
+    display: block;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .nxh__link:hover,
+  .nxh__link[aria-current="page"] {
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-ink) 6%, transparent);
+  }
+  .nxh__signin {
+    margin-left: 0.15rem;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    box-shadow: 0 0 0 1px var(--color-rule);
+  }
+  .nxh__signin:hover { background: var(--color-warm); }
+
+  /* Phones: "Now" steps out of the pill (it's in the footer and linked from
+     the maker note) so the rest fit without crowding the edges. */
+  @media (max-width: 32rem) {
+    .nxh__wide { display: none; }
+  }
+  @media (max-width: 26rem) {
+    .nxh__link,
+    .nxh__signin { padding-inline: 0.55rem; font-size: 0.8125rem; }
+  }
+  @media (max-width: 23rem) {
+    .nxh__signin { display: none; }
+  }
+</style>

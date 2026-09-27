@@ -1,0 +1,69 @@
+---
+/**
+ * ClosingCall — the last thing on a /next/ page: one line, one button, on the
+ * same sky the hero opened with. Hides the sticky pill while it's on screen so
+ * there's only ever one "Try Harvous free" in view.
+ */
+import { buildTryUrl } from "../../lib/signup-url.ts";
+import { fathomTry } from "../../lib/fathom-events.ts";
+import { backdropSrc } from "../../lib/next/content.ts";
+
+interface Props {
+  title?: string;
+  lead?: string;
+}
+
+const {
+  title = "Start with today's passage.",
+  lead = "No account needed. Sign up when you want to keep what you wrote. Harvous is on the web today; Mac, iPad, and iPhone apps are coming later.",
+} = Astro.props;
+---
+
+<section class="close" data-hides-sticky>
+  <div class="nx-wrap">
+    <div class="close__card" data-reveal="scale">
+      <img class="close__sky" src={backdropSrc("077")} alt="" loading="lazy" />
+      <h2 class="nx-display close__title">{title}</h2>
+      <p class="nx-lead close__lead">{lead}</p>
+      <a
+        class="nx-btn nx-btn--accent close__btn"
+        href={buildTryUrl({ source: "next_closing" })}
+        data-try-cta
+        data-fathom-track={fathomTry.nextClosing}
+      >
+        Try Harvous free
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .close { padding-block: clamp(2rem, 6vw, 4rem) clamp(4rem, 10vw, 7rem); }
+  .close__card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(3.5rem, 10vw, 7rem) clamp(1.25rem, 5vw, 4rem);
+    border-radius: var(--nx-radius-scene);
+    text-align: center;
+  }
+  .close__sky {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+  .close__card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(70% 70% at 50% 45%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.15));
+  }
+  .close__title { margin: 0 auto; max-width: 12ch; font-size: clamp(2.5rem, 6.5vw, 5rem); }
+  /* Two lines at most: wider than the usual lead, balanced so they break evenly. */
+  .close__lead { max-width: 46rem; margin: 1.25rem auto 0; color: var(--color-ink-soft); text-wrap: balance; }
+  .close__btn { margin-top: 2rem; min-height: 3.4rem; padding-inline: 2rem; font-size: 1.0625rem; }
+</style>

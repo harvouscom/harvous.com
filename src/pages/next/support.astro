@@ -1,0 +1,180 @@
+---
+/**
+ * /next/support/ — support in the /next chrome: a centred intro in my voice,
+ * the three ways to reach me as light rows (email with a copy button, in-app
+ * support, status), then the support FAQs from the same collection the live
+ * page reads.
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+import FaqItem from "../../components/FaqItem.astro";
+import AppIcon from "../../components/next/app/AppIcon.astro";
+import { render } from "astro:content";
+import { faqAnchorId, getFaqEntries } from "../../lib/faq";
+
+const SUPPORT_EMAIL = "derek@harvous.com";
+const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Harvous support")}`;
+
+const entries = await getFaqEntries("support");
+const faqs = await Promise.all(entries.map(async (entry) => ({ entry, Content: (await render(entry)).Content })));
+---
+
+<NextLayout
+  title="Support — Harvous"
+  description="Get help with Harvous — FAQs, email support, and in-app support for signed-in users."
+>
+  <header class="nx-wrap sp-intro">
+    <img class="sp-avatar" src="/derek-avatar.webp" alt="" width="96" height="96" />
+    <p class="nx-kicker">Support</p>
+    <h1 class="nx-display sp-title">Ask me anything.</h1>
+    <p class="nx-lead sp-lead">
+      Questions, bugs, or ideas. It's just me on the other end, and I read every one.
+    </p>
+  </header>
+
+  <section class="nx-wrap sp-ways" aria-label="Ways to reach me">
+    <ul class="sp-list" role="list">
+      <li class="sp-row">
+        <span class="sp-row__icon"><AppIcon name="envelope" /></span>
+        <span class="sp-row__text">
+          <a class="sp-row__title" href={mailto}>{SUPPORT_EMAIL}</a>
+          <span class="sp-row__line">Account questions, billing, or anything you'd rather send from your mail app.</span>
+        </span>
+        <button type="button" class="sp-copy" data-copy-email={SUPPORT_EMAIL} aria-label="Copy email address">
+          <span data-copy-label>Copy</span>
+        </button>
+      </li>
+      <li class="sp-row">
+        <span class="sp-row__icon"><AppIcon name="gear" /></span>
+        <span class="sp-row__text">
+          <a class="sp-row__title" href="https://app.harvous.com/settings/support">Settings → Support</a>
+          <span class="sp-row__line">Signed in? Send a bug, idea, or question with your app version and device attached.</span>
+        </span>
+        <svg class="sp-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+      </li>
+      <li class="sp-row">
+        <span class="sp-row__icon"><AppIcon name="signal" /></span>
+        <span class="sp-row__text">
+          <a class="sp-row__title" href="https://status.harvous.com" target="_blank" rel="noopener noreferrer">status.harvous.com</a>
+          <span class="sp-row__line">Is something down, or is it just you? This will say.</span>
+        </span>
+        <svg class="sp-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+      </li>
+    </ul>
+  </section>
+
+  {faqs.length > 0 && (
+    <section class="nx-wrap sp-faq" aria-labelledby="sp-faq-title">
+      <h2 id="sp-faq-title" class="sp-h2">Common questions</h2>
+      <div class="sp-faq__list">
+        {faqs.map(({ entry, Content }) => (
+          <FaqItem id={faqAnchorId(entry)} question={entry.data.question}>
+            <Content />
+          </FaqItem>
+        ))}
+      </div>
+    </section>
+  )}
+</NextLayout>
+
+<script>
+  import { bindCopyButton } from "../../lib/copy-button";
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-email]")) {
+    bindCopyButton(button, () => button.dataset.copyEmail, {
+      idle: { label: "Copy", ariaLabel: "Copy email address" },
+      done: { label: "Copied", ariaLabel: "Copied email address" },
+      failed: { ariaLabel: "Could not copy email address" },
+      labelSelector: "[data-copy-label]",
+    });
+  }
+</script>
+
+<style>
+  .sp-intro {
+    padding-top: clamp(7.5rem, 15vw, 10rem);
+    text-align: center;
+  }
+  .sp-avatar {
+    display: block;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1.25rem;
+    border-radius: 999px;
+    object-fit: cover;
+    box-shadow: 0 0 0 3px var(--color-paper), 0 8px 20px -10px rgba(15, 23, 42, 0.4);
+  }
+  .sp-title { margin: 1rem auto 0; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .sp-lead { margin: 1.25rem auto 0; }
+
+  .sp-ways,
+  .sp-faq { max-width: calc(40rem + 2 * var(--nx-gutter)); }
+  .sp-ways { padding-top: clamp(2.5rem, 6vw, 3.5rem); }
+
+  /* The ways to reach me: light rows, like the hubs' lists. */
+  .sp-list { margin: 0; padding: 0; list-style: none; }
+  .sp-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0.25rem;
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .sp-row:first-child { border-top: 1px solid var(--color-rule); }
+  .sp-row__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-warm);
+    color: var(--color-ink);
+  }
+  .sp-row__icon :global(svg) { width: 1rem; height: 1rem; }
+  .sp-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.15rem; min-width: 0; }
+  .sp-row__title { font-weight: 600; color: var(--color-ink); text-decoration: none; }
+  /* The whole row is the link's target. */
+  .sp-row__title::after { content: ""; position: absolute; inset: 0; }
+  .sp-row__title:focus-visible { outline: none; }
+  .sp-row:has(.sp-row__title:focus-visible) { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
+  .sp-row__line { font-size: 0.9375rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
+  .sp-row__chev {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--color-ink-faint);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 200ms ease, stroke 200ms ease;
+  }
+  .sp-row:hover .sp-row__chev { transform: translateX(2px); stroke: var(--color-ink); }
+  .sp-copy {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    padding: 0.45rem 0.9rem;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: var(--color-warm);
+    cursor: pointer;
+  }
+  .sp-copy:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+
+  .sp-faq { padding-top: clamp(3.5rem, 8vw, 5rem); padding-bottom: clamp(4rem, 10vw, 6rem); }
+  .sp-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  .sp-faq__list { margin-top: 1rem; border-bottom: 1px solid var(--color-rule); }
+  /* Links in answers: ink, not the accent blue. */
+  .sp-faq__list :global(.faq__answer a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+</style>

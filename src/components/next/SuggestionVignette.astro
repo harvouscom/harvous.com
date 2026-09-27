@@ -1,0 +1,61 @@
+---
+/**
+ * SuggestionVignette — Activity's "Suggested" group, drawn with the app's own
+ * row anatomy (next-app-ui.css): icon tile, title, "reason · prompt", quiet
+ * trailing actions. The reasons and prompts are ones the app really shows
+ * (see tour-activity); only the titles are chosen for the scene.
+ *
+ * On reveal the older note comes back into focus last, which is the whole
+ * idea of Suggestions.
+ */
+import AppIcon from "./app/AppIcon.astro";
+
+interface Props {
+  class?: string;
+  style?: string;
+}
+
+const { class: className, style } = Astro.props;
+---
+
+<div class:list={["aui sgv", className]} style={style} data-reveal aria-hidden="true">
+  <div class="aui-card aui-card--float">
+    <div class="aui-row">
+      <span class="aui-tile"><AppIcon name="highlighter" /></span>
+      <span>
+        <span class="aui-title">Romans 5:3–5</span>
+        <span class="aui-sub">Worth marking<i>·</i>What did you see here?</span>
+      </span>
+      <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+    </div>
+    <div class="aui-row sgv__back">
+      <span class="aui-tile"><AppIcon name="pen-to-square" /></span>
+      <span>
+        <span class="aui-title">Hope that doesn't disappoint</span>
+        <span class="aui-sub">Pick up where you left off<i>·</i>6mo ago</span>
+      </span>
+      <span class="aui-acts"><AppIcon name="caret-right" /></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sgv {
+    width: min(21rem, 88%);
+  }
+
+  /* The card settles; then the six-month-old note comes back into focus. */
+  :global(html.js) .sgv[data-reveal] { transform: translateY(12px); }
+  :global(html.js) .sgv[data-reveal] .sgv__back {
+    opacity: 0.25;
+    filter: blur(3px);
+    transition: opacity 700ms ease 700ms, filter 900ms ease 700ms;
+  }
+  :global(html.js) .sgv[data-reveal].revealed .sgv__back {
+    opacity: 1;
+    filter: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .sgv[data-reveal] .sgv__back { transition: none; opacity: 1; filter: none; }
+  }
+</style>

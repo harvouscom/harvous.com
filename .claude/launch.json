@@ -5,7 +5,15 @@
       "name": "dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 4321
+      "port": 4321,
+      "autoPort": true
+    },
+    {
+      "name": "dev-next",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "4329"],
+      "port": 4329,
+      "autoPort": false
     }
   ]
 }

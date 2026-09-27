@@ -1,0 +1,101 @@
+---
+/**
+ * StickyTryPill — the one "Try Harvous free" on every /next/ page, fixed at the
+ * bottom over a soft paper fade, the way Dia keeps its download pill. It
+ * replaces the scattered mid-page CTAs of the live site.
+ *
+ * It steps aside while anything marked `[data-hides-sticky]` is on screen (the
+ * home closing section, the footer), so there is never two of the same button
+ * in view at once.
+ */
+import { buildTryUrl } from "../../lib/signup-url.ts";
+import { fathomTry } from "../../lib/fathom-events.ts";
+---
+
+<div class="nxs" data-sticky-try>
+  <a
+    class="nxs__pill"
+    href={buildTryUrl({ source: "next_sticky" })}
+    data-try-cta
+    data-fathom-track={fathomTry.nextSticky}
+  >
+    Try Harvous free
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+  <p class="nxs__note">Free · no account needed · on the web today</p>
+</div>
+
+<style>
+  .nxs {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 2.75rem 1rem calc(0.8rem + env(safe-area-inset-bottom));
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-paper) 0%, transparent),
+      color-mix(in srgb, var(--color-paper) 88%, transparent) 55%,
+      var(--color-paper)
+    );
+    transition: opacity 260ms ease, transform 360ms var(--nx-ease);
+  }
+  .nxs.is-hidden {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  .nxs.is-hidden .nxs__pill { pointer-events: none; }
+
+  .nxs__pill {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: min(22rem, 100%);
+    justify-content: center;
+    padding: 0.95rem 1.75rem;
+    border-radius: 999px;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    background: var(--accent-btn-bg);
+    box-shadow:
+      var(--accent-btn-shadow),
+      0 18px 40px -18px rgba(0, 110, 255, 0.6);
+    transition: filter 150ms ease, transform 150ms ease;
+  }
+  .nxs__pill:hover { filter: brightness(1.06); color: #fff; }
+  .nxs__pill:active { transform: scale(0.98); }
+  .nxs__pill svg { width: 1rem; height: 1rem; }
+  .nxs__note {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--color-ink-faint);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nxs { transition: opacity 120ms linear; }
+    .nxs.is-hidden { transform: none; }
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>("[data-sticky-try]");
+  const hiders = document.querySelectorAll("[data-hides-sticky]");
+  if (bar && hiders.length && "IntersectionObserver" in window) {
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)));
+        bar.classList.toggle("is-hidden", visible.size > 0);
+      },
+      { rootMargin: "0px 0px -12% 0px" }
+    );
+    hiders.forEach((el) => io.observe(el));
+  }
+</script>
