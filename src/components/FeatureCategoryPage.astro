@@ -1,96 +1,71 @@
 ---
 /**
- * FeatureCategoryPage — one of the five things Harvous is for.
- *
- * Structured like UseCaseDetailPage, which is the site's existing "a page that
- * houses children" shape, and it reuses that page's chrome wholesale by
- * importing styles/use-cases.css. What it adds is the screenshot from the
- * matching homepage tour card — the same file, the same
- * placeholder-until-a-PNG-lands behaviour — so the card and the page it opens
- * show the same thing.
- *
- * It also carries the site's first downward-to-upward link: a category names the
- * use cases it serves, which nothing under /features/ has ever done.
+ * FeatureCategoryPage — one of the five things Harvous is for: Activity,
+ * Read, Write, Find, Share. The long version of its /tour/ chapter — same
+ * Scene, same margin note (lib/next/tour-staging.ts), so the two never show
+ * a different screen for the same category — plus the story, the features it
+ * houses, the use cases that lean on it, a Compare preview, a quote, and
+ * related posts.
  */
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PageClosingCTA from "./PageClosingCTA.astro";
-import RelatedBlogPosts from "./RelatedBlogPosts.astro";
-import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
-import ComparePreview from "./ComparePreview.astro";
-import TourShotFrame from "./TourShotFrame.astro";
+import NextLayout from "../layouts/NextLayout.astro";
+import Scene from "./next/Scene.astro";
+import MarginNote from "./next/MarginNote.astro";
+import AppIcon from "./next/app/AppIcon.astro";
+import UseCaseCard from "./next/UseCaseCard.astro";
+import ComparePreview from "./next/ComparePreview.astro";
+import BlogNextCard from "./next/BlogNextCard.astro";
+import ClosingCall from "./next/ClosingCall.astro";
 import { Icon } from "astro-icon/components";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { FeatureCategory } from "../lib/feature-categories-data.ts";
-import { getTourChapter } from "../lib/app-tour-chapters.ts";
+import { TOUR_STAGING } from "../lib/next/tour-staging.ts";
 import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
-import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
-import { getUseCaseBySlug, getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
-import type { UseCase } from "../lib/use-cases-data.ts";
+import { getUseCaseBySlug, type UseCase } from "../lib/use-cases-data.ts";
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
 import { fathomTry, fathomCompare } from "../lib/fathom-events.ts";
 import { buildTryUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
-import "../styles/use-cases.css";
 
 interface Props {
   category: FeatureCategory;
 }
-
 const { category } = Astro.props;
 
+type FeatureRow = { icon: string; title: string; desc: string; href?: string; soon: boolean };
 const allFeatures = await getCollection("features");
-const housedFeatures: RelatedFeatureCard[] = category.featureIds
-  .map((id) => {
+const housed: FeatureRow[] = category.featureIds
+  .map((id): FeatureRow | undefined => {
     const soon = getComingSoonGridItem(id);
-    if (soon) return { kind: "comingSoon" as const, item: soon };
-    const feature = allFeatures.find((f) => f.id === id);
-    return feature ? { kind: "feature" as const, feature } : undefined;
+    if (soon) return { icon: soon.icon ?? soon.icons?.[0] ?? "fa7-solid:note-sticky", title: soon.title, desc: soon.desc, href: soon.href, soon: soon.comingSoon !== false };
+    const f = allFeatures.find((x) => x.id === id);
+    if (!f) return undefined;
+    const href = !f.data.draft && f.data.heroTitle && f.data.sections?.length ? `/features/${f.id}/` : undefined;
+    return { icon: "fa7-solid:note-sticky", title: f.data.tagline, desc: f.data.title, href, soon: false };
   })
-  .filter((c): c is RelatedFeatureCard => c !== undefined);
+  .filter((r): r is FeatureRow => r !== undefined);
 
-const relatedUseCases = category.useCaseSlugs
-  .map((slug) => getUseCaseBySlug(slug))
-  .filter((uc): uc is UseCase => uc !== undefined);
+const useCases = category.useCaseSlugs.map((s) => getUseCaseBySlug(s)).filter((u): u is UseCase => u !== undefined);
+const compare = category.compareSlugs.map((s) => getCompareBySlug(s)).filter((e): e is NonNullable<typeof e> => e !== undefined);
 
-const relatedCompare = category.compareSlugs
-  .map((slug) => getCompareBySlug(slug))
-  .filter((e): e is NonNullable<typeof e> => e !== undefined);
-
-const showDrafts = includeBlogDrafts();
-const relatedBlogPosts = getRelatedBlogPosts(
-  (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
-  // Blog affinity is keyed by feature, not category, so borrow the first housed
-  // feature's slug rather than adding a fourth key to RelatedBlogFilter.
+const posts = getRelatedBlogPosts(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, includeBlogDrafts())),
   { feature: category.featureIds[0] },
 );
 
-const shot = getTourChapter(category.tourKey)?.shot;
+const quote = category.testimonialId ? await getEntry("testimonials", category.testimonialId) : undefined;
+const Quote = quote ? (await render(quote)).Content : undefined;
 
-/*
-  The accent inks are highlighter fills, not glyph colours: warmAmber renders at
-  1.53:1 on white and mintGreen at 2.26:1, so Write and Find shipped a hero badge
-  you could not see. Mixed toward ink they keep the hue and clear the 3:1 floor.
-  The shared use-case chrome takes a colour, so this is passed in rather than
-  fixed there — it belongs to the ink choice, not the badge.
-*/
-const glyphInk = category.ink;
+const staging = TOUR_STAGING[category.slug];
 
 const pageUrl = `https://harvous.com${category.href}`;
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "WebPage",
-      name: category.seoTitle,
-      description: category.seoDescription,
-      url: pageUrl,
-    },
+    { "@type": "WebPage", name: category.seoTitle, description: category.seoDescription, url: pageUrl },
     {
       "@type": "BreadcrumbList",
       itemListElement: [
-        /* No "Features" crumb between them — the hub it pointed at is gone, and
-           a breadcrumb naming a page that 404s is worse than a shorter trail. */
         { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
         { "@type": "ListItem", position: 2, name: category.title, item: pageUrl },
       ],
@@ -99,198 +74,301 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout
-  title={category.seoTitle}
-  description={category.seoDescription}
-  ogImage={`/images/features/og/${category.slug}.webp`}
-  jsonLd={jsonLd}
->
-  <article class="use-case-detail" style={`--use-case-ink: ${category.ink};`}>
-    <header class="border-b border-[var(--color-rule)]">
-      <div class="detail-content py-10 md:py-14">
-        <div data-reveal>
-          <div class="use-case-detail__nav">
-            {/* The /features/ hub is gone; the homepage tour is where the five
-                categories are listed together now. */}
-            <a href="/#features" class="btn-pill inline-flex items-center gap-1.5 text-sm">
-              <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path
-                  fill-rule="evenodd"
-                  d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              Features
-            </a>
-          </div>
-
-          <div
-            class="use-case-hero__art mt-8"
-            style={`--usecase-art-image: url('${category.image}');`}
-          >
-            <span class="use-case-hero__badge">
-              <Icon name={category.icon} style={`color: ${glyphInk};`} />
-            </span>
-          </div>
-
-          <div class="mt-8 text-center">
-            <div class="use-case-detail__badges">
-              <span
-                class="use-case-detail__title-badge"
-                style={`background: color-mix(in oklab, ${category.ink} 14%, var(--color-paper)); color: ${glyphInk};`}
-              >
-                {category.title}
-              </span>
-            </div>
-            <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">{category.heroTitle}</h1>
-            <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-ink-soft)]">
-              {category.heroLead}
-            </p>
-          </div>
-        </div>
-      </div>
+<NextLayout title={category.seoTitle} description={category.seoDescription}>
+  <article style={`--cat-ink: ${category.ink};`}>
+    <header class="nx-wrap fc-intro">
+      <a class="fc-back" href={`/tour/#${category.slug}`}>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        The tour
+      </a>
+      <p class="fc-badge">{category.title}</p>
+      <h1 class="nx-display fc-title">{category.heroTitle}</h1>
+      <p class="nx-lead fc-lead">{category.heroLead}</p>
     </header>
 
-    {
-      shot && (
-        <section class="detail-content py-10 md:py-12" data-reveal="scale" style="--reveal-delay: 80ms;">
-          <TourShotFrame
-            src={shot.src}
-            alt={shot.alt}
-            width={shot.width}
-            height={shot.height}
-            direction={shot.direction}
-            loading="eager"
-          />
-        </section>
-      )
-    }
-
-    <section class="detail-content py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
-      <div class="prose-letter space-y-8">
-        {
-          category.sections.map((section) => (
-            <div>
-              <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
-              {section.paragraphs.map((p) => (
-                <p class="mt-3 text-[var(--color-ink-soft)]" set:html={inlineMdLinksToHtml(p)} />
-              ))}
-            </div>
-          ))
-        }
+    {staging && (
+      <div class="nx-wrap fc-scene">
+        <Scene backdrop={staging.backdrop} shot={staging.shot} aspect="21 / 10" inset={9} zoom={staging.zoom} focus={staging.focus}>
+          <MarginNote {...staging.note} />
+        </Scene>
       </div>
+    )}
+
+    <section class="nx-wrap fc-story" aria-label="The story">
+      {category.sections.map((section) => (
+        <div class="fc-story__part" data-reveal>
+          <h2 class="fc-h2">{section.heading}</h2>
+          {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+        </div>
+      ))}
     </section>
 
-    <section class="frame-divider">
-      <div class="detail-content py-14 md:py-16">
-        <h2 class="font-display text-2xl leading-snug md:text-3xl">What that looks like in Harvous</h2>
-        <ul class="mt-8 grid gap-8 sm:grid-cols-2" data-reveal="stagger" role="list">
-          {
-            category.moments.map((m) => (
-              <li class="flex gap-4">
-                <span class="use-case-moment__icon">
-                  <Icon name={m.icon} />
-                </span>
-                <div>
-                  <h3 class="font-semibold text-[var(--color-ink)]">{m.heading}</h3>
-                  <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">{m.body}</p>
-                </div>
+    <section class="nx-wrap fc-sec" aria-labelledby="moments-title">
+      <h2 id="moments-title" class="fc-h2 fc-h2--sec">What that looks like in Harvous</h2>
+      <ul class="fc-moments" role="list" data-reveal="stagger">
+        {category.moments.map((m) => (
+          <li class="fc-moment">
+            <h3 class="fc-moment__h">
+              <span class="fc-moment__tile"><AppIcon name={m.icon} /></span>
+              {m.heading}
+            </h3>
+            <p class="fc-moment__p">{m.body}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {housed.length > 0 && (
+      <section class="nx-wrap fc-sec" aria-labelledby="housed-title">
+        <h2 id="housed-title" class="fc-h2 fc-h2--sec">{category.featuresHeading}</h2>
+        <p class="fc-sec__lead">{category.featuresLead}</p>
+        <ul class="fc-rows" role="list">
+          {housed.map((f) => {
+            const Tag = f.href ? "a" : "div";
+            return (
+              <li>
+                <Tag class:list={["fc-row", f.href && "fc-row--link"]} href={f.href}>
+                  <span class="fc-row__icon"><Icon name={f.icon} /></span>
+                  <span class="fc-row__text">
+                    <span class="fc-row__title">
+                      {f.title}
+                      {f.soon && <span class="fc-row__soon">Coming soon</span>}
+                    </span>
+                    <span class="fc-row__desc">{f.desc}</span>
+                  </span>
+                  {f.href && <svg class="fc-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>}
+                </Tag>
               </li>
-            ))
-          }
+            );
+          })}
         </ul>
-      </div>
-    </section>
+      </section>
+    )}
 
-    <UseCaseRelatedFeatures
-      featuresHeading={category.featuresHeading}
-      featuresLead={category.featuresLead}
-      cards={housedFeatures}
-    />
+    {useCases.length > 0 && (
+      <section class="nx-wrap fc-sec" aria-labelledby="uc-title">
+        <h2 id="uc-title" class="fc-h2 fc-h2--sec">When this matters most</h2>
+        <p class="fc-sec__lead">The ways of studying that lean hardest on {category.title.toLowerCase()}.</p>
+        <ul class="fc-ucs" role="list" data-reveal="stagger">
+          {useCases.map((uc, i) => (
+            <li class:list={[useCases.length % 2 === 1 && i === useCases.length - 1 && "is-wide"]}>
+              <UseCaseCard useCase={uc} large={useCases.length === 1 || (useCases.length % 2 === 1 && i === useCases.length - 1)} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
-    {
-      relatedUseCases.length > 0 && (
-        <section class="frame-divider">
-          <div class="detail-content py-14 md:py-16">
-            <h2 class="font-display text-2xl leading-snug md:text-3xl">When this matters most</h2>
-            <p class="mt-3 text-[var(--color-ink-soft)]">
-              The ways of studying that lean hardest on this part of Harvous.
-            </p>
-            <ul class="use-case-audiences" data-reveal="stagger" role="list">
-              {relatedUseCases.map((uc) => (
-                <li>
-                  <a href={uc.href} class="use-case-audiences__pill">
-                    <Icon name={uc.icon} />
-                    <span>{getUseCaseDisplayTitle(uc)}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <p class="mt-5">
-              <a href="/use-cases/" class="text-sm font-medium text-[var(--color-accent)] hover:underline">
-                See all use cases →
-              </a>
-            </p>
-          </div>
-        </section>
-      )
-    }
+    {compare.length > 0 && (
+      <ComparePreview
+        id="works-alongside"
+        kicker="Compare"
+        title="Works alongside other tools."
+        lead="Harvous does a different job than most Bible apps. Plenty of people use it next to something they already love."
+        slugs={category.compareSlugs}
+      />
+    )}
 
-    {
-      relatedCompare.length > 0 && (
-        <ComparePreview
-          id="works-alongside"
-          entries={relatedCompare}
-          eyebrow="Compare"
-          title="Works alongside other tools"
-          lead="Harvous does a different job than most Bible apps. Many people use it next to something they already love."
-          showAllLink
-          fathomTrack={fathomCompare.detailRelated}
-          fathomAllTrack={fathomCompare.homeAll}
-        />
-      )
-    }
+    {quote && Quote && (
+      <figure class="nx-wrap fc-quote" data-reveal>
+        <blockquote><Quote /></blockquote>
+        <figcaption>{quote.data.name}</figcaption>
+      </figure>
+    )}
+
+    {posts.length > 0 && (
+      <section class="nx-wrap fc-sec" aria-labelledby="posts-title">
+        <h2 id="posts-title" class="fc-h2 fc-h2--sec">From the blog</h2>
+        <ul class="fc-posts" role="list">
+          {posts.map((p) => <li><BlogNextCard post={p} /></li>)}
+        </ul>
+      </section>
+    )}
   </article>
 
-  <PageClosingCTA
-    heading={category.heroTitle}
+  <ClosingCall
+    title={category.heroTitle}
     lead={category.tagline}
     href={buildTryUrl({ useCase: category.useCaseSlugs[0], source: `feature_${category.slug}` })}
     fathomTrack={fathomTry.featureDetail(category.slug)}
   />
-
-  <RelatedBlogPosts posts={relatedBlogPosts} />
-</BaseLayout>
+</NextLayout>
 
 <style>
-  .use-case-audiences {
-    list-style: none;
-    margin: 1.25rem 0 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-  }
-  .use-case-audiences__pill {
+  .fc-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .fc-back {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 0.9rem;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
     border-radius: 999px;
-    border: 1px solid var(--color-rule);
-    background: var(--color-card);
-    text-decoration: none;
-    font-size: 0.9rem;
+    background: var(--color-warm);
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-ink);
-    transition: background-color 150ms ease, border-color 150ms ease;
+    text-decoration: none;
   }
-  .use-case-audiences__pill:hover {
+  .fc-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .fc-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .fc-badge {
+    display: inline-block;
+    margin-top: 1.75rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--cat-ink);
+    background: color-mix(in oklab, var(--cat-ink) 16%, var(--color-paper));
+  }
+  .fc-title { margin: 1.25rem auto 0; max-width: 20ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .fc-lead { margin: 1.5rem auto 0; }
+
+  .fc-scene { margin: clamp(2.5rem, 6vw, 4rem) auto 0; }
+  .fc-scene :global(.scene) { aspect-ratio: 21 / 10; }
+  @media (max-width: 48rem) { .fc-scene :global(.scene) { aspect-ratio: 4 / 3; } }
+
+  .fc-story { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .fc-story__part + .fc-story__part { margin-top: 2.5rem; }
+  .fc-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .fc-story p { margin: 0.9rem 0 0; font-size: 1.0625rem; line-height: 1.65; color: var(--color-ink-soft); text-wrap: pretty; }
+  .fc-story p :global(a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+  .fc-sec { padding-top: clamp(4rem, 9vw, 6rem); }
+  .fc-h2--sec { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; }
+  .fc-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  .fc-moments {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) { .fc-moments { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .fc-moment { padding: 1.25rem 0 1.4rem; border-top: 1px solid var(--color-rule); }
+  .fc-moment__h { display: flex; align-items: center; gap: 0.7rem; margin: 0; font-size: 1.0625rem; font-weight: 600; color: var(--color-ink); }
+  .fc-moment__tile {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.6rem;
+    color: var(--cat-ink);
+    background: color-mix(in oklab, var(--cat-ink) 14%, var(--color-paper));
+  }
+  .fc-moment__tile :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .fc-moment__p { margin: 0.55rem 0 0 2.7rem; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  /* Housed features: light rows, like the /for/ hub's list. */
+  .fc-rows {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) { .fc-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .fc-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 0.85rem 0.25rem;
+    border-bottom: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .fc-row:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
+  .fc-row__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
     background: var(--color-warm);
-    border-color: color-mix(in srgb, var(--color-ink) 16%, var(--color-rule));
+    color: var(--color-ink);
   }
-  .use-case-audiences__pill :global(svg) {
-    width: 0.95rem;
-    height: 0.95rem;
-    color: var(--use-case-ink);
+  .fc-row__icon :global(svg) { width: 1rem; height: 1rem; }
+  .fc-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .fc-row__title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; font-weight: 600; color: var(--color-ink); }
+  .fc-row__soon {
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+    background: var(--color-warm);
   }
+  .fc-row__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
+  .fc-row__chev {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--color-ink-faint);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 200ms ease, stroke 200ms ease;
+  }
+  .fc-row--link:hover .fc-row__chev { transform: translateX(2px); stroke: var(--color-ink); }
+
+  .fc-ucs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) { .fc-ucs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) {
+    .fc-ucs { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; }
+    .fc-ucs > li { grid-column: span 3; }
+  }
+  .fc-ucs > li:only-child { grid-column: 1 / -1 !important; }
+  .fc-ucs > li:only-child :global(.ucard__sky) { aspect-ratio: 4 / 1; }
+  @media (max-width: 40rem) { .fc-ucs > li:only-child :global(.ucard__sky) { aspect-ratio: 16 / 9; } }
+
+  .fc-quote {
+    max-width: calc(46rem + 2 * var(--nx-gutter));
+    margin: 0 auto;
+    padding-top: clamp(4rem, 9vw, 6rem);
+    text-align: center;
+  }
+  .fc-quote blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .fc-quote blockquote :global(p) { margin: 0; }
+  .fc-quote figcaption { margin-top: 1.25rem; font-size: 0.9375rem; color: var(--color-ink-faint); }
+
+  .fc-posts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) { .fc-posts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>

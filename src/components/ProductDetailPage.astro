@@ -1,11 +1,14 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PageClosingCTA from "./PageClosingCTA.astro";
-import ProductMoments from "./ProductMoments.astro";
-import ProductRelatedStrip from "./ProductRelatedStrip.astro";
-import RelatedBlogPosts from "./RelatedBlogPosts.astro";
-import ComparePreview from "./ComparePreview.astro";
-import ChurchOrgInterestBridge from "./ChurchOrgInterestBridge.astro";
+/**
+ * ProductDetailPage — one feature (/features/<slug>/) or add-on
+ * (/add-ons/<slug>/), from the same ProductPage shape either way. A feature's
+ * back link and "works well with" rail point at its category; an add-on's
+ * point at pricing and close on the Plus upgrade instead of the free try.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import ClosingCall from "./next/ClosingCall.astro";
+import ComparePreview from "./next/ComparePreview.astro";
+import BlogNextCard from "./next/BlogNextCard.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
@@ -13,21 +16,14 @@ import { getCategoryForFeature } from "../lib/feature-categories-data.ts";
 import { draftPageIsReachable, isDraftPageSlug } from "../lib/draft-pages.ts";
 import { getCompareSeoPageBySlug } from "../lib/compare-seo-pages.ts";
 import type { ProductPage } from "../lib/product-page-data.ts";
-import { buildAddonJsonLd, buildFeatureJsonLd } from "../lib/product-page-data.ts";
-import { hasDetailContent } from "../lib/product-page-data.ts";
-import {
-  getRelatedBlogPosts,
-  includeBlogDrafts,
-  isBlogPostListed,
-} from "../lib/blog.ts";
+import { buildAddonJsonLd, buildFeatureJsonLd, hasDetailContent } from "../lib/product-page-data.ts";
+import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
 import { fathomSignup, fathomTry, fathomCompare } from "../lib/fathom-events.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
-import "../styles/use-cases.css";
 
 interface Props {
   page: ProductPage;
 }
-
 const { page } = Astro.props;
 
 const allFeatures = await getCollection("features");
@@ -35,11 +31,6 @@ const publishedFeatureSlugs = new Set(
   allFeatures.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id)
 );
 
-/*
-  A related id can name a feature whose page is a draft (draft-pages.ts strips it
-  from the production build), and frontmatter cannot ask that question for
-  itself — so the filter lives here rather than in every MDX file.
-*/
 const relatedFeatures =
   page.kind === "feature"
     ? page.relatedIds
@@ -49,208 +40,159 @@ const relatedFeatures =
     : [];
 
 const compareSlugs = page.compareSlugs ?? [];
-const relatedCompare = compareSlugs
-  .map((slug) => getCompareBySlug(slug))
-  .filter((e): e is NonNullable<typeof e> => e !== undefined);
-/** SEO category/alternative guides mixed into compareSlugs (not CSV vs entries). */
+const relatedCompare = compareSlugs.map((s) => getCompareBySlug(s)).filter((e): e is NonNullable<typeof e> => e !== undefined);
 const relatedSeoGuides = compareSlugs
-  .map((slug) => getCompareSeoPageBySlug(slug))
+  .map((s) => getCompareSeoPageBySlug(s))
   .filter((g): g is NonNullable<typeof g> => g !== undefined && g.draft !== true);
 
-const showDrafts = includeBlogDrafts();
-const relatedBlogPosts =
+const posts =
   page.kind === "feature"
     ? getRelatedBlogPosts(
-        (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+        (await getCollection("blog")).filter((p) => isBlogPostListed(p, includeBlogDrafts())),
         { feature: page.slug },
       )
     : [];
 
 const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJsonLd(page);
-/*
-  A feature page now sits under a category, so "back" means the category rather
-  than an anchor on the homepage. This is the first link from a feature page back
-  up the tree — until categories existed, /features/* only ever pointed sideways
-  at other features.
-*/
 const category = page.kind === "feature" ? getCategoryForFeature(page.slug) : undefined;
-/* Fallback is the homepage tour, not the old /features/ hub, which is gone. */
-const backHref = page.kind === "feature" ? (category?.href ?? "/#features") : "/pricing/";
-const backLabel = page.kind === "feature" ? (category?.title ?? "Features") : "Pricing";
-/*
-  A feature page's closing CTA is the try-it-free handoff. An addon page's is the Plus-upgrade
-  button instead — Review exercises and Shared Spaces both set closingHref/closingLabel below to
-  send it to APP_UPGRADE_URL — which isn't a guest visit, so it keeps the signup event.
-*/
-const fathomTrack =
-  page.kind === "feature"
-    ? fathomTry.featureDetail(page.slug)
-    : fathomSignup.addonDetail(page.slug);
-const defaultHeroImage =
-  page.kind === "feature" ? "/images/auth-hero/ai_bg_053.webp" : "/images/auth-hero/ai_bg_045.webp";
+const backHref = page.kind === "feature" ? (category?.href ?? "/tour/") : "/pricing/";
+const backLabel = page.kind === "feature" ? (category?.title ?? "The tour") : "Pricing";
+const fathomTrack = page.kind === "feature" ? fathomTry.featureDetail(page.slug) : fathomSignup.addonDetail(page.slug);
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
-/*
-  A product page can be a draft too, the same way /3/ was before launch. The
-  slug is the path, not the id, so this matches DRAFT_PAGE_SLUGS entries like
-  "features/reminders".
-*/
 const draftSlug = page.href.replace(/^\/|\/$/g, "");
 const isDraft = isDraftPageSlug(draftSlug);
-const ogImage =
-  page.kind === "feature"
-    ? `/images/features/og/${page.slug}.webp`
-    : `/images/add-ons/og/${page.slug}.webp`;
+const ogImage = page.kind === "feature" ? `/images/features/og/${page.slug}.webp` : `/images/add-ons/og/${page.slug}.webp`;
 ---
 
-<BaseLayout
-  title={page.seoTitle}
-  description={page.seoDescription}
-  ogImage={ogImage}
-  noindex={isDraft}
-  jsonLd={jsonLd}
->
-  {
-    isDraft && (
-      <div class="draft-page-banner" role="status">
-        Draft — not indexed or deployed. Remove <code>"{draftSlug}"</code> from DRAFT_PAGE_SLUGS to
-        publish.
-      </div>
-    )
-  }
-  <article
-    class="use-case-detail product-detail"
-    style={`--use-case-ink: ${page.ink};${page.inkFg ? ` --use-case-ink-fg: ${page.inkFg};` : ""}`}
-  >
-    <header class="border-b border-[var(--color-rule)]">
-      <div class="detail-content py-10 md:py-14">
-        <div data-reveal>
-          <div class="use-case-detail__nav">
-            <a href={backHref} class="btn-pill inline-flex items-center gap-1.5 text-sm">
-              <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path
-                  fill-rule="evenodd"
-                  d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              {backLabel}
-            </a>
-          </div>
-
-          <div
-            class:list={[
-              "use-case-hero__art mt-8",
-              page.kind === "feature" && "use-case-hero__art--tint",
-            ]}
-            style={
-              page.kind !== "feature"
-                ? `--usecase-art-image: url('${page.image ?? defaultHeroImage}');`
-                : undefined
-            }
-          >
-            <span class="use-case-hero__badge">
-              <Icon name={page.icon} />
-            </span>
-          </div>
-
-          <div class="mt-8 text-center">
-            <div class="use-case-detail__badges">
-              <span class="use-case-detail__title-badge">{page.title}</span>
-              {page.comingSoon && (
-                <span class="use-case-detail__soon-badge">
-                  {page.comingSoonLine ?? "Coming soon"}
-                </span>
-              )}
-            </div>
-            <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">{page.heroTitle}</h1>
-            <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-ink-soft)]">
-              {page.heroLead}
-            </p>
-          </div>
-        </div>
-      </div>
+<NextLayout title={page.seoTitle} description={page.seoDescription} noindex={isDraft}>
+  <article style={`--pd-ink: ${page.ink}; --pd-ink-fg: ${page.inkFg ?? page.ink};`}>
+    <header class="nx-wrap pd-intro">
+      <a class="pd-back" href={backHref}>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        {backLabel}
+      </a>
+      <span class="pd-tile" aria-hidden="true"><Icon name={page.icon} /></span>
+      <p class="pd-badges">
+        <span class="pd-badge">{page.title}</span>
+        {page.comingSoon && <span class="pd-badge pd-badge--soon">{page.comingSoonLine ?? "Coming soon"}</span>}
+      </p>
+      <h1 class="nx-display pd-title">{page.heroTitle}</h1>
+      <p class="nx-lead pd-lead">{page.heroLead}</p>
     </header>
 
-    {
-      page.sections.length > 0 && (
-        <section class="detail-content py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
-          <div class="prose-letter space-y-8">
-            {page.sections.map((section) => (
-              <div>
-                <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
-                {section.paragraphs.map((p) => (
-                  <p class="mt-3 text-[var(--color-ink-soft)]" set:html={inlineMdLinksToHtml(p)} />
-                ))}
-              </div>
-            ))}
+    {page.sections.length > 0 && (
+      <section class="nx-wrap pd-story" aria-label="The story">
+        {page.sections.map((section) => (
+          <div class="pd-story__part" data-reveal>
+            <h2 class="pd-h2">{section.heading}</h2>
+            {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
           </div>
-        </section>
-      )
-    }
+        ))}
+      </section>
+    )}
 
-    {
-      showChurchBridge && (
-        <div class="pb-10">
-          <ChurchOrgInterestBridge variant="shared-spaces" />
-        </div>
-      )
-    }
-
-    <ProductMoments moments={page.moments} />
-
-    {
-      page.kind === "feature" && (
-        <ProductRelatedStrip
-          page={page}
-          relatedFeatures={relatedFeatures}
-          publishedFeatureSlugs={publishedFeatureSlugs}
-        />
-      )
-    }
-
-    {
-      relatedCompare.length > 0 && (
-        <ComparePreview
-          id="works-alongside"
-          entries={relatedCompare}
-          eyebrow="Compare"
-          title="Works alongside other tools"
-          lead="Harvous does a different job than most Bible apps. Many people use it next to something they already love."
-          showAllLink
-          fathomTrack={fathomCompare.detailRelated}
-          fathomAllTrack={fathomCompare.homeAll}
-        />
-      )
-    }
-
-    {
-      relatedSeoGuides.length > 0 && (
-        <section class="frame-divider" data-reveal>
-          <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
-            <span class="eyebrow-pill">Guides</span>
-            <h2 class="section-title mt-3">Related shortlists</h2>
-            <p class="lead mt-3">
-              Curated comparisons that call out this job — how Harvous stacks up for the same search intent.
-            </p>
-            <ul class="product-seo-guides" role="list">
-              {
-                relatedSeoGuides.map((guide) => (
-                  <li>
-                    <a href={`/compare/${guide.slug}/`}>
-                      <span class="product-seo-guides__label">{guide.guideLabel}</span>
-                      <span class="product-seo-guides__desc">{guide.guideDescription}</span>
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
+    {page.showcases.length > 0 && (
+      <section class="nx-wrap pd-showcases" aria-label="A closer look">
+        {page.showcases.map((s, i) => (
+          <div class:list={["pd-showcase", (s.reverse ? i % 2 === 0 : i % 2 === 1) && "is-flip"]}>
+            <div class="pd-showcase__stage" style={`--wash: var(--tint-${s.color});`}>
+              <img src={s.image} alt={s.imageAlt} loading="lazy" decoding="async" />
+            </div>
+            <div class="pd-showcase__text">
+              <p class="nx-kicker">{s.eyebrow}</p>
+              <h2 class="pd-h2 pd-showcase__title">{s.title}</h2>
+              {s.body.map((p) => <p>{p}</p>)}
+            </div>
           </div>
-        </section>
-      )
-    }
+        ))}
+      </section>
+    )}
+
+    {showChurchBridge && (
+      <aside class="nx-wrap pd-bridge" data-reveal>
+        <p class="nx-kicker">For churches</p>
+        <p>
+          Shared Spaces are live for groups. If your whole church teaches on Harvous, it can keep a
+          teaching plan for each ministry too — tell me about yours.
+        </p>
+        <a class="nx-link" href="/for/churches/#interest">Share church interest →</a>
+      </aside>
+    )}
+
+    {page.moments.length > 0 && (
+      <section class="nx-wrap pd-sec" aria-labelledby="moments-title">
+        <h2 id="moments-title" class="pd-h2 pd-h2--sec">What that looks like in Harvous</h2>
+        <ul class="pd-moments" role="list" data-reveal="stagger">
+          {page.moments.map((m) => (
+            <li class="pd-moment">
+              <h3 class="pd-moment__h">
+                <span class="pd-moment__tile"><Icon name={m.icon} /></span>
+                {m.heading}
+              </h3>
+              <p class="pd-moment__p">{m.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {page.kind === "feature" && relatedFeatures.length > 0 && (
+      <section class="nx-wrap pd-sec" aria-labelledby="related-title">
+        <h2 id="related-title" class="pd-h2 pd-h2--sec">{page.relatedHeading}</h2>
+        <p class="pd-sec__lead">{page.relatedLead}</p>
+        <ul class="pd-rows" role="list">
+          {relatedFeatures.map((f) => {
+            const href = publishedFeatureSlugs.has(f.id) ? `/features/${f.id}/` : undefined;
+            const Tag = href ? "a" : "div";
+            return (
+              <li>
+                <Tag class:list={["pd-row", href && "pd-row--link"]} href={href}>
+                  <span class="pd-row__text">
+                    <span class="pd-row__title">{f.data.tagline}</span>
+                    <span class="pd-row__desc">{f.data.title}</span>
+                  </span>
+                  {href && <svg class="pd-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>}
+                </Tag>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+
+    {relatedCompare.length > 0 && (
+      <ComparePreview
+        id="works-alongside"
+        kicker="Compare"
+        title="Works alongside other tools."
+        lead="Harvous does a different job than most Bible apps. Plenty of people use it next to something they already love."
+        slugs={compareSlugs}
+      />
+    )}
+
+    {relatedSeoGuides.length > 0 && (
+      <section class="nx-wrap pd-sec" aria-labelledby="guides-title">
+        <h2 id="guides-title" class="pd-h2 pd-h2--sec">Related shortlists</h2>
+        <p class="pd-sec__lead">Curated comparisons that call out this job — how Harvous stacks up for the same search.</p>
+        <ul class="pd-rows" role="list">
+          {relatedSeoGuides.map((g) => (
+            <li>
+              <a class="pd-row pd-row--link" href={`/compare/${g.slug}/`}>
+                <span class="pd-row__text">
+                  <span class="pd-row__title">{g.guideLabel}</span>
+                  <span class="pd-row__desc">{g.guideDescription}</span>
+                </span>
+                <svg class="pd-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </article>
 
-  <PageClosingCTA
-    heading={page.closingHeading}
+  <ClosingCall
+    title={page.closingHeading}
     lead={page.closingLead}
     href={page.closingHref}
     label={page.closingLabel}
@@ -260,50 +202,157 @@ const ogImage =
     secondaryLabel={page.kind === "addon" ? "See all pricing" : undefined}
   />
 
-  {page.kind === "feature" && <RelatedBlogPosts posts={relatedBlogPosts} />}
-</BaseLayout>
+  {page.kind === "feature" && posts.length > 0 && (
+    <section class="nx-wrap pd-sec" aria-labelledby="posts-title">
+      <h2 id="posts-title" class="pd-h2 pd-h2--sec">From the blog</h2>
+      <ul class="pd-posts" role="list">
+        {posts.map((p) => <li><BlogNextCard post={p} /></li>)}
+      </ul>
+    </section>
+  )}
+</NextLayout>
 
 <style>
-  .prose-letter :global(a) {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .pd-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .pd-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    border-radius: 999px;
+    background: var(--color-warm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
   }
+  .pd-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .pd-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-  .product-seo-guides {
-    list-style: none;
-    margin: 1.75rem 0 0;
-    padding: 0;
+  .pd-tile {
     display: grid;
-    gap: 0.75rem;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    margin: 1.75rem auto 0;
+    border-radius: 28%;
+    color: var(--pd-ink-fg);
+    background: color-mix(in oklab, var(--pd-ink) 16%, var(--color-paper));
   }
+  .pd-tile :global(svg) { width: 1.6rem; height: 1.6rem; }
 
-  .product-seo-guides a {
+  .pd-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.25rem 0 0; }
+  .pd-badge { padding: 0.3rem 0.8rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; color: var(--pd-ink-fg); background: color-mix(in oklab, var(--pd-ink) 14%, var(--color-paper)); }
+  .pd-badge--soon { color: var(--color-ink-soft); background: var(--color-warm); }
+  .pd-title { margin: 1rem auto 0; max-width: 20ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .pd-lead { margin: 1.5rem auto 0; }
+
+  .pd-story { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .pd-story__part + .pd-story__part { margin-top: 2.5rem; }
+  .pd-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .pd-story p { margin: 0.9rem 0 0; font-size: 1.0625rem; line-height: 1.65; color: var(--color-ink-soft); text-wrap: pretty; }
+  .pd-story p :global(a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+  /* Showcases: a real screenshot on a tinted stage, alternating sides. */
+  .pd-showcases { max-width: calc(52rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); display: grid; gap: clamp(3rem, 7vw, 4.5rem); }
+  .pd-showcase { display: grid; gap: 1.75rem; align-items: center; }
+  @media (min-width: 52rem) {
+    .pd-showcase { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2.5rem, 5vw, 3.5rem); }
+    .pd-showcase.is-flip .pd-showcase__stage { order: 2; }
+  }
+  .pd-showcase__stage {
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: 1.5rem;
+    background: var(--wash);
+  }
+  .pd-showcase__stage img {
+    width: 100%;
+    border-radius: 0.85rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 24px 48px -20px rgba(15, 23, 42, 0.4);
+  }
+  .pd-showcase__title { margin-top: 0.5rem; }
+  .pd-showcase__text p { margin: 0.7rem 0 0; font-size: 1rem; line-height: 1.6; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  .pd-bridge {
+    max-width: calc(40rem + 2 * var(--nx-gutter));
+    margin-top: clamp(2.5rem, 6vw, 3.5rem);
+    padding: 1.5rem 1.75rem;
+    border-radius: 1.4rem;
+    background: var(--color-warm);
+  }
+  .pd-bridge p:not(.nx-kicker) { margin: 0.6rem 0 0.9rem; }
+
+  .pd-sec { padding-top: clamp(4rem, 9vw, 6rem); }
+  .pd-h2--sec { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; }
+  .pd-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  .pd-moments {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) { .pd-moments { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .pd-moment { padding: 1.25rem 0 1.4rem; border-top: 1px solid var(--color-rule); }
+  .pd-moment__h { display: flex; align-items: center; gap: 0.7rem; margin: 0; font-size: 1.0625rem; font-weight: 600; color: var(--color-ink); }
+  .pd-moment__tile {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.6rem;
+    color: var(--pd-ink-fg);
+    background: color-mix(in oklab, var(--pd-ink) 14%, var(--color-paper));
+  }
+  .pd-moment__tile :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .pd-moment__p { margin: 0.55rem 0 0 2.7rem; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  .pd-rows, .pd-posts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) { .pd-rows, .pd-posts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .pd-row {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1rem 0;
-    border-top: 1px solid var(--color-rule);
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 0.85rem 0.25rem;
+    border-bottom: 1px solid var(--color-rule);
     color: inherit;
     text-decoration: none;
   }
-
-  .product-seo-guides li:last-child a {
-    border-bottom: 1px solid var(--color-rule);
+  .pd-row:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
+  .pd-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .pd-row__title { font-weight: 600; color: var(--color-ink); }
+  .pd-row__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
+  .pd-row__chev {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--color-ink-faint);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 200ms ease, stroke 200ms ease;
   }
-
-  .product-seo-guides a:hover .product-seo-guides__label {
-    color: var(--color-accent);
-  }
-
-  .product-seo-guides__label {
-    font-weight: 600;
-    color: var(--color-ink);
-  }
-
-  .product-seo-guides__desc {
-    font-size: 0.95rem;
-    line-height: 1.45;
-    color: var(--color-ink-soft);
-  }
+  .pd-row--link:hover .pd-row__chev { transform: translateX(2px); stroke: var(--color-ink); }
 </style>

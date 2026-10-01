@@ -30,8 +30,8 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
 
   <div class="nx-wrap hero__head">
     <h1 class="hero__title">
-      <span class="hero__line">Bible study <HeroPillCycle mono words={NOUNS} /></span>
-      <span class="hero__line">worth keeping</span>
+      <span class="hero__line">Make a study Bible</span>
+      <span class="hero__line">with <HeroPillCycle mono words={NOUNS} /></span>
     </h1>
     {/* The Harvous 3 walkthrough (R2, via the Worker — see wrangler.jsonc). */}
     <div class="hero__watch">
@@ -128,14 +128,14 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
     font-family: var(--font-display);
     /* The site's own heading voice (600, gently tightened), just larger — not
        a heavier cut that only this page would use. */
-    font-size: clamp(2.6rem, 6.2vw, 5.5rem);
-    font-weight: 500;
+    font-size: clamp(2.6rem,4.2vw, 5.5rem);
+    font-weight: 600;
     line-height: 1;
     letter-spacing: -0.035em;
     color: var(--color-ink);
   }
   .hero__line { display: block; }
-  .hero__watch { margin-top: clamp(1.25rem, 2.4vw, 1.75rem); }
+  .hero__watch { margin-top:.5rem}
   .hero__watch :global(.hero-video-inline) {
     padding: 0.45rem 1rem 0.45rem 1.05rem;
     font-size: 0.9375rem;

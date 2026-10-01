@@ -1,8 +1,12 @@
 ---
 /**
- * ClosingCall — the last thing on a /next/ page: one line, one button, on the
- * same sky the hero opened with. Hides the sticky pill while it's on screen so
+ * ClosingCall — the last thing on a page: one line, one button, on the same
+ * sky the hero opened with. Hides the sticky pill while it's on screen so
  * there's only ever one "Try Harvous free" in view.
+ *
+ * Defaults are the generic try-it-free handoff. A page with its own CTA (an
+ * add-on selling Plus, say) overrides `href`/`label`/`external`, and can add
+ * a second, quieter link beside it (`secondaryHref`/`secondaryLabel`).
  */
 import { buildTryUrl } from "../../lib/signup-url.ts";
 import { fathomTry } from "../../lib/fathom-events.ts";
@@ -11,11 +15,24 @@ import { backdropSrc } from "../../lib/next/content.ts";
 interface Props {
   title?: string;
   lead?: string;
+  href?: string;
+  label?: string;
+  /** True for a link that leaves harvous.com (upgrade, sign-up elsewhere). */
+  external?: boolean;
+  fathomTrack?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
 }
 
 const {
   title = "Start with today's passage.",
   lead = "No account needed. Sign up when you want to keep what you wrote. Harvous is on the web today; Mac, iPad, and iPhone apps are coming later.",
+  href = buildTryUrl({ source: "next_closing" }),
+  label = "Try Harvous free",
+  external = false,
+  fathomTrack = fathomTry.nextClosing,
+  secondaryHref,
+  secondaryLabel,
 } = Astro.props;
 ---
 
@@ -25,14 +42,19 @@ const {
       <img class="close__sky" src={backdropSrc("077")} alt="" loading="lazy" />
       <h2 class="nx-display close__title">{title}</h2>
       <p class="nx-lead close__lead">{lead}</p>
-      <a
-        class="nx-btn nx-btn--accent close__btn"
-        href={buildTryUrl({ source: "next_closing" })}
-        data-try-cta
-        data-fathom-track={fathomTry.nextClosing}
-      >
-        Try Harvous free
-      </a>
+      <div class="close__acts">
+        <a
+          class="nx-btn nx-btn--accent close__btn"
+          href={href}
+          {...external ? { target: "_blank", rel: "noopener" } : { "data-try-cta": true }}
+          data-fathom-track={fathomTrack}
+        >
+          {label}
+        </a>
+        {secondaryHref && secondaryLabel && (
+          <a class="nx-btn nx-btn--ghost close__btn" href={secondaryHref}>{secondaryLabel}</a>
+        )}
+      </div>
     </div>
   </div>
 </section>
@@ -65,5 +87,6 @@ const {
   .close__title { margin: 0 auto; max-width: 12ch; font-size: clamp(2.5rem, 6.5vw, 5rem); }
   /* Two lines at most: wider than the usual lead, balanced so they break evenly. */
   .close__lead { max-width: 46rem; margin: 1.25rem auto 0; color: var(--color-ink-soft); text-wrap: balance; }
-  .close__btn { margin-top: 2rem; min-height: 3.4rem; padding-inline: 2rem; font-size: 1.0625rem; }
+  .close__acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 2rem; }
+  .close__btn { min-height: 3.4rem; padding-inline: 2rem; font-size: 1.0625rem; margin-top: 0; }
 </style>
