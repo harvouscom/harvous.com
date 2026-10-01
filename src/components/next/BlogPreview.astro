@@ -1,9 +1,10 @@
 ---
 /**
  * BlogPreview — the home page's way into Bright Enough. The old strip's
- * pyramid of topic blocks and its one line stay; under the line, the three
- * newest posts as quiet rows, so it reads as "what I wrote lately" rather
- * than a second hero. The pyramid gets the other column to itself.
+ * pyramid of topic blocks and its one line stay. The heading sits on the
+ * left, the pyramid on the right with its base on the list's top rule — the
+ * blocks fall onto the line — and the three newest posts run full width
+ * beneath it on hairlines, like a contents page.
  */
 import { getCollection } from "astro:content";
 import { fathomBlog } from "../../lib/fathom-events.ts";
@@ -60,8 +61,10 @@ const latest = sortBlogPostsByDate(
                   {blogCategoryLabel(post.data.category)}
                 </span>
                 <span class="blogp__name">{post.data.title}</span>
-                <span class="blogp__date">{formatBlogDate(post.data.publishDate)}</span>
               </span>
+              <time class="blogp__date" datetime={post.data.publishDate.toISOString().slice(0, 10)}>
+                {formatBlogDate(post.data.publishDate)}
+              </time>
             </a>
           </li>
         );
@@ -74,39 +77,77 @@ const latest = sortBlogPostsByDate(
   /* The topic blocks drop in from well above their stack; the section clips
      them so they fall out of its own top edge rather than over the maker note. */
   .blogp { overflow: clip; }
+
   .blogp__grid {
     display: grid;
-    gap: 2rem;
     grid-template-areas: "art" "intro" "list";
+    row-gap: 1.5rem;
   }
-  .blogp__art { grid-area: art; width: min(100%, 13rem); }
-  .blogp__intro { grid-area: intro; }
+  .blogp__art { grid-area: art; width: 9.5rem; }
+  .blogp__intro { grid-area: intro; padding-bottom: 1rem; }
+  .blogp__list { grid-area: list; }
+
+  @media (min-width: 40rem) {
+    .blogp__grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "intro art" "list list";
+      column-gap: 3rem;
+      row-gap: 0;
+    }
+    /* Both sit on the list's top rule: the copy with room above the line,
+       the pyramid right on it. */
+    .blogp__intro { align-self: end; padding-bottom: 2.75rem; }
+    .blogp__art { align-self: end; width: clamp(11rem, 24vw, 17rem); margin-bottom: -1px; }
+  }
+
+  .blogp__intro .nx-title { margin: 0.6rem 0 0; }
+  .blogp__intro .nx-lead { margin: 0.9rem 0 0; max-width: 30rem; }
+  .blogp__intro .blogp__btn { margin-top: 1.75rem; }
+
   .blogp__list {
     margin: 0;
     padding: 0;
     list-style: none;
     border-bottom: 1px solid var(--color-rule);
   }
-  /* Rows on hairlines, like a contents page — not a stack of cards. */
   .blogp__list li { border-top: 1px solid var(--color-rule); }
+
   .blogp__row {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "thumb text" "thumb date";
+    column-gap: 1.1rem;
+    row-gap: 0.25rem;
     align-items: center;
-    gap: 1.1rem;
     padding-block: 1.1rem;
     color: inherit;
     text-decoration: none;
   }
-  .blogp__row:hover .blogp__name { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .blogp__thumb { grid-area: thumb; }
+  .blogp__text { grid-area: text; align-self: end; }
+  .blogp__date { grid-area: date; align-self: start; }
+  @media (min-width: 40rem) {
+    .blogp__row {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas: "thumb text date";
+      column-gap: 1.5rem;
+    }
+    .blogp__text, .blogp__date { align-self: center; }
+  }
+  .blogp__row:hover .blogp__name {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
   .blogp__thumb {
-    flex: none;
-    width: 4.5rem;
-    height: 4.5rem;
-    border-radius: 0.9rem;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.85rem;
     object-fit: cover;
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink) 8%, transparent);
   }
-  .blogp__text { display: grid; gap: 0.2rem; min-width: 0; }
+  .blogp__text { display: grid; gap: 0.3rem; min-width: 0; }
   .blogp__topic {
     display: inline-flex;
     align-items: center;
@@ -119,12 +160,17 @@ const latest = sortBlogPostsByDate(
   .blogp__topic :global(.blogp__icon) { width: 0.85rem; height: 0.85rem; }
   .blogp__name {
     font-family: var(--font-display);
-    font-size: 1.2rem;
+    font-size: clamp(1.1rem, 1.6vw, 1.3rem);
     font-weight: var(--nx-heading-weight, 560);
     line-height: 1.25;
     letter-spacing: -0.015em;
     color: var(--color-ink);
     text-wrap: pretty;
   }
-  .blogp__date { font-size: 0.875rem; color: var(--color-ink-faint); }
+  .blogp__date {
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
 </style>
