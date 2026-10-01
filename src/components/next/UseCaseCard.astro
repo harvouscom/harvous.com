@@ -71,7 +71,12 @@ const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
   }
   /* Twice as wide as a single card, same sky height, so a row of mixed
      widths lines up. */
-  .ucard--large .ucard__sky { aspect-ratio: 32 / 9; }
+  /* Only where the card really spans two columns (the hub's three-column grid);
+     in one or two columns it is an ordinary card, so its neighbour isn't
+     stretched to match a sky built for twice the width. */
+  @media (min-width: 68rem) {
+    .ucard--large .ucard__sky { aspect-ratio: 32 / 9; }
+  }
   .ucard__sky img {
     width: 100%;
     height: 100%;
@@ -113,7 +118,9 @@ const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
     letter-spacing: -0.02em;
     color: var(--color-ink);
   }
-  .ucard--large .ucard__title { font-size: 1.5rem; }
+  @media (min-width: 68rem) {
+    .ucard--large .ucard__title { font-size: 1.5rem; }
+  }
   .ucard__soon {
     padding: 0.1rem 0.5rem;
     border-radius: 999px;
