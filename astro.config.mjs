@@ -118,5 +118,19 @@ export default defineConfig({
   redirects: { ...releaseNoteRedirects, ...addonSlugRedirects },
   vite: {
     plugins: [tailwindcss()],
+    /*
+      The two videos live in R2 and are streamed by the Worker (serveMedia in
+      cloudflare/worker.ts), which `astro dev` never runs — so locally they were
+      a 404 and the hero's walkthrough wouldn't play. In dev only, hand them to
+      production instead. Range headers pass straight through, so seeking works.
+    */
+    server: {
+      proxy: Object.fromEntries(
+        ["/harvous-3-walkthrough.mp4", "/touring-harvous-short.mp4"].map((path) => [
+          path,
+          { target: "https://harvous.com", changeOrigin: true },
+        ])
+      ),
+    },
   },
 });
