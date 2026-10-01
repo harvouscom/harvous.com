@@ -37,9 +37,8 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
     <div class="hero__watch">
       <HeroVideoLightbox
         src="/harvous-3-walkthrough.mp4"
-        label="Watch me walk through it in 4 min"
+        label="Watch the 4-minute walkthrough"
         variant="inline"
-        avatar="/derek-avatar.webp"
       />
     </div>
   </div>
@@ -137,7 +136,7 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
   .hero__line { display: block; }
   .hero__watch { margin-top:.5rem}
   .hero__watch :global(.hero-video-inline) {
-    padding: 0.45rem 1rem 0.45rem 1.05rem;
+    padding: 0.45rem 1rem 0.45rem 0.55rem;
     font-size: 0.9375rem;
     background: color-mix(in srgb, #fff 72%, transparent);
     backdrop-filter: blur(12px);
@@ -145,7 +144,6 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
     border-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
     box-shadow: 0 8px 24px -14px rgba(15, 23, 42, 0.35);
   }
-  .hero__watch :global(.hero-video-inline__face) { margin-left: -0.55rem; }
   @media (min-width: 40rem) {
     .hero__line { white-space: nowrap; }
   }
