@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T16:29:36.177Z",
+  "generatedAt": "2026-10-01T19:07:31.230Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -251,6 +251,29 @@
       "feat": "/blog-thumbs/keep-what-the-group-finds-feat.webp",
       "skipped": true
     },
+    "look-it-up-without-leaving-the-note": {
+      "category": "scripture-study",
+      "mood": "light",
+      "shape": "streak",
+      "source": "ai_bg_076.webp",
+      "sourceMean": 230,
+      "pack": [
+        "ai_bg_076.webp",
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#4a1a70",
+        "b": "#dec5ed",
+        "c": "#f3c8e0"
+      },
+      "spot": "/blog-thumbs/look-it-up-without-leaving-the-note-spot.webp",
+      "feat": "/blog-thumbs/look-it-up-without-leaving-the-note-feat.webp",
+      "skipped": false
+    },
     "notes-first-vs-ai-that-studies-for-you": {
       "category": "how-we-think",
       "mood": "light",
@@ -343,6 +366,29 @@
       "feat": "/blog-thumbs/prep-a-lesson-that-leaves-a-trail-feat.webp",
       "skipped": true
     },
+    "read-it-twice-side-by-side": {
+      "category": "scripture-study",
+      "mood": "light",
+      "shape": "split",
+      "source": "ai_bg_051.webp",
+      "sourceMean": 229,
+      "pack": [
+        "ai_bg_076.webp",
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_058.webp",
+        "ai_bg_044.webp",
+        "ai_bg_045.webp"
+      ],
+      "grade": {
+        "a": "#4a1a70",
+        "b": "#dec5ed",
+        "c": "#f3c8e0"
+      },
+      "spot": "/blog-thumbs/read-it-twice-side-by-side-spot.webp",
+      "feat": "/blog-thumbs/read-it-twice-side-by-side-feat.webp",
+      "skipped": false
+    },
     "remembering-is-the-point": {
       "category": "how-we-think",
       "mood": "light",
@@ -365,6 +411,29 @@
       "spot": "/blog-thumbs/remembering-is-the-point-spot.webp",
       "feat": "/blog-thumbs/remembering-is-the-point-feat.webp",
       "skipped": true
+    },
+    "review-that-asks-what-you-wrote": {
+      "category": "retention",
+      "mood": "dark",
+      "shape": "rings",
+      "source": "ai_bg_074.webp",
+      "sourceMean": 98,
+      "pack": [
+        "ai_bg_045.webp",
+        "ai_bg_047.webp",
+        "ai_bg_059.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp",
+        "ai_bg_074.webp"
+      ],
+      "grade": {
+        "a": "#7a2810",
+        "b": "#fbc8ad",
+        "c": "#fff1e8"
+      },
+      "spot": "/blog-thumbs/review-that-asks-what-you-wrote-spot.webp",
+      "feat": "/blog-thumbs/review-that-asks-what-you-wrote-feat.webp",
+      "skipped": false
     },
     "sermon-series-to-small-group-follow-up": {
       "category": "teaching",
@@ -411,6 +480,29 @@
       "spot": "/blog-thumbs/start-reading-in-harvous-spot.webp",
       "feat": "/blog-thumbs/start-reading-in-harvous-feat.webp",
       "skipped": true
+    },
+    "start-the-fall-with-a-shape": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "corner",
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
+      "pack": [
+        "ai_bg_075.webp",
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
+      },
+      "spot": "/blog-thumbs/start-the-fall-with-a-shape-spot.webp",
+      "feat": "/blog-thumbs/start-the-fall-with-a-shape-feat.webp",
+      "skipped": false
     },
     "start-with-scripture-pills": {
       "category": "using-harvous",
@@ -594,7 +686,7 @@
       },
       "spot": "/blog-thumbs/the-quiet-days-stay-spot.webp",
       "feat": "/blog-thumbs/the-quiet-days-stay-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "the-sidebar-did-too-much": {
       "category": "how-we-think",

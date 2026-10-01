@@ -67,6 +67,11 @@ const SHAPE_BY_SLUG = {
   "what-proverbs-25-2-taught-me": "arc",
   "tools-help-humans-teach": "wedge",
   "when-youve-taught-it-before": "corner",
+  // Two columns, verse for verse.
+  "read-it-twice-side-by-side": "split",
+  // A starting frame to build inside.
+  "start-the-fall-with-a-shape": "corner",
+  "review-that-asks-what-you-wrote": "rings",
 };
 
 /** Category fallback pools when no slug/keyword rule hits. */

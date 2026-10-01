@@ -12,7 +12,7 @@ type CategoryColors = Record<string, string>;
 const CATEGORY_BG: CategoryColors = {
   "study-habits": "var(--color-sky)",
   "how-we-think": "var(--color-cream)",
-  "scripture-study": "var(--color-lilac)",
+  "scripture-study": "var(--color-pink)",
   "using-harvous": "var(--color-warm)",
   teaching: "var(--color-lilac)",
   retention: "var(--color-peach)",

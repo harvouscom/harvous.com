@@ -40,7 +40,7 @@ export const BLOG_CATEGORY_LEADS: Record<BlogCategory, string> = {
 export const BLOG_CATEGORY_COLORS: Record<BlogCategory, { bg: string; ink: string }> = {
   "study-habits": { bg: "var(--color-sky)", ink: "var(--color-sky-ink)" },
   "how-we-think": { bg: "var(--color-cream)", ink: "var(--color-cream-ink)" },
-  "scripture-study": { bg: "var(--color-lilac)", ink: "var(--color-lilac-ink)" },
+  "scripture-study": { bg: "var(--color-pink)", ink: "var(--color-pink-ink)" },
   "using-harvous": { bg: "var(--color-warm)", ink: "var(--color-ink)" },
   teaching: { bg: "var(--color-lilac)", ink: "var(--color-lilac-ink)" },
   retention: { bg: "var(--color-peach)", ink: "var(--color-peach-ink)" },
