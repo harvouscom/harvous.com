@@ -5,6 +5,10 @@
  * holds five places to go (the blog is Bright Enough) and a way back into the
  * app. Everything else lives
  * in the footer. Trying Harvous is the sticky pill's job, not this one's.
+ *
+ * Under 40rem the links fold into a menu button, and the panel drops out of
+ * the pill in the same glass, with two more places (use cases, compare) that
+ * the desktop pill leaves to the footer.
  */
 import OptimizedImage from "../OptimizedImage.astro";
 import { fathomSignin } from "../../lib/fathom-events.ts";
@@ -14,7 +18,13 @@ const links = [
   { href: "/discover/", label: "Discover" },
   { href: "/blog/", label: "Blog" },
   { href: "/pricing/", label: "Pricing" },
-  { href: "/now/", label: "Now", wide: true },
+  { href: "/now/", label: "Now" },
+];
+
+/* Phone-only extras, for places a phone reader can't reach from the pill. */
+const more = [
+  { href: "/use-cases/", label: "Use cases" },
+  { href: "/compare/", label: "Compare" },
 ];
 
 const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
@@ -27,7 +37,7 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
     </a>
     <ul class="nxh__links">
       {links.map((l) => (
-        <li class:list={[l.wide && "nxh__wide"]}>
+        <li>
           <a href={l.href} class="nxh__link" aria-current={path.startsWith(l.href) ? "page" : undefined}>
             {l.label}
           </a>
@@ -41,7 +51,39 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
     >
       Sign in
     </a>
+    <button
+      type="button"
+      class="nxh__menu"
+      aria-expanded="false"
+      aria-controls="nxh-panel"
+      aria-label="Open menu"
+      data-nxh-toggle
+    >
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path class="nxh__bar nxh__bar--a" d="M4 7h12" />
+        <path class="nxh__bar nxh__bar--b" d="M4 13h12" />
+      </svg>
+    </button>
   </nav>
+
+  <div id="nxh-panel" class="nxh__panel" hidden data-nxh-panel>
+    <ul class="nxh__plist">
+      {links.map((l) => (
+        <li>
+          <a href={l.href} class="nxh__plink" aria-current={path.startsWith(l.href) ? "page" : undefined}>
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <ul class="nxh__pmore">
+      {more.map((l) => (
+        <li>
+          <a href={l.href} aria-current={path.startsWith(l.href) ? "page" : undefined}>{l.label}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
 </header>
 
 <style>
@@ -50,7 +92,9 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
     inset: 0.75rem 0 auto;
     z-index: 50;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
     padding-inline: 0.75rem;
     pointer-events: none;
   }
@@ -111,16 +155,120 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
   }
   .nxh__signin:hover { background: var(--color-warm); }
 
-  /* Phones: "Now" steps out of the pill (it's in the footer and linked from
-     the maker note) so the rest fit without crowding the edges. */
-  @media (max-width: 32rem) {
-    .nxh__wide { display: none; }
+  /* The menu button and its panel: phones only. */
+  .nxh__menu {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-left: 0.15rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
   }
-  @media (max-width: 26rem) {
-    .nxh__link,
-    .nxh__signin { padding-inline: 0.55rem; font-size: 0.8125rem; }
+  .nxh__menu:hover { background: color-mix(in srgb, var(--color-ink) 6%, transparent); }
+  .nxh__menu svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .nxh__bar { transform-origin: 10px 10px; transition: transform 200ms ease; }
+  .nxh__menu[aria-expanded="true"] .nxh__bar--a { transform: translateY(3px) rotate(45deg); }
+  .nxh__menu[aria-expanded="true"] .nxh__bar--b { transform: translateY(-3px) rotate(-45deg); }
+
+  .nxh__panel {
+    pointer-events: auto;
+    width: min(100%, 22rem);
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+    background: color-mix(in srgb, var(--color-paper) 90%, transparent);
+    backdrop-filter: saturate(1.6) blur(18px);
+    -webkit-backdrop-filter: saturate(1.6) blur(18px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 7%, transparent),
+      0 18px 40px -16px rgba(15, 23, 42, 0.3);
+    transform-origin: top center;
+    animation: nxh-drop 180ms ease;
   }
-  @media (max-width: 23rem) {
-    .nxh__signin { display: none; }
+  .nxh__panel[hidden] { display: none; }
+  @keyframes nxh-drop {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nxh__panel { animation: none; }
+    .nxh__bar { transition: none; }
+  }
+  .nxh__plist,
+  .nxh__pmore { margin: 0; padding: 0; list-style: none; }
+  .nxh__plink {
+    display: block;
+    padding: 0.8rem 1rem;
+    border-radius: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: var(--nx-heading-weight, 560);
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .nxh__plink:hover,
+  .nxh__plink[aria-current="page"] { background: color-mix(in srgb, var(--color-ink) 5%, transparent); }
+  .nxh__pmore {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    margin-top: 0.35rem;
+    padding: 0.85rem 1rem 0.6rem;
+    border-top: 1px solid var(--color-rule);
+  }
+  .nxh__pmore a { font-size: 0.9375rem; color: var(--color-ink-soft); text-decoration: none; }
+  .nxh__pmore a:hover,
+  .nxh__pmore a[aria-current="page"] { color: var(--color-ink); }
+
+  /* Phones: the links fold into the menu. */
+  @media (max-width: 40rem) {
+    .nxh__links { display: none; }
+    .nxh__menu { display: inline-flex; }
+    .nxh__logo { margin-right: auto; }
+    .nxh__pill { width: min(100%, 22rem); }
+  }
+  @media (min-width: 40.0625rem) {
+    .nxh__panel { display: none !important; }
   }
 </style>
+
+<script>
+  function initNextHeaderMenu() {
+    const toggle = document.querySelector<HTMLButtonElement>("[data-nxh-toggle]");
+    const panel = document.querySelector<HTMLElement>("[data-nxh-panel]");
+    if (!toggle || !panel || toggle.dataset.ready) return;
+    toggle.dataset.ready = "1";
+
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    };
+
+    toggle.addEventListener("click", () => setOpen(panel.hidden));
+    panel.addEventListener("click", (e) => {
+      if ((e.target as Element).closest("a")) setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener("click", (e) => {
+      const t = e.target as Node;
+      if (!panel.hidden && !panel.contains(t) && !toggle.contains(t)) setOpen(false);
+    });
+    window.matchMedia("(min-width: 40.0625rem)").addEventListener("change", (e) => {
+      if (e.matches) setOpen(false);
+    });
+  }
+
+  initNextHeaderMenu();
+  document.addEventListener("astro:page-load", initNextHeaderMenu);
+</script>
