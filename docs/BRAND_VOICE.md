@@ -14,6 +14,13 @@
 
 ## Voice Foundation
 
+### Who Is Speaking: "I", not "we"
+Harvous is made by one person, so the maker speaks as **"I"**: "I built the church side", "I'm not building a ChMS", "I shipped the reader in August". The site, the footer, and the blog's founder-bylined posts all already do this.
+
+Use **"we"** only when it genuinely means you and the reader, or people in general: "we all forget by Monday", "Didn't we already talk about this?", "where have we been in this book?" That is the shared-experience voice below, and it stays. Never use "we" to mean a company or team that doesn't exist, and revisit this the day there is one.
+
+(Much of this guide was written in "we"; read its "we" as "I" wherever it means the maker.)
+
 ### Who We Are
 We're the friend who gets it. The one who also struggles to remember Bible study insights, who wants deeper understanding without feeling overwhelmed, who values both tradition and helpful innovation. We speak from this place of shared experience, never from expertise or superiority.
 
@@ -43,7 +50,7 @@ We start with personal need, not market opportunity.
 - ✗ "Bible study engagement metrics show a clear market opportunity"
 
 **In practice:**
-- Lead with "I/we" before "you"
+- Lead with "I" before "you"
 - Share struggles before solutions
 - Frame features as personal discoveries
 - Maintain founder's voice in key communications

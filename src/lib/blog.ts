@@ -17,7 +17,7 @@ export function isBlogPostListed(
 
 export const BLOG_CATEGORY_LABELS: Record<BlogCategory, string> = {
   "study-habits": "Study habits",
-  "how-we-think": "How we think",
+  "how-we-think": "How I think",
   "scripture-study": "Scripture study",
   "using-harvous": "Using Harvous",
   teaching: "Teaching",
