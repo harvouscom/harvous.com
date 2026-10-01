@@ -76,6 +76,14 @@ const testimonials = defineCollection({
         a dated quote starts ageing the day after. */
     when: z.string().optional(),
     order: z.number(),
+    /**
+     * Whether this quote is in the unfiltered "wall" that TestimonialsSection
+     * (home) and ProofStrip (/next home) render — every entry, no filter, in
+     * `order`. false keeps a quote out of that wall while it's still reachable
+     * by id for a single use-case/audience page's testimonialId (see
+     * for-audiences-data.ts, use-cases-data.ts). Defaults true.
+     */
+    featured: z.boolean().default(true),
   }),
 });
 

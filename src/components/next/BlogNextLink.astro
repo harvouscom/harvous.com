@@ -1,0 +1,10 @@
+---
+/**
+ * The `a` override for MDX on /blog/<slug>/. Historically rewrote links to
+ * their /next/ preview copies while the redesign lived in parallel; now that
+ * /blog/ is canonical, every link just renders as authored.
+ */
+const { href, ...rest } = Astro.props as Record<string, unknown> & { href?: string };
+---
+
+<a href={href} {...rest}><slot /></a>

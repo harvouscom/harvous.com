@@ -1,0 +1,134 @@
+---
+/**
+ * LegalPage — /privacy/ and /terms/: a quiet centred head with a
+ * Privacy · Terms switch, the date, a plain-language line in my voice, then
+ * the document in one readable column. The wording itself is the live page's
+ * (components/legal/*), restyled here — never rewritten.
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+
+interface Props {
+  doc: "privacy" | "terms";
+  title: string;
+  description: string;
+  heading: string;
+  updated: string;
+  summary: string;
+}
+
+const { doc, title, description, heading, updated, summary } = Astro.props;
+const DOCS = [
+  { key: "privacy", label: "Privacy", href: "/privacy/" },
+  { key: "terms", label: "Terms", href: "/terms/" },
+] as const;
+---
+
+<NextLayout title={title} description={description}>
+  <header class="nx-wrap lg-intro">
+    <nav class="lg-switch" aria-label="Legal">
+      {DOCS.map((d) => (
+        <a href={d.href} aria-current={d.key === doc ? "page" : undefined}>{d.label}</a>
+      ))}
+    </nav>
+    <h1 class="nx-display lg-title">{heading}</h1>
+    <p class="lg-date">Last updated {updated}</p>
+    <p class="lg-summary">{summary}</p>
+  </header>
+
+  <article class="nx-wrap lg-doc">
+    <slot />
+    <aside class="lg-ask">
+      <p>Something here unclear? Ask me and I'll explain it in plain words.</p>
+      <a class="nx-btn nx-btn--ghost" href="mailto:derek@harvous.com">Email Derek</a>
+    </aside>
+  </article>
+</NextLayout>
+
+<style>
+  .lg-intro {
+    padding-top: clamp(7.5rem, 15vw, 10rem);
+    text-align: center;
+  }
+  .lg-switch {
+    display: inline-flex;
+    gap: 0.2rem;
+    padding: 0.25rem;
+    border-radius: 999px;
+    background: var(--color-warm);
+  }
+  .lg-switch a {
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+  .lg-switch a:hover { color: var(--color-ink); }
+  .lg-switch a[aria-current="page"] { color: #fff; background: var(--color-ink); }
+  .lg-title { margin: 1.5rem auto 0; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .lg-date { margin: 1rem 0 0; font-size: 0.9375rem; color: var(--color-ink-faint); }
+  .lg-summary {
+    max-width: 38rem;
+    margin: 1.5rem auto 0;
+    padding: 1.1rem 1.4rem;
+    border-radius: 1.2rem;
+    background: var(--color-warm);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  /* The document: one column, headings with a rule over them. The markup is
+     the live page's, so its utility classes are evened out here. */
+  .lg-doc {
+    max-width: calc(40rem + 2 * var(--nx-gutter));
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .lg-doc :global(.prose-letter > div) {
+    margin: 0;
+    padding: 1.75rem 0;
+    border-top: 1px solid var(--color-rule);
+  }
+  .lg-doc :global(.prose-letter > div + div) { margin-top: 0; }
+  .lg-doc :global(h2) {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .lg-doc :global(p) {
+    margin: 0.8rem 0 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .lg-doc :global(strong) { color: var(--color-ink); font-weight: 600; }
+  .lg-doc :global(ul) { margin: 0.8rem 0 0; padding-left: 1.2em; color: var(--color-ink-soft); line-height: 1.6; }
+  .lg-doc :global(li + li) { margin-top: 0.35rem; }
+  .lg-doc :global(a:not(.nx-btn)) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .lg-ask {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem 1.5rem;
+    margin-top: 1rem;
+    padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+    border-radius: 1.4rem;
+    background: var(--color-warm);
+  }
+  .lg-ask p { flex: 1 1 16rem; margin: 0; color: var(--color-ink); }
+</style>

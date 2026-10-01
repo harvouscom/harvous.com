@@ -1,0 +1,147 @@
+---
+/**
+ * UseCaseCard — one way people use Harvous, as a card: the use case's own sky
+ * (the same motion-blur family as the scenes), its icon on a paper tile, the
+ * name, its one line, and a quiet "See how" to the detail page. Shared by the
+ * home row and the /use-cases/ hub so both read the same. All copy comes
+ * from lib/use-cases-data.ts.
+ *
+ * Also draws an audience card on /for/ — an audience has the same fields
+ * (href, image, icon, ink, tagline) — with its own `title`.
+ */
+import { Icon } from "astro-icon/components";
+import type { UseCase } from "../../lib/use-cases-data.ts";
+import { getUseCaseDisplayTitle } from "../../lib/use-cases-data.ts";
+
+type CardData = Pick<UseCase, "href" | "image" | "icon" | "ink" | "tagline" | "comingSoon"> &
+  Partial<UseCase>;
+
+interface Props {
+  useCase: CardData;
+  /** Overrides the use case's display title (an audience's name). */
+  title?: string;
+  /** Larger type and a taller sky, for the hub's wide cards. */
+  large?: boolean;
+  class?: string;
+}
+
+const { useCase, title: titleOverride, large = false, class: className } = Astro.props;
+const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
+---
+
+<a
+  class:list={["ucard", large && "ucard--large", className]}
+  href={useCase.href}
+  style={`--uc-ink:${useCase.ink};`}
+>
+  <span class="ucard__sky" aria-hidden="true">
+    <img src={useCase.image} alt="" loading="lazy" decoding="async" />
+    <span class="ucard__icon"><Icon name={useCase.icon} /></span>
+  </span>
+  <span class="ucard__text">
+    <span class="ucard__title">
+      {title}
+      {useCase.comingSoon && <span class="ucard__soon">Coming soon</span>}
+    </span>
+    <span class="ucard__tagline">{useCase.tagline}</span>
+    <span class="ucard__more">See how <span aria-hidden="true">→</span></span>
+  </span>
+</a>
+
+<style>
+  .ucard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 1.4rem;
+    color: inherit;
+    text-decoration: none;
+    background: var(--color-warm);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 5%, transparent);
+    transition: transform 300ms var(--nx-ease, ease);
+  }
+  .ucard:hover { transform: translateY(-3px); }
+
+  .ucard__sky {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+  /* Twice as wide as a single card, same sky height, so a row of mixed
+     widths lines up. */
+  .ucard--large .ucard__sky { aspect-ratio: 32 / 9; }
+  .ucard__sky img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.04);
+    transition: transform 700ms var(--nx-ease, ease);
+  }
+  .ucard:hover .ucard__sky img { transform: scale(1.08); }
+  .ucard__icon {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    color: color-mix(in srgb, var(--uc-ink) 70%, var(--color-ink));
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.35);
+  }
+  .ucard__icon :global(svg) { width: 1rem; height: 1rem; }
+
+  .ucard__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 1.2rem 1.2rem;
+  }
+  .ucard__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .ucard--large .ucard__title { font-size: 1.5rem; }
+  .ucard__soon {
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-ink-soft);
+    background: var(--color-paper);
+  }
+  .ucard__tagline {
+    margin-top: 0.4rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .ucard__more {
+    margin-top: auto;
+    padding-top: 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ucard, .ucard__sky img { transition: none; }
+    .ucard:hover { transform: none; }
+    .ucard:hover .ucard__sky img { transform: scale(1.04); }
+  }
+</style>

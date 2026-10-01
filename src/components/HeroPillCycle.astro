@@ -13,12 +13,21 @@
 import ContentPill from "./ContentPill.astro";
 
 const TYPES = ["note", "scripture", "highlight", "folder", "thread"] as const;
+
+interface Props {
+  /** Labels to show instead of the pill words (e.g. plurals), keyed by type. */
+  words?: Partial<Record<(typeof TYPES)[number], string>>;
+  /** Monochrome pills — see ContentPill `mono`. */
+  mono?: boolean;
+}
+
+const { words = {}, mono = false } = Astro.props;
 ---
 
 <span class="pillcycle" data-pillcycle>
   {TYPES.map((type, i) => (
     <span class:list={["pillcycle__item", i === 0 && "is-active"]} data-pill-item>
-      <ContentPill type={type} />
+      <ContentPill type={type} word={words[type]} mono={mono} />
     </span>
   ))}
 </span>

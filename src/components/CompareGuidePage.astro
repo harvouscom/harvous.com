@@ -1,0 +1,302 @@
+---
+/**
+ * CompareGuidePage — a written compare guide: a shortlist ("Best Bible notes
+ * apps", kind "category") or a switching guide ("Logos alternative", kind
+ * "alternative"). Same picks either way, ranked, each with what it's best for
+ * (and, for alternatives, its tradeoff); Harvous's own pick carries a side
+ * note about the bias of ranking yourself. Then how to choose, and the close.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import ClosingCall from "./next/ClosingCall.astro";
+import type { CompareEntry } from "../lib/compare-data.ts";
+import type { CompareSeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
+import { getHonestNoteForPage } from "../lib/compare-seo-pages.ts";
+import { fathomTry } from "../lib/fathom-events.ts";
+import { buildTryUrl } from "../lib/signup-url.ts";
+
+interface Props {
+  page: CompareSeoPage;
+  picks: ComparePick[];
+  target?: CompareEntry;
+  jsonLd: Record<string, unknown>;
+  noindex?: boolean;
+}
+const { page, picks, target, jsonLd, noindex = false } = Astro.props;
+const honestNote = getHonestNoteForPage(page, picks);
+const others = picks.filter((p) => !p.isHarvous);
+
+const decisionRows = [
+  { label: "Built-in Bible reader", harvous: "Yes — shares highlights and notes with the page", others: "Varies — readers yes, notes apps no" },
+  { label: "Sermon transcription", harvous: "No", others: "Some Bible Notes apps yes; general notes no" },
+  { label: "Scripture-linked notes", harvous: "Yes — pills, highlights, threads, @ mentions", others: "Dedicated apps yes; general notes DIY" },
+  { label: "Price", harvous: "Free for personal study", others: "Varies — many free tiers, Logos paid" },
+];
+---
+
+<NextLayout title={page.seoTitle} description={page.seoDescription} noindex={noindex} jsonLd={jsonLd}>
+  <article class="cg">
+    <header class="nx-wrap cg-intro">
+      <a class="cg-back" href="/compare/#guides">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        All guides
+      </a>
+      <h1 class="nx-display cg-title">{page.h1}</h1>
+      <p class="nx-lead cg-lead">{page.lead}</p>
+      <p class="cg-apps" aria-label={`${picks.length} apps in this guide`}>
+        {others.slice(0, 6).map((p) => <img src={p.competitorImage} alt="" width="40" height="40" loading="eager" />)}
+        <span>{picks.length} apps, ranked honestly</span>
+      </p>
+      {target && (
+        <a class="cg-full" href={`/compare/${target.slug}/`}>Read the full Harvous vs {target.name} comparison →</a>
+      )}
+    </header>
+
+    <section class="nx-wrap cg-picks" aria-label="The picks">
+      <ol class="cg-list" role="list">
+        {picks.map((pick, i) => (
+          <li class:list={["cg-pick", pick.isHarvous && "cg-pick--harvous"]}>
+            {pick.isHarvous && <img class="cg-pick__sky" src="/images/auth-hero/ai_bg_077.webp" alt="" loading="lazy" />}
+            <span class="cg-pick__rank">{String(i + 1).padStart(2, "0")}</span>
+            <img class="cg-pick__icon" src={pick.competitorImage} alt="" width="56" height="56" loading={i < 3 ? "eager" : "lazy"} />
+            <div class="cg-pick__body">
+              <h2 class="cg-pick__name">
+                {pick.name}
+                {pick.isHarvous && (
+                  <details class="cg-note">
+                    <summary>Side note</summary>
+                    <p>{honestNote}</p>
+                  </details>
+                )}
+              </h2>
+              <p class="cg-pick__intro">{pick.intro}</p>
+              <dl class="cg-pick__meta">
+                <div><dt>Best for</dt><dd>{pick.idealFor}</dd></div>
+                {page.kind === "alternative" && pick.drawback && <div><dt>Tradeoff</dt><dd>{pick.drawback}</dd></div>}
+              </dl>
+              <p class="cg-pick__acts">
+                {pick.isHarvous ? (
+                  <a class="nx-btn nx-btn--accent" href={buildTryUrl()} data-try-cta data-fathom-track={fathomTry.compareDetail(page.slug)}>Try it free</a>
+                ) : (
+                  <>
+                    <a class="nx-btn nx-btn--ghost" href={pick.compareHref}>Harvous vs {pick.name}</a>
+                    {page.kind === "alternative" && pick.competitorLink && (
+                      <a class="cg-visit" href={pick.competitorLink} target="_blank" rel="noopener noreferrer nofollow">Visit {pick.name} ↗</a>
+                    )}
+                  </>
+                )}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      {page.kind === "category" && (
+        <p class="cg-all">This shortlist is a start. <a href="/compare/">Browse every comparison →</a></p>
+      )}
+    </section>
+
+    {page.kind === "category" ? (
+      <section class="nx-wrap cg-sec" aria-labelledby="choose-title">
+        <h2 id="choose-title" class="cg-h2">How to choose</h2>
+        <h3 class="cg-label">At a glance</h3>
+        <div class="cg-table-wrap">
+          <table class="cg-table">
+            <thead><tr><th scope="col"></th><th scope="col">Harvous</th><th scope="col">Typical alternatives</th></tr></thead>
+            <tbody>
+              {decisionRows.map((r) => (
+                <tr><th scope="row">{r.label}</th><td>{r.harvous}</td><td>{r.others}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <h3 class="cg-label">Pick a path</h3>
+        <ul class="cg-paths" role="list">
+          {page.whenToChoose.map((b, i) => (
+            <li class:list={["cg-path", i === 0 && "cg-path--harvous"]}>
+              <h4>{b.heading}</h4>
+              <p>{b.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ) : (
+      <section class="nx-wrap cg-sec cg-prose" aria-label="When to choose what">
+        {page.whenToChoose.map((b) => (
+          <div>
+            <h2 class="cg-h2 cg-h2--sm">{b.heading}</h2>
+            <p>{b.body}</p>
+          </div>
+        ))}
+      </section>
+    )}
+  </article>
+
+  {target ? (
+    <ClosingCall
+      title={`Harvous works alongside ${target.name}.`}
+      lead={target.worksBestAlongside}
+      fathomTrack={fathomTry.compareDetail(page.slug)}
+      secondaryHref={`/compare/${target.slug}/`}
+      secondaryLabel={`Harvous vs ${target.name}`}
+    />
+  ) : (
+    <ClosingCall
+      title="Try a notes-first Bible study app."
+      lead="Harvous is free for personal study — unlimited notes, scripture pills, highlights, threads, and @ mentions."
+      fathomTrack={fathomTry.compareDetail(page.slug)}
+    />
+  )}
+</NextLayout>
+
+<style>
+  .cg-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .cg-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    border-radius: 999px;
+    background: var(--color-warm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .cg-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .cg-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .cg-title { margin: 1.5rem auto 0; max-width: 18ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .cg-lead { margin: 1.5rem auto 0; }
+  .cg-apps { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; margin: 1.75rem 0 0; }
+  .cg-apps img {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 23%;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06), 0 6px 12px -8px rgba(15, 23, 42, 0.35);
+  }
+  .cg-apps span { margin-left: 0.4rem; font-size: 0.875rem; color: var(--color-ink-soft); }
+  .cg-full { display: inline-block; margin-top: 1.25rem; font-weight: 500; color: var(--color-ink); }
+
+  /* The picks: a ranked list, Harvous's on the Plus sky. */
+  .cg-picks { max-width: calc(52rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .cg-list { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  .cg-pick {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0.5rem 1.25rem;
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    border-radius: 1.6rem;
+    background: var(--color-warm);
+  }
+  .cg-pick--harvous { background: #fff; box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent), 0 18px 40px -26px rgba(15, 23, 42, 0.3); }
+  .cg-pick__sky { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+  .cg-pick--harvous::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, color-mix(in srgb, #fff 92%, transparent) 30%, color-mix(in srgb, #fff 55%, transparent));
+  }
+  .cg-pick__rank {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink-faint);
+    padding-top: 1rem;
+  }
+  .cg-pick__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 23%;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06), 0 10px 20px -12px rgba(15, 23, 42, 0.4);
+  }
+  .cg-pick__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .cg-pick__intro { margin: 0.4rem 0 0; color: var(--color-ink-soft); line-height: 1.55; text-wrap: pretty; }
+  .cg-pick__meta { display: grid; gap: 0.35rem; margin: 0.85rem 0 0; font-size: 0.9375rem; }
+  .cg-pick__meta div { display: flex; gap: 0.5rem; }
+  .cg-pick__meta dt { flex: none; font-weight: 600; color: var(--color-ink); }
+  .cg-pick__meta dd { margin: 0; color: var(--color-ink-soft); }
+  .cg-pick__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin: 1.1rem 0 0; }
+  .cg-visit { font-size: 0.875rem; color: var(--color-ink-faint); text-decoration: none; }
+  .cg-visit:hover { color: var(--color-ink); }
+  @media (max-width: 36rem) {
+    .cg-pick { grid-template-columns: auto minmax(0, 1fr); }
+    .cg-pick__rank { display: none; }
+  }
+
+  .cg-note { position: relative; font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0; }
+  .cg-note summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    color: var(--color-ink-soft);
+    background: var(--color-warm);
+  }
+  .cg-note summary::-webkit-details-marker { display: none; }
+  .cg-note[open] summary { color: #fff; background: var(--color-ink); }
+  .cg-note p {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    width: min(22rem, 70vw);
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border-radius: 0.9rem;
+    background: var(--color-paper);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink) 7%, transparent), 0 18px 40px -16px rgba(15, 23, 42, 0.3);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+
+  .cg-all { margin: 1.5rem 0 0; text-align: center; color: var(--color-ink-soft); }
+  .cg-all a { color: var(--color-ink); font-weight: 500; }
+
+  .cg-sec { max-width: calc(52rem + 2 * var(--nx-gutter)); padding-top: clamp(4rem, 9vw, 6rem); }
+  .cg-h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 500; letter-spacing: -0.025em; }
+  .cg-h2--sm { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+  .cg-label {
+    margin: 2rem 0 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .cg-table-wrap { margin-top: 0.85rem; overflow-x: auto; border-radius: 1.2rem; box-shadow: 0 0 0 1px var(--color-rule); }
+  .cg-table { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.9375rem; }
+  .cg-table th, .cg-table td { padding: 0.85rem 1rem; text-align: left; vertical-align: top; border-top: 1px solid var(--color-rule); }
+  .cg-table thead th { border-top: 0; font-weight: 600; color: var(--color-ink); background: var(--color-warm); }
+  .cg-table tbody th { width: 26%; font-weight: 600; color: var(--color-ink); }
+  .cg-table td { color: var(--color-ink-soft); }
+
+  .cg-paths { display: grid; gap: 1rem; margin: 0.85rem 0 0; padding: 0; list-style: none; }
+  @media (min-width: 44rem) { .cg-paths { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cg-path { padding: 1.25rem 1.4rem; border-radius: 1.2rem; background: var(--color-warm); }
+  .cg-path--harvous { background: color-mix(in oklab, var(--color-sky) 40%, var(--color-paper)); }
+  .cg-path h4 { margin: 0; font-weight: 600; color: var(--color-ink); }
+  .cg-path p { margin: 0.4rem 0 0; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-soft); }
+
+  .cg-prose { max-width: calc(40rem + 2 * var(--nx-gutter)); }
+  .cg-prose > div + div { margin-top: 2rem; }
+  .cg-prose p { margin: 0.7rem 0 0; font-size: 1.0625rem; line-height: 1.65; color: var(--color-ink-soft); }
+</style>

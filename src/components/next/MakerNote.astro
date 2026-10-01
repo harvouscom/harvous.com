@@ -1,0 +1,98 @@
+---
+/**
+ * MakerNote — the home page's "who made this." A short letter on the left and,
+ * on the right, the latest release, straight from release notes, so the page
+ * shows someone is here working on it without saying so. One card, not a
+ * changelog — /now/ has the longer view.
+ */
+import OptimizedImage from "../OptimizedImage.astro";
+import ReleaseNotesIndexCard from "../ReleaseNotesIndexCard.astro";
+import { recentReleases } from "../../lib/next/releases.ts";
+
+interface Props {
+  count?: number;
+}
+const { count = 1 } = Astro.props;
+
+const recent = recentReleases(count);
+---
+
+<section class="maker nx-section" aria-labelledby="maker-title">
+  <div class="nx-wrap maker__grid">
+    <div class="maker__letter" data-reveal>
+      <p class="nx-kicker">From the maker</p>
+      <h2 id="maker-title" class="nx-title">Hey, I'm Derek. I made this (mostly for me).</h2>
+      <div class="maker__body">
+        <p>
+          I've been studying the Bible since 2016. My highlights lived in one app, my notes in
+          another, and the best ones on paper I don't have anymore. None of it came back when I
+          needed it.
+        </p>
+        <p>
+          So I made the place I wanted: one that knows Scripture, stays quiet while I write, and
+          brings things back before they fade. I build it on my own, a little every week.
+        </p>
+      </div>
+      <div class="maker__sign">
+        <OptimizedImage src="/derek-avatar.jpeg" alt="" width={96} height={96} class="maker__avatar" />
+        <OptimizedImage src="/derek-signiture.png" alt="Derek Castelli" width={3262} height={809} class="maker__signature signature-img" />
+      </div>
+      <p class="maker__links">
+        <a class="nx-link" href="/about/">The longer story →</a>
+        <a class="nx-link" href="mailto:derek@harvous.com">derek@harvous.com</a>
+      </p>
+    </div>
+
+    <div class="maker__lately" data-reveal style="--reveal-delay: 120ms;">
+      <p class="maker__lately-head">
+        Latest release
+      </p>
+      {/* The release notes' own paper index cards, so "shipped" looks the same here as on /release-notes/. */}
+      <div class="maker__cards">
+        {recent.map(({ release, headline }, i) => (
+          <ReleaseNotesIndexCard release={release} headline={headline} href={`/release-notes/${release.slug}/`} rotation={[-0.8, 0.7, 0.5, -0.6][i % 4]} />
+        ))}
+      </div>
+      <a class="nx-link maker__more" href="/now/">What I'm working on now →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .maker__grid {
+    display: grid;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (min-width: 60rem) {
+    .maker__grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 5rem; }
+  }
+  .maker__letter .nx-title { margin: 0.75rem 0 0; }
+  .maker__body { margin-top: 1.5rem; max-width: 34rem; }
+  .maker__body p {
+    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .maker__sign { display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+  .maker__sign :global(.maker__avatar) { width: 3.25rem; height: 3.25rem; border-radius: 999px; object-fit: cover; }
+  .maker__sign :global(.maker__signature) { height: 2.75rem; width: auto; }
+  .maker__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin: 1.5rem 0 0; }
+
+  .maker__lately-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 1.25rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .maker__cards { max-width: 22rem; }
+  .maker__more { display: inline-block; margin-top: 1.5rem; }
+
+</style>

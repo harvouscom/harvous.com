@@ -1,7 +1,6 @@
 ---
 import CompareDetailPage from "../../components/CompareDetailPage.astro";
-import CompareAlternativePage from "../../components/CompareAlternativePage.astro";
-import CompareCategoryHubPage from "../../components/CompareCategoryHubPage.astro";
+import CompareGuidePage from "../../components/CompareGuidePage.astro";
 import { getCompareEntries, getCompareBySlug } from "../../lib/compare-data.ts";
 import {
   getCompareSeoPagesForBuild,
@@ -112,9 +111,7 @@ if (props.kind === "vs") {
 {
   vsEntry && vsJsonLd ? (
     <CompareDetailPage entry={vsEntry} related={vsRelated} jsonLd={vsJsonLd} />
-  ) : seoPage?.kind === "category" && seoJsonLd ? (
-    <CompareCategoryHubPage page={seoPage} picks={seoPicks} jsonLd={seoJsonLd} noindex={seoNoindex} />
-  ) : seoPage?.kind === "alternative" && seoTarget && seoJsonLd ? (
-    <CompareAlternativePage page={seoPage} target={seoTarget} picks={seoPicks} jsonLd={seoJsonLd} noindex={seoNoindex} />
+  ) : seoPage && seoJsonLd ? (
+    <CompareGuidePage page={seoPage} picks={seoPicks} target={seoTarget} jsonLd={seoJsonLd} noindex={seoNoindex} />
   ) : null
 }

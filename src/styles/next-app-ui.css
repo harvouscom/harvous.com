@@ -1,0 +1,156 @@
+/*
+  App UI replica — the handful of Harvous surfaces the /next/ vignettes draw,
+  built from the app's own --pds-* tokens (prototype-tokens.css, mirrored from
+  the Swift HarvousColors / HarvousShape / HarvousTypography) and checked
+  against the tour screenshots. If a vignette needs something that isn't here,
+  look at the real screen first; nothing in this file should be invented.
+
+  Scoped under .nx so it never reaches the live site.
+*/
+
+.nx .aui {
+  font-family: var(--pds-font-body);
+  font-variation-settings: var(--pds-font-body-variation);
+  color: var(--pds-text-primary);
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+/* Grouped card — Activity's white row groups. */
+.nx .aui-card {
+  background: var(--pds-bg-main);
+  border-radius: var(--pds-radius-card);
+  box-shadow:
+    0 0 0 0.5px var(--pds-border),
+    var(--pds-shadow-card);
+  overflow: hidden;
+}
+/* The same card, floating over a scene: the app's popover bloom. */
+.nx .aui-card--float {
+  box-shadow: var(--pds-shadow-popover), 0 30px 60px -30px rgba(15, 23, 42, 0.35);
+}
+
+/* "Suggested", "Following", "This evening" — the quiet section label. */
+.nx .aui-label {
+  margin: 0 0 8px 4px;
+  font-size: 14px;
+  color: var(--pds-text-secondary);
+}
+
+/* A row: icon tile · title over subtitle · trailing actions. */
+.nx .aui-row {
+  display: grid;
+  /* The app's list row: 26px tile, 11px gap, 11/13px padding. */
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 14px 11px 13px;
+}
+.nx .aui-row + .aui-row { box-shadow: inset 0 0.5px 0 var(--pds-border); }
+.nx .aui-tile {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--pds-bg-chip);
+  color: var(--pds-text-primary);
+}
+.nx .aui-tile svg { width: 13px; height: 13px; }
+.nx .aui-title {
+  display: block;
+  font-weight: 500;
+  font-variation-settings: "ROND" 0, "wght" 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nx .aui-sub {
+  display: block;
+  margin-top: 1px;
+  font-size: 13.5px;
+  color: var(--pds-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nx .aui-sub i { font-style: normal; padding-inline: 0.3em; }
+.nx .aui-acts {
+  display: flex;
+  gap: 14px;
+  color: var(--pds-text-tertiary);
+}
+.nx .aui-acts svg { width: 12px; height: 12px; display: block; }
+
+/* Scripture pill — neutral chip, hairline, small-caps translation. */
+.nx .aui-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
+  padding: 0.14em 0.62em 0.16em;
+  border-radius: var(--pds-radius-pill);
+  background: var(--pds-bg-chip);
+  box-shadow:
+    inset 0 0 0 0.5px var(--pds-border-control-medium),
+    var(--scripture-pill-inner-shadow);
+  font-weight: 500;
+  font-variation-settings: "ROND" 0, "wght" 500;
+  color: var(--pds-text-primary);
+  white-space: nowrap;
+}
+.nx .aui-tr {
+  font-size: 0.66em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--pds-text-tertiary);
+}
+
+/* Highlight — the warm amber block behind a phrase; underline for a word. */
+.nx .aui-hl {
+  background: color-mix(in srgb, var(--pds-highlight-warm-amber) 42%, transparent);
+  border-radius: 2px;
+  padding: 0.04em 0.08em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.nx .aui-ul {
+  text-decoration: underline;
+  text-decoration-color: var(--pds-highlight-warm-amber);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* A note's paper — the editor surface. */
+.nx .aui-paper {
+  padding: 18px 20px 20px;
+  background: var(--pds-bg-main);
+  border-radius: var(--pds-radius-card);
+  box-shadow: var(--pds-shadow-popover), 0 30px 60px -30px rgba(15, 23, 42, 0.35);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.nx .aui-paper p { margin: 0; }
+.nx .aui-paper p + p { margin-top: 8px; }
+.nx .aui-crumb {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  box-shadow: inset 0 -0.5px 0 var(--pds-border);
+  font-size: 12px;
+  color: var(--pds-text-secondary);
+}
+.nx .aui-crumb svg { width: 10px; height: 10px; }
+/* Titles inside the app use its display face: the rounded cut
+   (--pds-font-display-variation, ROND 100). Body and rows stay square. */
+.nx .aui-h {
+  font-family: var(--pds-font-display);
+  font-variation-settings: var(--pds-font-display-variation), "wght" 600;
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}

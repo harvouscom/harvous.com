@@ -45,6 +45,10 @@ export const fathomTry = {
   forDetail: (slug: string) => `try_for_${slug}`,
   compareDetail: (slug: string) => `try_compare_${slug}`,
   featureDetail: (slug: string) => `try_feature_${slug}`,
+  /** The /next/ redesign — its own names so the draft never muddies live numbers. */
+  nextHero: "try_next_hero",
+  nextSticky: "try_next_sticky",
+  nextClosing: "try_next_closing",
 } as const;
 
 export const fathomSignin = {

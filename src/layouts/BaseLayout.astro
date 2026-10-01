@@ -20,6 +20,12 @@ interface Props {
   noindex?: boolean;
   /** Full content for meta robots (e.g. "noindex, nofollow"). Overrides noindex when set. */
   robots?: string;
+  /**
+   * Skip the site Header, Footer, and `.page-frame` rails and render the slot
+   * alone. For layouts that bring their own chrome (NextLayout) but still want
+   * this head, analytics, and the reveal / hash / try-CTA scripts.
+   */
+  bare?: boolean;
 }
 
 const {
@@ -34,6 +40,7 @@ const {
   preloadImage,
   noindex = false,
   robots,
+  bare = false,
 } = Astro.props;
 
 const robotsContent = robots ?? (noindex ? "noindex" : undefined);
@@ -127,15 +134,22 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     }
 
     <script src="https://cdn.usefathom.com/script.js" data-site="UOIPAZGI" defer></script>
+    <slot name="head" />
   </head>
   <body>
-    <Header />
-    <div class="page-frame">
-      <main>
-        <slot />
-      </main>
-      <Footer />
-    </div>
+    {bare ? (
+      <slot />
+    ) : (
+      <>
+        <Header />
+        <div class="page-frame">
+          <main>
+            <slot />
+          </main>
+          <Footer />
+        </div>
+      </>
+    )}
 
     <script>
       const stacks = document.querySelectorAll(".paper-stack");

@@ -1,0 +1,201 @@
+---
+/**
+ * MarginNote — a line in Derek's hand on a scrap of paper, with a pen arrow
+ * pointing at the thing it's about. The site's version of writing in the
+ * margin of a Bible. Positioned absolutely by its parent (a Scene).
+ *
+ * With a `target` (a point in the scene screenshot's own pixels), the script
+ * below moves the whole note so the arrowhead lands on that point, and keeps
+ * it there through resizes and zoom — a fixed inset can only be right at one
+ * width, because what it points at moves with the screenshot's crop.
+ */
+import type { MarginNoteSpec } from "../../lib/next/content.ts";
+
+interface Props extends MarginNoteSpec {
+  class?: string;
+}
+
+const { text, at, arrow = "down-right", tilt = -3, target, side, class: className } = Astro.props;
+
+const pos = Object.entries(at)
+  .map(([k, v]) => `${k}:${v}`)
+  .join(";");
+
+/* One hand-drawn curve, turned to point the way it's asked to. */
+const ARROW_TRANSFORM: Record<NonNullable<MarginNoteSpec["arrow"]>, string> = {
+  "down-right": "",
+  "down-left": "scale(-1,1)",
+  "up-right": "scale(1,-1)",
+  "up-left": "scale(-1,-1)",
+  right: "rotate(-40)",
+  left: "scale(-1,1) rotate(-40)",
+};
+const vertical = arrow.startsWith("up") ? "up" : arrow.startsWith("down") ? "down" : "mid";
+const horizontal = side === "start" ? "right" : side === "end" ? "left" : arrow.endsWith("left") ? "left" : "right";
+---
+
+<div
+  class:list={["mnote", `mnote--${vertical}`, `mnote--${horizontal}`, className]}
+  style={`${pos};--tilt:${tilt}deg;`}
+  data-reveal
+  data-mnote-target={Array.isArray(target) ? target.join(",") : undefined}
+  data-mnote-sel={target && !Array.isArray(target) ? target.selector : undefined}
+  data-mnote-at={target && !Array.isArray(target) ? target.at.join(",") : undefined}
+>
+  <p class="mnote__paper nx-hand">{text}</p>
+  <svg class="mnote__arrow" viewBox="-30 -30 60 60" aria-hidden="true">
+    <g transform={ARROW_TRANSFORM[arrow]}>
+      <path d="M-18 -20 C -14 2, 0 12, 16 16" />
+      <path d="M6 19 L16 16 L12 7" />
+      {/* The arrowhead's point, for the script to measure. */}
+      <circle cx="16" cy="16" r="0.5" class="mnote__tip" data-mnote-tip />
+    </g>
+  </svg>
+</div>
+
+<style>
+  .mnote {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: min(15rem, 46%);
+    pointer-events: none;
+  }
+  .mnote--up { flex-direction: column-reverse; }
+  .mnote--right { align-items: flex-start; }
+  .mnote--left { align-items: flex-end; }
+
+  .mnote__paper {
+    margin: 0;
+    padding: 0.45rem 0.8rem 0.5rem;
+    font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+    line-height: 1.05;
+    color: var(--color-ink);
+    background: #fffdf6;
+    border-radius: 0.35rem;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 10px 24px -12px rgba(15, 23, 42, 0.35),
+      0 2px 6px -2px rgba(15, 23, 42, 0.15);
+    transform: rotate(var(--tilt));
+  }
+  .mnote__arrow {
+    width: clamp(2.5rem, 5vw, 3.5rem);
+    height: clamp(2.5rem, 5vw, 3.5rem);
+    margin: -0.2rem 1rem;
+    fill: none;
+    /* Pen ink, with a faint paper halo so it still reads over a busy photo. */
+    stroke: var(--color-ink);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 2px rgba(255, 253, 246, 0.9));
+  }
+
+  .mnote__tip { fill: none; stroke: none; }
+  .mnote[data-mnote-missed] { visibility: hidden; }
+
+  /* Small scenes (a phone, a narrow column) get a smaller note and arrow, so
+     there is room to reach the target. Scene is a size container. */
+  @container (max-width: 460px) {
+    .mnote { max-width: min(11rem, 52%); }
+    .mnote__paper { padding: 0.3rem 0.55rem 0.35rem; font-size: 0.95rem; }
+    .mnote__arrow { width: 1.9rem; height: 1.9rem; margin: -0.1rem 0.55rem; }
+  }
+
+  /* Just a fade — a note is placed, not thrown. */
+  :global(html.js) .mnote[data-reveal] { transform: none; transition: opacity 600ms ease 200ms; }
+</style>
+
+<script>
+  /*
+   * Land each targeted note's arrowhead on its target. The target is a point
+   * in the screenshot's 1920-wide pixel space; the screenshot's rendered box
+   * turns it into a page position. The note moves by the CSS `translate`
+   * property, which composes with (and so never fights) the reveal fade or
+   * the paper's tilt. Clamped so the note never leaves its scene.
+   */
+  const PAD = 8;
+  /** How far off target (px) a clamped note may land before it hides itself. */
+  const MISS = 10;
+
+  /** Where the note should point, in page coordinates, or null if it can't tell yet. */
+  const targetPoint = (note: HTMLElement, scene: HTMLElement) => {
+    if (note.dataset.mnoteSel) {
+      const el = scene.querySelector<HTMLElement>(note.dataset.mnoteSel);
+      const [fx, fy] = (note.dataset.mnoteAt ?? "0.5,0.5").split(",").map(Number);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return r.width ? { x: r.left + fx * r.width, y: r.top + fy * r.height } : null;
+    }
+    const img = scene.querySelector<HTMLImageElement>(".scene__shot img");
+    const [tx, ty] = (note.dataset.mnoteTarget ?? "").split(",").map(Number);
+    if (!img || !Number.isFinite(tx) || !Number.isFinite(ty)) return null;
+    const shot = img.getBoundingClientRect();
+    if (!shot.width) return null;
+    const k = shot.width / Number(img.getAttribute("width") || 1920);
+    return { x: shot.left + tx * k, y: shot.top + ty * k };
+  };
+
+  const place = (note: HTMLElement) => {
+    const scene = note.closest<HTMLElement>(".scene");
+    const tip = note.querySelector<SVGElement>("[data-mnote-tip]");
+    if (!scene || !tip) return;
+
+    note.style.translate = "0px 0px";
+    const want = targetPoint(note, scene);
+    if (!want) return;
+    const t = tip.getBoundingClientRect();
+    let dx = want.x - (t.left + t.width / 2);
+    let dy = want.y - (t.top + t.height / 2);
+
+    const box = note.getBoundingClientRect();
+    const sc = scene.getBoundingClientRect();
+    const fx = Math.min(Math.max(dx, sc.left + PAD - box.left), sc.right - PAD - box.right);
+    const fy = Math.min(Math.max(dy, sc.top + PAD - box.top), sc.bottom - PAD - box.bottom);
+    note.style.translate = `${Math.round(fx)}px ${Math.round(fy)}px`;
+    // If the scene is too small for the note to reach its target, an arrow
+    // pointing at the wrong thing is worse than no note: hide it.
+    note.toggleAttribute("data-mnote-missed", Math.hypot(dx - fx, dy - fy) > MISS);
+  };
+
+  const notes = Array.from(
+    document.querySelectorAll<HTMLElement>(".mnote[data-mnote-target], .mnote[data-mnote-sel]")
+  );
+  if (notes.length) {
+    let queued = false;
+    const placeAll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        notes.forEach(place);
+      });
+    };
+    placeAll();
+    window.addEventListener("load", placeAll, { once: true });
+    document.fonts?.ready.then(placeAll);
+    notes.forEach((note) => {
+      const img = note.closest(".scene")?.querySelector(".scene__shot img");
+      if (img instanceof HTMLImageElement && !img.complete) img.addEventListener("load", placeAll, { once: true });
+    });
+    if ("ResizeObserver" in window) {
+      const ro = new ResizeObserver(placeAll);
+      notes.forEach((note) => {
+        const scene = note.closest(".scene");
+        if (scene) ro.observe(scene);
+      });
+    } else {
+      window.addEventListener("resize", placeAll);
+    }
+    // Scenes and vignettes animate in on reveal (a parent's scale, a card's
+    // slide); settle again once any of it lands. Listened for page-wide because
+    // a parent's transitionend never reaches the scene. placeAll is rAF-batched.
+    document.addEventListener("transitionend", placeAll);
+    // A page opened in a background tab lays out, but runs no frames until
+    // it's shown: place again the moment it is.
+    document.addEventListener("visibilitychange", placeAll);
+  }
+</script>

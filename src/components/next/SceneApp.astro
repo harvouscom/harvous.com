@@ -1,0 +1,71 @@
+---
+/**
+ * SceneApp — a Scene whose window is a live app view (AppWindow + a view in
+ * the slot) instead of a cropped screenshot: the same motion-blur backdrop,
+ * the same window framing running off the bottom edge, overlays (margin notes,
+ * floating cards) in the `overlay` slot. Keeps the `scene` class so
+ * MarginNote's `{ selector }` targets resolve inside it.
+ *
+ * The view is drawn at the app's real pixel sizes; in a narrow scene the whole
+ * window scales down with `zoom`, so it stays in proportion.
+ */
+import { backdropSrc, type Backdrop } from "../../lib/next/content.ts";
+
+interface Props {
+  backdrop: Backdrop;
+  aspect?: string;
+  class?: string;
+}
+const { backdrop, aspect = "1 / 1", class: className } = Astro.props;
+---
+
+<figure class:list={["scene sapp", className]} style={`--sapp-aspect:${aspect};`}>
+  <img class="sapp__bg" src={backdropSrc(backdrop)} alt="" loading="lazy" decoding="async" />
+  <div class="sapp__window">
+    <slot />
+  </div>
+  <slot name="overlay" />
+</figure>
+
+<style>
+  .sapp {
+    container-type: inline-size;
+    position: relative;
+    margin: 0;
+    aspect-ratio: var(--sapp-aspect);
+    border-radius: var(--nx-radius-scene, 1.5rem);
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--color-warm);
+  }
+  .sapp__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    transform: scale(1.04);
+  }
+  .sapp__window {
+    position: absolute;
+    top: 8%;
+    left: 7%;
+    right: 7%;
+    bottom: -2rem;
+    overflow: hidden;
+    border-radius: clamp(0.6rem, 1.3vw, 1.1rem);
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.06),
+      0 30px 70px -25px rgba(15, 23, 42, 0.45),
+      0 8px 20px -10px rgba(15, 23, 42, 0.2);
+  }
+  /* Scale the app down with the scene so it stays in proportion; the window's
+     child is made taller by the same factor so it still fills the frame. */
+  .sapp { --z: 1; }
+  @container (max-width: 620px) { .sapp__window, .sapp > :global(.aui) { --z: 0.88; } }
+  @container (max-width: 520px) { .sapp__window, .sapp > :global(.aui) { --z: 0.76; } }
+  @container (max-width: 420px) { .sapp__window, .sapp > :global(.aui) { --z: 0.64; } }
+  .sapp__window > :global(*) { zoom: var(--z, 1); height: calc(100% / var(--z, 1)); }
+  .sapp > :global(.aui) { zoom: var(--z, 1); }
+</style>

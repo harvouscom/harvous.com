@@ -1,0 +1,87 @@
+---
+/**
+ * ProofStrip — the testimonials, straight after the hero: three short quotes
+ * in a row, quiet enough to read as a footnote to the headline rather than a
+ * section of their own. Same featured wall as the live TestimonialsSection
+ * (data.featured — see content.config.ts), so a quote pinned to a single
+ * use-case/audience page (like Theo's) doesn't also crowd this one.
+ */
+import { getCollection, render } from "astro:content";
+
+const entries = (await getCollection("testimonials", ({ data }) => data.featured)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const items = await Promise.all(
+  entries.map(async (t) => {
+    const { Content } = await render(t);
+    return { name: t.data.name, Content };
+  })
+);
+---
+
+{items.length > 0 && (
+  <section class="proof" aria-label="What people say">
+    <div class="nx-wrap">
+      <ul class="proof__list" data-reveal="stagger">
+        {items.map(({ name, Content }) => (
+          <li>
+            <figure class="proof__item">
+              <blockquote class="proof__quote"><Content /></blockquote>
+              <figcaption class="proof__name">
+                <span aria-hidden="true">{name.charAt(0)}</span>
+                {name}
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .proof { padding-block: clamp(1.5rem, 2vw, 1.5rem) 0; }
+  .proof__list {
+    display: grid;
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 52rem) {
+    .proof__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; }
+  }
+  .proof__item { margin: 0; }
+  .proof__quote {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+  .proof__quote :global(p) { margin: 0; }
+  .proof__quote :global(mark) {
+    color: inherit;
+    background: linear-gradient(transparent 58%, color-mix(in srgb, var(--pill-highlight) 45%, transparent) 58%);
+  }
+  .proof__name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .proof__name span {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--color-warm);
+    color: var(--color-ink-soft);
+  }
+</style>

@@ -1,257 +1,389 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import BlogCard from "../../components/BlogCard.astro";
-import BlogLibraryNav from "../../components/BlogLibraryNav.astro";
-import BlogTopicBlocks from "../../components/BlogTopicBlocks.astro";
-import DownloadCTA from "../../components/DownloadCTA.astro";
-import { Icon } from "astro-icon/components";
+/**
+ * /blog/ — Bright Enough in the /next chrome.
+ *
+ * Same posts as the live blog, by the same rule (`isBlogPostListed`, newest
+ * first). The newest post leads on its own; every other post sits in one grid
+ * below it, so without JS the page already shows the whole blog.
+ *
+ * Topic chips filter the grid in place and write `?c=<category>` to the URL
+ * (the live `/blog/<category>/` archives map here). While a topic is chosen the
+ * lead post steps back into the grid, so nothing in that topic goes missing.
+ * The chips are plain links, so without JS they reload to the full list.
+ *
+ * The grid borrows /discover/'s balancing: six tracks on desktop with
+ * cards spanning two, and tail marks that turn a lone last card into a centred
+ * one (two columns) or a row of two wide cards (three columns).
+ */
 import { getCollection } from "astro:content";
+import NextLayout from "../../layouts/NextLayout.astro";
+import ClosingCall from "../../components/next/ClosingCall.astro";
+import BlogNextCard from "../../components/next/BlogNextCard.astro";
 import {
-  BLOG_CATEGORY_HUB_PREVIEW,
   BLOG_CATEGORY_LABELS,
-  blogBreadcrumbJsonLd,
   blogCategoriesInUse,
   blogCategoryColor,
-  blogCategoryHref,
-  blogCategoryIcon,
+  blogCategoryLabel,
+  blogCategoryLead,
   blogReadingMinutes,
-  brightEnoughBlogJsonLd,
+  blogThumbUrl,
+  formatBlogDate,
   includeBlogDrafts,
   isBlogPostListed,
-  postsInBlogCategory,
+  sortBlogPostsByDate,
 } from "../../lib/blog";
+import { blogHubJsonLd } from "../../lib/page-jsonld.ts";
 
 const showDrafts = includeBlogDrafts();
-const allPosts = await getCollection("blog");
-const posts = allPosts
-  .filter((p) => isBlogPostListed(p, showDrafts))
-  .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
-
+const posts = sortBlogPostsByDate(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+);
 const featured = posts[0];
-const spotlight = posts.slice(1, 5);
-
-const topicSections = blogCategoriesInUse(posts).map((cat) => {
-  const categoryPosts = postsInBlogCategory(posts, cat);
-  return {
-    id: `topic-${cat}`,
-    category: cat,
-    label: BLOG_CATEGORY_LABELS[cat],
-    icon: blogCategoryIcon(cat),
-    color: blogCategoryColor(cat),
-    posts: categoryPosts,
-    previewPosts: categoryPosts.slice(0, BLOG_CATEGORY_HUB_PREVIEW),
-    href: blogCategoryHref(cat),
-  };
-});
-
-const libraryTopics = topicSections.map((section) => ({
-  category: section.category,
-  label: section.label,
-  href: section.href,
-  icon: section.icon,
-  color: section.color,
-  count: section.posts.length,
+const rest = posts.slice(1);
+const categories = blogCategoriesInUse(posts).map((category) => ({
+  category,
+  label: BLOG_CATEGORY_LABELS[category],
+  lead: blogCategoryLead(category),
+  count: posts.filter((p) => p.data.category === category).length,
 }));
 
-const siteOrigin = Astro.site ?? "https://harvous.com";
-const hubDescription =
-  "Bright Enough — notes, habits, and teaching that show up after Sunday. For teachers, group leaders, and anyone who keeps what they learn.";
-const hubJsonLd = [
-  brightEnoughBlogJsonLd(siteOrigin, {
-    blogPost: posts.slice(0, 10).map((p) => ({
-      "@type": "BlogPosting",
-      headline: p.data.title,
-      url: new URL(`/blog/${p.id}/`, siteOrigin).toString(),
-      datePublished: p.data.publishDate.toISOString(),
-      description: p.data.description,
-    })),
-  }),
-  blogBreadcrumbJsonLd(
-    [
-      { name: "Harvous", path: "/" },
-      { name: "Bright Enough", path: "/blog/" },
-    ],
-    siteOrigin,
-  ),
-];
+/* Same function body as the script's markTail. */
+function tailMarks(n: number): string[][] {
+  const marks: string[][] = Array.from({ length: n }, () => []);
+  if (n % 2 === 1) marks[n - 1].push("is-t2-odd");
+  if (n === 1) marks[0].push("is-t3-solo");
+  else if (n % 3 === 2) for (let i = n - 2; i < n; i++) marks[i].push("is-t3-wide");
+  else if (n % 3 === 1) for (let i = n - 4; i < n; i++) marks[i].push("is-t3-wide");
+  return marks;
+}
+const marks = tailMarks(rest.length);
 ---
 
-<BaseLayout
+<NextLayout
+  jsonLd={blogHubJsonLd(posts)}
   title="Bright Enough — Harvous Blog"
-  description={hubDescription}
-  jsonLd={hubJsonLd}
+  description="Bright Enough — notes, habits, and teaching that show up after Sunday. For teachers, group leaders, and anyone who keeps what they learn."
 >
-  <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-10 text-center md:py-12">
-      <BlogTopicBlocks />
-      <p class="eyebrow mt-6" data-reveal>The Harvous Blog</p>
-      <h1
-        class="mt-4 font-display text-5xl leading-[1.0] tracking-tight md:text-7xl"
-        data-reveal
-        style="--reveal-delay: 40ms;"
-      >
-        Bright Enough
-      </h1>
-      <p
-        class="mx-auto mt-5 max-w-xl text-lg text-[var(--color-ink-soft)]"
-        data-reveal
-        style="--reveal-delay: 80ms;"
-      >
-        Notes, habits, and teaching that show up after Sunday.
-      </p>
-    </div>
-  </section>
+  <header class="nx-wrap bi-intro">
+    <p class="nx-kicker">Bright Enough</p>
+    <h1 class="nx-display">Notes, habits, and teaching that show up after Sunday.</h1>
+    <p class="nx-lead">
+      I write here about what helps Scripture stick after the hour is over: for teachers, group
+      leaders, and anyone who keeps what they learn.
+    </p>
+  </header>
 
-  {posts.length === 0 ? (
-    <section class="mx-auto max-w-5xl px-5 py-16 md:py-20">
-      <p class="text-center text-[var(--color-ink-soft)]">Nothing here yet. Check back soon.</p>
-    </section>
-  ) : (
-    <div class="blog-library-main" data-blog-library-main>
-      <BlogLibraryNav topics={libraryTopics} />
-
-      <section
-        id="library-featured"
-        class="mx-auto max-w-6xl py-10 md:py-14 px-[var(--frame-content-pad)]"
-        data-reveal
-        style="--reveal-delay: 80ms;"
-        aria-labelledby="library-featured-title"
-      >
-        <h2 id="library-featured-title" class="sr-only">Featured</h2>
-        <div class="grid gap-8 px-2 sm:px-3 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:gap-10 lg:items-start lg:px-4">
-          {featured && (
-            <div>
-              <p class="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-faint)]">
-                Featured
-              </p>
-              <div class="rounded-[2rem] bg-[var(--color-warm)] p-2 md:p-3">
-                <BlogCard
-                  title={featured.data.title}
-                  description={featured.data.description}
-                  publishDate={featured.data.publishDate}
-                  category={featured.data.category}
-                  slug={featured.id}
-                  readingTime={blogReadingMinutes(featured.body)}
-                  draft={featured.data.draft}
-                  variant="featured"
-                />
-              </div>
-            </div>
-          )}
-
-          {spotlight.length > 0 && (
-            <div>
-              <p class="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-faint)]">
-                Spotlight
-              </p>
-              <div class="rounded-[2rem] bg-[var(--color-warm)] p-2 md:p-3">
-                <div class="flex flex-col gap-2">
-                  {spotlight.map((post) => (
-                    <BlogCard
-                      title={post.data.title}
-                      description={post.data.description}
-                      publishDate={post.data.publishDate}
-                      category={post.data.category}
-                      slug={post.id}
-                      readingTime={blogReadingMinutes(post.body)}
-                      draft={post.data.draft}
-                      variant="spotlight"
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+  {
+    !featured ? (
+      <section class="nx-wrap nx-wrap--narrow bi-none">
+        <p>Nothing here yet. Check back soon.</p>
       </section>
-
-      {topicSections.map((section, index) => (
-        <section
-          id={section.id}
-          class:list={[index === 0 ? "frame-divider" : "border-t border-[var(--color-rule)]"]}
-          aria-labelledby={`${section.id}-title`}
-        >
-          <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-14 md:py-16">
-            <h2
-              id={`${section.id}-title`}
-              class="flex flex-wrap items-center gap-3 font-display text-3xl tracking-tight md:text-4xl"
-              data-reveal
-            >
-              <span
-                class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl md:size-11"
-                style={`background: color-mix(in oklab, ${section.color.bg} 55%, white); color: ${section.color.ink};`}
-                aria-hidden="true"
-              >
-                <Icon name={section.icon} class="h-5 w-5" />
-              </span>
-              {section.label}
-            </h2>
-            <div class="mt-8" data-reveal style="--reveal-delay: 40ms;">
-              {section.previewPosts.map((post) => (
-                <BlogCard
-                  title={post.data.title}
-                  description={post.data.description}
-                  publishDate={post.data.publishDate}
-                  category={post.data.category}
-                  slug={post.id}
-                  readingTime={blogReadingMinutes(post.body)}
-                  draft={post.data.draft}
-                  variant="story"
-                />
-              ))}
+    ) : (
+      <div data-bi>
+        <section class="nx-wrap bi-lead" data-bi-featured aria-label="Latest post">
+          <a
+            class="bi-feat"
+            href={`/blog/${featured.id}/`}
+            style={`--tone: ${blogCategoryColor(featured.data.category).bg};`}
+          >
+            <div class="bi-feat__art">
+              <img
+                src={blogThumbUrl(featured.id, "feat")}
+                alt=""
+                width="1400"
+                height="780"
+                loading="eager"
+                decoding="async"
+              />
             </div>
-            {section.posts.length > BLOG_CATEGORY_HUB_PREVIEW && (
-              <div class="mt-8" data-reveal style="--reveal-delay: 80ms;">
-                <a
-                  href={section.href}
-                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-accent)] no-underline transition-colors duration-150 hover:text-[var(--color-ink)]"
-                >
-                  View all {section.posts.length} in {section.label}
-                  <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                    <path
-                      fill-rule="evenodd"
-                      d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
-                </a>
-              </div>
-            )}
-          </div>
+            <div class="bi-feat__words">
+              <p class="bi-feat__cat">
+                <span>Latest</span>
+                <span aria-hidden="true">·</span>
+                <span>{blogCategoryLabel(featured.data.category)}</span>
+              </p>
+              <h2 class="bi-feat__title">{featured.data.title}</h2>
+              <p class="bi-feat__desc">{featured.data.description}</p>
+              <p class="bi-feat__meta">
+                <time datetime={featured.data.publishDate.toISOString()}>
+                  {formatBlogDate(featured.data.publishDate)}
+                </time>
+                <span aria-hidden="true">·</span>
+                <span>{blogReadingMinutes(featured.body)} min read</span>
+              </p>
+            </div>
+          </a>
         </section>
-      ))}
-    </div>
-  )}
 
-  <DownloadCTA heading="Keep it after Sunday">
-    <Fragment slot="copy">
-      <p>
-        Bright Enough is the writing — teaching craft, retention, and habits that still show up
-        after Sunday. Harvous is where that trail can live.
-      </p>
-      <p>
-        I'm not trying to build the biggest Bible app out there. Just one that keeps notes beside
-        Scripture so next week's prep, or Monday's reread, doesn't start from scratch.
-      </p>
-      <p>
-        If something here helped, put the next session in the app. Try it free — and if you want to
-        talk teaching or scripture, email me at
-        <a class="cta-mail" href="mailto:derek@harvous.com">derek@harvous.com</a>.
-      </p>
-    </Fragment>
-  </DownloadCTA>
-</BaseLayout>
+        <section class="nx-wrap bi" aria-labelledby="bi-all">
+          <h2 id="bi-all" class="bi-all">Every post</h2>
+          <nav class="bi-chips" aria-label="Topics">
+            <a class="bi-chip is-on" href="/blog/" data-bi-cat="" aria-current="true">
+              All <span class="bi-chip__n">{posts.length}</span>
+            </a>
+            {categories.map((c) => (
+              <a class="bi-chip" href={`/blog/?c=${c.category}`} data-bi-cat={c.category}>
+                {c.label} <span class="bi-chip__n">{c.count}</span>
+              </a>
+            ))}
+            <a class="bi-chip bi-chip--search" href="/blog/search/">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+              Search
+            </a>
+          </nav>
+          {categories.map((c) => (
+            <p class="bi-topic-lead" data-bi-topic-lead={c.category} hidden>
+              {c.lead}
+            </p>
+          ))}
+
+          <ul class="bi-grid" role="list" data-bi-grid>
+            <li class="bi-cell" data-cat={featured.data.category} data-lead hidden>
+              <BlogNextCard post={featured} />
+            </li>
+            {rest.map((post, i) => (
+              <li class:list={["bi-cell", ...marks[i]]} data-cat={post.data.category}>
+                <BlogNextCard post={post} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    )
+  }
+
+  <ClosingCall />
+</NextLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-bi]");
+  if (root) {
+    const chips = Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-bi-cat]"));
+    const cells = Array.from(root.querySelectorAll<HTMLElement>(".bi-cell"));
+    const featured = root.querySelector<HTMLElement>("[data-bi-featured]");
+    const leads = Array.from(root.querySelectorAll<HTMLElement>("[data-bi-topic-lead]"));
+    const known = chips.map((c) => c.dataset.biCat ?? "");
+
+    let cat = new URLSearchParams(location.search).get("c") ?? "";
+    if (!known.includes(cat)) cat = "";
+
+    const TAIL = ["is-t2-odd", "is-t3-solo", "is-t3-wide"];
+    const markTail = (shown: HTMLElement[]) => {
+      for (const c of cells) c.classList.remove(...TAIL);
+      const n = shown.length;
+      if (!n) return;
+      if (n % 2 === 1) shown[n - 1].classList.add("is-t2-odd");
+      if (n === 1) shown[0].classList.add("is-t3-solo");
+      else if (n % 3 === 2) shown.slice(-2).forEach((c) => c.classList.add("is-t3-wide"));
+      else if (n % 3 === 1) shown.slice(-4).forEach((c) => c.classList.add("is-t3-wide"));
+    };
+
+    const apply = () => {
+      /* With a topic chosen, the lead post rejoins the grid so the topic is whole. */
+      if (featured) featured.hidden = Boolean(cat);
+      const shown = cells.filter((cell) =>
+        cat ? cell.dataset.cat === cat : !("lead" in cell.dataset),
+      );
+      const visible = new Set(shown);
+      for (const cell of cells) cell.hidden = !visible.has(cell);
+      markTail(shown);
+      for (const chip of chips) {
+        const on = (chip.dataset.biCat ?? "") === cat;
+        chip.classList.toggle("is-on", on);
+        if (on) chip.setAttribute("aria-current", "true");
+        else chip.removeAttribute("aria-current");
+      }
+      for (const lead of leads) lead.hidden = lead.dataset.biTopicLead !== cat;
+    };
+
+    for (const chip of chips) {
+      chip.addEventListener("click", (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        const value = chip.dataset.biCat ?? "";
+        cat = cat === value ? "" : value;
+        history.replaceState(null, "", cat ? `?c=${cat}` : location.pathname);
+        apply();
+      });
+    }
+
+    apply();
+  }
+</script>
 
 <style>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  .bi-intro {
+    padding-top: clamp(8rem, 16vw, 11rem);
+    text-align: center;
   }
+  .bi-intro .nx-display {
+    max-width: 15ch;
+    margin: 1rem auto 0;
+    font-size: clamp(2.6rem, 6vw, 4.75rem);
+  }
+  .bi-intro .nx-lead { margin: 1.5rem auto 0; }
+
+  .bi-none {
+    padding-block: 3rem;
+    text-align: center;
+    color: var(--color-ink-soft);
+  }
+
+  /* ── The latest post ─────────────────────────────────────────────────── */
+  .bi-lead { margin-top: clamp(3rem, 7vw, 5rem); }
+  .bi-lead[hidden] { display: none; }
+  .bi-feat {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: var(--nx-radius-scene);
+    background: color-mix(in srgb, var(--color-ink) 2.5%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent);
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 200ms ease;
+  }
+  .bi-feat:hover { background: color-mix(in srgb, var(--color-ink) 4.5%, var(--color-paper)); }
+  .bi-feat:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+  .bi-feat__art {
+    position: relative;
+    aspect-ratio: 1400 / 780;
+    overflow: hidden;
+    border-radius: calc(var(--nx-radius-scene) - 0.4rem);
+    background: color-mix(in oklab, var(--tone) 45%, var(--color-warm));
+  }
+  .bi-feat__art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms var(--nx-ease);
+  }
+  .bi-feat:hover .bi-feat__art img { transform: scale(1.02); }
+  .bi-feat__words {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.25rem 1rem 1.25rem;
+  }
+  .bi-feat__cat {
+    display: flex;
+    gap: 0.45rem;
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .bi-feat__title {
+    margin: 0.85rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .bi-feat__desc {
+    max-width: 30rem;
+    margin: 1rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .bi-feat__meta {
+    display: flex;
+    gap: 0.4rem;
+    margin: 1.25rem 0 0;
+    font-size: 0.875rem;
+    color: var(--color-ink-faint);
+  }
+  @media (min-width: 60rem) {
+    .bi-feat {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: center;
+    }
+    .bi-feat__words { padding: 2rem 2.25rem 2rem 1.75rem; }
+  }
+
+  /* ── Topics ─────────────────────────────────────────────────────────── */
+  .bi { margin-top: clamp(4rem, 9vw, 6rem); }
+  .bi-all {
+    margin: 0 0 1.25rem;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .bi-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.375rem;
+  }
+  .bi-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    height: 2.5rem;
+    padding: 0 1rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .bi-chip:hover { background: color-mix(in srgb, var(--color-ink) 9%, transparent); color: var(--color-ink); }
+  .bi-chip__n { font-size: 0.8125rem; opacity: 0.6; font-variant-numeric: tabular-nums; }
+  /* Selected is ink, never the accent blue. */
+  .bi-chip.is-on,
+  .bi-chip.is-on:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .bi-chip:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+
+  .bi-topic-lead {
+    max-width: 30rem;
+    margin: 1.5rem auto 0;
+    text-align: center;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .bi-topic-lead[hidden] { display: none; }
+
+  /* ── The grid: six tracks, cards span two; tail marks rebalance ─────── */
+  .bi-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: clamp(2rem, 5vw, 3rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bi-cell[hidden] { display: none; }
+  @media (min-width: 44rem) {
+    .bi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .bi-cell { grid-column: span 2; }
+    .bi-cell.is-t2-odd { grid-column: 2 / span 2; }
+  }
+  @media (min-width: 68rem) {
+    .bi-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; }
+    .bi-cell,
+    .bi-cell.is-t2-odd { grid-column: auto / span 2; }
+    /* Wide cards keep the art as tall as a regular card's (1.5× the width). */
+    .bi-cell.is-t3-wide { grid-column: auto / span 3; --bnc-ratio: 2.69; }
+    .bi-cell.is-t3-solo { grid-column: 3 / span 2; }
+  }
+  .bi-chip--search { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .bi-chip--search svg { width: 0.85rem; height: 0.85rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 </style>

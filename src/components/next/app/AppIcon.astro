@@ -1,0 +1,48 @@
+---
+/**
+ * AppIcon — a Font Awesome icon exactly as the Harvous app draws it: from the
+ * same package the app ships (`@fortawesome/free-solid-svg-icons` 7), at the
+ * icon's own tight viewBox (e.g. 576 × 512 for the highlighter).
+ *
+ * Iconify's `fa7-solid` set pads every icon into a 640 × 640 square, so at the
+ * same CSS size its glyphs draw about a fifth smaller than the app's. For the
+ * app replicas, use this; the site's own chrome can keep `astro-icon`.
+ *
+ * `name` is the kebab-case name ("pen-to-square"); an `fa7-solid:` prefix is
+ * accepted so data written for astro-icon works unchanged.
+ *
+ * One exception: the app's house (Activity, "My Home") is Font Awesome 6's,
+ * not 7's, so it's copied here from app.harvous.com.
+ */
+import * as fas from "@fortawesome/free-solid-svg-icons";
+
+interface Props {
+  name: string;
+  class?: string;
+}
+
+type Def = [number, number, unknown, unknown, string | string[]];
+const APP_GLYPHS: Record<string, Def> = {
+  house: [576, 512, [], "", "M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"],
+};
+
+const { name, class: className } = Astro.props;
+const bare = name.replace(/^fa\d*-solid:/, "");
+const key = "fa" + bare.replace(/(^|-)([a-z0-9])/g, (_m, _d, c: string) => c.toUpperCase());
+const def = APP_GLYPHS[bare] ?? (fas as unknown as Record<string, { icon: Def }>)[key]?.icon;
+if (!def) throw new Error(`AppIcon: no Font Awesome solid icon "${bare}"`);
+const [w, h, , , d] = def;
+const paths = Array.isArray(d) ? d : [d];
+---
+
+<svg
+  class={className}
+  width="1em"
+  height="1em"
+  viewBox={`0 0 ${w} ${h}`}
+  fill="currentColor"
+  aria-hidden="true"
+  data-icon={bare}
+>
+  {paths.map((p) => <path d={p} />)}
+</svg>

@@ -1,0 +1,148 @@
+/*
+  The /next/ redesign — shared recipes only. Everything is scoped under `.nx`
+  (NextLayout's root) and built from the @theme tokens in global.css: same
+  paper, ink, blue gradient, pill hues, and pastels as the live site. What
+  changes is the pacing — bigger type, more air, fewer boxes.
+*/
+
+.nx {
+  --nx-hand: "Caveat", "Bradley Hand", "Segoe Print", cursive;
+  --nx-measure: 38rem;
+  --nx-wide: 76rem;
+  --nx-gutter: clamp(1rem, 4vw, 2.5rem);
+  --nx-section: clamp(5rem, 12vw, 9rem);
+  --nx-radius-scene: clamp(1.25rem, 2.4vw, 2rem);
+  --nx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  overflow-x: clip;
+}
+
+.nx-main {
+  flex: 1;
+}
+
+/* ── Layout ───────────────────────────────────────────────────────────────── */
+
+.nx-wrap {
+  width: 100%;
+  max-width: calc(var(--nx-wide) + 2 * var(--nx-gutter));
+  margin-inline: auto;
+  padding-inline: var(--nx-gutter);
+}
+.nx-wrap--narrow {
+  max-width: calc(var(--nx-measure) + 2 * var(--nx-gutter));
+}
+
+.nx-section {
+  padding-block: var(--nx-section);
+}
+
+/* ── Type ─────────────────────────────────────────────────────────────────── */
+
+/* One weight for every display heading on the site: a step above regular,
+   short of bold. Google Sans Flex is variable, so it needn't be a hundred. */
+.nx { --nx-heading-weight: 560; }
+
+.nx-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 7.5vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-weight: var(--nx-heading-weight, 560);
+  text-wrap: balance;
+}
+
+.nx-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 4.6vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.nx-kicker {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+/* Supporting copy runs narrower than the heading above it, so the heading
+   sets the width and the lead sits inside it. Components may go narrower. */
+/* Wide enough that an intro sits in two lines; columns narrower than this
+   (the story, the tour's sides) keep their own measure. */
+.nx-lead {
+  max-width: 44rem;
+  font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--color-ink-soft);
+  text-wrap: pretty;
+}
+
+.nx-center {
+  text-align: center;
+  margin-inline: auto;
+}
+
+.nx-hand {
+  font-family: var(--nx-hand);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.nx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: filter 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+.nx-btn:active { transform: scale(0.98); }
+.nx-btn--accent {
+  color: #fff;
+  background: var(--accent-btn-bg);
+  box-shadow: var(--accent-btn-shadow);
+}
+.nx-btn--accent:hover { filter: brightness(1.06); color: #fff; }
+.nx-btn--ghost {
+  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+}
+.nx-btn--ghost:hover { background: color-mix(in srgb, var(--color-ink) 9%, transparent); }
+
+.nx-link {
+  color: var(--color-accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+.nx-link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+
+/* ── Plus chip — Plus features say so, the way pricing does ─────────────── */
+
+.nx-plus {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+

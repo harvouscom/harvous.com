@@ -14,6 +14,11 @@
  * now explain themselves instead of offering to add what you already have,
  * and the catalog holds curated references (BibleProject, Bible Engagement
  * Project, and others) alongside them, not templates alone.
+ *
+ * The indie-maker redesign (formerly src/pages/next/, built beside the live
+ * site so the two could be compared) cut over — its pages were promoted to
+ * the site root and its own draft entry ("next") removed. Empty for now;
+ * the next page built ahead of its launch goes here the same way.
  */
 export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
@@ -38,12 +43,13 @@ export function isDraftPageSlug(slug: string): boolean {
 }
 
 /**
- * Exact path match, not substring. The previous `url.includes("/3/")` would
- * have caught `/blog/how-we-think/page/3/` and `/release-notes/page/3/` —
- * harmless today only because those are excluded by other rules.
+ * Path-prefix match, anchored at the root. The previous `url.includes("/3/")`
+ * would have caught `/blog/how-we-think/page/3/` and `/release-notes/page/3/`;
+ * anchoring keeps those out, and the prefix lets one slug (`next`) cover the
+ * pages beneath it, the same way the post-build `rm -rf dist/<slug>/` does.
  */
 export function isDraftPageUrl(url: string): boolean {
   const pathname = /^https?:\/\//.test(url) ? new URL(url).pathname : url;
   const normalized = pathname.endsWith("/") ? pathname : `${pathname}/`;
-  return DRAFT_PAGE_SLUGS.some((slug) => normalized === `/${slug}/`);
+  return DRAFT_PAGE_SLUGS.some((slug) => normalized.startsWith(`/${slug}/`));
 }

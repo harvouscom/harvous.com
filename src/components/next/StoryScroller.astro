@@ -1,0 +1,192 @@
+---
+/**
+ * StoryScroller — the numbered "01 / 02 / 03" story. On wide screens the list
+ * stays pinned on the left while the scenes scroll past on the right; the step
+ * whose scene is in the middle of the viewport opens up and gets the bar. On
+ * narrow screens there's nothing to pin against, so each scene simply carries
+ * its own caption above it.
+ */
+import MarginNote from "./MarginNote.astro";
+import SceneApp from "./SceneApp.astro";
+import AppWindow from "./app/AppWindow.astro";
+import AppNote from "./app/AppNote.astro";
+import AppReader from "./app/AppReader.astro";
+import AppActivity from "./app/AppActivity.astro";
+import { STORY_STEPS } from "../../lib/next/content.ts";
+
+const pad = (n: number) => String(n + 1).padStart(2, "0");
+---
+
+<div class="story" data-story>
+  <ol class="story__list" aria-label="How Harvous works">
+    {STORY_STEPS.map((step, i) => (
+      <li class:list={["story__item", i === 0 && "is-active"]} data-story-item>
+        <a href={`#story-${step.key}`} class="story__num">{pad(i)}</a>
+        <h3 class="story__title"><a href={`#story-${step.key}`}>{step.title}</a></h3>
+        <div class="story__body"><p>{step.body}</p></div>
+      </li>
+    ))}
+  </ol>
+
+  <div class="story__scenes">
+    {STORY_STEPS.map((step, i) => (
+      <section class="story__scene" id={`story-${step.key}`} data-story-scene data-index={i}>
+        <div class="story__caption">
+          <span class="story__num">{pad(i)}</span>
+          <h3 class="story__title">{step.title}</h3>
+          <p>{step.body}</p>
+        </div>
+        {/* Each scene is the live app, rebuilt from Derek's account: the note with
+            its passage docked, the reader with the notes rail lit, Activity. */}
+        <SceneApp backdrop={step.backdrop} aspect="1 / 1">
+          {step.key === "write" && (
+            <AppWindow view="write" noteTools><AppNote dock /></AppWindow>
+          )}
+          {step.key === "read" && (
+            <AppWindow view="bible"><AppReader lit /></AppWindow>
+          )}
+          {step.key === "remember" && (
+            <AppWindow view="activity"><AppActivity review /></AppWindow>
+          )}
+          <MarginNote slot="overlay" {...step.note} />
+        </SceneApp>
+      </section>
+    ))}
+  </div>
+</div>
+
+<style>
+  .story {
+    display: grid;
+    gap: 2rem;
+  }
+  .story__list { display: none; }
+
+  .story__scenes {
+    display: grid;
+    gap: clamp(4rem, 10vw, 7rem);
+  }
+  .story__scene { scroll-margin-top: 6rem; }
+  /* One column: a square the full width of a tablet is a whole screen of
+     picture. Landscape instead, and capped. */
+  @media (max-width: 59.99rem) {
+    .story__scene :global(.scene) { aspect-ratio: 4 / 3; max-width: 44rem; }
+  }
+
+  .story__num {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink-faint);
+    text-decoration: none;
+  }
+  .story__title {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  .story__title a { color: inherit; text-decoration: none; }
+
+  .story__caption { margin-bottom: 1.5rem; max-width: 34rem; }
+  .story__caption p {
+    margin: 0.6rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+
+  .story :global(.story__vig) { position: absolute; z-index: 2; }
+  .story :global(.story__vig--br) { right: 6%; bottom: 7%; }
+  /* Over "Following", between the Today rows and the screenshot's own
+     "Suggested" group, so it covers neither. */
+  .story :global(.story__vig--tr) { right: 5%; top: 46%; }
+
+  @media (min-width: 60rem) {
+    .story {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.35fr);
+      gap: clamp(3rem, 6vw, 6rem);
+      align-items: start;
+    }
+    .story__caption { display: none; }
+
+    .story__list {
+      position: sticky;
+      top: calc(50vh - 11rem);
+      display: grid;
+      gap: 1.75rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .story__item {
+      position: relative;
+      padding-left: 1.5rem;
+      color: var(--color-ink-faint);
+      transition: color 300ms ease;
+    }
+    .story__item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.1rem;
+      bottom: 0.1rem;
+      width: 3px;
+      border-radius: 3px;
+      background: var(--accent-btn-bg);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 450ms var(--nx-ease);
+    }
+    .story__item .story__title { color: inherit; }
+    .story__item.is-active { color: var(--color-ink); }
+    .story__item.is-active::before { transform: scaleY(1); }
+
+    .story__body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 450ms var(--nx-ease);
+    }
+    .story__body > p {
+      overflow: hidden;
+      margin: 0;
+      font-size: 1.0625rem;
+      line-height: 1.55;
+      color: var(--color-ink-soft);
+    }
+    .story__item.is-active .story__body { grid-template-rows: 1fr; }
+    .story__item.is-active .story__body > p { padding-top: 0.75rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story__item,
+    .story__item::before,
+    .story__body { transition: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-story]").forEach((root) => {
+    const items = root.querySelectorAll<HTMLElement>("[data-story-item]");
+    const scenes = root.querySelectorAll<HTMLElement>("[data-story-scene]");
+    if (!("IntersectionObserver" in window) || !items.length) return;
+
+    const setActive = (index: number) =>
+      items.forEach((item, i) => item.classList.toggle("is-active", i === index));
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.index));
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px" }
+    );
+    scenes.forEach((s) => io.observe(s));
+  });
+</script>

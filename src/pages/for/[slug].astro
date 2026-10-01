@@ -1,19 +1,492 @@
 ---
-import ForAudienceDetailPage from "../../components/ForAudienceDetailPage.astro";
-import { getAudiences, getAudienceBySlug } from "../../lib/for-audiences-data.ts";
+/**
+ * /for/<slug>/ — one audience in the /next chrome. Same content as the
+ * live page (ForAudienceDetailPage), laid out the /next way: a centred intro
+ * over the audience's own sky, the story as a single readable column, the
+ * "what that looks like" moments as tinted cards, the use cases as sky cards,
+ * the features, a Compare preview, the quote, and the closing call. The
+ * churches page keeps its interest form.
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+import UseCaseCard from "../../components/next/UseCaseCard.astro";
+import ComparePreview from "../../components/next/ComparePreview.astro";
+import ClosingCall from "../../components/next/ClosingCall.astro";
+import BlogNextCard from "../../components/next/BlogNextCard.astro";
+import AppIcon from "../../components/next/app/AppIcon.astro";
+import ChurchInterestForm from "../../components/ChurchInterestForm.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection, getEntry, render } from "astro:content";
+import {
+  getAudiences,
+  getUseCasesForAudience,
+  type ForAudience,
+} from "../../lib/for-audiences-data.ts";
+import { getComingSoonGridItem } from "../../lib/coming-soon-grid.ts";
+import { FEATURE_ICONS } from "../../lib/feature-icons.ts";
+import { hasDetailContent } from "../../lib/product-page-data.ts";
+import { draftPageIsReachable } from "../../lib/draft-pages.ts";
+import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../../lib/blog.ts";
+import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
+import { pageWithBreadcrumbJsonLd } from "../../lib/page-jsonld.ts";
 
 export function getStaticPaths() {
-  return getAudiences().map((audience) => ({
-    params: { slug: audience.slug },
-  }));
+  return getAudiences().map((audience) => ({ params: { slug: audience.slug }, props: { audience } }));
 }
 
-const { slug } = Astro.params;
-const audience = getAudienceBySlug(slug!);
-
-if (!audience) {
-  throw new Error(`Audience not found: ${slug}`);
+interface Props {
+  audience: ForAudience;
 }
+const { audience } = Astro.props;
+
+/* Teachers and group leaders get the note about churches. */
+const showChurchBridge = audience.slug === "teachers" || audience.slug === "group-leaders";
+
+/* The features it uses: feature pages that are live, and product cards
+   (Shared spaces and the like) from the coming-soon grid. */
+const allFeatures = await getCollection("features");
+const liveFeature = new Set(
+  allFeatures.filter((f) => !f.data.draft && hasDetailContent(f.data)).map((f) => f.id)
+);
+type FeatureCard = { icon: string; title: string; desc: string; href?: string; soon: boolean };
+const features: FeatureCard[] = audience.featureIds
+  .map((id): FeatureCard | undefined => {
+    const soon = getComingSoonGridItem(id);
+    if (soon) {
+      return {
+        icon: soon.icon ?? soon.icons?.[0] ?? "fa7-solid:note-sticky",
+        title: soon.title,
+        desc: soon.desc,
+        href: soon.href,
+        soon: soon.comingSoon !== false,
+      };
+    }
+    const f = allFeatures.find((x) => x.id === id);
+    if (!f || !draftPageIsReachable(`features/${f.id}`)) return undefined;
+    return {
+      icon: FEATURE_ICONS[f.id] ?? "fa7-solid:note-sticky",
+      title: f.data.tagline,
+      desc: f.data.title,
+      href: liveFeature.has(f.id) ? `/features/${f.id}/` : undefined,
+      soon: false,
+    };
+  })
+  .filter((c): c is FeatureCard => c !== undefined);
+
+const useCases = getUseCasesForAudience(audience);
+
+const posts = getRelatedBlogPosts(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, includeBlogDrafts())),
+  { for: audience.slug },
+);
+
+const quote = audience.testimonialId ? await getEntry("testimonials", audience.testimonialId) : undefined;
+const Quote = quote ? (await render(quote)).Content : undefined;
+
+/* Three to a row on a 6-track grid; the tail goes wide so no row ends with a
+   lonely card (same rule as the /for/ hub). */
+const wideTail = (n: number, i: number) => {
+  const rem = n % 3;
+  if (rem === 1 && n >= 4) return i >= n - 4;
+  if (rem === 2) return i >= n - 2;
+  return false;
+};
+
+const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoonLine ?? "Coming soon" : null);
 ---
 
-<ForAudienceDetailPage audience={audience} />
+<NextLayout
+  title={audience.seoTitle}
+  description={audience.seoDescription}
+  ogImage={`/images/for/og/${audience.slug}.webp`}
+  jsonLd={pageWithBreadcrumbJsonLd(
+    { name: audience.seoTitle, description: audience.seoDescription, path: audience.href },
+    [{ name: "Harvous", path: "/" }, { name: "Who it's for", path: "/for/" }, { name: audience.title, path: audience.href }],
+  )}
+>
+  <article style={`--aud-ink: ${audience.ink};`}>
+    <header class="nx-wrap fa-intro">
+      <a class="fa-back" href="/for/">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        Who it's for
+      </a>
+      <p class="fa-badges">
+        <span class="fa-badge">{audience.title}</span>
+        {status && <span class="fa-badge fa-badge--status">{status}</span>}
+      </p>
+      <h1 class="nx-display fa-title">{audience.heroTitle}</h1>
+      <p class="nx-lead fa-lead">{audience.heroLead}</p>
+    </header>
+
+    <figure class="nx-wrap fa-sky" aria-hidden="true">
+      <span class="fa-sky__frame">
+        <img src={audience.image} alt="" loading="eager" decoding="async" />
+        <span class="fa-sky__icon"><Icon name={audience.icon} /></span>
+      </span>
+    </figure>
+
+    <section class="nx-wrap fa-story" aria-label="The story">
+      {audience.sections.map((section) => (
+        <div class="fa-story__part" data-reveal>
+          <h2 class="fa-h2">{section.heading}</h2>
+          {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+          {section.ctaHref && section.ctaLabel && (
+            <p class="fa-story__cta">
+              <a class="nx-btn nx-btn--accent" href={section.ctaHref}>{section.ctaLabel}</a>
+            </p>
+          )}
+        </div>
+      ))}
+
+      {showChurchBridge && (
+        <aside class="fa-bridge" data-reveal>
+          <p class="nx-kicker">For churches</p>
+          <p>
+            Churches keep a teaching plan for each ministry and share it with the people connected
+            to them. If that fits your church, tell me about it.
+          </p>
+          <a class="nx-link" href="/for/churches/#interest">Share church interest →</a>
+        </aside>
+      )}
+    </section>
+
+    {audience.moments.length > 0 && (
+      <section class="nx-wrap fa-sec" aria-labelledby="moments-title">
+        <h2 id="moments-title" class="fa-h2 fa-h2--sec">What that looks like in Harvous</h2>
+        <ul class="fa-moments" role="list" data-reveal="stagger">
+          {audience.moments.map((m) => (
+            <li class="fa-moment">
+              <h3 class="fa-moment__h">
+                <span class="fa-moment__tile"><AppIcon name={m.icon} /></span>
+                {m.heading}
+              </h3>
+              <p class="fa-moment__p">{m.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {useCases.length > 0 && (
+      <section class="nx-wrap fa-sec" aria-labelledby="uc-title">
+        <h2 id="uc-title" class="fa-h2 fa-h2--sec">Ways people like you study</h2>
+        <ul class="fa-ucs" role="list" data-reveal="stagger">
+          {useCases.map((uc, i) => (
+            <li class:list={[(useCases.length === 1 || wideTail(useCases.length, i)) && "is-wide"]}>
+              <UseCaseCard useCase={uc} large={useCases.length === 1 || wideTail(useCases.length, i)} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {features.length > 0 && (
+      <section class="nx-wrap fa-sec" aria-labelledby="features-title">
+        <h2 id="features-title" class="fa-h2 fa-h2--sec">{audience.featuresHeading}</h2>
+        <p class="fa-sec__lead">{audience.featuresLead}</p>
+        <ul class="fa-features" role="list" data-reveal>
+          {features.map((f) => {
+            const Tag = f.href ? "a" : "div";
+            return (
+              <li>
+                <Tag class:list={["fa-feature", f.href && "fa-feature--link"]} href={f.href}>
+                  <span class="fa-feature__icon"><Icon name={f.icon} /></span>
+                  <span class="fa-feature__text">
+                    <span class="fa-feature__title">
+                      {f.title}
+                      {f.soon && <span class="fa-feature__soon">Coming soon</span>}
+                    </span>
+                    <span class="fa-feature__desc">{f.desc}</span>
+                  </span>
+                  {f.href && (
+                    <svg class="fa-feature__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+                  )}
+                </Tag>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+
+    {audience.compareSlugs.length > 0 && (
+      <ComparePreview
+        id="works-alongside"
+        kicker="Compare"
+        title="Works alongside other tools."
+        lead="Harvous does a different job than most Bible apps. Plenty of people use it next to something they already love."
+        slugs={audience.compareSlugs}
+      />
+    )}
+
+    {quote && Quote && (
+      <figure class="nx-wrap fa-quote" data-reveal>
+        <blockquote><Quote /></blockquote>
+        <figcaption>{quote.data.name}</figcaption>
+      </figure>
+    )}
+
+    {posts.length > 0 && (
+      <section class="nx-wrap fa-sec" aria-labelledby="posts-title">
+        <h2 id="posts-title" class="fa-h2 fa-h2--sec">From the blog</h2>
+        <ul class="fa-posts" role="list">
+          {posts.map((p) => (
+            <li><BlogNextCard post={p} /></li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+
+  {audience.interestForm && (
+    <section class="nx-wrap fa-form">
+      <div class="fa-form__card"><ChurchInterestForm id="interest" /></div>
+    </section>
+  )}
+
+  <ClosingCall
+    title={audience.interestForm ? "Give your study somewhere to live." : undefined}
+    lead={audience.interestForm
+      ? "Try it free for personal Bible study. Church features build on the same foundation."
+      : undefined}
+  />
+</NextLayout>
+
+<style>
+  .fa-intro {
+    padding-top: clamp(7.5rem, 15vw, 10rem);
+    text-align: center;
+  }
+  .fa-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    border-radius: 999px;
+    background: var(--color-warm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .fa-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .fa-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .fa-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.75rem 0 0; }
+  .fa-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--aud-ink);
+    background: color-mix(in oklab, var(--aud-ink) 14%, var(--color-paper));
+  }
+  .fa-badge--status { color: var(--color-ink-soft); background: var(--color-warm); }
+  .fa-title { margin: 1.25rem auto 0; max-width: 16ch; font-size: clamp(2.5rem, 6vw, 4.75rem); }
+  .fa-lead { margin: 1.5rem auto 0; }
+
+  /* The audience's own sky, wide, with its mark on a paper tile. */
+  .fa-sky { margin: clamp(2.5rem, 6vw, 4rem) auto 0; }
+  .fa-sky__frame {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 21 / 8;
+    overflow: hidden;
+    border-radius: var(--nx-radius-scene, 1.5rem);
+  }
+  .fa-sky__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .fa-sky__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(4rem, 8vw, 5.5rem);
+    height: clamp(4rem, 8vw, 5.5rem);
+    border-radius: 28%;
+    background: var(--color-paper);
+    color: var(--aud-ink);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 24px 48px -20px rgba(15, 23, 42, 0.45);
+  }
+  .fa-sky__icon :global(svg) { width: 42%; height: 42%; }
+  @media (max-width: 40rem) { .fa-sky__frame { aspect-ratio: 4 / 3; } }
+
+  /* The story: one readable column. */
+  .fa-story { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .fa-story__part + .fa-story__part { margin-top: 2.5rem; }
+  .fa-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .fa-story p { margin: 0.9rem 0 0; font-size: 1.0625rem; line-height: 1.65; color: var(--color-ink-soft); text-wrap: pretty; }
+  .fa-story p :global(a:not(.nx-btn)) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .fa-story__cta { margin-top: 1.5rem !important; }
+  .fa-bridge {
+    margin-top: 3rem;
+    padding: 1.5rem 1.75rem;
+    border-radius: 1.4rem;
+    background: var(--color-warm);
+  }
+  .fa-bridge p:not(.nx-kicker) { margin: 0.6rem 0 0.9rem; }
+
+  .fa-sec { padding-top: clamp(4rem, 9vw, 6rem); }
+  .fa-h2--sec { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; }
+  .fa-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  /* Moments: an open two-column list — a rule over each, the icon beside
+     its heading in the audience's colour, the words under it. */
+  .fa-moments {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) { .fa-moments { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .fa-moment { padding: 1.25rem 0 1.4rem; border-top: 1px solid var(--color-rule); }
+  .fa-moment__h {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .fa-moment__tile {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.6rem;
+    color: var(--aud-ink);
+    background: color-mix(in oklab, var(--aud-ink) 12%, var(--color-paper));
+  }
+  .fa-moment__tile :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .fa-moment__p {
+    margin: 0.55rem 0 0 2.7rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .fa-ucs,
+  .fa-posts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) {
+    .fa-ucs, .fa-posts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 64rem) {
+    .fa-ucs { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; }
+    .fa-ucs > li { grid-column: span 2; }
+    .fa-ucs > li.is-wide { grid-column: span 3; }
+  }
+  @media (min-width: 40rem) and (max-width: 63.99rem) {
+    .fa-ucs > li:first-child:nth-last-child(odd):not(:only-child) { grid-column: 1 / -1; }
+  }
+
+  /* Features: light rows (the hub's and Compare's index), two columns wide. */
+  .fa-features {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) { .fa-features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .fa-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 0.85rem 0.25rem;
+    border-bottom: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .fa-feature:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
+  .fa-feature__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-warm);
+    color: var(--color-ink);
+  }
+  .fa-feature__icon :global(svg) { width: 1rem; height: 1rem; }
+  .fa-feature__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .fa-feature__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.5rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .fa-feature__soon {
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+    background: var(--color-warm);
+  }
+  .fa-feature__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
+  .fa-feature__chev {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--color-ink-faint);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 200ms ease, stroke 200ms ease;
+  }
+  .fa-feature--link:hover .fa-feature__chev { transform: translateX(2px); stroke: var(--color-ink); }
+
+  /* The live interest form, as is, on a card in the page's column. */
+  .fa-form { max-width: calc(44rem + 2 * var(--nx-gutter)); padding-top: clamp(4rem, 9vw, 6rem); }
+  .fa-form__card {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: 1.6rem;
+    background: color-mix(in oklab, var(--aud-ink) 5%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--aud-ink) 10%, transparent);
+  }
+  .fa-form__card :global(section),
+  .fa-form__card :global(form) { max-width: none; margin: 0; padding-inline: 0; }
+
+  .fa-quote {
+    max-width: calc(46rem + 2 * var(--nx-gutter));
+    margin: 0 auto;
+    padding-top: clamp(4rem, 9vw, 6rem);
+    text-align: center;
+  }
+  .fa-quote blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .fa-quote blockquote :global(p) { margin: 0; }
+  .fa-quote figcaption { margin-top: 1.25rem; font-size: 0.9375rem; color: var(--color-ink-faint); }
+</style>

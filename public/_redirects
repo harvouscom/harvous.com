@@ -18,6 +18,8 @@
 /features/sharing/       /features/share/         301
 /features/recall         /features/suggestions/   301
 /features/recall/        /features/suggestions/   301
+/features/offline-sync   /features/bible-reader/   301
+/features/offline-sync/  /features/bible-reader/   301
 
 # Review renamed to Review exercises
 /add-ons/review          /add-ons/review-exercises/   301
@@ -29,5 +31,5 @@
 /changelog/              /release-notes/          301
 /changelog/*             /release-notes/:splat    301
 
-/release-notes/page/1    /release-notes/          301
-/release-notes/page/1/   /release-notes/          301
+# Pagination retired — the index now lists every release on one page.
+/release-notes/page/*    /release-notes/          301
