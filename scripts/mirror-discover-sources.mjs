@@ -39,7 +39,7 @@
  * Nothing here is required for a correct build: `resolveDiscoverImage` checks
  * the disk and degrades to whatever the row authored, so a forgotten run
  * costs a hot-linked image rather than a broken page. Same operating model as
- * `npm run og:pages` — generated locally, committed, not run in CI.
+ * `npm run og:cards` — generated locally, committed, not run in CI.
  *
  * Usage:
  *   npm run discover:sources
