@@ -37,7 +37,7 @@ Hub: https://harvous.com/blog/
 ### Topics
 
 - Equipping: https://harvous.com/blog/equipping/
-- How we think: https://harvous.com/blog/how-we-think/
+- How I think: https://harvous.com/blog/how-we-think/
 - Retention: https://harvous.com/blog/retention/
 - Study habits: https://harvous.com/blog/study-habits/
 - Teaching: https://harvous.com/blog/teaching/
