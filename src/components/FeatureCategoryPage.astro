@@ -74,7 +74,7 @@ const jsonLd = {
 };
 ---
 
-<NextLayout title={category.seoTitle} description={category.seoDescription}>
+<NextLayout title={category.seoTitle} description={category.seoDescription} ogImage={`/images/features/og/${category.slug}.webp`} jsonLd={jsonLd}>
   <article style={`--cat-ink: ${category.ink};`}>
     <header class="nx-wrap fc-intro">
       <a class="fc-back" href={`/tour/#${category.slug}`}>

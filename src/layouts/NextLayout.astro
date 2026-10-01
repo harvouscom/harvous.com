@@ -28,12 +28,13 @@ interface Props {
   description: string;
   ogImage?: string;
   noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, ogImage, noindex = false } = Astro.props;
+const { title, description, ogImage, noindex = false, jsonLd } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage} noindex={noindex} bare>
+<BaseLayout title={title} description={description} ogImage={ogImage} noindex={noindex} jsonLd={jsonLd} bare>
   <Fragment slot="head">
     {/* Margin notes only. Self-host before cutover, like Google Sans Flex. */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />

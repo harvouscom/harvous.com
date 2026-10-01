@@ -23,6 +23,7 @@ import FounderLetter from "../components/FounderLetter.astro";
 import { getAddonDetailHref } from "../lib/addons-data.ts";
 import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
 import { SHOTS, type Backdrop, type MarginNoteSpec, type Shot } from "../lib/next/content.ts";
+import { threeJsonLd } from "../lib/page-jsonld.ts";
 
 const APP_URL = "https://app.harvous.com/";
 
@@ -172,6 +173,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   title="Harvous 3 — study you can follow and return to"
   description="What changed in Harvous 3, for people who already use it: Activity, the Bible reader, Search, Suggestions, Review exercises, and why the sidebar went."
   ogImage="/images/3/og.webp"
+  jsonLd={threeJsonLd("What changed in Harvous 3, for people who already use it: Activity, the Bible reader, Search, Suggestions, Review exercises, and why the sidebar went.")}
 >
   {/*
     The live /3/ hero's two signatures, kept: the ruled paper (global

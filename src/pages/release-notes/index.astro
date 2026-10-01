@@ -11,6 +11,7 @@ import SectionNav from "../../components/next/SectionNav.astro";
 import ReleaseNotesIndexCard from "../../components/ReleaseNotesIndexCard.astro";
 import { getReleaseNotes } from "../../lib/release-notes-data.ts";
 import { releaseHeadline } from "../../lib/next/releases.ts";
+import { releaseNotesIndexJsonLd } from "../../lib/page-jsonld.ts";
 
 const releases = getReleaseNotes();
 const [latest, ...rest] = releases;
@@ -39,6 +40,7 @@ const latestEntries = latest?.entries.slice(0, 5) ?? [];
 ---
 
 <NextLayout
+  jsonLd={releaseNotesIndexJsonLd()}
   title="Release Notes — Harvous"
   description="Release notes and updates for Harvous, the Bible study notes app."
 >

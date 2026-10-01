@@ -27,6 +27,7 @@ import { hasDetailContent } from "../../lib/product-page-data.ts";
 import { draftPageIsReachable } from "../../lib/draft-pages.ts";
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../../lib/blog.ts";
 import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
+import { pageWithBreadcrumbJsonLd } from "../../lib/page-jsonld.ts";
 
 export function getStaticPaths() {
   return getAudiences().map((audience) => ({ params: { slug: audience.slug }, props: { audience } }));
@@ -93,7 +94,15 @@ const wideTail = (n: number, i: number) => {
 const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoonLine ?? "Coming soon" : null);
 ---
 
-<NextLayout title={audience.seoTitle} description={audience.seoDescription}>
+<NextLayout
+  title={audience.seoTitle}
+  description={audience.seoDescription}
+  ogImage={`/images/for/og/${audience.slug}.webp`}
+  jsonLd={pageWithBreadcrumbJsonLd(
+    { name: audience.seoTitle, description: audience.seoDescription, path: audience.href },
+    [{ name: "Harvous", path: "/" }, { name: "Who it's for", path: "/for/" }, { name: audience.title, path: audience.href }],
+  )}
+>
   <article style={`--aud-ink: ${audience.ink};`}>
     <header class="nx-wrap fa-intro">
       <a class="fa-back" href="/for/">

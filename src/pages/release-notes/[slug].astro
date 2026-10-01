@@ -7,6 +7,7 @@
 import NextLayout from "../../layouts/NextLayout.astro";
 import ReleaseNoteSheet from "../../components/ReleaseNoteSheet.astro";
 import { getReleaseNotes, type ChangelogRelease } from "../../lib/release-notes-data.ts";
+import { pageWithBreadcrumbJsonLd } from "../../lib/page-jsonld.ts";
 
 export function getStaticPaths() {
   const all = getReleaseNotes();
@@ -24,7 +25,15 @@ interface Props {
 const { note, newer, older } = Astro.props;
 ---
 
-<NextLayout title={`v${note.version} Release Notes — Harvous`} description={note.excerpt} noindex>
+<NextLayout
+  title={`v${note.version} Release Notes — Harvous`}
+  description={note.excerpt}
+  noindex
+  jsonLd={pageWithBreadcrumbJsonLd(
+    { name: `Harvous v${note.version} Release Notes`, description: note.excerpt, path: `/release-notes/${note.slug}/`, datePublished: note.date || undefined },
+    [{ name: "Harvous", path: "/" }, { name: "Release Notes", path: "/release-notes/" }, { name: `v${note.version}`, path: `/release-notes/${note.slug}/` }],
+  )}
+>
   <article class="rnd release-notes-frame">
     <div class="release-notes-frame__grid rnd__grid" aria-hidden="true"></div>
     <div class="nx-wrap rnd__wrap">

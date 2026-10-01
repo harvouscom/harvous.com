@@ -16,9 +16,12 @@ import ProofStrip from "../components/next/ProofStrip.astro";
 import UseCaseRow from "../components/next/UseCaseRow.astro";
 import ClosingCall from "../components/next/ClosingCall.astro";
 import ComparePreview from "../components/next/ComparePreview.astro";
+import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
+const homeJsonLd = await buildHomeJsonLd();
 ---
 
 <NextLayout
+  jsonLd={homeJsonLd}
   title="Harvous — a study Bible that remembers"
   description="A quiet notes app for studying the Bible, made by one person. Write what you notice; Harvous keeps it with the verse and brings it back before it fades."
 >

@@ -33,6 +33,7 @@ import {
   isCompareSeoPageDraft,
   resolvePickSlugs,
 } from "../../lib/compare-seo-pages.ts";
+import { compareHubJsonLd } from "../../lib/page-jsonld.ts";
 
 const entries = getCompareEntries();
 const total = entries.length;
@@ -150,6 +151,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
 ---
 
 <NextLayout
+  jsonLd={compareHubJsonLd()}
   title="Compare — Harvous next to the apps you already use"
   description={`See how Harvous, a notes-first Bible study app, sits next to ${total} apps you might already use for reading, notes, devotionals, sermon prep, and small groups.`}
 >

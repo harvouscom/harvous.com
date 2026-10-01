@@ -32,6 +32,7 @@ import {
   isBlogPostListed,
   sortBlogPostsByDate,
 } from "../../lib/blog";
+import { blogHubJsonLd } from "../../lib/page-jsonld.ts";
 
 const showDrafts = includeBlogDrafts();
 const posts = sortBlogPostsByDate(
@@ -59,6 +60,7 @@ const marks = tailMarks(rest.length);
 ---
 
 <NextLayout
+  jsonLd={blogHubJsonLd(posts)}
   title="Bright Enough — Harvous Blog"
   description="Bright Enough — notes, habits, and teaching that show up after Sunday. For teachers, group leaders, and anyone who keeps what they learn."
 >

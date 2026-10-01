@@ -25,6 +25,7 @@ import {
   resolveBlogAuthor,
   sortBlogPostsByDate,
 } from "../../lib/blog";
+import { blogPostJsonLd } from "../../lib/page-jsonld.ts";
 
 export async function getStaticPaths() {
   const showDrafts = includeBlogDrafts();
@@ -71,7 +72,7 @@ const pageTitle = post.data.seoTitle ?? `${post.data.title} — Bright Enough`;
 const pageDescription = post.data.seoDescription ?? post.data.description;
 ---
 
-<NextLayout title={pageTitle} description={pageDescription} ogImage={featThumb}>
+<NextLayout title={pageTitle} description={pageDescription} ogImage={featThumb} jsonLd={blogPostJsonLd(post, { description: pageDescription, featThumb, author })}>
   <article class="bp">
     <header class="nx-wrap bp-head">
       <a class="bp-back" href="/blog/">

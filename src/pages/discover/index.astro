@@ -44,6 +44,7 @@ import {
   type DiscoverKind,
   type DiscoverListing,
 } from "../../lib/discover-data.ts";
+import { discoverHubJsonLd } from "../../lib/page-jsonld.ts";
 
 const listings = sortedDiscoverListings();
 const topics = getDiscoverTopics();
@@ -77,6 +78,8 @@ const cards = listings.map((listing) => toDiscoverCard(listing));
 ---
 
 <NextLayout
+  jsonLd={discoverHubJsonLd(listings)}
+  ogImage="/images/discover/og.webp"
   title="Discover — Bible study templates and resources — Harvous"
   description="Free Bible study templates shared by people who use Harvous, plus videos and guides from BibleProject and others. Take a copy into your own account."
 >

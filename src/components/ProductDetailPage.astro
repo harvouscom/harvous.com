@@ -64,7 +64,7 @@ const isDraft = isDraftPageSlug(draftSlug);
 const ogImage = page.kind === "feature" ? `/images/features/og/${page.slug}.webp` : `/images/add-ons/og/${page.slug}.webp`;
 ---
 
-<NextLayout title={page.seoTitle} description={page.seoDescription} noindex={isDraft}>
+<NextLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} noindex={isDraft} jsonLd={jsonLd}>
   <article style={`--pd-ink: ${page.ink}; --pd-ink-fg: ${page.inkFg ?? page.ink};`}>
     <header class="nx-wrap pd-intro">
       <a class="pd-back" href={backHref}>

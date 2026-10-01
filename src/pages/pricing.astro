@@ -10,11 +10,14 @@ import FaqSection from "../components/FaqSection.astro";
 import ComparePreview from "../components/next/ComparePreview.astro";
 import { FREE_PLAN, PLUS_PLAN, PRICING_ROADMAP, type PricingPlan } from "../lib/pricing-data.ts";
 import { backdropSrc } from "../lib/next/content.ts";
+import { pricingJsonLd } from "../lib/page-jsonld.ts";
 
 const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sky: backdropSrc("077") }];
 ---
 
 <NextLayout
+  jsonLd={pricingJsonLd()}
+  ogImage="/images/pricing/og.webp"
   title="Pricing — Harvous"
   description="Harvous is free for personal Bible study. Harvous Plus adds unlimited history, Review exercises, and hosting Shared Spaces — $6/mo or $36/yr."
 >

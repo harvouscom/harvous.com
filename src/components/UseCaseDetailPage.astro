@@ -28,6 +28,7 @@ import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib
 import { fathomTry } from "../lib/fathom-events.ts";
 import { buildTryUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
+import { pageWithBreadcrumbJsonLd } from "../lib/page-jsonld.ts";
 
 interface Props {
   useCase: UseCase;
@@ -73,7 +74,15 @@ const quote = useCase.testimonialId ? await getEntry("testimonials", useCase.tes
 const Quote = quote ? (await render(quote)).Content : undefined;
 ---
 
-<NextLayout title={useCase.seoTitle} description={useCase.seoDescription}>
+<NextLayout
+  title={useCase.seoTitle}
+  description={useCase.seoDescription}
+  ogImage={`/images/use-cases/og/${useCase.slug}.webp`}
+  jsonLd={pageWithBreadcrumbJsonLd(
+    { name: useCase.seoTitle, description: useCase.seoDescription, path: useCase.href },
+    [{ name: "Harvous", path: "/" }, { name: "Use cases", path: "/use-cases/" }, { name: useCase.title, path: useCase.href }],
+  )}
+>
   <article style={`--uc-ink: ${useCase.ink};`}>
     <header class="nx-wrap ud-intro">
       <a class="ud-back" href="/use-cases/">

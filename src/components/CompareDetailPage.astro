@@ -1,232 +1,270 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PageClosingCTA from "./PageClosingCTA.astro";
-import CompareHeroArt from "./CompareHeroArt.astro";
-import CompareCarousel from "./CompareCarousel.astro";
+/**
+ * CompareDetailPage — Harvous vs one app (/compare/<app>/). The two icons
+ * face each other on a sky that takes the other app's colour (the same
+ * matching the featured card on /compare/ uses), then: when to choose which,
+ * side by side, the guides that include it, and more apps in its lane.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import ClosingCall from "./next/ClosingCall.astro";
 import { fathomCompare, fathomTry } from "../lib/fathom-events.ts";
 import type { CompareEntry } from "../lib/compare-data.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
-import {
-  composeCompareIntro,
-  featureLabel,
-  getCompareCtaHeading,
-  getHarvousPosition,
-} from "../lib/compare-harvous-positioning.ts";
-import "../styles/compare.css";
+import { composeCompareIntro, featureLabel, getCompareCtaHeading, getHarvousPosition } from "../lib/compare-harvous-positioning.ts";
+import { backdropForImage } from "../lib/next/icon-backdrop.ts";
+import { backdropSrc } from "../lib/next/content.ts";
 
 interface Props {
   entry: CompareEntry;
   related: CompareEntry[];
   jsonLd: Record<string, unknown>;
 }
-
 const { entry, related, jsonLd } = Astro.props;
-const relatedGuides = getGuidesForCompareSlug(entry.slug);
+const guides = getGuidesForCompareSlug(entry.slug);
 const position = getHarvousPosition(entry.competitorType);
 const intro = composeCompareIntro(entry.intro, entry.competitorType);
 const ctaHeading = getCompareCtaHeading(entry.name, entry.competitorType);
+
+const icon = (slug: string) => `/images/compare/icons/${slug}.png`;
+const sky = await backdropForImage(icon(entry.slug));
+
+/** "Apple Notes is great at quick capture" — the other app's half of the intro. */
+const theirHalf = (e: CompareEntry) => {
+  const m = e.intro.trim().match(/^(.*?);\s*Harvous\b/i);
+  return (m?.[1] ?? e.intro).trim().replace(/[.;]$/, "");
+};
 ---
 
-<BaseLayout title={entry.seoTitle} description={entry.seoDescription} ogImage={entry.ogImage} jsonLd={jsonLd}>
-  <article class="compare-detail">
-    <header class="border-b border-[var(--color-rule)]">
-      <div class="mx-auto max-w-3xl px-5 py-10 md:py-14">
-        <div data-reveal>
-        <a href="/compare/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
-          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path
-              fill-rule="evenodd"
-              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-              clip-rule="evenodd"></path>
-          </svg>
-          Compare
-        </a>
-
-        <div class="mt-8">
-          <CompareHeroArt competitorImage={entry.competitorImage} />
-        </div>
-
-        <div class="mt-8 text-center">
-          <h1 class="font-display text-4xl leading-[1.05] md:text-5xl">Harvous vs {entry.name}</h1>
-          <p class="compare-detail__lead mx-auto mt-5 text-lg leading-relaxed text-[var(--color-ink-soft)]">
-            {intro}
-          </p>
-          {
-            entry.competitorLink && (
-              <div class="mt-6">
-                <a
-                  href={entry.competitorLink}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  class="btn-pill inline-flex items-center gap-1.5"
-                >
-                  Visit {entry.name}
-                </a>
-              </div>
-            )
-          }
-        </div>
-        </div>
-      </div>
+<NextLayout title={entry.seoTitle} description={entry.seoDescription} ogImage={entry.ogImage} jsonLd={jsonLd}>
+  <article class="cd">
+    <header class="nx-wrap cd-intro">
+      <a class="cd-back" href="/compare/">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        Compare
+      </a>
+      <p class="cd-kicker">{entry.competitorType}</p>
+      <h1 class="nx-display cd-title">Harvous vs {entry.name}</h1>
+      <p class="nx-lead cd-lead">{intro}</p>
     </header>
 
-    <section class="mx-auto max-w-3xl px-5 py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
-      <div class="prose-letter space-y-8">
-        <div>
-          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Choose {entry.name} if…</h2>
-          <p class="mt-3 text-[var(--color-ink-soft)]">{entry.idealFor}</p>
-        </div>
-        <div>
-          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Choose Harvous if…</h2>
-          <p class="mt-3 text-[var(--color-ink-soft)]">{position.chooseIf}</p>
-          {
-            position.featureIds.length > 0 && (
-              <ul class="compare-detail__feature-links" role="list">
-                {position.featureIds.map((id) => (
-                  <li>
-                    <a href={`/features/${id}/`}>{featureLabel(id)}</a>
-                  </li>
-                ))}
-              </ul>
-            )
-          }
-        </div>
-        <div>
-          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Harvous isn’t for…</h2>
-          <p class="mt-3 text-[var(--color-ink-soft)]">{position.tradeoff}</p>
-        </div>
-        <div>
-          <h2 class="text-xl font-semibold text-[var(--color-ink)]">Works best alongside</h2>
-          <p class="mt-3 text-[var(--color-ink-soft)]">{entry.worksBestAlongside}</p>
-        </div>
+    <figure class="nx-wrap cd-face" aria-hidden="true">
+      <span class="cd-face__frame">
+        <img class="cd-face__sky" src={backdropSrc(sky)} alt="" loading="eager" />
+        <span class="cd-face__pair">
+          <img class="cd-face__icon" src="/images/app-icon.webp" alt="" width="128" height="128" />
+          <span class="cd-face__vs">vs</span>
+          <img class="cd-face__icon" src={icon(entry.slug)} alt="" width="128" height="128" />
+        </span>
+      </span>
+    </figure>
+
+    <section class="nx-wrap cd-choose" aria-label="Which to choose">
+      <div class="cd-card">
+        <p class="cd-card__head"><img src={icon(entry.slug)} alt="" width="40" height="40" /> Choose {entry.name} if…</p>
+        <p>{entry.idealFor}</p>
+        {entry.competitorLink && (
+          <a class="cd-visit" href={entry.competitorLink} target="_blank" rel="noopener noreferrer nofollow">Visit {entry.name} ↗</a>
+        )}
+      </div>
+      <div class="cd-card cd-card--harvous">
+        <p class="cd-card__head"><img src="/images/app-icon.webp" alt="" width="40" height="40" /> Choose Harvous if…</p>
+        <p>{position.chooseIf}</p>
+        {position.featureIds.length > 0 && (
+          <ul class="cd-chips" role="list">
+            {position.featureIds.map((id) => <li><a href={`/features/${id}/`}>{featureLabel(id)}</a></li>)}
+          </ul>
+        )}
+      </div>
+      <div class="cd-note">
+        <h2>Harvous isn’t for…</h2>
+        <p>{position.tradeoff}</p>
+      </div>
+      <div class="cd-note">
+        <h2>Works best alongside</h2>
+        <p>{entry.worksBestAlongside}</p>
       </div>
     </section>
 
-    <section class="frame-divider" data-reveal style="--reveal-delay: 120ms;">
-      <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
-        <h2 class="font-display text-2xl leading-snug md:text-3xl">Side by side</h2>
-        <p class="mt-3 text-[var(--color-ink-soft)]">
-          A quick look at what each app is built for — not a feature checklist, but the job each one does best.
-        </p>
-        <div class="compare-detail__table-wrap mt-8">
-          <table class="compare-detail__table">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Harvous</th>
-                <th scope="col">{entry.name}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Best at</th>
-                <td>{position.bestAt}</td>
-                <td>{entry.bestAt}</td>
-              </tr>
-              <tr>
-                <th scope="row">Primary use</th>
-                <td>{position.primaryUse}</td>
-                <td>{entry.primaryUse}</td>
-              </tr>
-              {
-                position.tableRows.map((row) => (
-                  <tr>
-                    <th scope="row">{row.label}</th>
-                    <td>{row.harvous}</td>
-                    <td>{row.competitorHint}</td>
-                  </tr>
-                ))
-              }
-              <tr>
-                <th scope="row">Ideal for</th>
-                <td>{position.idealFor}</td>
-                <td>{entry.idealFor}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <section class="nx-wrap cd-sec" aria-labelledby="side-title">
+      <h2 id="side-title" class="cd-h2">Side by side</h2>
+      <p class="cd-sec__lead">What each app is built for — not a feature checklist, but the job each one does best.</p>
+      <div class="cd-table-wrap">
+        <table class="cd-table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"><span class="cd-th"><img src="/images/app-icon.webp" alt="" width="24" height="24" />Harvous</span></th>
+              <th scope="col"><span class="cd-th"><img src={icon(entry.slug)} alt="" width="24" height="24" />{entry.name}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Best at</th><td>{position.bestAt}</td><td>{entry.bestAt}</td></tr>
+            <tr><th scope="row">Primary use</th><td>{position.primaryUse}</td><td>{entry.primaryUse}</td></tr>
+            {position.tableRows.map((r) => <tr><th scope="row">{r.label}</th><td>{r.harvous}</td><td>{r.competitorHint}</td></tr>)}
+            <tr><th scope="row">Ideal for</th><td>{position.idealFor}</td><td>{entry.idealFor}</td></tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
-    {
-      relatedGuides.length > 0 && (
-        <section class="frame-divider" data-reveal style="--reveal-delay: 140ms;" aria-labelledby="compare-detail-guides-title">
-          <div class="mx-auto max-w-3xl px-5 py-14 md:py-16">
-            <h2 class="font-display text-2xl leading-snug md:text-3xl" id="compare-detail-guides-title">
-              Related guides
-            </h2>
-            <p class="mt-3 text-[var(--color-ink-soft)]">
-              Broader shortlists that include {entry.name} — or dig into alternatives in the same lane.
-            </p>
-            <ul class="compare-detail__guides" role="list">
-              {relatedGuides.map((guide) => (
-                <li>
-                  <a class="compare-detail__guide-card" href={`/compare/${guide.slug}/`} data-fathom-track={fathomCompare.detailRelated}>
-                    <span class="compare-detail__guide-title">{guide.label}</span>
-                    <span class="compare-detail__guide-desc">{guide.description}</span>
-                    <span class="compare-detail__guide-link">Read guide →</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )
-    }
+    {guides.length > 0 && (
+      <section class="nx-wrap cd-sec" aria-labelledby="guides-title">
+        <h2 id="guides-title" class="cd-h2">Guides that include {entry.name}</h2>
+        <ul class="cd-rows" role="list">
+          {guides.map((g) => (
+            <li>
+              <a class="cd-row" href={`/compare/${g.slug}/`} data-fathom-track={fathomCompare.detailRelated}>
+                <span class="cd-row__mark"><img src="/images/app-icon.webp" alt="" width="40" height="40" /></span>
+                <span class="cd-row__text">
+                  <span class="cd-row__title">{g.label}</span>
+                  <span class="cd-row__desc">{g.description}</span>
+                </span>
+                <svg class="cd-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
-    {
-      related.length > 0 && (
-        <section
-          class="compare-detail__related compare-slider-band frame-divider"
-          aria-labelledby="compare-detail-related-title"
-        >
-          <CompareCarousel
-            entries={related}
-            groupTitle={`More in ${entry.competitorType}`}
-            groupTitleId="compare-detail-related-title"
-            trackLabel={`More in ${entry.competitorType}`}
-            fathomTrack={fathomCompare.detailRelated}
-          />
-        </section>
-      )
-    }
+    {related.length > 0 && (
+      <section class="nx-wrap cd-sec" aria-labelledby="more-title">
+        <div class="cd-head">
+          <h2 id="more-title" class="cd-h2">More in {entry.competitorType}</h2>
+          <a class="cd-more" href="/compare/">Every comparison →</a>
+        </div>
+        <ul class="cd-rows" role="list">
+          {related.map((e) => (
+            <li>
+              <a class="cd-row" href={`/compare/${e.slug}/`} data-fathom-track={fathomCompare.detailRelated}>
+                <span class="cd-row__mark"><img src={icon(e.slug)} alt="" width="48" height="48" loading="lazy" /></span>
+                <span class="cd-row__text">
+                  <span class="cd-row__title">Harvous vs {e.name}</span>
+                  <span class="cd-row__desc">{theirHalf(e)}.</span>
+                </span>
+                <svg class="cd-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </article>
 
-  <PageClosingCTA
-    heading={ctaHeading}
-    lead={entry.worksBestAlongside}
-    fathomTrack={fathomTry.compareDetail(entry.slug)}
-  />
-</BaseLayout>
+  <ClosingCall title={ctaHeading} lead={entry.worksBestAlongside} fathomTrack={fathomTry.compareDetail(entry.slug)} />
+</NextLayout>
 
 <style>
-  .compare-detail__lead {
-    max-width: 28rem;
-  }
-  .compare-detail__feature-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.75rem;
-    margin-top: 0.85rem;
-    padding: 0;
-    list-style: none;
-  }
-  .compare-detail__feature-links a {
+  .cd-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .cd-back {
     display: inline-flex;
     align-items: center;
-    min-height: 2rem;
-    padding: 0.2rem 0.75rem;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
     border-radius: 999px;
-    border: 1px solid var(--color-rule);
-    background: var(--color-card);
-    font-size: 0.8125rem;
+    background: var(--color-warm);
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-ink);
     text-decoration: none;
-    transition: background-color 150ms ease, border-color 150ms ease;
   }
-  .compare-detail__feature-links a:hover {
-    background: var(--color-warm);
-    border-color: color-mix(in srgb, var(--color-ink) 16%, var(--color-rule));
+  .cd-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .cd-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .cd-kicker {
+    margin: 1.75rem 0 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
   }
+  .cd-title { margin: 0.75rem auto 0; max-width: 18ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .cd-lead { margin: 1.5rem auto 0; }
+
+  /* The two icons, facing each other on the other app's sky. */
+  .cd-face { margin: clamp(2.5rem, 6vw, 3.5rem) auto 0; }
+  .cd-face__frame {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 21 / 8;
+    overflow: hidden;
+    border-radius: var(--nx-radius-scene, 1.5rem);
+  }
+  .cd-face__sky { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
+  .cd-face__pair { display: flex; align-items: center; gap: clamp(1rem, 3vw, 2rem); }
+  .cd-face__icon {
+    width: clamp(4.5rem, 10vw, 7rem);
+    height: clamp(4.5rem, 10vw, 7rem);
+    border-radius: 23%;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06), 0 24px 48px -20px rgba(15, 23, 42, 0.5);
+  }
+  .cd-face__vs {
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--color-ink);
+    background: color-mix(in srgb, #fff 85%, transparent);
+    box-shadow: 0 6px 16px -10px rgba(15, 23, 42, 0.4);
+  }
+  @media (max-width: 40rem) { .cd-face__frame { aspect-ratio: 4 / 3; } }
+
+  .cd-choose {
+    display: grid;
+    gap: 1rem;
+    max-width: calc(56rem + 2 * var(--nx-gutter));
+    padding-top: clamp(3rem, 7vw, 4.5rem);
+  }
+  @media (min-width: 48rem) { .cd-choose { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cd-card { padding: 1.5rem; border-radius: 1.5rem; background: var(--color-warm); }
+  .cd-card--harvous { background: color-mix(in oklab, var(--color-sky) 40%, var(--color-paper)); }
+  .cd-card__head { display: flex; align-items: center; gap: 0.65rem; margin: 0; font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; color: var(--color-ink); }
+  .cd-card__head img { width: 2.25rem; height: 2.25rem; border-radius: 23%; background: #fff; box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06); }
+  .cd-card > p:not(.cd-card__head) { margin: 0.85rem 0 0; line-height: 1.6; color: var(--color-ink-soft); }
+  .cd-visit { display: inline-block; margin-top: 0.9rem; font-size: 0.875rem; color: var(--color-ink-soft); text-decoration: none; }
+  .cd-visit:hover { color: var(--color-ink); }
+  .cd-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.9rem 0 0; padding: 0; list-style: none; }
+  .cd-chips a {
+    display: inline-flex;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    text-decoration: none;
+  }
+  .cd-chips a:hover { background: color-mix(in srgb, var(--color-ink) 8%, var(--color-paper)); }
+  .cd-note { padding: 1.25rem 0.25rem 0; border-top: 1px solid var(--color-rule); }
+  .cd-note h2 { margin: 0; font-size: 1.0625rem; font-weight: 600; color: var(--color-ink); }
+  .cd-note p { margin: 0.5rem 0 0; line-height: 1.6; color: var(--color-ink-soft); }
+
+  .cd-sec { max-width: calc(56rem + 2 * var(--nx-gutter)); padding-top: clamp(4rem, 9vw, 6rem); }
+  .cd-h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 500; letter-spacing: -0.025em; }
+  .cd-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); }
+  .cd-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
+  .cd-more { font-size: 0.9375rem; font-weight: 500; color: var(--color-ink); text-decoration: none; }
+  .cd-more:hover { text-decoration: underline; }
+
+  .cd-table-wrap { margin-top: 1.25rem; overflow-x: auto; border-radius: 1.2rem; box-shadow: 0 0 0 1px var(--color-rule); }
+  .cd-table { width: 100%; min-width: 36rem; border-collapse: collapse; font-size: 0.9375rem; }
+  .cd-table th, .cd-table td { padding: 0.9rem 1rem; text-align: left; vertical-align: top; border-top: 1px solid var(--color-rule); }
+  .cd-table thead th { border-top: 0; background: var(--color-warm); }
+  .cd-th { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--color-ink); }
+  .cd-th img { width: 1.5rem; height: 1.5rem; border-radius: 23%; background: #fff; }
+  .cd-table tbody th { width: 22%; font-weight: 600; color: var(--color-ink); }
+  .cd-table td { color: var(--color-ink-soft); }
+
+  .cd-rows { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 2.5rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+  @media (min-width: 44rem) { .cd-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cd-row { display: flex; align-items: center; gap: 0.9rem; height: 100%; padding: 0.85rem 0.25rem; border-bottom: 1px solid var(--color-rule); color: inherit; text-decoration: none; }
+  .cd-row__mark img { display: block; width: 2.75rem; height: 2.75rem; border-radius: 23%; background: #fff; box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06); }
+  .cd-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .cd-row__title { font-weight: 600; color: var(--color-ink); }
+  .cd-row__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); }
+  .cd-row__chev { flex: none; width: 0.8rem; height: 0.8rem; fill: none; stroke: var(--color-ink-faint); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms ease, stroke 200ms ease; }
+  .cd-row:hover .cd-row__chev { transform: translateX(2px); stroke: var(--color-ink); }
 </style>

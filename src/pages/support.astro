@@ -9,7 +9,7 @@ import NextLayout from "../layouts/NextLayout.astro";
 import FaqItem from "../components/FaqItem.astro";
 import AppIcon from "../components/next/app/AppIcon.astro";
 import { render } from "astro:content";
-import { faqAnchorId, getFaqEntries } from "../lib/faq";
+import { buildFaqPageJsonLd, faqAnchorId, getFaqEntries } from "../lib/faq";
 
 const SUPPORT_EMAIL = "derek@harvous.com";
 const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Harvous support")}`;
@@ -19,6 +19,18 @@ const faqs = await Promise.all(entries.map(async (entry) => ({ entry, Content: (
 ---
 
 <NextLayout
+  jsonLd={{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        name: "Harvous Support",
+        description: "Get help with Harvous — FAQs, email support, and in-app support for signed-in users.",
+        url: "https://harvous.com/support/",
+      },
+      buildFaqPageJsonLd(entries),
+    ],
+  }}
   title="Support — Harvous"
   description="Get help with Harvous — FAQs, email support, and in-app support for signed-in users."
 >
