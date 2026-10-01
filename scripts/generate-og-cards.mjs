@@ -3,9 +3,11 @@
  * Page OG cards — one 1200×630 card per page that doesn't have a more specific
  * image of its own (a feature, a compare detail, a Discover listing already do).
  *
- * Each card is a pale auth-hero sky, the Harvous mark, the page's own title set
- * large in Google Sans Flex, and a white badge carrying the section's icon. The
- * sky is chosen from the page name, so neighbouring pages don't share one.
+ * Each card is the closing card's look: an auth-hero sky with a soft white glow,
+ * a small label and the page's own title centred in Google Sans Flex at the
+ * site's heading weight, and the Harvous mark with harvous.com underneath. A
+ * compare detail leads with Harvous's icon beside the other app's. The sky is
+ * chosen from the page name, so neighbouring pages don't share one.
  *
  * Needs Google Sans Flex installed locally (the text is drawn by sharp/pango),
  * so this runs on a machine, and the output is committed — like blog:thumbs.
@@ -27,9 +29,6 @@ import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import { readFileSync } from "node:fs";
-import { icons as fa7Solid } from "@iconify-json/fa7-solid";
-import { icons as fa7Regular } from "@iconify-json/fa7-regular";
-import { icons as fa7Brands } from "@iconify-json/fa7-brands";
 import "./_register-env-hook.mjs";
 
 const { getCompareSeoPagesForBuild } = await import("../src/lib/compare-seo-pages.ts");
@@ -41,7 +40,6 @@ const { getAudiences } = await import("../src/lib/for-audiences-data.ts");
 const { getDiscoverListings, discoverListingIcon, DISCOVER_KIND_NOUN } = await import("../src/lib/discover-data.ts");
 const { BLOG_CATEGORY_LABELS, BLOG_CATEGORY_ICONS } = await import("../src/lib/blog.ts");
 
-const ICON_SETS = { "fa7-solid": fa7Solid, "fa7-regular": fa7Regular, "fa7-brands": fa7Brands };
 
 const ROOT = join(import.meta.dirname, "..");
 const FORCE = process.argv.includes("--force");
@@ -176,7 +174,7 @@ async function lightSkies() {
   for (const f of files) {
     const { channels } = await sharp(join(dir, f)).resize(64, 64).stats();
     const lum = 0.2126 * channels[0].mean + 0.7152 * channels[1].mean + 0.0722 * channels[2].mean;
-    if (lum > 178) out.push(f);
+    if (lum > 165) out.push(f);
   }
   return out;
 }
@@ -189,107 +187,100 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
 
 async function text(markup, font, width) {
   const { data, info } = await sharp({
-    text: { text: markup, font, width, rgba: true, dpi: 72, wrap: "word" },
+    text: { text: markup, font, width, rgba: true, dpi: 72, wrap: "word", align: "centre" },
   })
     .png()
     .toBuffer({ resolveWithObject: true });
   return { input: data, width: info.width, height: info.height };
 }
 
-function badge(iconName, withGlyph = true) {
-  const [set, name] = iconName.includes(":") ? iconName.split(":") : ["fa7-solid", iconName];
-  const collection = ICON_SETS[set];
-  const icon = collection?.icons?.[name];
-  if (!icon) throw new Error(`Unknown icon: ${iconName}`);
-  const size = 168;
-  const glyph = 76;
-  const unit = collection.width ?? 640;
-  const body = withGlyph ? icon.body.replace(/currentColor/g, "#1f6fdb") : "";
-  const pad = (size - glyph) / 2;
-  return Buffer.from(
-    `<svg width="${size + 48}" height="${size + 48}" viewBox="0 0 ${size + 48} ${size + 48}" xmlns="http://www.w3.org/2000/svg">
-  <defs><filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.16"/></filter></defs>
-  <rect x="24" y="24" width="${size}" height="${size}" rx="42" fill="#ffffff" filter="url(#s)"/>
-  <g transform="translate(${24 + pad} ${24 + pad}) scale(${glyph / unit})">${body}</g>
-</svg>`,
-  );
-}
-
-const scrim = Buffer.from(
+/* The closing card's light: a soft white glow in the middle of the sky. */
+const glow = Buffer.from(
   `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg"><defs>
-  <linearGradient id="g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0.9"/><stop offset="0.55" stop-color="#fff" stop-opacity="0.55"/><stop offset="1" stop-color="#fff" stop-opacity="0.12"/></linearGradient>
+  <radialGradient id="g" cx="50%" cy="48%" r="62%"><stop offset="0" stop-color="#fff" stop-opacity="0.86"/><stop offset="1" stop-color="#fff" stop-opacity="0.12"/></radialGradient>
   </defs><rect width="${W}" height="${H}" fill="url(#g)"/></svg>`,
 );
 
-/** White badge carrying an app's own icon (compare details), corners rounded to match. */
-async function logoBadge(target) {
-  const inner = 104;
-  const logo = await sharp(target.logo)
-    .resize(inner, inner, { fit: "cover" })
+/** An app icon with rounded corners and a hairline, for the "Harvous vs X" pair. */
+async function roundIcon(path, size) {
+  const r = Math.round(size * 0.24);
+  return sharp(path)
+    .resize(size, size, { fit: "cover" })
     .composite([
-      {
-        input: Buffer.from(`<svg width="${inner}" height="${inner}"><rect width="${inner}" height="${inner}" rx="26" fill="#fff"/></svg>`),
-        blend: "dest-in",
-      },
+      { input: Buffer.from(`<svg width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${r}" fill="#fff"/></svg>`), blend: "dest-in" },
+      { input: Buffer.from(`<svg width="${size}" height="${size}"><rect x="0.5" y="0.5" width="${size - 1}" height="${size - 1}" rx="${r}" fill="none" stroke="#0f172a" stroke-opacity="0.08"/></svg>`) },
     ])
     .png()
     .toBuffer();
-  const pad = 24 + (168 - inner) / 2;
-  return sharp(badge(target.icon, false)).composite([{ input: logo, left: pad, top: pad }]).png().toBuffer();
 }
 
-const titleSize = (t) => (t.length <= 26 ? 104 : t.length <= 44 ? 84 : t.length <= 64 ? 70 : 60);
+const titleSize = (t) => (t.length <= 24 ? 92 : t.length <= 44 ? 76 : t.length <= 64 ? 64 : 56);
 
-async function render(target, skies, mark) {
+async function render(target, skies, assets) {
   const dest = target.asDefault ? join(ROOT, "public/og.png") : join(ROOT, "public/og", `${target.name}.jpg`);
   const extra = target.asDefault ? [join(ROOT, "public/og", `${target.name}.jpg`)] : [];
   if (!FORCE && [dest, ...extra].every((p) => existsSync(p))) return "skip";
 
   const sky = pick(skies, target.name);
-  const maxW = 780;
-
+  /* About -0.022em, like the site's headings: pango counts in 1/1024 pt. */
   const size = titleSize(target.title);
   const title = await text(
-    `<span foreground="${INK}" letter_spacing="-1500">${esc(target.title)}</span>`,
-    `${FONT} Bold ${size}`,
-    maxW,
+    `<span foreground="${INK}" letter_spacing="${Math.round(-size * 0.022 * 1024)}">${esc(target.title)}</span>`,
+    `${FONT} SemiBold ${size}`,
+    920,
   );
   const kicker = await text(
-    `<span foreground="${SOFT}" letter_spacing="3500">${esc(target.kicker.toUpperCase())}</span>`,
-    `${FONT} SemiBold 26`,
-    maxW,
+    `<span foreground="${SOFT}" letter_spacing="4000">${esc(target.kicker.toUpperCase())}</span>`,
+    `${FONT} SemiBold 22`,
+    920,
   );
-  const word = await text(`<span foreground="${INK}" letter_spacing="-400">Harvous</span>`, `${FONT} Bold 34`, 400);
 
-  const bottom = H - PAD;
-  const titleTop = Math.max(170, bottom - title.height);
-  const kickerTop = titleTop - kicker.height - 22;
-  const bs = 168 + 48;
+  /* Compare details lead with the two apps side by side. */
+  const pair = target.logo ? [assets.pairMark, await roundIcon(target.logo, 76)] : null;
+  const pairH = pair ? 76 + 28 : 0;
 
-  const card = sharp(join(ROOT, "public/images/auth-hero", sky))
-    .resize(W, H, { fit: "cover", position: "centre" })
-    .composite([
-      { input: scrim },
-      { input: mark, left: PAD, top: PAD - 4 },
-      { input: word.input, left: PAD + 68, top: PAD + 2 },
-      { input: kicker.input, left: PAD, top: kickerTop },
-      { input: title.input, left: PAD, top: titleTop },
-      { input: target.logo ? await logoBadge(target) : badge(target.icon), left: W - PAD - bs + 24, top: Math.round((H - bs) / 2) },
-    ]);
+  const block = pairH + kicker.height + 22 + title.height;
+  let y = Math.round((H - block) / 2) - 24;
+  const layers = [{ input: glow }];
+  if (pair) {
+    const gap = 18;
+    const x0 = Math.round((W - (76 * 2 + gap)) / 2);
+    layers.push({ input: pair[0], left: x0, top: y }, { input: pair[1], left: x0 + 76 + gap, top: y });
+    y += pairH;
+  }
+  layers.push({ input: kicker.input, left: Math.round((W - kicker.width) / 2), top: y });
+  y += kicker.height + 22;
+  layers.push({ input: title.input, left: Math.round((W - title.width) / 2), top: y });
+
+  /* Footer: the mark and the address, centred. */
+  const footW = 44 + 12 + assets.domain.width;
+  const fx = Math.round((W - footW) / 2);
+  const fy = H - 44 - 48;
+  layers.push(
+    { input: assets.mark, left: fx, top: fy },
+    { input: assets.domain.input, left: fx + 56, top: fy + Math.round((44 - assets.domain.height) / 2) },
+  );
+
+  const card = sharp(join(ROOT, "public/images/auth-hero", sky)).resize(W, H, { fit: "cover", position: "centre" }).composite(layers);
 
   mkdirSync(join(ROOT, "public/og"), { recursive: true });
   const jpg = await card.clone().jpeg({ quality: 86, mozjpeg: true }).toBuffer();
   await sharp(jpg).toFile(join(ROOT, "public/og", `${target.name}.jpg`));
-  if (target.asDefault) await sharp(jpg).png({ compressionLevel: 9, palette: false }).toFile(dest);
+  if (target.asDefault) await sharp(jpg).png({ compressionLevel: 9 }).toFile(dest);
   return `${sky}`;
 }
 
 const skies = await lightSkies();
-const mark = await sharp(join(ROOT, "public/images/app-icon.webp")).resize(56, 56).png().toBuffer();
+const appIcon = join(ROOT, "public/images/app-icon.webp");
+const assets = {
+  mark: await roundIcon(appIcon, 44),
+  pairMark: await roundIcon(appIcon, 76),
+  domain: await text(`<span foreground="${INK}" letter_spacing="-300">harvous.com</span>`, `${FONT} Medium 26`, 400),
+};
 
 let made = 0;
 for (const t of TARGETS) {
-  const r = await render(t, skies, mark);
+  const r = await render(t, skies, assets);
   if (r !== "skip") {
     made++;
     console.log(`· ${t.name} ← ${r}`);
