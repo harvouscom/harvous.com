@@ -1,7 +1,12 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import BlogLibraryNav from "./BlogLibraryNav.astro";
-import BlogTopicBlocks from "./BlogTopicBlocks.astro";
+/**
+ * BlogSearchPage — /blog/search/. A static shell: the query and topic come
+ * from the URL and src/scripts/blog-search.ts does the rest (it keys off the
+ * data-blog-search-* hooks below and renders result rows into
+ * data-blog-search-results, restyled here).
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 import {
   BLOG_CATEGORY_LABELS,
@@ -10,71 +15,119 @@ import {
   blogCategoryIcon,
   includeBlogDrafts,
   isBlogPostListed,
-  postsInBlogCategory,
   type BlogCategory,
 } from "../lib/blog";
 
-const showDrafts = includeBlogDrafts();
-const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts));
+const listed = (await getCollection("blog")).filter((p) => isBlogPostListed(p, includeBlogDrafts()));
 const topics = blogCategoriesInUse(listed).map((cat: BlogCategory) => ({
   category: cat,
   label: BLOG_CATEGORY_LABELS[cat],
   icon: blogCategoryIcon(cat),
   color: blogCategoryColor(cat),
-  count: postsInBlogCategory(listed, cat).length,
 }));
 ---
 
-<BaseLayout
+<NextLayout
   title="Search — Bright Enough"
   description="Search Bright Enough — notes, habits, and teaching from the Harvous blog."
   noindex
 >
-  <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-10 text-center md:py-14" data-reveal>
-      <BlogTopicBlocks />
-      <p class="eyebrow mt-6">Bright Enough</p>
-      <h1 class="mt-3 font-display text-4xl tracking-tight md:text-5xl">Search</h1>
-      <p class="mx-auto mt-4 max-w-md text-lg text-[var(--color-ink-soft)]">
-        Find posts by title or topic across Bright Enough.
-      </p>
-    </div>
-  </section>
-
-  <div data-blog-search-page>
-    <BlogLibraryNav mode="filter" topics={topics} />
-
-    <section
-      class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-10 md:py-14"
-      aria-label="Search results"
-    >
-      <p class="text-center text-sm text-[var(--color-ink-faint)]" data-blog-search-status>
-        Loading search…
-      </p>
-
-      <div class="mt-4" data-blog-search-results hidden></div>
-      <p
-        class="mt-8 text-center text-[var(--color-ink-soft)]"
-        data-blog-search-empty
-        hidden
-      ></p>
-
-      <div class="mt-12 flex justify-center">
-        <a href="/blog/" class="btn-pill inline-flex items-center gap-1.5">
-          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path
-              fill-rule="evenodd"
-              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          Back to Bright Enough
-        </a>
+  <div class="bs" data-blog-search-page>
+    <header class="nx-wrap bs-intro">
+      <a class="bs-back" href="/blog/">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        Bright Enough
+      </a>
+      <h1 class="nx-display bs-title">Search the blog.</h1>
+      <form class="bs-form" data-blog-search-bar action="/blog/search/" method="get" role="search">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+        <label class="bs-sr" for="bs-q">Search Bright Enough</label>
+        <input id="bs-q" name="q" type="search" placeholder="Search by title or topic…" autocomplete="off" data-blog-search-q />
+      </form>
+      <div class="bs-filters" role="group" aria-label="Topic">
+        <button type="button" class="bs-filter" data-blog-search-filter="" aria-pressed="true">All topics</button>
+        {topics.map((t) => (
+          <button type="button" class="bs-filter" data-blog-search-filter={t.category} aria-pressed="false" style={`--tone: ${t.color.bg}; --tone-ink: ${t.color.ink};`}>
+            <Icon name={t.icon} aria-hidden="true" />
+            <span class="blog-library-nav__item-label">{t.label}</span>
+          </button>
+        ))}
       </div>
+    </header>
+
+    <section class="nx-wrap bs-results" aria-label="Search results">
+      <p class="bs-status" data-blog-search-status>Loading search…</p>
+      <div class="bs-list" data-blog-search-results hidden></div>
+      <p class="bs-empty" data-blog-search-empty hidden></p>
     </section>
   </div>
-</BaseLayout>
+</NextLayout>
 
 <script>
   import "../scripts/blog-search.ts";
 </script>
+
+<style>
+  .bs-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .bs-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    border-radius: 999px;
+    background: var(--color-warm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .bs-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .bs-title { margin: 1.5rem auto 0; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+
+  .bs-form { position: relative; max-width: 32rem; margin: 2rem auto 0; }
+  .bs-form svg { position: absolute; left: 1.1rem; top: 50%; width: 1.05rem; height: 1.05rem; translate: 0 -50%; fill: none; stroke: var(--color-ink-faint); stroke-width: 1.6; stroke-linecap: round; }
+  .bs-form input {
+    width: 100%;
+    padding: 0.95rem 1.1rem 0.95rem 2.8rem;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink) 9%, transparent), 0 10px 28px -16px rgba(15, 23, 42, 0.3);
+  }
+  .bs-form input:focus { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .bs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+  .bs-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin: 1.25rem auto 0; max-width: 44rem; }
+  .bs-filter {
+    --tone: var(--color-warm);
+    --tone-ink: var(--color-ink-soft);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    background: var(--color-warm);
+    cursor: pointer;
+  }
+  .bs-filter :global(svg) { width: 0.85rem; height: 0.85rem; color: var(--tone-ink); }
+  .bs-filter:hover { color: var(--color-ink); }
+  .bs-filter.is-active { color: #fff; background: var(--color-ink); }
+  .bs-filter.is-active :global(svg) { color: #fff; }
+
+  .bs-results { max-width: calc(44rem + 2 * var(--nx-gutter)); padding-top: clamp(2.5rem, 6vw, 3.5rem); padding-bottom: clamp(4rem, 10vw, 6rem); }
+  .bs-status { margin: 0; text-align: center; font-size: 0.9375rem; color: var(--color-ink-faint); }
+  .bs-empty { margin: 1rem 0 0; text-align: center; color: var(--color-ink-soft); }
+  .bs-list { margin-top: 1.25rem; border-top: 1px solid var(--color-rule); }
+  /* Result rows come from blog-search.ts; quiet its accent-blue hover. */
+  .bs-list :global(.blog-story) { padding-block: 1.25rem !important; }
+  .bs-list :global(.blog-story h3) { font-size: 1.35rem !important; font-weight: 500; }
+  .bs-list :global(.blog-story:hover h3) { color: var(--color-ink) !important; text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
+</style>

@@ -126,6 +126,10 @@ const marks = tailMarks(rest.length);
                 {c.label} <span class="bi-chip__n">{c.count}</span>
               </a>
             ))}
+            <a class="bi-chip bi-chip--search" href="/blog/search/">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+              Search
+            </a>
           </nav>
           {categories.map((c) => (
             <p class="bi-topic-lead" data-bi-topic-lead={c.category} hidden>
@@ -380,4 +384,6 @@ const marks = tailMarks(rest.length);
     .bi-cell.is-t3-wide { grid-column: auto / span 3; --bnc-ratio: 2.69; }
     .bi-cell.is-t3-solo { grid-column: 3 / span 2; }
   }
+  .bi-chip--search { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .bi-chip--search svg { width: 0.85rem; height: 0.85rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 </style>
