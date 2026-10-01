@@ -8,6 +8,7 @@
 import OptimizedImage from "../OptimizedImage.astro";
 import ReleaseNotesIndexCard from "../ReleaseNotesIndexCard.astro";
 import { recentReleases } from "../../lib/next/releases.ts";
+import { fathomHome } from "../../lib/fathom-events.ts";
 
 interface Props {
   count?: number;
@@ -38,8 +39,8 @@ const recent = recentReleases(count);
         <OptimizedImage src="/derek-signiture.png" alt="Derek Castelli" width={3262} height={809} class="maker__signature signature-img" />
       </div>
       <p class="maker__links">
-        <a class="nx-link" href="/about/">The longer story →</a>
-        <a class="nx-link" href="mailto:derek@harvous.com">derek@harvous.com</a>
+        <a class="nx-link" href="/about/" data-fathom-track={fathomHome.about}>The longer story →</a>
+        <a class="nx-link" href="mailto:derek@harvous.com" data-fathom-track={fathomHome.email}>derek@harvous.com</a>
       </p>
     </div>
 
@@ -53,7 +54,7 @@ const recent = recentReleases(count);
           <ReleaseNotesIndexCard release={release} headline={headline} href={`/release-notes/${release.slug}/`} rotation={[-0.8, 0.7, 0.5, -0.6][i % 4]} />
         ))}
       </div>
-      <a class="nx-link maker__more" href="/now/">What I'm working on now →</a>
+      <a class="nx-link maker__more" href="/now/" data-fathom-track={fathomHome.now}>What I'm working on now →</a>
     </div>
   </div>
 </section>

@@ -1,5 +1,6 @@
 import Fuse from "fuse.js";
 import type { BlogSearchRecord } from "../lib/blog-search";
+import { fathomBlog } from "../lib/fathom-events";
 
 type SearchIndex = {
   posts: BlogSearchRecord[];
@@ -157,6 +158,15 @@ function initBlogSearchPage() {
   let index: SearchIndex | null = null;
   let activeCategory = readParams().category;
 
+  /* One event per page view, the first time a real query runs — not one per keystroke. */
+  let searchTracked = false;
+  const trackSearch = (q: string) => {
+    if (searchTracked || !q.trim()) return;
+    searchTracked = true;
+    (window as unknown as { fathom?: { trackEvent(name: string): void } }).fathom?.trackEvent(fathomBlog.search);
+  };
+  trackSearch(readParams().q ?? "");
+
   const setFilterState = () => {
     filters.forEach((btn) => {
       const id = btn.dataset.blogSearchFilter ?? "";
@@ -246,6 +256,7 @@ function initBlogSearchPage() {
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    trackSearch(qInput.value);
     apply(qInput.value, activeCategory, true);
   });
 
@@ -254,6 +265,7 @@ function initBlogSearchPage() {
   qInput.addEventListener("input", () => {
     window.clearTimeout(timer);
     timer = window.setTimeout(() => {
+      trackSearch(qInput.value);
       apply(qInput.value, activeCategory, true);
     }, 180);
   });

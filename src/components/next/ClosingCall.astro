@@ -30,7 +30,7 @@ const {
   href = buildTryUrl({ source: "next_closing" }),
   label = "Try Harvous free",
   external = false,
-  fathomTrack = fathomTry.nextClosing,
+  fathomTrack = fathomTry.closing(Astro.url.pathname),
   secondaryHref,
   secondaryLabel,
 } = Astro.props;

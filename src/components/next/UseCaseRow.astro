@@ -7,6 +7,7 @@
  */
 import UseCaseCard from "./UseCaseCard.astro";
 import { getUseCases } from "../../lib/use-cases-data.ts";
+import { fathomHome } from "../../lib/fathom-events.ts";
 
 const useCases = getUseCases();
 ---
@@ -34,7 +35,7 @@ const useCases = getUseCases();
   </ul>
 
   <p class="nx-wrap ucrow__all">
-    <a class="nx-link" href="/use-cases/">All the ways people use it →</a>
+    <a class="nx-link" href="/use-cases/" data-fathom-track={fathomHome.useCases}>All the ways people use it →</a>
   </p>
 </section>
 

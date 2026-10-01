@@ -8,6 +8,7 @@
  * authored.
  */
 import { getCollection, render, type CollectionEntry } from "astro:content";
+import { fathomBlog } from "../../lib/fathom-events.ts";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
 import BlogNextCard from "../../components/next/BlogNextCard.astro";
@@ -15,6 +16,7 @@ import BlogNextLink from "../../components/next/BlogNextLink.astro";
 import {
   BLOG_CATEGORIES,
   blogCategoryColor,
+  blogCategoryHref,
   blogCategoryLabel,
   blogHeadingsFromBody,
   blogProductBridgeCopy,
@@ -91,7 +93,7 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
       </a>
       <div class="bp-col">
         <p class="bp-meta">
-          <a href={`/blog/?c=${post.data.category}`}>{label}</a>
+          <a href={blogCategoryHref(post.data.category)}>{label}</a>
           {post.data.draft && <span class="bp-draft">Draft</span>}
           {author.kind !== "house" && (
             <>
@@ -159,7 +161,7 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
         ))}
       </ul>
       <p class="bp-more__all">
-        <a class="nx-btn nx-btn--ghost" href="/blog/">Every post in Bright Enough</a>
+        <a class="nx-btn nx-btn--ghost" href="/blog/" data-fathom-track={fathomBlog.postRelated}>Every post in Bright Enough</a>
       </p>
     </section>
   )}

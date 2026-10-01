@@ -4,13 +4,14 @@
  * in a row, quiet enough to read as a footnote to the headline rather than a
  * section of their own. Same featured wall as the live TestimonialsSection
  * (data.featured — see content.config.ts), so a quote pinned to a single
- * use-case/audience page (like Theo's) doesn't also crowd this one.
+ * use-case/audience page (like Theo's) doesn't also crowd this one. Capped at
+ * three, in order: a fourth would only repeat a point the others already make.
  */
 import { getCollection, render } from "astro:content";
 
-const entries = (await getCollection("testimonials", ({ data }) => data.featured)).sort(
-  (a, b) => a.data.order - b.data.order
-);
+const entries = (await getCollection("testimonials", ({ data }) => data.featured))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
 const items = await Promise.all(
   entries.map(async (t) => {
     const { Content } = await render(t);
