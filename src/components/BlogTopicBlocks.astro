@@ -101,6 +101,7 @@ let pyramidStagger = 0;
     topicIcons.length > 0 && (
       <div
         class:list={["blog-topic-icons", className]}
+        style={`--topic-count: ${topicIcons.length};`}
         data-blog-topic-blocks
         aria-hidden="true"
       >
@@ -127,12 +128,13 @@ let pyramidStagger = 0;
 <style>
   .blog-topic-icons {
     --topic-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
+    --topic-gap: 0.85rem;
     position: relative;
     display: flex;
     flex-wrap: nowrap;
     align-items: flex-end;
     justify-content: center;
-    gap: 0.85rem;
+    gap: var(--topic-gap);
     min-height: 4.25rem;
     padding-block: 0.85rem 0.35rem;
     margin-inline: auto;
@@ -200,6 +202,18 @@ let pyramidStagger = 0;
 
   .blog-topic-icon--current {
     opacity: 1;
+  }
+
+  /* The arc: square blocks that shrink together to fit a narrow row, never
+     squeezed into tall rectangles. */
+  .blog-topic-icons:not(.blog-topic-icons--pyramid) .blog-topic-icon {
+    flex: none;
+    width: min(2.75rem, calc((100% - (var(--topic-count, 6) - 1) * var(--topic-gap)) / var(--topic-count, 6)));
+    height: auto;
+    aspect-ratio: 1;
+  }
+  @media (max-width: 30rem) {
+    .blog-topic-icons { --topic-gap: 0.5rem; }
   }
 
   /* Smile / hub — keep bounce entrance */
