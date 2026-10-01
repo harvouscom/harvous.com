@@ -60,8 +60,9 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
       data-nxh-toggle
     >
       <svg viewBox="0 0 20 20" aria-hidden="true">
-        <path class="nxh__bar nxh__bar--a" d="M4 7h12" />
-        <path class="nxh__bar nxh__bar--b" d="M4 13h12" />
+        <path class="nxh__bar nxh__bar--a" d="M3.5 5.5h13" />
+        <path class="nxh__bar nxh__bar--b" d="M3.5 10h13" />
+        <path class="nxh__bar nxh__bar--c" d="M3.5 14.5h13" />
       </svg>
     </button>
   </nav>
@@ -172,9 +173,14 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
   }
   .nxh__menu:hover { background: color-mix(in srgb, var(--color-ink) 6%, transparent); }
   .nxh__menu svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
-  .nxh__bar { transform-origin: 10px 10px; transition: transform 200ms ease; }
-  .nxh__menu[aria-expanded="true"] .nxh__bar--a { transform: translateY(3px) rotate(45deg); }
-  .nxh__menu[aria-expanded="true"] .nxh__bar--b { transform: translateY(-3px) rotate(-45deg); }
+  /* Three lines, the middle one fading as the outer two cross into an ×. */
+  .nxh__bar { transform-origin: 10px 10px; transition: transform 200ms ease, opacity 150ms ease; }
+  .nxh__menu[aria-expanded="true"] .nxh__bar--a { transform: translateY(4.5px) rotate(45deg); }
+  .nxh__menu[aria-expanded="true"] .nxh__bar--b { opacity: 0; }
+  .nxh__menu[aria-expanded="true"] .nxh__bar--c { transform: translateY(-4.5px) rotate(-45deg); }
+  /* A ring for keyboard focus only, in the site's own blue, never after a tap. */
+  .nxh__menu:focus { outline: none; }
+  .nxh__menu:focus-visible { outline: 2px solid var(--color-accent, #1f6fdb); outline-offset: 2px; }
 
   .nxh__panel {
     pointer-events: auto;
