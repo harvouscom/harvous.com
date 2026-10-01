@@ -23,6 +23,8 @@ import AppIcon from "../../components/next/app/AppIcon.astro";
 import { Icon } from "astro-icon/components";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
+import DiscoverTile from "../../components/next/DiscoverTile.astro";
+import { toDiscoverCard } from "../../lib/next/discover-card.ts";
 import ResourcePlate from "../../components/next/ResourcePlate.astro";
 import { sanitizeListingHtml } from "../../lib/sanitize-listing-html.ts";
 import {
@@ -71,98 +73,7 @@ function tailMarks(n: number): string[][] {
 }
 const initialMarks = tailMarks(total);
 
-type Card = {
-  listing: DiscoverListing;
-  href: string;
-  tone: string;
-  label: string;
-  by: string | null;
-  logo: string | null;
-  stage: "paper" | "stack" | "plate";
-  typeLabel: string;
-  plateTone: string | null;
-  art: string | null;
-  artPos: string;
-  docArt: string | null;
-  bodyHtml: string;
-  excerpt: string;
-  titles: string[];
-  titlesMore: number;
-  image: string | null;
-  isVideo: boolean;
-  duration: string | null;
-  icon: string;
-  cta: string;
-  search: string;
-};
-
-const cards: Card[] = listings.map((listing) => {
-  const preview = listing.preview ?? {};
-  const source = listing.source ?? null;
-  const kindNoun = DISCOVER_KIND_NOUN[listing.kind] ?? "Item";
-  const resourceType = listing.resourceType ?? null;
-  const typeLabel = resourceType ? DISCOVER_RESOURCE_TYPE_NOUN[resourceType] : kindNoun;
-  const fileType = (preview.fileType ?? "").trim().toUpperCase();
-
-  /* The byline, exactly as the live card decides it. */
-  const by = source
-    ? typeLabel
-    : preview.official
-      ? "Included"
-      : listing.authorDisplayName || preview.sourceName || null;
-
-  const bodyHtml = sanitizeListingHtml(preview.bodyHtml ?? "");
-  const titles = (preview.titles ?? []).slice(0, 3);
-  const image = preview.sourceImage ?? null;
-
-  const stage: Card["stage"] =
-    listing.kind === "template" || listing.kind === "note"
-      ? "paper"
-      : listing.kind === "pack"
-        ? "stack"
-        : "plate";
-
-  /* The plate's ground, as the live card decides it: the publisher's own
-     colour when it has one, otherwise the topic's wash. */
-  const plateTone = listing.plateTone ?? null;
-
-  return {
-    listing,
-    href: discoverListingHref(listing),
-    tone: listing.plateTone ?? discoverListingInk(listing),
-    label: source ? source.name : kindNoun,
-    by: source ? by : (by ?? (listing.kind === "resource" ? fileType || preview.sourceDomain || null : null)),
-    logo: source?.logo ?? null,
-    stage,
-    typeLabel: source ? typeLabel : fileType || preview.sourceDomain || typeLabel,
-    plateTone,
-    art: plateTone ? null : discoverTopicArt(listing.category),
-    artPos: discoverArtPosition(listing.slug),
-    docArt: source && plateTone ? null : discoverDocumentArt(listing.slug),
-    bodyHtml,
-    excerpt: preview.excerpt ?? "",
-    titles,
-    titlesMore: (preview.noteCount ?? 0) - titles.length,
-    image,
-    isVideo: resourceType === "video" && Boolean(listing.video),
-    duration: listing.video?.durationLabel ?? null,
-    icon: discoverListingIcon(listing),
-    cta: discoverListingCta(listing).primary.label,
-    /* Same fields the live card searches. */
-    search: [
-      listing.title,
-      listing.description,
-      listing.authorDisplayName,
-      kindNoun,
-      source?.name,
-      source?.domain,
-      typeLabel,
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase(),
-  };
-});
+const cards = listings.map((listing) => toDiscoverCard(listing));
 ---
 
 <NextLayout
@@ -245,87 +156,7 @@ const cards: Card[] = listings.map((listing) => {
         </div>
 
         <ul class="dx-grid" role="list" data-dx-grid>
-          {cards.map((card, i) => {
-            const { listing } = card;
-            const source = listing.source ?? null;
-            const leaves = /^https?:/.test(card.href);
-            return (
-              <li
-                class:list={["dc", `dc--${card.stage}`, ...initialMarks[i]]}
-                style={`--tone: ${card.tone};`}
-                data-kind={listing.kind}
-                data-topic={listing.category ?? ""}
-                data-source={source ? discoverSourceSlug(source) : ""}
-                data-source-name={source?.name ?? ""}
-                data-source-logo={source?.logo ?? ""}
-                data-search={card.search}
-              >
-                <a class="dc__link" href={card.href} {...(leaves ? { target: "_blank", rel: "noopener" } : {})}>
-                  <div class="dc__stage" aria-hidden="true">
-                    {card.stage === "paper" && (
-                      <div class="aui aui-paper dc__paper">
-                        <p class="aui-h">{listing.title}</p>
-                        {card.bodyHtml ? (
-                          <div class="dc__body" set:html={card.bodyHtml} />
-                        ) : (
-                          <p class="dc__body">{card.excerpt}</p>
-                        )}
-                      </div>
-                    )}
-
-                    {card.stage === "stack" && (
-                      <div class="aui aui-card aui-card--float dc__rows">
-                        {card.titles.map((t) => (
-                          <div class="aui-row">
-                            <span class="aui-tile"><AppIcon name={DISCOVER_KIND_ICON.note} /></span>
-                            <span><span class="aui-title">{t}</span></span>
-                            <span />
-                          </div>
-                        ))}
-                        {card.titlesMore > 0 && (
-                          <div class="aui-row">
-                            <span class="aui-tile"><AppIcon name={DISCOVER_KIND_ICON.pack} /></span>
-                            <span><span class="aui-sub">+{card.titlesMore} more</span></span>
-                            <span />
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {card.stage === "plate" && (
-                      <ResourcePlate
-                        tone={card.plateTone}
-                        art={card.art}
-                        artPos={card.artPos}
-                        logo={card.logo}
-                        name={source ? source.name : listing.title}
-                        type={card.typeLabel}
-                        image={card.image}
-                        video={card.isVideo}
-                        duration={card.duration}
-                        icon={card.icon}
-                        docArt={card.docArt}
-                      />
-                    )}
-                  </div>
-
-                  <div class="dc__text">
-                    <p class="dc__label">
-                      {!source && <Icon class="dc__kind-icon" name={card.icon} aria-hidden="true" />}
-                      <span>{card.label}</span>
-                      {card.by && <span class="dc__by">{card.by}</span>}
-                    </p>
-                    <h2 class="dc__title">{listing.title}</h2>
-                    {listing.description && <p class="dc__desc">{listing.description}</p>}
-                    <p class="dc__foot">
-                      <span class="dc__cta">{card.cta}</span>
-                      {listing.installCount > 1 && <span class="dc__count">saved by {listing.installCount}</span>}
-                    </p>
-                  </div>
-                </a>
-              </li>
-            );
-          })}
+          {cards.map((card, i) => <DiscoverTile card={card} class={initialMarks[i].join(" ")} />)}
         </ul>
 
         <div class="dx-empty" data-dx-empty hidden>
@@ -642,168 +473,19 @@ const cards: Card[] = listings.map((listing) => {
   .dx-grid[hidden] { display: none; }
   @media (min-width: 44rem) {
     .dx-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .dc { grid-column: span 2; }
-    .dc.is-t2-odd { grid-column: 2 / span 2; }
+    .dx-grid :global(.dc) { grid-column: span 2; }
+    .dx-grid :global(.dc.is-t2-odd) { grid-column: 2 / span 2; }
   }
   @media (min-width: 68rem) {
     .dx-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; }
-    .dc,
-    .dc.is-t2-odd { grid-column: auto / span 2; }
-    .dc.is-t3-wide { grid-column: auto / span 3; }
-    .dc.is-t3-solo { grid-column: 3 / span 2; }
+    .dx-grid :global(.dc),
+    .dx-grid :global(.dc.is-t2-odd) { grid-column: auto / span 2; }
+    .dx-grid :global(.dc.is-t3-wide) { grid-column: auto / span 3; }
+    .dx-grid :global(.dc.is-t3-solo) { grid-column: 3 / span 2; }
   }
 
-  /* ── A card: the Bento's shape ──────────────────────────────────────── */
-  .dc {
-    --tone: var(--study-dock-accent-neutral);
-    border-radius: 1.6rem;
-    background: color-mix(in srgb, var(--tone) 7%, var(--color-paper));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 12%, transparent);
-  }
-  .dc[hidden] { display: none; }
-  .dc__link {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 0.5rem;
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .dc__stage {
-    position: relative;
-    flex-shrink: 0;
-    aspect-ratio: 16 / 10;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 1.15rem;
-    background:
-      radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, #fff 55%, transparent), transparent 70%),
-      color-mix(in srgb, var(--tone) 24%, var(--color-paper));
-  }
-
-  /* Template / note: the app's own page, running off the stage's floor. */
-  .dc--paper .dc__stage { padding: 1.5rem 1.5rem 0; }
-  .dc__paper {
-    width: 100%;
-    max-width: 22rem;
-    height: calc(100% + 1rem);
-    margin-bottom: -1rem;
-    padding: 16px 18px;
-    overflow: hidden;
-    font-size: 12.5px;
-    line-height: 1.5;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    transition: transform 450ms var(--nx-ease);
-  }
-  .dc__paper .aui-h {
-    font-size: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .dc__body { margin: 0; color: var(--pds-text-secondary); }
-  .dc__body :global(h1),
-  .dc__body :global(h2),
-  .dc__body :global(h3) {
-    margin: 0.7em 0 0.1em;
-    font-size: 12.5px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--pds-text-primary);
-  }
-  .dc__body :global(:is(h1, h2, h3):first-child) { margin-top: 0; }
-  .dc__body :global(p) { margin: 0; }
-  .dc__body :global(p:has(> br:only-child)) { display: none; }
-  .dc__body :global(ul),
-  .dc__body :global(ol) { margin: 0; padding-left: 1.1em; }
-  .dc__body :global(img),
-  .dc__body :global(figure) { display: none; }
-
-  /* Thread: the notes, as rows. */
-  .dc--stack .dc__stage { padding: 1.5rem 1.5rem 0; }
-  .dc__rows {
-    width: 100%;
-    max-width: 22rem;
-    margin-bottom: -1rem;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    transition: transform 450ms var(--nx-ease);
-  }
-
-  .dc:hover .dc__paper,
-  .dc:hover .dc__rows { transform: translateY(-6px); }
-
-  /* Resource: the live card's plate (ResourcePlate) fills the stage. */
-  .dc--plate .dc__stage { background: none; }
-
-  /* The words. */
-  .dc__text {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding: 1.1rem 1rem 0.9rem;
-  }
-  .dc__label {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    min-width: 0;
-    margin: 0;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-ink-faint);
-  }
-  .dc__label > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dc__label :global(.dc__kind-icon) { flex-shrink: 0; width: 0.75rem; height: 0.75rem; }
-  .dc__by::before { content: "·"; margin-right: 0.45rem; }
-  .dc__title {
-    margin: 0.55rem 0 0;
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    color: var(--color-ink);
-    text-wrap: balance;
-  }
-  .dc__desc {
-    margin: 0.4rem 0 0;
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    color: var(--color-ink-soft);
-    text-wrap: pretty;
-  }
-  .dc__foot {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: auto 0 0;
-    padding-top: 1rem;
-    font-size: 0.875rem;
-    color: var(--color-ink-soft);
-  }
-  .dc__cta { font-weight: 500; color: var(--color-ink); }
-  .dc__cta::after {
-    content: "→";
-    display: inline-block;
-    margin-left: 0.35em;
-    transition: transform 200ms var(--nx-ease);
-  }
-  .dc:hover .dc__cta::after { transform: translateX(3px); }
-  .dc__count { margin-left: auto; color: var(--color-ink-faint); }
 
   /* Half-width cards on desktop lie on their side: stage left, words right. */
-  @media (min-width: 68rem) {
-    .dc.is-t3-wide .dc__link { flex-direction: row; gap: 0.25rem; }
-    .dc.is-t3-wide .dc__stage { flex: 0 0 56%; aspect-ratio: auto; min-height: 15rem; }
-    .dc.is-t3-wide .dc__text { padding: 1.25rem 1.25rem 1rem; }
-  }
 
   /* ── Empty and pager ─────────────────────────────────────────────────── */
   .dx-empty {
@@ -827,11 +509,4 @@ const cards: Card[] = listings.map((listing) => {
   }
   .dx-pager .nx-btn:disabled { opacity: 0.4; cursor: default; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .dc__paper,
-    .dc__rows,
-    .dc__cta::after { transition: none; }
-    .dc:hover .dc__paper,
-    .dc:hover .dc__rows { transform: none; }
-  }
 </style>

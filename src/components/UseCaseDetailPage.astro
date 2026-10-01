@@ -1,325 +1,449 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import PageClosingCTA from "./PageClosingCTA.astro";
-import RelatedBlogPosts from "./RelatedBlogPosts.astro";
-import RelatedDiscoverListings from "./RelatedDiscoverListings.astro";
-import UseCaseRelatedFeatures from "./UseCaseRelatedFeatures.astro";
-import ComparePreview from "./ComparePreview.astro";
+/**
+ * UseCaseDetailPage — one way of studying (/use-cases/<slug>/). Same shape as
+ * the /for/<audience>/ pages, from the same kind of data: a centred intro over
+ * the use case's sky, the story in one column, the moments, the people who
+ * study this way, the features it leans on, related ways to study, Discover
+ * listings filed under it, a Compare preview, a quote, posts, the close.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import UseCaseCard from "./next/UseCaseCard.astro";
+import DiscoverTile from "./next/DiscoverTile.astro";
+import ComparePreview from "./next/ComparePreview.astro";
+import BlogNextCard from "./next/BlogNextCard.astro";
+import ClosingCall from "./next/ClosingCall.astro";
+import AppIcon from "./next/app/AppIcon.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
-import type { UseCase } from "../lib/use-cases-data.ts";
-import { getUseCaseBySlug, getUseCaseDisplayTitle } from "../lib/use-cases-data.ts";
+import { getUseCaseBySlug, getUseCaseDisplayTitle, type UseCase } from "../lib/use-cases-data.ts";
 import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
-import type { RelatedFeatureCard } from "../lib/coming-soon-grid.ts";
 import { getAudiencesForUseCase } from "../lib/for-audiences-data.ts";
-import {
-  getRelatedBlogPosts,
-  includeBlogDrafts,
-  isBlogPostListed,
-} from "../lib/blog.ts";
-import { fathomTry, fathomCompare } from "../lib/fathom-events.ts";
+import { FEATURE_ICONS } from "../lib/feature-icons.ts";
+import { hasDetailContent } from "../lib/product-page-data.ts";
+import { draftPageIsReachable } from "../lib/draft-pages.ts";
+import { getDiscoverListings, discoverCategoryLabel } from "../lib/discover-data.ts";
+import { toDiscoverCard } from "../lib/next/discover-card.ts";
+import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
+import { fathomTry } from "../lib/fathom-events.ts";
 import { buildTryUrl } from "../lib/signup-url.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
-import "../styles/use-cases.css";
 
 interface Props {
   useCase: UseCase;
 }
-
 const { useCase } = Astro.props;
+const title = getUseCaseDisplayTitle(useCase);
 
+type FeatureRow = { icon: string; title: string; desc: string; href?: string; soon: boolean };
 const allFeatures = await getCollection("features");
-const relatedFeatureCards: RelatedFeatureCard[] = useCase.featureIds
-  .map((id) => {
+const features: FeatureRow[] = useCase.featureIds
+  .map((id): FeatureRow | undefined => {
     const soon = getComingSoonGridItem(id);
-    if (soon) return { kind: "comingSoon" as const, item: soon };
-    const feature = allFeatures.find((f) => f.id === id);
-    return feature ? { kind: "feature" as const, feature } : undefined;
+    if (soon) return { icon: soon.icon ?? soon.icons?.[0] ?? "fa7-solid:note-sticky", title: soon.title, desc: soon.desc, href: soon.href, soon: soon.comingSoon !== false };
+    const f = allFeatures.find((x) => x.id === id);
+    if (!f || !draftPageIsReachable(`features/${f.id}`)) return undefined;
+    return {
+      icon: FEATURE_ICONS[f.id] ?? "fa7-solid:note-sticky",
+      title: f.data.tagline,
+      desc: f.data.title,
+      href: !f.data.draft && hasDetailContent(f.data) ? `/features/${f.id}/` : undefined,
+      soon: false,
+    };
   })
-  .filter((c): c is RelatedFeatureCard => c !== undefined);
+  .filter((r): r is FeatureRow => r !== undefined);
 
-const relatedCompare = useCase.compareSlugs
-  .map((slug) => getCompareBySlug(slug))
-  .filter((e): e is NonNullable<typeof e> => e !== undefined);
+const audiences = getAudiencesForUseCase(useCase.slug);
+const related = (useCase.relatedUseCaseSlugs ?? []).map((s) => getUseCaseBySlug(s)).filter((u): u is UseCase => u !== undefined);
+const compare = useCase.compareSlugs.map((s) => getCompareBySlug(s)).filter((e): e is NonNullable<typeof e> => e !== undefined);
 
-const relatedAudiences = getAudiencesForUseCase(useCase.slug);
+/* Discover listings filed under this use case (category ids are use-case
+   slugs). Two columns want an even count; an odd tail is dropped. */
+const matches = draftPageIsReachable("discover") ? getDiscoverListings().filter((l) => l.category === useCase.slug) : [];
+const capped = matches.slice(0, 4);
+const listings = capped.length > 1 && capped.length % 2 === 1 ? capped.slice(0, -1) : capped;
+const discoverLabel = discoverCategoryLabel(useCase.slug);
 
-const relatedUseCases = (useCase.relatedUseCaseSlugs ?? [])
-  .map((slug) => getUseCaseBySlug(slug))
-  .filter((uc): uc is UseCase => uc !== undefined);
-
-const showDrafts = includeBlogDrafts();
-const relatedBlogPosts = getRelatedBlogPosts(
-  (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+const posts = getRelatedBlogPosts(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, includeBlogDrafts())),
   { useCase: useCase.slug },
 );
 
-const testimonialEntry = useCase.testimonialId
-  ? await getEntry("testimonials", useCase.testimonialId)
-  : undefined;
-const testimonialRender = testimonialEntry ? await render(testimonialEntry) : undefined;
-
-const pageUrl = `https://harvous.com${useCase.href}`;
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebPage",
-      name: useCase.seoTitle,
-      description: useCase.seoDescription,
-      url: pageUrl,
-    },
-    {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Harvous", item: "https://harvous.com/" },
-        { "@type": "ListItem", position: 2, name: "Use cases", item: "https://harvous.com/use-cases/" },
-        { "@type": "ListItem", position: 3, name: useCase.title, item: pageUrl },
-      ],
-    },
-  ],
-};
+const quote = useCase.testimonialId ? await getEntry("testimonials", useCase.testimonialId) : undefined;
+const Quote = quote ? (await render(quote)).Content : undefined;
 ---
 
-<BaseLayout
-  title={useCase.seoTitle}
-  description={useCase.seoDescription}
-  ogImage={`/images/use-cases/og/${useCase.slug}.webp`}
-  jsonLd={jsonLd}
->
-  <article class="use-case-detail" style={`--use-case-ink: ${useCase.ink};`}>
-    <!-- Hero -->
-    <header class="border-b border-[var(--color-rule)]">
-      <div class="detail-content py-10 md:py-14">
-        <div data-reveal>
-          <div class="use-case-detail__nav">
-          <a href="/use-cases/" class="btn-pill inline-flex items-center gap-1.5 text-sm">
-            <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path
-                fill-rule="evenodd"
-                d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-                clip-rule="evenodd"></path>
-            </svg>
-            Use cases
-          </a>
-        </div>
-
-        <div
-          class="use-case-hero__art mt-8"
-          style={`--usecase-art-image: url('${useCase.image}');`}
-        >
-          <span class="use-case-hero__badge">
-            <Icon name={useCase.icon} style={`color: ${useCase.ink};`} />
-          </span>
-        </div>
-
-        <div class="mt-8 text-center">
-          <div class="use-case-detail__badges">
-            <span
-              class="use-case-detail__title-badge"
-              style={`background: color-mix(in oklab, ${useCase.ink} 14%, var(--color-paper)); color: ${useCase.ink};`}
-            >
-              {useCase.title}
-            </span>
-            {useCase.comingSoon && (
-              <span class="use-case-detail__soon-badge">
-                {useCase.comingSoonLine ?? "Coming soon"}
-              </span>
-            )}
-          </div>
-          <h1 class="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">{useCase.heroTitle}</h1>
-          <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--color-ink-soft)]">
-            {useCase.heroLead}
-          </p>
-        </div>
-        </div>
-      </div>
+<NextLayout title={useCase.seoTitle} description={useCase.seoDescription}>
+  <article style={`--uc-ink: ${useCase.ink};`}>
+    <header class="nx-wrap ud-intro">
+      <a class="ud-back" href="/use-cases/">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+        Use cases
+      </a>
+      <p class="ud-badges">
+        <span class="ud-badge">{title}</span>
+        {useCase.comingSoon && <span class="ud-badge ud-badge--soon">{useCase.comingSoonLine ?? "Coming soon"}</span>}
+      </p>
+      <h1 class="nx-display ud-title">{useCase.heroTitle}</h1>
+      <p class="nx-lead ud-lead">{useCase.heroLead}</p>
     </header>
 
-    <!-- Prose body -->
-    <section class="detail-content py-14 md:py-16" data-reveal style="--reveal-delay: 80ms;">
-      <div class="prose-letter space-y-8">
-        {
-          useCase.sections.map((section) => (
-            <div>
-              <h2 class="text-xl font-semibold text-[var(--color-ink)]">{section.heading}</h2>
-              {section.paragraphs.map((p) => (
-                <p class="mt-3 text-[var(--color-ink-soft)]" set:html={inlineMdLinksToHtml(p)} />
-              ))}
-            </div>
-          ))
-        }
-      </div>
+    <figure class="nx-wrap ud-sky" aria-hidden="true">
+      <span class="ud-sky__frame">
+        <img src={useCase.image} alt="" loading="eager" decoding="async" />
+        <span class="ud-sky__icon"><Icon name={useCase.icon} /></span>
+      </span>
+    </figure>
+
+    <section class="nx-wrap ud-story" aria-label="The story">
+      {useCase.sections.map((section) => (
+        <div class="ud-story__part" data-reveal>
+          <h2 class="ud-h2">{section.heading}</h2>
+          {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+        </div>
+      ))}
     </section>
 
-    <!-- Feature moments -->
-    <section class="frame-divider">
-      <div class="detail-content py-14 md:py-16">
-        <h2 class="font-display text-2xl leading-snug md:text-3xl">What that looks like in Harvous</h2>
-        <ul class="mt-8 grid gap-8 sm:grid-cols-2" data-reveal="stagger" role="list">
-          {
-            useCase.moments.map((m) => (
-              <li class="flex gap-4">
-                <span class="use-case-moment__icon">
-                  <Icon name={m.icon} />
-                </span>
-                <div>
-                  <h3 class="font-semibold text-[var(--color-ink)]">{m.heading}</h3>
-                  <p class="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-soft)]">{m.body}</p>
-                </div>
-              </li>
-            ))
-          }
+    {useCase.moments.length > 0 && (
+      <section class="nx-wrap ud-sec" aria-labelledby="moments-title">
+        <h2 id="moments-title" class="ud-h2 ud-h2--sec">What that looks like in Harvous</h2>
+        <ul class="ud-moments" role="list" data-reveal="stagger">
+          {useCase.moments.map((m) => (
+            <li class="ud-moment">
+              <h3 class="ud-moment__h">
+                <span class="ud-moment__tile"><AppIcon name={m.icon} /></span>
+                {m.heading}
+              </h3>
+              <p class="ud-moment__p">{m.body}</p>
+            </li>
+          ))}
         </ul>
-      </div>
-    </section>
+      </section>
+    )}
 
-    {
-      relatedUseCases.length > 0 && (
-        <section class="frame-divider">
-          <div class="detail-content py-14 md:py-16">
-            <h2 class="font-display text-2xl leading-snug md:text-3xl">Related ways to study</h2>
-            <p class="mt-3 text-[var(--color-ink-soft)]">
-              Same notes-first tools — a clearer page when your rhythm has a name.
-            </p>
-            <ul class="use-case-audiences" data-reveal="stagger" role="list">
-              {relatedUseCases.map((uc) => (
-                <li>
-                  <a href={uc.href} class="use-case-audiences__pill">
-                    <Icon name={uc.icon} />
-                    <span>{getUseCaseDisplayTitle(uc)}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <p class="mt-5">
-              <a href="/use-cases/" class="text-sm font-medium text-[var(--color-accent)] hover:underline">
-                See all use cases →
+    {audiences.length > 0 && (
+      <section class="nx-wrap ud-sec" aria-labelledby="who-title">
+        <div class="ud-head">
+          <h2 id="who-title" class="ud-h2 ud-h2--sec">Who studies this way</h2>
+          <a class="ud-more" href="/for/">Everyone Harvous is for →</a>
+        </div>
+        <ul class="ud-rows" role="list">
+          {audiences.map((a) => (
+            <li>
+              <a class="ud-row ud-row--link" href={a.href} style={`--ink: ${a.ink};`}>
+                <span class="ud-row__sky" aria-hidden="true">
+                  <img src={a.image} alt="" width="96" height="96" loading="lazy" decoding="async" />
+                  <span class="ud-row__mark"><Icon name={a.icon} /></span>
+                </span>
+                <span class="ud-row__text">
+                  <span class="ud-row__title">{a.title}</span>
+                  <span class="ud-row__desc">{a.tagline}</span>
+                </span>
+                <svg class="ud-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
               </a>
-            </p>
-          </div>
-        </section>
-      )
-    }
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
-    {
-      relatedAudiences.length > 0 && (
-        <section class="frame-divider">
-          <div class="detail-content py-14 md:py-16">
-            <h2 class="font-display text-2xl leading-snug md:text-3xl">Harvous is for…</h2>
-            <p class="mt-3 text-[var(--color-ink-soft)]">
-              Same way of studying — different people who show up that way. Pick the one that sounds like you.
-            </p>
-            <ul class="use-case-audiences" data-reveal="stagger" role="list">
-              {relatedAudiences.map((audience) => (
-                <li>
-                  <a href={audience.href} class="use-case-audiences__pill">
-                    <Icon name={audience.icon} />
-                    <span>{audience.title}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <p class="mt-5">
-              <a href="/for/" class="text-sm font-medium text-[var(--color-accent)] hover:underline">
-                See everyone Harvous is for →
-              </a>
-            </p>
-          </div>
-        </section>
-      )
-    }
+    {features.length > 0 && (
+      <section class="nx-wrap ud-sec" aria-labelledby="features-title">
+        <h2 id="features-title" class="ud-h2 ud-h2--sec">{useCase.featuresHeading}</h2>
+        <p class="ud-sec__lead">{useCase.featuresLead}</p>
+        <ul class="ud-rows" role="list">
+          {features.map((f) => {
+            const Tag = f.href ? "a" : "div";
+            return (
+              <li>
+                <Tag class:list={["ud-row", f.href && "ud-row--link"]} href={f.href}>
+                  <span class="ud-row__icon"><Icon name={f.icon} /></span>
+                  <span class="ud-row__text">
+                    <span class="ud-row__title">
+                      {f.title}
+                      {f.soon && <span class="ud-row__soon">Coming soon</span>}
+                    </span>
+                    <span class="ud-row__desc">{f.desc}</span>
+                  </span>
+                  {f.href && <svg class="ud-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>}
+                </Tag>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
 
-    <UseCaseRelatedFeatures
-      featuresHeading={useCase.featuresHeading}
-      featuresLead={useCase.featuresLead}
-      cards={relatedFeatureCards}
-    />
+    {listings.length > 0 && (
+      <section class="nx-wrap ud-sec" aria-labelledby="discover-title">
+        <div class="ud-head">
+          <h2 id="discover-title" class="ud-h2 ud-h2--sec">Start from one of these</h2>
+          <a class="ud-more" href={`/discover/?use=${useCase.slug}`}>More in Discover →</a>
+        </div>
+        <p class="ud-sec__lead">
+          {listings.some((l) => !l.installable)
+            ? `Free templates, studies, and things worth watching, filed under ${discoverLabel.toLowerCase()}.`
+            : `Free templates and studies filed under ${discoverLabel.toLowerCase()}. Take a copy and it's yours to change.`}
+        </p>
+        <ul class:list={["ud-discover", listings.length === 1 && "is-single"]} role="list">
+          {listings.map((l) => <DiscoverTile card={toDiscoverCard(l)} heading="h3" />)}
+        </ul>
+      </section>
+    )}
 
-    {
-      relatedCompare.length > 0 && (
-        <ComparePreview
-          id="works-alongside"
-          entries={relatedCompare}
-          eyebrow="Compare"
-          title="Works alongside other tools"
-          lead="Harvous does a different job than most Bible apps. Many people use it next to something they already love."
-          showAllLink
-          fathomTrack={fathomCompare.detailRelated}
-          fathomAllTrack={fathomCompare.homeAll}
-        />
-      )
-    }
+    {related.length > 0 && (
+      <section class="nx-wrap ud-sec" aria-labelledby="related-title">
+        <h2 id="related-title" class="ud-h2 ud-h2--sec">Related ways to study</h2>
+        <ul class="ud-ucs" role="list" data-reveal="stagger">
+          {related.map((uc) => <li><UseCaseCard useCase={uc} /></li>)}
+        </ul>
+      </section>
+    )}
 
-    <!-- Testimonial -->
-    {
-      testimonialRender && testimonialEntry && (
-        <section class="fade-rule-t">
-          <div class="detail-content max-w-2xl py-16 text-center use-case-testimonial">
-            <blockquote class="use-case-testimonial__quote font-display text-3xl leading-snug md:text-4xl">
-              <testimonialRender.Content />
-            </blockquote>
-            <figcaption class="mt-6 text-sm italic text-[var(--color-ink-soft)]">
-              &mdash;{testimonialEntry.data.name}
-            </figcaption>
-          </div>
-        </section>
-      )
-    }
+    {compare.length > 0 && (
+      <ComparePreview
+        id="works-alongside"
+        title="Works alongside other tools."
+        lead="Harvous does a different job than most Bible apps. Plenty of people use it next to something they already love."
+        slugs={useCase.compareSlugs}
+      />
+    )}
+
+    {quote && Quote && (
+      <figure class="nx-wrap ud-quote" data-reveal>
+        <blockquote><Quote /></blockquote>
+        <figcaption>{quote.data.name}</figcaption>
+      </figure>
+    )}
+
+    {posts.length > 0 && (
+      <section class="nx-wrap ud-sec" aria-labelledby="posts-title">
+        <h2 id="posts-title" class="ud-h2 ud-h2--sec">From the blog</h2>
+        <ul class="ud-posts" role="list">
+          {posts.map((p) => <li><BlogNextCard post={p} /></li>)}
+        </ul>
+      </section>
+    )}
   </article>
 
-  <PageClosingCTA
-    heading={useCase.heroTitle}
+  <ClosingCall
+    title={useCase.heroTitle.length > 60 ? "Start with the way you already study." : useCase.heroTitle}
     lead={useCase.tagline}
     href={buildTryUrl({ useCase: useCase.slug })}
     fathomTrack={fathomTry.useCaseDetail(useCase.slug)}
   />
-
-  {/* Before the blog strip: someone who just read how this way of studying
-      works is closer to starting than to reading more about it. */}
-  <RelatedDiscoverListings useCaseSlug={useCase.slug} />
-
-  <RelatedBlogPosts posts={relatedBlogPosts} />
-</BaseLayout>
+</NextLayout>
 
 <style>
-  .use-case-audiences {
-    list-style: none;
-    margin: 1.25rem 0 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-  }
-  .use-case-audiences__pill {
+  .ud-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .ud-back {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 0.9rem;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
     border-radius: 999px;
-    border: 1px solid var(--color-rule);
-    background: var(--color-card);
-    text-decoration: none;
-    font-size: 0.9rem;
+    background: var(--color-warm);
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-ink);
-    transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+    text-decoration: none;
   }
-  .use-case-audiences__pill:hover {
-    border-color: color-mix(in srgb, var(--use-case-ink) 35%, var(--color-rule));
-    background: color-mix(in oklab, var(--use-case-ink) 10%, var(--color-paper));
-    color: var(--use-case-ink);
+  .ud-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .ud-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .ud-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.75rem 0 0; }
+  .ud-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: color-mix(in oklab, var(--uc-ink) 60%, var(--color-ink));
+    background: color-mix(in oklab, var(--uc-ink) 14%, var(--color-paper));
   }
-  .use-case-audiences__pill :global(svg) {
-    width: 0.95rem;
-    height: 0.95rem;
-    color: var(--use-case-ink);
+  .ud-badge--soon { color: var(--color-ink-soft); background: var(--color-warm); }
+  .ud-title { margin: 1.25rem auto 0; max-width: 20ch; font-size: clamp(2.25rem, 5vw, 3.75rem); }
+  .ud-lead { margin: 1.5rem auto 0; }
+
+  .ud-sky { margin: clamp(2.5rem, 6vw, 4rem) auto 0; }
+  .ud-sky__frame {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 21 / 8;
+    overflow: hidden;
+    border-radius: var(--nx-radius-scene, 1.5rem);
+  }
+  .ud-sky__frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ud-sky__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(4rem, 8vw, 5.5rem);
+    height: clamp(4rem, 8vw, 5.5rem);
+    border-radius: 28%;
+    background: var(--color-paper);
+    color: color-mix(in oklab, var(--uc-ink) 70%, var(--color-ink));
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 24px 48px -20px rgba(15, 23, 42, 0.45);
+  }
+  .ud-sky__icon :global(svg) { width: 42%; height: 42%; }
+  @media (max-width: 40rem) { .ud-sky__frame { aspect-ratio: 4 / 3; } }
+
+  .ud-story { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .ud-story__part + .ud-story__part { margin-top: 2.5rem; }
+  .ud-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .ud-story p { margin: 0.9rem 0 0; font-size: 1.0625rem; line-height: 1.65; color: var(--color-ink-soft); text-wrap: pretty; }
+  .ud-story p :global(a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+  .ud-sec { padding-top: clamp(4rem, 9vw, 6rem); }
+  .ud-h2--sec { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; }
+  .ud-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
+  .ud-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
+  .ud-more { font-size: 0.9375rem; font-weight: 500; color: var(--color-ink); text-decoration: none; white-space: nowrap; }
+  .ud-more:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+
+  .ud-moments {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) { .ud-moments { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .ud-moment { padding: 1.25rem 0 1.4rem; border-top: 1px solid var(--color-rule); }
+  .ud-moment__h { display: flex; align-items: center; gap: 0.7rem; margin: 0; font-size: 1.0625rem; font-weight: 600; color: var(--color-ink); }
+  .ud-moment__tile {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.6rem;
+    color: color-mix(in oklab, var(--uc-ink) 65%, var(--color-ink));
+    background: color-mix(in oklab, var(--uc-ink) 14%, var(--color-paper));
+  }
+  .ud-moment__tile :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .ud-moment__p { margin: 0.55rem 0 0 2.7rem; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  /* Light rows — audiences and features — two columns wide. */
+  .ud-rows {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 2.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) { .ud-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .ud-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 0.85rem 0.25rem;
+    border-bottom: 1px solid var(--color-rule);
+    color: inherit;
+    text-decoration: none;
+  }
+  .ud-row:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
+  .ud-row__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: var(--color-warm);
+    color: var(--color-ink);
+  }
+  .ud-row__icon :global(svg) { width: 1rem; height: 1rem; }
+  .ud-row__sky {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    overflow: hidden;
+    border-radius: 0.8rem;
+  }
+  .ud-row__sky img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ud-row__mark {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.45rem;
+    background: var(--color-paper);
+    color: var(--ink);
+  }
+  .ud-row__mark :global(svg) { width: 0.75rem; height: 0.75rem; }
+  .ud-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
+  .ud-row__title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; font-weight: 600; color: var(--color-ink); }
+  .ud-row__soon { padding: 0.05rem 0.5rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; color: var(--color-ink-soft); background: var(--color-warm); }
+  .ud-row__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
+  .ud-row__chev {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: none;
+    stroke: var(--color-ink-faint);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 200ms ease, stroke 200ms ease;
+  }
+  .ud-row--link:hover .ud-row__chev { transform: translateX(2px); stroke: var(--color-ink); }
+
+  .ud-discover {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 44rem) {
+    .ud-discover { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+    .ud-discover.is-single { grid-template-columns: minmax(0, 1fr); max-width: calc(50% - 0.625rem); }
   }
 
-  .prose-letter :global(a) {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .ud-ucs, .ud-posts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
   }
+  @media (min-width: 40rem) { .ud-ucs, .ud-posts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .ud-ucs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
+
+  .ud-quote {
+    max-width: calc(46rem + 2 * var(--nx-gutter));
+    margin: 0 auto;
+    padding-top: clamp(4rem, 9vw, 6rem);
+    text-align: center;
+  }
+  .ud-quote blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  .ud-quote blockquote :global(p) { margin: 0; }
+  .ud-quote figcaption { margin-top: 1.25rem; font-size: 0.9375rem; color: var(--color-ink-faint); }
 </style>
