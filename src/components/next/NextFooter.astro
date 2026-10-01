@@ -53,7 +53,19 @@ const groups = [
   <div class="nx-wrap">
     <div class="nxf__top">
       <div class="nxf__maker">
-        <OptimizedImage src="/derek-avatar.jpeg" alt="" width={96} height={96} class="nxf__avatar" />
+        <span class="nxf__face">
+          <OptimizedImage src="/derek-avatar.jpeg" alt="Derek as a kid" width={96} height={96} class="nxf__avatar" />
+          {/* A pen note in the margin, like the ones on the home page's scenes. */}
+          <span class="nxf__kid nx-hand" aria-hidden="true">
+            <svg viewBox="-30 -30 60 60" class="nxf__kid-arrow">
+              <g transform="scale(-1,1)">
+                <path d="M-18 -20 C -14 2, 0 12, 16 16" />
+                <path d="M6 19 L16 16 L12 7" />
+              </g>
+            </svg>
+            this is me as a kid :)
+          </span>
+        </span>
         <p>
           Made by <a href="/about/">Derek Castelli</a>, one person with a Bible and too many
           notes. <a href="mailto:derek@harvous.com">I read every email.</a>
@@ -112,6 +124,37 @@ const groups = [
   .nxf__maker a { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-rule); text-underline-offset: 0.2em; }
   .nxf__maker a:hover { text-decoration-color: currentColor; }
   .nxf__maker > :global(picture) { flex-shrink: 0; }
+  .nxf__face { position: relative; flex-shrink: 0; }
+  .nxf__maker {
+    /* Room above the photo for the note. */
+    padding-top: 1.75rem;
+  }
+  .nxf__kid {
+    position: absolute;
+    left: 2.1rem;
+    bottom: calc(100% + 0.1rem);
+    display: flex;
+    align-items: flex-end;
+    gap: 0.1rem;
+    white-space: nowrap;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--color-ink-soft);
+    transform: rotate(-3deg);
+    transform-origin: left bottom;
+    pointer-events: none;
+  }
+  .nxf__kid-arrow {
+    width: 1.9rem;
+    height: 1.9rem;
+    margin-bottom: -0.55rem;
+    flex-shrink: 0;
+    fill: none;
+    stroke: var(--color-ink-soft);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
   .nxf__maker :global(.nxf__avatar) {
     width: 2.75rem;
     height: 2.75rem;

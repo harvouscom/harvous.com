@@ -2,8 +2,9 @@
 /**
  * /use-cases/ — every way people use Harvous, on one page. The same cards
  * as the home row, laid out so seven always fills its grid: at three columns
- * the first two cards run wide (2 + 2 + 5 = 9 cells, three full rows), at two
- * columns only the first does (2 + 6 = 8 cells, four full rows). Detail pages
+ * the first two cards run wide (2 + 2 + 5 = 9 cells, three full rows). At two
+ * columns nothing spans: every card is one column wide and the odd seventh
+ * sits alone on the last row, rather than stretching to fill it. Detail pages
  * are the live /use-cases/<slug>/ ones.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
@@ -62,10 +63,10 @@ const useCases = getUseCases();
   }
   @media (min-width: 44rem) {
     .uc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .uc-grid__item.is-wide { grid-column: span 2; }
   }
   @media (min-width: 68rem) {
     .uc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+    .uc-grid__item.is-wide,
     .uc-grid__item.is-wide-3 { grid-column: span 2; }
   }
 
