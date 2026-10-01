@@ -1,5 +1,6 @@
 ---
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import BlogLibraryNav from "./BlogLibraryNav.astro";
 import BlogTopicBlocks from "./BlogTopicBlocks.astro";
 import { getCollection } from "astro:content";
@@ -26,6 +27,7 @@ const topics = blogCategoriesInUse(listed).map((cat: BlogCategory) => ({
 ---
 
 <NextLayout
+  ogImage={ogCard("blog")}
   frame
   title="Search — Bright Enough"
   description="Search Bright Enough — notes, habits, and teaching from the Harvous blog."

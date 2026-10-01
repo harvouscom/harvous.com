@@ -7,6 +7,7 @@
  * (lib/next/releases.ts). A compact month menu pins as you scroll.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import SectionNav from "../../components/next/SectionNav.astro";
 import ReleaseNotesIndexCard from "../../components/ReleaseNotesIndexCard.astro";
 import { getReleaseNotes } from "../../lib/release-notes-data.ts";
@@ -40,6 +41,7 @@ const latestEntries = latest?.entries.slice(0, 5) ?? [];
 ---
 
 <NextLayout
+  ogImage={ogCard("release-notes")}
   jsonLd={releaseNotesIndexJsonLd()}
   title="Release Notes — Harvous"
   description="Release notes and updates for Harvous, the Bible study notes app."

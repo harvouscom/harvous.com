@@ -1,5 +1,6 @@
 ---
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import BlogCard from "../../components/BlogCard.astro";
 import BlogLibraryNav from "../../components/BlogLibraryNav.astro";
 import BlogTopicBlocks from "../../components/BlogTopicBlocks.astro";
@@ -77,6 +78,7 @@ const hubJsonLd = [
 ---
 
 <NextLayout
+  ogImage={ogCard("blog")}
   frame
   title="Bright Enough — Harvous Blog"
   description={hubDescription}

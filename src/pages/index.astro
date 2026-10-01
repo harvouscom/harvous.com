@@ -7,6 +7,7 @@
  * the blog gets a small way in (BlogPreview) after the maker note.
  */
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import NextHero from "../components/next/NextHero.astro";
 import StoryScroller from "../components/next/StoryScroller.astro";
 import Bento from "../components/next/Bento.astro";
@@ -23,6 +24,7 @@ const homeJsonLd = await buildHomeJsonLd();
 ---
 
 <NextLayout
+  ogImage={ogCard("home")}
   jsonLd={homeJsonLd}
   title="Harvous — a study Bible that remembers"
   description="A quiet notes app for studying the Bible, made by one person. Write what you notice; Harvous keeps it with the verse and brings it back before it fades."

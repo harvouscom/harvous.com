@@ -7,6 +7,7 @@
  * the roadmap grid, so the page keeps itself honest between edits.
  */
 import { Icon } from "astro-icon/components";
+import { ogCard } from "../lib/og-card.ts";
 import NextLayout from "../layouts/NextLayout.astro";
 import ReleaseNotesIndexCard from "../components/ReleaseNotesIndexCard.astro";
 import { NOW_UPDATED, NOW_WORKING_ON } from "../lib/next/content.ts";
@@ -23,6 +24,7 @@ const updated = new Date(`${NOW_UPDATED}T12:00:00Z`).toLocaleDateString("en-US",
 ---
 
 <NextLayout
+  ogImage={ogCard("now")}
   title="Now — Harvous"
   description="What Derek is working on in Harvous this month, what just shipped, and what's next."
 >

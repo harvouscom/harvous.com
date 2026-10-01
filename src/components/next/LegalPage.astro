@@ -6,6 +6,7 @@
  * (components/legal/*), restyled here — never rewritten.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 
 interface Props {
   doc: "privacy" | "terms";
@@ -23,7 +24,7 @@ const DOCS = [
 ] as const;
 ---
 
-<NextLayout title={title} description={description}>
+<NextLayout ogImage={ogCard(doc)} title={title} description={description}>
   <header class="nx-wrap lg-intro">
     <nav class="lg-switch" aria-label="Legal">
       {DOCS.map((d) => (

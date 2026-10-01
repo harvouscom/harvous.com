@@ -13,6 +13,7 @@
  * of smalls with the tail widened.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import ClosingCall from "../../components/next/ClosingCall.astro";
 import SectionNav from "../../components/next/SectionNav.astro";
 import ResourcePlate from "../../components/next/ResourcePlate.astro";
@@ -160,6 +161,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
 ---
 
 <NextLayout
+  ogImage={ogCard("compare")}
   jsonLd={compareHubJsonLd()}
   title="Compare — Harvous next to the apps you already use"
   description={`See how Harvous, a notes-first Bible study app, sits next to ${total} apps you might already use for reading, notes, devotionals, sermon prep, and small groups.`}

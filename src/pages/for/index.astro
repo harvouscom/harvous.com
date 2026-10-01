@@ -9,6 +9,7 @@
  * lib/for-audiences-data.ts and lib/use-cases-data.ts.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import { Icon } from "astro-icon/components";
 import SectionNav from "../../components/next/SectionNav.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
@@ -21,6 +22,7 @@ const nextHref = (slug: string) => `/for/${slug}/`;
 ---
 
 <NextLayout
+  ogImage={ogCard("for")}
   title="Who Harvous is for — Harvous"
   description="Harvous is for daily readers, Bible app users, Sunday note-takers, seminary students, pastors, teachers, people going through a book, theme-chasers, group leaders, churches, and anyone still finding their footing in Scripture."
 >

@@ -8,6 +8,7 @@
  * are the live /use-cases/<slug>/ ones.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import UseCaseCard from "../../components/next/UseCaseCard.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
 import { getUseCases } from "../../lib/use-cases-data.ts";
@@ -16,6 +17,7 @@ const useCases = getUseCases();
 ---
 
 <NextLayout
+  ogImage={ogCard("use-cases")}
   title="Use cases — Harvous"
   description="How people use Harvous: a daily journal, sermon notes and prep, book, topical and deep study, and studying with a group."
 >

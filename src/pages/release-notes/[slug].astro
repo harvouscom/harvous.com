@@ -5,6 +5,7 @@
  * the releases either side of it underneath.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import ReleaseNoteSheet from "../../components/ReleaseNoteSheet.astro";
 import { getReleaseNotes, type ChangelogRelease } from "../../lib/release-notes-data.ts";
 import { pageWithBreadcrumbJsonLd } from "../../lib/page-jsonld.ts";
@@ -26,6 +27,7 @@ const { note, newer, older } = Astro.props;
 ---
 
 <NextLayout
+  ogImage={ogCard("release-notes")}
   title={`v${note.version} Release Notes — Harvous`}
   description={note.excerpt}
   noindex

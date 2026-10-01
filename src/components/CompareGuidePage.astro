@@ -7,6 +7,7 @@
  * note about the bias of ranking yourself. Then how to choose, and the close.
  */
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import type { CompareEntry } from "../lib/compare-data.ts";
 import type { CompareSeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
@@ -33,7 +34,7 @@ const decisionRows = [
 ];
 ---
 
-<NextLayout title={page.seoTitle} description={page.seoDescription} noindex={noindex} jsonLd={jsonLd}>
+<NextLayout ogImage={ogCard(`compare-${page.slug}`)} title={page.seoTitle} description={page.seoDescription} noindex={noindex} jsonLd={jsonLd}>
   <article class="cg">
     <header class="nx-wrap cg-intro">
       <a class="cg-back" href="/compare/#guides">

@@ -1,5 +1,6 @@
 ---
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import BlogCard from "./BlogCard.astro";
 import BlogCategoryPagination from "./BlogCategoryPagination.astro";
 import BlogSearchBar from "./BlogSearchBar.astro";
@@ -73,6 +74,7 @@ const jsonLd = [
 ---
 
 <NextLayout
+  ogImage={ogCard(`blog-${category}`)}
   frame
   title={title}
   description={description}

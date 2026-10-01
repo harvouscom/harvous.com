@@ -6,6 +6,7 @@
  * page reads.
  */
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import FaqItem from "../components/FaqItem.astro";
 import AppIcon from "../components/next/app/AppIcon.astro";
 import { render } from "astro:content";
@@ -19,6 +20,7 @@ const faqs = await Promise.all(entries.map(async (entry) => ({ entry, Content: (
 ---
 
 <NextLayout
+  ogImage={ogCard("support")}
   jsonLd={{
     "@context": "https://schema.org",
     "@graph": [
