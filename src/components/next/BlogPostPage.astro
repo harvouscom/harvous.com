@@ -15,6 +15,7 @@ import BlogNextLink from "../../components/next/BlogNextLink.astro";
 import {
   BLOG_CATEGORIES,
   blogCategoryColor,
+  blogCategoryHref,
   blogCategoryLabel,
   blogHeadingsFromBody,
   blogProductBridgeCopy,
@@ -91,7 +92,7 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
       </a>
       <div class="bp-col">
         <p class="bp-meta">
-          <a href={`/blog/?c=${post.data.category}`}>{label}</a>
+          <a href={blogCategoryHref(post.data.category)}>{label}</a>
           {post.data.draft && <span class="bp-draft">Draft</span>}
           {author.kind !== "house" && (
             <>

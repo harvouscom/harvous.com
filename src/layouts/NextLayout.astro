@@ -33,9 +33,12 @@ interface Props {
   ogImageHeight?: number;
   ogType?: "website" | "article";
   articlePublishedTime?: string;
+  /** Keep the previous design's page rails (.page-frame) inside the new
+      chrome — for pages still on the old body design (the blog hub). */
+  frame?: boolean;
 }
 
-const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogImageHeight, ogType, articlePublishedTime } = Astro.props;
+const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogImageHeight, ogType, articlePublishedTime, frame = false } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} ogImage={ogImage} ogImageWidth={ogImageWidth} ogImageHeight={ogImageHeight} ogType={ogType} articlePublishedTime={articlePublishedTime} noindex={noindex} jsonLd={jsonLd} bare>
@@ -52,7 +55,7 @@ const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogIm
   <div class="nx">
     <NextHeader />
     <main class="nx-main">
-      <slot />
+      {frame ? <div class="page-frame nx-frame"><slot /></div> : <slot />}
     </main>
     <NextFooter />
     <StickyTryPill />

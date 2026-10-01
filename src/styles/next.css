@@ -146,3 +146,8 @@
   background: var(--color-accent-soft);
 }
 
+
+/* ── Old body design inside the new chrome (NextLayout `frame`) ─────────────
+   The blog hub, its topic archives and search keep their previous layout —
+   the page rails and frame dividers — under the floating nav. */
+.nx-frame { padding-top: 5.5rem; }

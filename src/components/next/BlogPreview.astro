@@ -1,0 +1,142 @@
+---
+/**
+ * BlogPreview — the home page's way into Bright Enough. The old strip's
+ * pyramid of topic blocks and its one line stay; under the line, the three
+ * newest posts as quiet rows, so it reads as "what I wrote lately" rather
+ * than a second hero. The pyramid gets the other column to itself.
+ */
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import BlogTopicBlocks from "../BlogTopicBlocks.astro";
+import {
+  blogCategoryColor,
+  blogCategoryIcon,
+  blogCategoryLabel,
+  blogThumbUrl,
+  formatBlogDate,
+  includeBlogDrafts,
+  isBlogPostListed,
+  sortBlogPostsByDate,
+} from "../../lib/blog";
+
+const showDrafts = includeBlogDrafts();
+const latest = sortBlogPostsByDate(
+  (await getCollection("blog")).filter((p) => isBlogPostListed(p, showDrafts)),
+).slice(0, 3);
+---
+
+<section class="nx-section blogp" aria-labelledby="blogp-title">
+  <div class="nx-wrap blogp__grid">
+    <div class="blogp__art">
+      <BlogTopicBlocks shape="pyramid" />
+    </div>
+
+    <div class="blogp__intro" data-reveal>
+      <p class="nx-kicker">From the blog</p>
+      <h2 id="blogp-title" class="nx-title">Bright Enough.</h2>
+      <p class="nx-lead">Notes, habits, and teaching that show up after Sunday.</p>
+      <a class="nx-btn nx-btn--ghost blogp__btn" href="/blog/">Go to the blog</a>
+    </div>
+
+    <ul class="blogp__list" role="list" data-reveal style="--reveal-delay: 120ms;">
+      {latest.map((post) => {
+        const color = blogCategoryColor(post.data.category);
+        return (
+          <li>
+            <a class="blogp__row" href={`/blog/${post.id}/`}>
+              <img
+                class="blogp__thumb"
+                src={blogThumbUrl(post.id, "spot")}
+                alt=""
+                width="72"
+                height="72"
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="blogp__text">
+                <span class="blogp__topic" style={`color: ${color.ink};`}>
+                  <Icon name={blogCategoryIcon(post.data.category)} class="blogp__icon" />
+                  {blogCategoryLabel(post.data.category)}
+                </span>
+                <span class="blogp__name">{post.data.title}</span>
+                <span class="blogp__date">{formatBlogDate(post.data.publishDate)}</span>
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .blogp__grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-areas: "art" "intro" "list";
+  }
+  .blogp__art { grid-area: art; width: min(100%, 13rem); }
+  .blogp__intro { grid-area: intro; }
+  .blogp__list { grid-area: list; }
+  @media (min-width: 60rem) {
+    .blogp__grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      grid-template-areas: "intro art" "list art";
+      column-gap: 5rem;
+      row-gap: 2.5rem;
+    }
+    /* The blocks land on the same floor the post list ends on. */
+    .blogp__art { align-self: end; justify-self: center; width: min(100%, 24rem); }
+  }
+  .blogp__intro .nx-title { margin: 0.75rem 0 0; }
+  .blogp__intro .nx-lead { margin: 1rem 0 0; }
+  .blogp__btn { margin-top: 1.75rem; }
+
+  .blogp__list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0 0 0 -0.85rem;
+    padding: 0;
+    list-style: none;
+  }
+  .blogp__row {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 0.85rem;
+    border-radius: 1.25rem;
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 160ms ease;
+  }
+  .blogp__row:hover { background: color-mix(in srgb, var(--color-ink) 4%, transparent); }
+  .blogp__thumb {
+    flex: none;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 0.9rem;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink) 8%, transparent);
+  }
+  .blogp__text { display: grid; gap: 0.2rem; min-width: 0; }
+  .blogp__topic {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .blogp__topic :global(.blogp__icon) { width: 0.85rem; height: 0.85rem; }
+  .blogp__name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: var(--nx-heading-weight, 560);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+  .blogp__date { font-size: 0.875rem; color: var(--color-ink-faint); }
+</style>
