@@ -18,6 +18,7 @@ import ClosingCall from "../components/next/ClosingCall.astro";
 import ComparePreview from "../components/next/ComparePreview.astro";
 import BlogPreview from "../components/next/BlogPreview.astro";
 import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
+import { fathomHome } from "../lib/fathom-events.ts";
 const homeJsonLd = await buildHomeJsonLd();
 ---
 
@@ -53,7 +54,7 @@ const homeJsonLd = await buildHomeJsonLd();
       </div>
       <Bento />
       <p class="home__more">
-        <a class="nx-link" href="/tour/">Take the full tour →</a>
+        <a class="nx-link" href="/tour/" data-fathom-track={fathomHome.tour}>Take the full tour →</a>
       </p>
     </div>
   </section>

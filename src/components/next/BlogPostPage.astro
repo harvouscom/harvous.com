@@ -8,6 +8,7 @@
  * authored.
  */
 import { getCollection, render, type CollectionEntry } from "astro:content";
+import { fathomBlog } from "../../lib/fathom-events.ts";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
 import BlogNextCard from "../../components/next/BlogNextCard.astro";
@@ -160,7 +161,7 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
         ))}
       </ul>
       <p class="bp-more__all">
-        <a class="nx-btn nx-btn--ghost" href="/blog/">Every post in Bright Enough</a>
+        <a class="nx-btn nx-btn--ghost" href="/blog/" data-fathom-track={fathomBlog.postRelated}>Every post in Bright Enough</a>
       </p>
     </section>
   )}

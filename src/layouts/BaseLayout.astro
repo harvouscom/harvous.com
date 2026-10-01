@@ -302,13 +302,30 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
       })();
     </script>
 
+    {/*
+      One delegated listener, so elements added after load are counted too. A
+      link's own data-fathom-track wins; otherwise email, app and outbound links
+      fall back to a generic event (names in lib/fathom-events.ts → fathomFallback),
+      so a CTA nobody remembered to tag still shows up on the dashboard.
+    */}
     <script is:inline>
-      document.querySelectorAll("[data-fathom-track]").forEach(function (el) {
-        el.addEventListener("click", function () {
-          if (window.fathom) {
-            window.fathom.trackEvent(el.getAttribute("data-fathom-track"));
-          }
-        });
+      document.addEventListener("click", function (event) {
+        if (!window.fathom || !(event.target instanceof Element)) return;
+        var tagged = event.target.closest("[data-fathom-track]");
+        if (tagged) {
+          window.fathom.trackEvent(tagged.getAttribute("data-fathom-track"));
+          return;
+        }
+        var link = event.target.closest("a[href]");
+        if (!link) return;
+        var href = link.getAttribute("href") || "";
+        if (href.indexOf("mailto:") === 0) {
+          window.fathom.trackEvent("contact_email");
+        } else if (link.hostname === "app.harvous.com") {
+          window.fathom.trackEvent("app_open");
+        } else if (/^https?:/.test(link.protocol) && link.hostname !== location.hostname && !/(^|\.)harvous\.com$/.test(link.hostname)) {
+          window.fathom.trackEvent("outbound_click");
+        }
       });
     </script>
   </body>
