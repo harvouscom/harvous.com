@@ -44,12 +44,16 @@
 
 /* ── Type ─────────────────────────────────────────────────────────────────── */
 
+/* One weight for every display heading on the site: a step above regular,
+   short of bold. Google Sans Flex is variable, so it needn't be a hundred. */
+.nx { --nx-heading-weight: 560; }
+
 .nx-display {
   font-family: var(--font-display);
   font-size: clamp(2.75rem, 7.5vw, 6rem);
   line-height: 0.98;
   letter-spacing: -0.03em;
-  font-weight: 500;
+  font-weight: var(--nx-heading-weight, 560);
   text-wrap: balance;
 }
 

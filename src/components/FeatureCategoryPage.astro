@@ -77,11 +77,13 @@ const jsonLd = {
 <NextLayout title={category.seoTitle} description={category.seoDescription} ogImage={`/images/features/og/${category.slug}.webp`} jsonLd={jsonLd}>
   <article style={`--cat-ink: ${category.ink};`}>
     <header class="nx-wrap fc-intro">
-      <a class="fc-back" href={`/tour/#${category.slug}`}>
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
-        The tour
-      </a>
-      <p class="fc-badge">{category.title}</p>
+      <div class="fc-top">
+        <a class="fc-back" href={`/tour/#${category.slug}`}>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+          The tour
+        </a>
+        <span class="fc-badge">{category.title}</span>
+      </div>
       <h1 class="nx-display fc-title">{category.heroTitle}</h1>
       <p class="nx-lead fc-lead">{category.heroLead}</p>
     </header>
@@ -197,6 +199,8 @@ const jsonLd = {
 <style>
   .fc-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
   .fc-back {
+    min-height: 2.15rem;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
@@ -211,9 +215,12 @@ const jsonLd = {
   .fc-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
   .fc-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
+  /* The way back and what this page is, on one centred row. */
+  .fc-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; }
   .fc-badge {
-    display: inline-block;
-    margin-top: 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.15rem;
     padding: 0.3rem 0.8rem;
     border-radius: 999px;
     font-size: 0.8125rem;

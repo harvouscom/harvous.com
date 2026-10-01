@@ -84,7 +84,8 @@ const {
     z-index: -1;
     background: radial-gradient(70% 70% at 50% 45%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.15));
   }
-  .close__title { margin: 0 auto; max-width: 12ch; font-size: clamp(2.5rem, 6.5vw, 5rem); }
+  /* Wide enough that a long title stays at three lines, at most. */
+  .close__title { margin: 0 auto; max-width: 20ch; font-size: clamp(2.5rem, 6.5vw, 5rem); }
   /* Two lines at most: wider than the usual lead, balanced so they break evenly. */
   .close__lead { max-width: 46rem; margin: 1.25rem auto 0; color: var(--color-ink-soft); text-wrap: balance; }
   .close__acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 2rem; }

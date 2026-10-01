@@ -5,9 +5,6 @@
  * "alternative"). Same picks either way, ranked, each with what it's best for
  * (and, for alternatives, its tradeoff); Harvous's own pick carries a side
  * note about the bias of ranking yourself. Then how to choose, and the close.
- *
- * The head is the guide's printed cover, in the Discover resource style the
- * guides wear on /compare/ — Harvous's mark, "Guide", the apps inside.
  */
 import NextLayout from "../layouts/NextLayout.astro";
 import ClosingCall from "./next/ClosingCall.astro";
@@ -43,11 +40,6 @@ const decisionRows = [
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
         All guides
       </a>
-      <p class="cg-mast">
-        <img src="/images/app-icon.webp" alt="" width="28" height="28" />
-        <span>Harvous</span>
-        <span class="cg-mast__type">{page.kind === "category" ? "Shortlist" : "Switching guide"}</span>
-      </p>
       <h1 class="nx-display cg-title">{page.h1}</h1>
       <p class="nx-lead cg-lead">{page.lead}</p>
       <p class="cg-apps" aria-label={`${picks.length} apps in this guide`}>
@@ -172,32 +164,7 @@ const decisionRows = [
   .cg-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
   .cg-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* The guide's masthead: the Discover resource card's, at page size. */
-  .cg-mast {
-    display: flex;
-    width: fit-content;
-    margin-inline: auto !important;
-    align-items: center;
-    gap: 0.55rem;
-    margin: 1.75rem 0 0;
-    padding: 0.4rem 0.9rem 0.4rem 0.4rem;
-    border-radius: 999px;
-    background: var(--color-paper);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ink) 8%, transparent), 0 6px 16px -10px rgba(15, 23, 42, 0.3);
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 0.9375rem;
-    color: var(--color-ink);
-  }
-  .cg-mast img { width: 1.75rem; height: 1.75rem; border-radius: 0.5rem; }
-  .cg-mast__type {
-    font-family: var(--font-sans);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-ink-faint);
-  }
-  .cg-title { margin: 1.25rem auto 0; max-width: 18ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  .cg-title { margin: 1.5rem auto 0; max-width: 18ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
   .cg-lead { margin: 1.5rem auto 0; }
   .cg-apps { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; margin: 1.75rem 0 0; }
   .cg-apps img {

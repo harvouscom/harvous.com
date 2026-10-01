@@ -18,6 +18,8 @@
 /features/sharing/       /features/share/         301
 /features/recall         /features/suggestions/   301
 /features/recall/        /features/suggestions/   301
+/features/offline-sync   /features/bible-reader/   301
+/features/offline-sync/  /features/bible-reader/   301
 
 # Review renamed to Review exercises
 /add-ons/review          /add-ons/review-exercises/   301

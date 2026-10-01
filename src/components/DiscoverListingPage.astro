@@ -246,15 +246,6 @@ const jsonLd = [
 const stageTone = listing.plateTone ?? ink ?? "var(--color-sky)";
 const leaves = (href: string) => /^https?:/.test(href);
 
-const kicker = source
-  ? `A ${typeNoun.toLowerCase()} from ${source.name}`
-  : sourceCredit
-    ? `A ${kindNoun.toLowerCase()} based on`
-    : preview.official
-      ? `A ${kindNoun.toLowerCase()} included with Harvous`
-      : listing.authorDisplayName
-        ? `A ${kindNoun.toLowerCase()} from ${listing.authorDisplayName}`
-        : `A ${kindNoun.toLowerCase()} shared on Harvous`;
 ---
 
 <NextLayout
@@ -348,17 +339,22 @@ const kicker = source
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
           Discover
         </a>
-        <p class="dl-kicker">
-          {sourceCredit ? (
-            <>{kicker}{" "}<a href={sourceCredit.url} target="_blank" rel="noopener">{sourceCredit.name}</a></>
-          ) : kicker}
-        </p>
         <h1 class="dl-title">{listing.title}</h1>
-        <p class="dl-chips">
-          <span class="dl-chip">{source ? typeNoun : kindNoun}</span>
-          {categoryLabel && <a class="dl-chip dl-chip--link" href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>}
-          {listing.kind === "pack" && noteCount && <span class="dl-chip">{noteCount} notes</span>}
-          {listing.installCount > 1 && <span class="dl-chip">saved by {listing.installCount}</span>}
+        {/* One quiet line for what it is, whose it is, and where it's filed. */}
+        <p class="dl-meta">
+          <span>{source ? typeNoun : kindNoun}</span>
+          {source ? (
+            <span>from {source.name}</span>
+          ) : sourceCredit ? (
+            <span>based on <a href={sourceCredit.url} target="_blank" rel="noopener">{sourceCredit.name}</a></span>
+          ) : preview.official ? (
+            <span>included with Harvous</span>
+          ) : listing.authorDisplayName ? (
+            <span>from {listing.authorDisplayName}</span>
+          ) : null}
+          {categoryLabel && <a href={`/discover/?use=${listing.category}`}>{categoryLabel}</a>}
+          {listing.kind === "pack" && noteCount && <span>{noteCount} notes</span>}
+          {listing.installCount > 1 && <span>saved by {listing.installCount}</span>}
         </p>
         {listing.description && <p class="dl-lead">{listing.description}</p>}
         {listing.note && <p class="dl-note">{listing.note}</p>}
@@ -548,10 +544,8 @@ const kicker = source
   }
   .dl-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
   .dl-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .dl-kicker { margin: 1.5rem 0 0; font-size: 0.9375rem; color: var(--color-ink-soft); }
-  .dl-kicker a { color: var(--color-ink); }
   .dl-title {
-    margin: 0.5rem 0 0;
+    margin: 1.5rem 0 0;
     font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 500;
@@ -560,12 +554,12 @@ const kicker = source
     color: var(--color-ink);
     text-wrap: balance;
   }
-  .dl-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 0; }
-  .dl-chip { padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 500; color: var(--color-ink-soft); background: var(--color-warm); }
-  .dl-chip--link { color: var(--color-ink); text-decoration: none; background: color-mix(in srgb, var(--tone) 22%, var(--color-paper)); }
-  .dl-chip--link:hover { background: color-mix(in srgb, var(--tone) 32%, var(--color-paper)); }
   .dl-lead { margin: 1.25rem 0 0; font-size: 1.0625rem; line-height: 1.6; color: var(--color-ink-soft); text-wrap: pretty; }
-  .dl-note { margin: 1rem 0 0; padding: 1rem 1.15rem; border-radius: 1rem; background: var(--color-warm); line-height: 1.55; color: var(--color-ink); }
+  .dl-meta { display: flex; flex-wrap: wrap; gap: 0 0.5rem; margin: 0.85rem 0 0; font-size: 0.9375rem; color: var(--color-ink-faint); }
+  .dl-meta > * + *::before { content: "·"; margin-right: 0.5rem; color: var(--color-ink-faint); }
+  .dl-meta a { color: var(--color-ink-soft); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .dl-meta a:hover { color: var(--color-ink); }
+  .dl-note { margin: 0.85rem 0 0; font-size: 1.0625rem; line-height: 1.6; color: var(--color-ink); text-wrap: pretty; }
   .dl-cta { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.75rem 0 0; }
   .dl-ctanote { margin: 0.75rem 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--color-ink-faint); text-wrap: balance; }
   .dl-credit { display: flex; align-items: flex-start; gap: 0.5rem; margin: 1.5rem 0 0; padding-top: 1.25rem; border-top: 1px solid var(--color-rule); font-size: 0.875rem; line-height: 1.5; color: var(--color-ink-soft); }
