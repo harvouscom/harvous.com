@@ -112,7 +112,7 @@ const audiences: ForAudience[] = [
       "Open a verse, save what stood out, and find it again later — the pieces people lean on most for everyday study.",
     compareSlugs: ["youversion", "dwell", "readscripture", "spirit-notes", "abide"],
     useCaseSlugs: ["daily-journal"],
-    testimonialId: "theo",
+    testimonialId: "yeish",
   },
   {
     slug: "prayer-journaling",
@@ -486,7 +486,7 @@ const audiences: ForAudience[] = [
       "Chapter by chapter, reference by reference — the pieces that help one book compound instead of scatter.",
     compareSlugs: ["logos", "bibleproject", "faithstudy", "life-bible"],
     useCaseSlugs: ["book-study"],
-    testimonialId: "theo",
+    testimonialId: "yeish",
   },
   {
     slug: "seminary-students",
