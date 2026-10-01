@@ -71,6 +71,9 @@ const latest = sortBlogPostsByDate(
 </section>
 
 <style>
+  /* The topic blocks drop in from well above their stack; the section clips
+     them so they fall out of its own top edge rather than over the maker note. */
+  .blogp { overflow: clip; }
   .blogp__grid {
     display: grid;
     gap: 2rem;
@@ -78,39 +81,23 @@ const latest = sortBlogPostsByDate(
   }
   .blogp__art { grid-area: art; width: min(100%, 13rem); }
   .blogp__intro { grid-area: intro; }
-  .blogp__list { grid-area: list; }
-  @media (min-width: 60rem) {
-    .blogp__grid {
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-      grid-template-areas: "intro art" "list art";
-      column-gap: 5rem;
-      row-gap: 2.5rem;
-    }
-    /* The blocks land on the same floor the post list ends on. */
-    .blogp__art { align-self: end; justify-self: center; width: min(100%, 24rem); }
-  }
-  .blogp__intro .nx-title { margin: 0.75rem 0 0; }
-  .blogp__intro .nx-lead { margin: 1rem 0 0; }
-  .blogp__btn { margin-top: 1.75rem; }
-
   .blogp__list {
-    display: grid;
-    gap: 0.5rem;
-    margin: 0 0 0 -0.85rem;
+    margin: 0;
     padding: 0;
     list-style: none;
+    border-bottom: 1px solid var(--color-rule);
   }
+  /* Rows on hairlines, like a contents page — not a stack of cards. */
+  .blogp__list li { border-top: 1px solid var(--color-rule); }
   .blogp__row {
     display: flex;
     align-items: center;
     gap: 1.1rem;
-    padding: 0.85rem;
-    border-radius: 1.25rem;
+    padding-block: 1.1rem;
     color: inherit;
     text-decoration: none;
-    transition: background-color 160ms ease;
   }
-  .blogp__row:hover { background: color-mix(in srgb, var(--color-ink) 4%, transparent); }
+  .blogp__row:hover .blogp__name { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
   .blogp__thumb {
     flex: none;
     width: 4.5rem;
