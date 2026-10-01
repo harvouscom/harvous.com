@@ -189,9 +189,11 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
       0 14px 36px -12px rgba(15, 23, 42, 0.18);
   }
 
+  /* One line at every width: Topics keeps its size and the search field takes
+     what's left. Wrapping put the two on separate lines inside a pill. */
   .blog-library-nav__row {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 0.5rem;
   }
@@ -341,7 +343,7 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
   }
 
   .blog-library-nav__search {
-    flex: 1 1 12rem;
+    flex: 1 1 0;
     min-width: 0;
   }
 </style>
@@ -360,7 +362,8 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
 
       const sticky = float.dataset.blogLibraryNavSticky === "1";
       const main = document.querySelector<HTMLElement>("[data-blog-library-main]");
-      const header = document.getElementById("site-header");
+      /* Pin below the floating nav pill (NextHeader), not under it. */
+      const header = document.querySelector<HTMLElement>(".nxh__pill") ?? document.getElementById("site-header");
       const PIN_GAP = 10;
       const pinTop = () => (header?.getBoundingClientRect().bottom ?? 0) + PIN_GAP;
 
