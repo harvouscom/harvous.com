@@ -20,6 +20,7 @@
  * the server marks it for the full, unfiltered set.
  */
 import AppIcon from "../../components/next/app/AppIcon.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import { Icon } from "astro-icon/components";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
@@ -79,7 +80,7 @@ const cards = listings.map((listing) => toDiscoverCard(listing));
 
 <NextLayout
   jsonLd={discoverHubJsonLd(listings)}
-  ogImage="/images/discover/og.webp"
+  ogImage={ogCard("discover")}
   title="Discover — Bible study templates and resources — Harvous"
   description="Free Bible study templates shared by people who use Harvous, plus videos and guides from BibleProject and others. Take a copy into your own account."
 >

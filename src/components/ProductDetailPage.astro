@@ -6,6 +6,7 @@
  * point at pricing and close on the Plus upgrade instead of the free try.
  */
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import ComparePreview from "./next/ComparePreview.astro";
 import BlogNextCard from "./next/BlogNextCard.astro";
@@ -61,7 +62,7 @@ const fathomTrack = page.kind === "feature" ? fathomTry.featureDetail(page.slug)
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
 const draftSlug = page.href.replace(/^\/|\/$/g, "");
 const isDraft = isDraftPageSlug(draftSlug);
-const ogImage = page.kind === "feature" ? `/images/features/og/${page.slug}.webp` : `/images/add-ons/og/${page.slug}.webp`;
+const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon-${page.slug}`);
 ---
 
 <NextLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} noindex={isDraft} jsonLd={jsonLd}>

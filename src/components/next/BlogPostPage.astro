@@ -8,6 +8,7 @@
  * authored.
  */
 import { getCollection, render, type CollectionEntry } from "astro:content";
+import { ogCard } from "../../lib/og-card.ts";
 import { fathomBlog } from "../../lib/fathom-events.ts";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
@@ -73,9 +74,7 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
 <NextLayout
   title={pageTitle}
   description={pageDescription}
-  ogImage={featThumb}
-  ogImageWidth={1400}
-  ogImageHeight={780}
+  ogImage={ogCard(`post-${post.id}`)}
   ogType="article"
   articlePublishedTime={post.data.publishDate.toISOString()}
   jsonLd={blogPostJsonLd(post, { description: pageDescription, featThumb, author })}

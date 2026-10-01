@@ -6,6 +6,7 @@
  * side by side, the guides that include it, and more apps in its lane.
  */
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import { fathomCompare, fathomTry } from "../lib/fathom-events.ts";
 import type { CompareEntry } from "../lib/compare-data.ts";
@@ -35,7 +36,7 @@ const theirHalf = (e: CompareEntry) => {
 };
 ---
 
-<NextLayout title={entry.seoTitle} description={entry.seoDescription} ogImage={entry.ogImage} jsonLd={jsonLd}>
+<NextLayout title={entry.seoTitle} description={entry.seoDescription} ogImage={ogCard(`vs-${entry.slug}`)} jsonLd={jsonLd}>
   <article class="cd">
     <header class="nx-wrap cd-intro">
       <a class="cd-back" href="/compare/">

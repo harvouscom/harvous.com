@@ -11,6 +11,7 @@
  * Copy is first person and stage-honest: every line here is on the live /3/.
  */
 import AppIcon from "../components/next/app/AppIcon.astro";
+import { ogCard } from "../lib/og-card.ts";
 import { getCollection } from "astro:content";
 import NextLayout from "../layouts/NextLayout.astro";
 import Scene from "../components/next/Scene.astro";
@@ -172,7 +173,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
 <NextLayout
   title="Harvous 3 — study you can follow and return to"
   description="What changed in Harvous 3, for people who already use it: Activity, the Bible reader, Search, Suggestions, Review exercises, and why the sidebar went."
-  ogImage="/images/3/og.webp"
+  ogImage={ogCard("v3")}
   jsonLd={threeJsonLd("What changed in Harvous 3, for people who already use it: Activity, the Bible reader, Search, Suggestions, Review exercises, and why the sidebar went.")}
 >
   {/*

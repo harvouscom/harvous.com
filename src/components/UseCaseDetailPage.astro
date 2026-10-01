@@ -7,6 +7,7 @@
  * listings filed under it, a Compare preview, a quote, posts, the close.
  */
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import UseCaseCard from "./next/UseCaseCard.astro";
 import DiscoverTile from "./next/DiscoverTile.astro";
 import ComparePreview from "./next/ComparePreview.astro";
@@ -77,7 +78,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
 <NextLayout
   title={useCase.seoTitle}
   description={useCase.seoDescription}
-  ogImage={`/images/use-cases/og/${useCase.slug}.webp`}
+  ogImage={ogCard(`use-case-${useCase.slug}`)}
   jsonLd={pageWithBreadcrumbJsonLd(
     { name: useCase.seoTitle, description: useCase.seoDescription, path: useCase.href },
     [{ name: "Harvous", path: "/" }, { name: "Use cases", path: "/use-cases/" }, { name: useCase.title, path: useCase.href }],

@@ -5,6 +5,7 @@
  * change lands on both. The FAQ moved here from the home page.
  */
 import { Icon } from "astro-icon/components";
+import { ogCard } from "../lib/og-card.ts";
 import NextLayout from "../layouts/NextLayout.astro";
 import FaqSection from "../components/FaqSection.astro";
 import ComparePreview from "../components/next/ComparePreview.astro";
@@ -17,7 +18,7 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
 
 <NextLayout
   jsonLd={pricingJsonLd()}
-  ogImage="/images/pricing/og.webp"
+  ogImage={ogCard("pricing")}
   title="Pricing — Harvous"
   description="Harvous is free for personal Bible study. Harvous Plus adds unlimited history, Review exercises, and hosting Shared Spaces — $6/mo or $36/yr."
 >

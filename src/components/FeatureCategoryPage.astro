@@ -8,6 +8,7 @@
  * related posts.
  */
 import NextLayout from "../layouts/NextLayout.astro";
+import { ogCard } from "../lib/og-card.ts";
 import Scene from "./next/Scene.astro";
 import MarginNote from "./next/MarginNote.astro";
 import AppIcon from "./next/app/AppIcon.astro";
@@ -74,7 +75,7 @@ const jsonLd = {
 };
 ---
 
-<NextLayout title={category.seoTitle} description={category.seoDescription} ogImage={`/images/features/og/${category.slug}.webp`} jsonLd={jsonLd}>
+<NextLayout title={category.seoTitle} description={category.seoDescription} ogImage={ogCard(`feature-${category.slug}`)} jsonLd={jsonLd}>
   <article style={`--cat-ink: ${category.ink};`}>
     <header class="nx-wrap fc-intro">
       <div class="fc-top">

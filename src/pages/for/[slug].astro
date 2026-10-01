@@ -8,6 +8,7 @@
  * churches page keeps its interest form.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
+import { ogCard } from "../../lib/og-card.ts";
 import UseCaseCard from "../../components/next/UseCaseCard.astro";
 import ComparePreview from "../../components/next/ComparePreview.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
@@ -97,7 +98,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
 <NextLayout
   title={audience.seoTitle}
   description={audience.seoDescription}
-  ogImage={`/images/for/og/${audience.slug}.webp`}
+  ogImage={ogCard(`for-${audience.slug}`)}
   jsonLd={pageWithBreadcrumbJsonLd(
     { name: audience.seoTitle, description: audience.seoDescription, path: audience.href },
     [{ name: "Harvous", path: "/" }, { name: "Who it's for", path: "/for/" }, { name: audience.title, path: audience.href }],
