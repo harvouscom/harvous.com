@@ -124,21 +124,24 @@ const groups = (layoutFits ? LAYOUT.map((s) => s.type) : types).map((type) => {
    ("Logos alternative") are leaflets in a list. */
 const guidePages = getCompareSeoPagesForBuild().filter((p) => !isCompareSeoPageDraft(p));
 
-/* A guide's colour and cover follow the kind of app it's about. */
-const GUIDE_LOOK: Record<string, { tone: string; cover: string }> = {
-  "Bible Notes": { tone: "var(--color-sky)", cover: "ai_bg_053" },
-  "General Notes": { tone: "var(--color-cream)", cover: "ai_bg_051" },
-  "Sermon Prep": { tone: "var(--color-lilac)", cover: "ai_bg_076" },
-  "Group Study": { tone: "var(--color-mint)", cover: "ai_bg_075" },
-  "Small Groups": { tone: "var(--color-peach)", cover: "ai_bg_045" },
-};
+/* Each guide gets its own tint and a cover that matches it, rotating through
+   six pairs so neighbouring cards differ (sixteen guides, half of them about
+   "Bible notes" apps, were all sky blue when this followed the kind of app). */
+const GUIDE_LOOKS: { tone: string; cover: string }[] = [
+  { tone: "var(--color-sky)", cover: "ai_bg_077" }, // blue clouds
+  { tone: "var(--color-peach)", cover: "ai_bg_072" }, // orange clouds
+  { tone: "var(--color-mint)", cover: "ai_bg_058" }, // green wash
+  { tone: "var(--color-lilac)", cover: "ai_bg_076" }, // violet streaks
+  { tone: "var(--color-cream)", cover: "ai_bg_050" }, // yellow watercolour
+  { tone: "var(--color-pink)", cover: "ai_bg_045" }, // pink and blue
+];
 
 const guides = guidePages
   .filter((p) => p.kind === "category")
   .map((page, i) => {
     const picks = resolvePickSlugs(page.pickSlugs, harvousTypeForSeoPage(page));
     const others = picks.filter((p) => !p.isHarvous);
-    const look = GUIDE_LOOK[harvousTypeForSeoPage(page)] ?? GUIDE_LOOK["General Notes"];
+    const look = GUIDE_LOOKS[i % GUIDE_LOOKS.length];
     return {
       page,
       tone: look.tone,
