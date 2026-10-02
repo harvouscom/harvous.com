@@ -69,7 +69,8 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
         <span class="extra__icon" aria-hidden="true"><Icon name="fa7-solid:church" /></span>
         <div>
           <p class="extra__name">Churches <span class="extra__chip">Invite-only</span></p>
-          <p class="extra__body">Plans for a whole congregation. <a class="nx-link" href="/for/churches/">Read the plan →</a></p>
+          <p class="extra__body">Plans for a whole congregation.</p>
+          <p class="extra__more"><a class="nx-link" href="/for/churches/">Read the plan →</a></p>
         </div>
       </li>
       {PRICING_ROADMAP.map((item) => (
@@ -235,6 +236,7 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
     color: var(--color-ink-soft);
     background: var(--color-warm);
   }
+  .extra__more { margin: 0.4rem 0 0; font-size: 1.0625rem; }
   .extra__body {
     margin: 0.4rem 0 0;
     font-size: 1.0625rem;
