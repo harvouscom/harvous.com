@@ -44,7 +44,9 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
     id: "connector",
     icon: "fa7-solid:puzzle-piece",
     title: "Connector",
-    desc: "An optional paid add-on will let you reference your study in Claude and ChatGPT.",
+    desc: "Ask Claude or ChatGPT about your own notes. They can read your study, never change it. Included with Harvous Plus.",
+    href: "/add-ons/connector/",
+    comingSoon: false,
   },
   {
     id: "apple-apps",

@@ -86,6 +86,7 @@ export const PLUS_PLAN: PricingPlan = {
     "Unlimited shared spaces",
     "Up to 12 people per space",
     "Turn a thread into a shared study plan",
+    "Use your study in Claude and ChatGPT",
     "Joining is always free",
   ],
   comingSoonFeatures: [],
@@ -104,13 +105,6 @@ export const PRICING_ROADMAP: PricingRoadmapItem[] = [
     icon: "fa7-solid:trophy",
     name: "Challenges",
     tagline: "Time-boxed study to build the habit, solo or with others. Included with Plus when it ships.",
-    soonLabel: "Coming later",
-  },
-  {
-    id: "connector",
-    icon: "fa7-solid:puzzle-piece",
-    name: "Connector",
-    tagline: "Reference your Harvous study wherever you already work.",
     soonLabel: "Coming later",
   },
 ];
