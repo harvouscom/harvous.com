@@ -177,11 +177,12 @@ export type BentoCardSpec = {
   body: string;
   href: string;
   tone: "sky" | "mint" | "lilac" | "peach" | "cream" | "pink";
-  visual: "thread" | "templates" | "discover" | "space" | "review" | "compare";
+  visual: "thread" | "templates" | "discover" | "space" | "review" | "compare" | "connector";
   plus?: boolean;
 };
 
-/* Six, so the grid is whole at three columns and at two. */
+/* Seven: whole at three columns (the three Plus cards share the last row) and
+   at two (Connector runs wide alone) — see Bento.astro. */
 export const BENTO_CARDS: BentoCardSpec[] = [
   {
     label: "Threads",
@@ -231,6 +232,15 @@ export const BENTO_CARDS: BentoCardSpec[] = [
     href: "/add-ons/shared-spaces/",
     tone: "peach",
     visual: "space",
+    plus: true,
+  },
+  {
+    label: "Connector",
+    title: "Ask your AI about your study.",
+    body: "Claude or ChatGPT can read your notes. They can never change them.",
+    href: "/add-ons/connector/",
+    tone: "mint",
+    visual: "connector",
     plus: true,
   },
 ];
