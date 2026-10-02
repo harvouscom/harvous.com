@@ -189,8 +189,8 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
       0 14px 36px -12px rgba(15, 23, 42, 0.18);
   }
 
-  /* One line at every width: Topics keeps its size and the search field takes
-     what's left. Wrapping put the two on separate lines inside a pill. */
+  /* One line where it fits: Topics keeps its size and the search field takes
+     what's left. Phones stack them instead (below). */
   .blog-library-nav__row {
     display: flex;
     flex-wrap: nowrap;
@@ -345,6 +345,15 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
   .blog-library-nav__search {
     flex: 1 1 0;
     min-width: 0;
+  }
+
+  /* Phones: Topics over a full-width search field, in a rounded box rather
+     than a pill, since a pill bulges around two rows. */
+  @media (max-width: 30rem) {
+    .blog-library-nav__float { border-radius: 1.6rem; }
+    .blog-library-nav__row { flex-direction: column; align-items: stretch; }
+    .blog-library-nav__search { flex: none; }
+    .blog-library-nav__trigger { width: 100%; max-width: none; justify-content: space-between; }
   }
 </style>
 
