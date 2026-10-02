@@ -114,6 +114,7 @@ const rows = [0, 3, 6].map((shift) => [
     .tw__track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
     .tw__row:not(:first-child) { display: none; }
     .tw__rows { mask-image: none; -webkit-mask-image: none; padding-inline: 1rem; }
-    .tw__item:nth-child(n + 10) { display: none; }
+    /* One copy of the list: hide the duplicate half (PRIVACY_TOGGLES has 10). */
+    .tw__item:nth-child(n + 11) { display: none; }
   }
 </style>

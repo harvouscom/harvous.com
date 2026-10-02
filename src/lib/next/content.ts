@@ -251,7 +251,8 @@ export const ALSO_INCLUDED: { label: string; icon: string; href?: string }[] = [
 
 /**
  * Every row here is a claim. Sources: faq/privacy.mdx (private unless shared),
- * faq/ai.mdx (no AI in note-taking), addons-data.ts (no score, streak, or
+ * faq/ai.mdx (no AI in note-taking; Connector lets an AI app you choose read,
+ * never change, your notes), addons-data.ts (no score, streak, or
  * leaderboard in Review), privacy.astro (does not sell personal information),
  * faq/offline.mdx, faq/export.mdx, faq/try-without-account.mdx.
  */
@@ -260,6 +261,7 @@ export type ToggleSpec = { label: string; value: string; on: boolean };
 export const PRIVACY_TOGGLES: ToggleSpec[] = [
   { label: "Notes private by default", value: "On", on: true },
   { label: "AI in note-taking", value: "Off", on: false },
+  { label: "AI apps reading your notes", value: "Your call", on: false },
   { label: "Streaks and scores", value: "Off", on: false },
   { label: "Selling your information", value: "Never", on: false },
   { label: "Works offline", value: "On", on: true },

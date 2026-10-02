@@ -49,7 +49,7 @@ export function pricingJsonLd() {
         "@type": "WebPage",
         name: "Harvous Pricing",
         description:
-          "Harvous is free for personal Bible study. Harvous Plus includes unlimited history, Review exercises, and Shared Spaces hosting — $6/mo or $36/yr.",
+          "Harvous is free for personal Bible study. Harvous Plus includes unlimited history, Review exercises, Shared Spaces hosting, and Connector — $6/mo or $36/yr.",
         url: `${site}/pricing/`,
         isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
       },
@@ -73,7 +73,7 @@ export function pricingJsonLd() {
             price: "36",
             priceCurrency: "USD",
             description:
-              "Harvous Plus — $36/yr or $6/mo. Includes unlimited history, Review exercises, and Shared Spaces hosting (unlimited spaces, up to 12 people per space). Joining is always free.",
+              "Harvous Plus — $36/yr or $6/mo. Includes unlimited history, Review exercises, Shared Spaces hosting (unlimited spaces, up to 12 people per space), and Connector (Claude, ChatGPT, or another AI app can read your notes, never change them). Joining is always free.",
           },
         ],
       },

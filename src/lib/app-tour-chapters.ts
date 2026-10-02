@@ -210,6 +210,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         title: "Resource library",
         desc: "The links and files your study leans on, in one place and one @ away from any note.",
       },
+      {
+        icons: ["fa7-solid:puzzle-piece"],
+        title: "Connector",
+        desc: "Ask Claude or ChatGPT about what you've studied. They can read your notes, never change them — with Harvous Plus.",
+      },
     ],
   },
   {

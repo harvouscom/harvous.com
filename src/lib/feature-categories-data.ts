@@ -282,7 +282,9 @@ const categories: FeatureCategory[] = [
         body: "The links and files you keep coming back to, in one place and droppable straight into a note.",
       },
     ],
-    featureIds: ["sidebar-modes", "resource-library"],
+    // "connector" resolves via getComingSoonGridItem() to its addon page, like
+    // "review-exercises" in Activity — a Plus add-on in a free category's grid.
+    featureIds: ["sidebar-modes", "resource-library", "connector"],
     featuresHeading: "What finding things again asks for",
     featuresLead:
       "Study you cannot get back to is study you did once. These are the pieces that keep it reachable.",

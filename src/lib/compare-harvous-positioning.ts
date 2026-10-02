@@ -280,6 +280,11 @@ const POSITIONS: Record<string, HarvousPosition> = {
         harvous: "Review exercises (Plus) — you answer from memory",
         competitorHint: "AI supplies the answer",
       },
+      {
+        label: "Bringing your own AI",
+        harvous: "Connector (Plus) — Claude or ChatGPT reads your notes, never changes them",
+        competitorHint: "AI built in, on its terms",
+      },
     ],
     featureIds: ["activity", "scripture-pills", "threads", "suggestions"],
   },
