@@ -196,8 +196,8 @@ const ADDON_PAGES: AddonPage[] = [
     seoDescription:
       "Connect Claude, ChatGPT, and other AI apps to your Harvous notes. They read your study to answer your questions, and can never add, edit, or delete anything. Included with Harvous Plus.",
     icon: "fa7-solid:puzzle-piece",
-    ink: "var(--study-dock-accent-mintGreen)",
-    image: "/images/auth-hero/ai_bg_074.webp",
+    ink: "var(--study-dock-accent-neutral)",
+    image: "/images/auth-hero/ai_bg_053.webp",
     comingSoon: false,
     heroTitle: "Ask your AI app about what you've actually studied.",
     heroLead:
