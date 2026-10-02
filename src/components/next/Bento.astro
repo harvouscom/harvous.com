@@ -381,7 +381,8 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
   .cmp__tr :global(svg) { width: 9px; height: 9px; }
 
   /* Review — one fill-in-the-blank card with its word tiles. */
-  .rev { padding: 16px 18px 40px; font-size: 13.5px; }
+  /* Extra floor padding so the word tiles clear the stage edge. */
+  .rev { padding: 16px 18px 64px; font-size: 13.5px; }
   .rev__step {
     margin: 0 0 8px;
     font-size: 11px;
