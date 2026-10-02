@@ -184,17 +184,22 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
     padding: 0;
     list-style: none;
   }
+  /* One column per item, however many the roadmap has, centred. */
   @media (min-width: 48rem) {
-    .extra { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .extra {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 24rem);
+      justify-content: center;
+    }
   }
   .extra__item {
     display: flex;
     gap: 0.85rem;
     align-items: flex-start;
-    padding: 1.25rem 1.25rem 1.25rem 0;
+    padding: 1.5rem 1.5rem 1.5rem 0;
   }
   @media (min-width: 48rem) {
-    .extra__item + .extra__item { padding-left: 1.5rem; }
+    .extra__item + .extra__item { padding-left: 2rem; }
   }
   /* Hairlines between items: below on a phone, beside from tablet up. */
   .extra__item + .extra__item { border-top: 1px solid var(--color-rule); }
@@ -205,19 +210,20 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 2.1rem;
-    height: 2.1rem;
-    border-radius: 0.65rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
     color: var(--color-ink-soft);
     background: var(--color-warm);
   }
-  .extra__icon :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .extra__icon :global(svg) { width: 1.05rem; height: 1.05rem; }
   .extra__name {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.4rem 0.5rem;
-    margin: 0.15rem 0 0;
+    margin: 0.2rem 0 0;
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--color-ink);
   }
@@ -230,8 +236,8 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
     background: var(--color-warm);
   }
   .extra__body {
-    margin: 0.35rem 0 0;
-    font-size: 0.9375rem;
+    margin: 0.4rem 0 0;
+    font-size: 1.0625rem;
     line-height: 1.5;
     color: var(--color-ink-soft);
   }
