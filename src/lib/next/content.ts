@@ -176,7 +176,7 @@ export type BentoCardSpec = {
   title: string;
   body: string;
   href: string;
-  tone: "sky" | "mint" | "lilac" | "peach" | "cream" | "pink";
+  tone: "sky" | "mint" | "lilac" | "peach" | "cream" | "pink" | "gray";
   visual: "thread" | "templates" | "discover" | "space" | "review" | "compare" | "connector";
   plus?: boolean;
 };
@@ -239,7 +239,7 @@ export const BENTO_CARDS: BentoCardSpec[] = [
     title: "Ask your AI about your study.",
     body: "Claude or ChatGPT can read your notes. They can never change them.",
     href: "/add-ons/connector/",
-    tone: "mint",
+    tone: "gray",
     visual: "connector",
     plus: true,
   },

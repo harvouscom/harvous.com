@@ -242,6 +242,8 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
   .bcard--peach { --tone: var(--color-peach); --tone-ink: var(--color-peach-ink); }
   .bcard--cream { --tone: var(--color-cream); --tone-ink: var(--color-cream-ink); }
   .bcard--pink { --tone: var(--color-pink); --tone-ink: var(--color-pink-ink); }
+  /* A neutral, drawn from ink on paper so it holds in both themes. */
+  .bcard--gray { --tone: color-mix(in srgb, var(--color-ink) 16%, var(--color-paper)); --tone-ink: var(--color-ink-soft); }
 
   .bcard__link {
     display: flex;
