@@ -654,7 +654,7 @@ const audiences: ForAudience[] = [
         heading: "Invite with a link",
         visual: "join",
         paragraphs: [
-          "Share a join link, or print its QR code for the bulletin board or the projector. Rotate it whenever you like, and see how many people joined through it.",
+          "Share a join link, or print its QR code for the bulletin board or the projector. Someone scans it, picks the ministries they want to follow, and they're connected. You see how many joined that way.",
         ],
       },
       {

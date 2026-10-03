@@ -8,7 +8,7 @@
  *   feed    — "New from your church" → Home's "From your church" → This Sunday's note
  *   planner — each ministry's teaching plan (pick a ministry), scheduled and approval states
  *   roles   — the staff roster, a volunteer's one room (switch), approval for teachers' posts
- *   join    — the join link and its QR code (copy, rotate)
+ *   join    — a printed join code being scanned, and the person connected
  *   review  — a question from a ministry (answer it), and the count staff see
  *   sees    — the counts a church gets, and what it never sees
  * A section without one is a full-width line of text.
@@ -29,8 +29,7 @@ const washes = ["coral", "sky", "amber", "mint", "violet", "blue"];
 
 /*
  * An illustrative QR code: the three finder squares plus a seeded scatter of
- * modules, so it reads as a QR at a glance without encoding anything. Two seeds,
- * so "Rotate link" visibly swaps it for a new one.
+ * modules, so it reads as a QR at a glance without encoding anything.
  */
 const QR = 25;
 const qrPath = (seed: number) => {
@@ -58,7 +57,6 @@ const qrPath = (seed: number) => {
   return d;
 };
 const qrA = qrPath(7);
-const qrB = qrPath(31);
 
 const plans = {
   church: [
@@ -200,19 +198,25 @@ const plans = {
           )}
 
           {section.visual === "join" && (
-            <div class="aui aui-card join" data-scene="join" data-qr="a" role="group" aria-label="Example: a church's join link and QR code">
-              <p class="join__h"><AppIcon name="link" /> Invite to Grace Church</p>
-              <div class="join__qr" aria-hidden="true">
-                <svg viewBox={`-2 -2 ${QR + 4} ${QR + 4}`} class="join__code join__code--a"><rect x="-2" y="-2" width={QR + 4} height={QR + 4} rx="2" class="join__qr-bg" /><path d={qrA} /></svg>
-                <svg viewBox={`-2 -2 ${QR + 4} ${QR + 4}`} class="join__code join__code--b"><rect x="-2" y="-2" width={QR + 4} height={QR + 4} rx="2" class="join__qr-bg" /><path d={qrB} /></svg>
-                <img src="/images/harvous-icon-sm.png" alt="" width="40" height="40" loading="lazy" class="join__qr-logo" />
+            <div class="aui join" data-scene="join" role="group" aria-label="Example: a printed join code, scanned, and the person connected">
+              <div class="join__poster">
+                <p class="join__church"><AppIcon name="church" /> Grace Church</p>
+                <p class="join__title">Study with us on Harvous</p>
+                <div class="join__qr" aria-hidden="true">
+                  <svg viewBox={`-2 -2 ${QR + 4} ${QR + 4}`} class="join__code"><rect x="-2" y="-2" width={QR + 4} height={QR + 4} rx="2" class="join__qr-bg" /><path d={qrA} /></svg>
+                  <img src="/images/harvous-icon-sm.png" alt="" width="40" height="40" loading="lazy" class="join__qr-logo" />
+                  <span class="join__scan"></span>
+                </div>
+                <p class="join__hint">Scan to connect</p>
               </div>
-              <p class="join__link"><AppIcon name="link" /><span data-join-url data-a="harvous.com/churches/join/k4f9-grace" data-b="harvous.com/churches/join/q2m7-grace">harvous.com/churches/join/k4f9-grace</span><button type="button" class="join__btn join__btn--go" data-copy>Copy</button></p>
-              <p class="join__acts">
-                <button type="button" class="join__btn" data-rotate><AppIcon name="arrows-rotate" /> Rotate link</button>
-                <span class="join__btn join__btn--ghost"><AppIcon name="download" /> QR as PNG</span>
-              </p>
-              <p class="join__stat"><b data-join-count>38</b> joined via link <span class="join__old" data-join-old>· the old link stopped working</span></p>
+
+              <div class="join__phone">
+                <p class="join__done"><AppIcon name="circle-check" /> You're connected to Grace Church</p>
+                <p class="join__pick">Follow what you'd like</p>
+                <p class="join__chips"><span class="is-on"><AppIcon name="check" /> Sunday service</span><span>Youth</span><span class="is-on"><AppIcon name="check" /> Women's</span></p>
+              </div>
+
+              <p class="join__stat"><b>38</b> joined via link</p>
             </div>
           )}
 
@@ -346,19 +350,16 @@ const plans = {
     );
   });
 
-  // Join: copy the link; rotate it for a new link and code.
+  // Join: the code is scanned, then the phone shows the person connected. Loops gently.
   document.querySelectorAll<HTMLElement>('[data-scene="join"]').forEach((scene) => {
-    const url = scene.querySelector<HTMLElement>("[data-join-url]");
-    const copy = scene.querySelector<HTMLButtonElement>("[data-copy]");
-    copy?.addEventListener("click", () => {
-      copy.textContent = "Copied";
-      setTimeout(() => (copy.textContent = "Copy"), 1600);
-    });
-    scene.querySelector("[data-rotate]")?.addEventListener("click", () => {
-      const next = scene.dataset.qr === "a" ? "b" : "a";
-      scene.dataset.qr = next;
-      scene.classList.add("is-rotated");
-      if (url) url.textContent = url.dataset[next] ?? url.textContent;
+    if (still) return void scene.classList.add("is-joined");
+    onFirstView(scene, () => {
+      const cycle = () => {
+        scene.classList.remove("is-joined");
+        setTimeout(() => scene.classList.add("is-joined"), 1800);
+      };
+      cycle();
+      setInterval(cycle, 7000);
     });
   });
 
@@ -519,30 +520,66 @@ const plans = {
   .roles__lead.is-off .roles__face { opacity: 0.4; filter: grayscale(1); }
   .roles__lead.is-off :global(.aui-title) { color: var(--pds-text-secondary); }
 
-  /* ── Join link and QR ─────────────────────────────────────────────────── */
-  .join { padding: 16px; font-size: 14px; box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
-  .join__h { display: flex; align-items: center; gap: 7px; margin: 0; font-weight: 600; }
-  .join__h :global(svg) { width: 12px; height: 12px; }
-  .join__qr { position: relative; display: grid; place-items: center; width: 9.5rem; height: 9.5rem; margin: 14px auto 12px; }
-  .join__code { grid-area: 1 / 1; width: 100%; height: 100%; transition: opacity 350ms ease, transform 450ms var(--nx-ease); }
+  /* ── Join: a printed code, scanned, and the person connected ─────────── */
+  .join { position: relative; display: grid; justify-items: start; padding: 6px 0 64px; font-size: 14px; }
+  /* The poster: paper, pinned up, a little crooked. */
+  .join__poster {
+    width: 13.5rem;
+    margin-left: 4%;
+    padding: 16px 16px 14px;
+    border-radius: 10px;
+    text-align: center;
+    color: #0d0e12;
+    background: #fffdf6;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 18px 36px -18px rgba(15, 23, 42, 0.45), 0 3px 8px -3px rgba(15, 23, 42, 0.18);
+    transform: rotate(-2.5deg);
+  }
+  .join__church { display: inline-flex; align-items: center; gap: 5px; margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #6b6f78; }
+  .join__church :global(svg) { width: 10px; height: 10px; }
+  .join__title { margin: 4px 0 10px; font-family: var(--font-display); font-size: 16px; font-weight: 600; line-height: 1.2; }
+  .join__qr { position: relative; display: grid; place-items: center; width: 8.5rem; height: 8.5rem; margin: 0 auto; overflow: hidden; border-radius: 6px; }
+  .join__code { width: 100%; height: 100%; }
   .join__code path { fill: #0d0e12; }
   .join__qr-bg { fill: #fff; }
-  .join__code--b { opacity: 0; transform: rotate(-8deg) scale(0.9); }
-  .join[data-qr="b"] .join__code--a { opacity: 0; transform: rotate(8deg) scale(0.9); }
-  .join[data-qr="b"] .join__code--b { opacity: 1; transform: none; }
-  .join__qr-logo { position: absolute; width: 30px; height: 30px; border-radius: 8px; box-shadow: 0 0 0 4px #fff; }
-  .join__link { display: flex; align-items: center; gap: 8px; margin: 0; padding: 6px 6px 6px 11px; border-radius: 10px; font-size: 12.5px; background: var(--pds-bg-chip); }
-  .join__link span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .join__link > :global(svg) { width: 11px; height: 11px; color: var(--pds-text-secondary); }
-  .join__btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
-  .join__btn :global(svg) { width: 10px; height: 10px; }
-  .join__btn--go { color: var(--pds-on-accent); background: var(--pds-accent); }
-  .join__btn--ghost { color: var(--pds-text-secondary); background: none; box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium); }
-  .join__acts { display: flex; gap: 8px; margin: 10px 0 0; }
-  .join__stat { margin: 12px 0 0; padding-top: 10px; font-size: 12.5px; color: var(--pds-text-secondary); box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .join__qr-logo { position: absolute; width: 28px; height: 28px; border-radius: 7px; box-shadow: 0 0 0 4px #fff; }
+  .join__scan { position: absolute; left: 0; right: 0; top: 0; height: 30%; background: linear-gradient(to bottom, transparent, rgba(26, 141, 255, 0.28) 85%, #1a8dff); opacity: 0; }
+  .join__hint { margin: 10px 0 0; font-size: 11.5px; color: #6b6f78; }
+  /* The phone's confirmation, sliding up over the poster's corner. */
+  .join__phone {
+    position: absolute;
+    right: 0;
+    bottom: 8px;
+    width: 15rem;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: var(--pds-bg-main);
+    box-shadow: var(--pds-shadow-popover), 0 24px 48px -22px rgba(15, 23, 42, 0.45);
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+    transition: opacity 400ms ease, transform 550ms var(--nx-ease);
+  }
+  .join__done { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 13px; font-weight: 600; color: var(--pds-text-primary); }
+  .join__done :global(svg) { width: 13px; height: 13px; color: #2f9e5b; }
+  .join__pick { margin: 8px 0 6px; font-size: 11.5px; color: var(--pds-text-secondary); }
+  .join__chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; }
+  .join__chips span { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 500; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .join__chips .is-on { color: var(--pds-text-primary); background: color-mix(in srgb, var(--pds-accent) 14%, var(--pds-bg-main)); }
+  .join__chips :global(svg) { width: 8px; height: 8px; color: var(--pds-accent); }
+  .join__stat { position: absolute; left: 4%; bottom: 14px; margin: 0; padding: 5px 11px; border-radius: 999px; font-size: 12px; color: var(--pds-text-secondary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-card); }
   .join__stat b { color: var(--pds-text-primary); }
-  .join__old { opacity: 0; transition: opacity 300ms ease; }
-  .join.is-rotated .join__old { opacity: 1; }
+  .join.is-joined .join__phone { opacity: 1; transform: none; }
+  /* Narrow stages: stack instead of overlapping — the confirmation tucks under
+     the poster's bottom edge, and the count sits below it. */
+  @media (max-width: 30rem) {
+    .join { justify-items: center; padding-bottom: 0; }
+    .join__poster { margin-left: 0; }
+    .join__phone { position: relative; right: auto; bottom: auto; width: 92%; margin-top: -26px; }
+    .join__stat { position: static; margin-top: 12px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .join:not(.is-joined) .join__scan { animation: chs-scan 1.6s ease-in-out both; }
+  }
+  @keyframes chs-scan { 0% { opacity: 0; transform: translateY(-100%); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(340%); } }
 
   /* ── Review ───────────────────────────────────────────────────────────── */
   .rev { display: grid; gap: 10px; font-size: 14px; }
