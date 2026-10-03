@@ -556,7 +556,9 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     box-shadow:
       0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent),
       0 18px 40px -26px rgba(15, 23, 42, 0.25);
-    color: inherit;
+    /* Not `inherit`: this card is .on-light (a fixed sky behind it), and inheriting
+       would hand its title the page's night ink, white on a white wash. */
+    color: var(--color-ink);
     text-decoration: none;
     transition: box-shadow 300ms var(--nx-ease);
   }
