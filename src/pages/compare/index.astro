@@ -196,7 +196,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
             return (
               <li class="cmp-slot cmp-slot--featured">
                 <a
-                  class="cf"
+                  class="cf on-light"
                   href={`/compare/${featured.slug}/`}
                   data-fathom-track={fathomCompare.hubCard}
                 >
@@ -501,8 +501,8 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     width: var(--tile);
     height: var(--tile);
     overflow: hidden;
-    border-radius: 23%;
-    background: #fff;
+    border-radius: 26%;
+    background: transparent;
     box-shadow:
       0 0 0 1px rgba(15, 23, 42, 0.05),
       0 12px 24px -14px rgba(15, 23, 42, 0.35);
@@ -587,8 +587,8 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     width: 6.5rem;
     height: 6.5rem;
     overflow: hidden;
-    border-radius: 23%;
-    background: #fff;
+    border-radius: 26%;
+    background: transparent;
     box-shadow:
       0 0 0 1px rgba(15, 23, 42, 0.06),
       0 16px 32px -16px rgba(15, 23, 42, 0.4);
@@ -698,8 +698,8 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     width: 3.25rem;
     height: 3.25rem;
     overflow: hidden;
-    border-radius: 23%;
-    background: #fff;
+    border-radius: 26%;
+    background: transparent;
     box-shadow:
       0 0 0 1px rgba(15, 23, 42, 0.06),
       0 6px 14px -10px rgba(15, 23, 42, 0.35);
@@ -832,10 +832,10 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     width: 2.6rem;
     height: 2.6rem;
     overflow: hidden;
-    border-radius: 23%;
-    background: #fff;
+    border-radius: 26%;
+    background: transparent;
     box-shadow:
-      0 0 0 2px #fff,
+      0 0 0 2px var(--color-paper),
       0 8px 18px -10px rgba(15, 23, 42, 0.45);
   }
   .gb__icon + .gb__icon { margin-left: -0.55rem; }
@@ -852,7 +852,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     font-size: 0.72rem;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-    color: var(--color-ink-soft);
+    color: #585c66;
   }
 
   /* The words, as a Discover card sets them. */
@@ -936,7 +936,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
   .gl__leaf img {
     width: 1.55rem;
     height: 1.55rem;
-    border-radius: 23%;
+    border-radius: 26%;
     box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06);
   }
 

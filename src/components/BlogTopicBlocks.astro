@@ -169,9 +169,9 @@ let pyramidStagger = 0;
     max-width: 7.5rem;
     aspect-ratio: 1;
     height: auto;
-    /* A share of the block, not a fixed size: the blocks shrink a lot on
-       phones, and a fixed radius rounds a small one into a circle. */
-    border-radius: 30%;
+    /* A share of the block's own size, so it stays a rounded square as the
+       container (and the block) shrinks instead of tipping into a circle. */
+    border-radius: 24%;
     opacity: 1;
     box-shadow: none;
     transform-origin: 50% 100%;

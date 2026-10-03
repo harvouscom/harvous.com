@@ -38,7 +38,7 @@ const {
 
 <section class="close" data-hides-sticky>
   <div class="nx-wrap">
-    <div class="close__card" data-reveal="scale">
+    <div class="close__card on-light" data-reveal="scale">
       <img class="close__sky" src={backdropSrc("077")} alt="" loading="lazy" />
       <h2 class="nx-display close__title">{title}</h2>
       <p class="nx-lead close__lead">{lead}</p>
@@ -68,6 +68,11 @@ const {
     padding: clamp(3.5rem, 10vw, 7rem) clamp(1.25rem, 5vw, 4rem);
     border-radius: var(--nx-radius-scene);
     text-align: center;
+    /* The sky and its white wash are the same in both themes, so the ink is too:
+       the light theme's values, or dark mode paints near-white text on a near-white card. */
+    --color-ink: #0d0e12;
+    --color-ink-soft: #585c66;
+    color: var(--color-ink);
   }
   .close__sky {
     position: absolute;

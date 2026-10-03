@@ -115,6 +115,26 @@
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
+/* At night the amber block turns olive on the dark paper; the app (and the
+   site's own <mark>) switch to the warm-amber underline instead. */
+:root[data-color-scheme="dark"] .nx .aui-hl {
+  background: none;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-color: var(--pds-highlight-warm-amber);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-color-scheme="light"]) .nx .aui-hl {
+    background: none;
+    padding: 0;
+    text-decoration: underline;
+    text-decoration-color: var(--pds-highlight-warm-amber);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+}
 .nx .aui-ul {
   text-decoration: underline;
   text-decoration-color: var(--pds-highlight-warm-amber);

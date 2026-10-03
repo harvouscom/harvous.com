@@ -32,6 +32,7 @@ Events only count clicks. Fathom has no event properties, so a name has to carry
 |---|---|
 | `video_tour_click` | The "Watch me walk through it" video on the home hero |
 | `home_tour`, `home_use_cases`, `home_about`, `home_now`, `home_email` | The home page's links deeper into the site, plus the email link in the maker note |
+| `home_github`, `home_license` | The home page's open source card: "View on GitHub" and "Read the license" |
 | `blog_home_all`, `blog_home_post` | The home page's Bright Enough strip: "Go to the blog", and any of its three posts |
 | `blog_post_related` | "Every post in Bright Enough" at the end of a post |
 | `blog_search` | Fired once per page view, the first time a real query runs on /blog/search/ |

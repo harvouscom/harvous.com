@@ -35,7 +35,7 @@ const horizontal = side === "start" ? "right" : side === "end" ? "left" : arrow.
 ---
 
 <div
-  class:list={["mnote", `mnote--${vertical}`, `mnote--${horizontal}`, className]}
+  class:list={["mnote", "on-light", `mnote--${vertical}`, `mnote--${horizontal}`, className]}
   style={`${pos};--tilt:${tilt}deg;`}
   data-reveal
   data-mnote-target={Array.isArray(target) ? target.join(",") : undefined}
@@ -92,6 +92,19 @@ const horizontal = side === "start" ? "right" : side === "end" ? "left" : arrow.
     stroke-linecap: round;
     stroke-linejoin: round;
     filter: drop-shadow(0 0 2px rgba(255, 253, 246, 0.9));
+  }
+
+  /* The arrow sits on the scene, not on the paper: at night the scene is the
+     dark app, so the pen goes white (with a dark halo) while the paper stays light. */
+  :global(:root[data-color-scheme="dark"]) .mnote__arrow {
+    stroke: #fff;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.9));
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-color-scheme="light"])) .mnote__arrow {
+      stroke: #fff;
+      filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.9));
+    }
   }
 
   .mnote__tip { fill: none; stroke: none; }

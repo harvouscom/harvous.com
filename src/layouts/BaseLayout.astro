@@ -52,7 +52,7 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 
 <!doctype html>
-<html lang="en" data-color-scheme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -89,8 +89,14 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
     <script is:inline>
       document.documentElement.classList.add("js");
-      // TEMP: dark mode disabled — always light until night theme is ready to ship.
-      document.documentElement.dataset.colorScheme = "light";
+      // Day / night follows the system (prefers-color-scheme in global.css). A saved
+      // choice, if there is one, pins it via data-color-scheme before first paint.
+      try {
+        var scheme = localStorage.getItem("color-scheme");
+        if (scheme === "light" || scheme === "dark") {
+          document.documentElement.dataset.colorScheme = scheme;
+        }
+      } catch (e) {}
     </script>
 
     <title>{title}</title>
