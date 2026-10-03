@@ -9,8 +9,7 @@
  */
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
-import Scene from "./next/Scene.astro";
-import MarginNote from "./next/MarginNote.astro";
+import AppScene from "./next/AppScene.astro";
 import AppIcon from "./next/app/AppIcon.astro";
 import UseCaseCard from "./next/UseCaseCard.astro";
 import ComparePreview from "./next/ComparePreview.astro";
@@ -91,9 +90,7 @@ const jsonLd = {
 
     {staging && (
       <div class="nx-wrap fc-scene">
-        <Scene backdrop={staging.backdrop} shot={staging.shot} aspect="21 / 10" inset={9} zoom={staging.zoom} focus={staging.focus}>
-          <MarginNote {...staging.note} />
-        </Scene>
+        <AppScene view={staging.view} backdrop={staging.backdrop} note={staging.note} aspect="21 / 10" />
       </div>
     )}
 

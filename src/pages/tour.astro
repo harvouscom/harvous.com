@@ -9,8 +9,7 @@
 import { Icon } from "astro-icon/components";
 import { ogCard } from "../lib/og-card.ts";
 import NextLayout from "../layouts/NextLayout.astro";
-import Scene from "../components/next/Scene.astro";
-import MarginNote from "../components/next/MarginNote.astro";
+import AppScene from "../components/next/AppScene.astro";
 import ClosingCall from "../components/next/ClosingCall.astro";
 import SectionNav from "../components/next/SectionNav.astro";
 import ComparePreview from "../components/next/ComparePreview.astro";
@@ -65,9 +64,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
             <a class="nx-link" href={`/features/${c.categorySlug}/`}>More about {c.eyebrow} →</a>
           </div>
           <div class="tour-ch__visual" data-reveal="scale">
-            <Scene backdrop={s.backdrop} shot={s.shot} aspect="4 / 5" inset={9} zoom={s.zoom} focus={s.focus}>
-              <MarginNote {...s.note} />
-            </Scene>
+            <AppScene view={s.view} backdrop={s.backdrop} note={s.note} aspect="4 / 5" />
           </div>
         </div>
       </section>

@@ -86,6 +86,9 @@ export const SHOTS = {
   },
 } satisfies Record<string, Shot>;
 
+/** The app views AppScene can draw live. */
+export type AppView = "activity" | "read" | "write" | "library" | "share";
+
 export type MarginNoteSpec = {
   text: string;
   /**
