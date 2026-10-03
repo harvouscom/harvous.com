@@ -153,10 +153,8 @@ const jsonLd = {
         <h2 id="uc-title" class="fc-h2 fc-h2--sec">When this matters most</h2>
         <p class="fc-sec__lead">The ways of studying that lean hardest on {category.title.toLowerCase()}.</p>
         <ul class="fc-ucs" role="list" data-reveal="stagger">
-          {useCases.map((uc, i) => (
-            <li class:list={[useCases.length % 2 === 1 && i === useCases.length - 1 && "is-wide"]}>
-              <UseCaseCard useCase={uc} large={useCases.length === 1 || (useCases.length % 2 === 1 && i === useCases.length - 1)} />
-            </li>
+          {useCases.map((uc) => (
+            <li><UseCaseCard useCase={uc} large /></li>
           ))}
         </ul>
       </section>
