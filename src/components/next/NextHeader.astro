@@ -175,9 +175,9 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
   .nxh__menu svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
   /* Three lines, the middle one fading as the outer two cross into an ×. */
   .nxh__bar { transform-origin: 10px 10px; transition: transform 200ms ease, opacity 150ms ease; }
-  .nxh__menu[aria-expanded="true"] .nxh__bar--a { transform: translateY(4.5px) rotate(45deg); }
+  .nxh__menu[aria-expanded="true"] .nxh__bar--a { transform: rotate(45deg) translateY(4.5px); }
   .nxh__menu[aria-expanded="true"] .nxh__bar--b { opacity: 0; }
-  .nxh__menu[aria-expanded="true"] .nxh__bar--c { transform: translateY(-4.5px) rotate(-45deg); }
+  .nxh__menu[aria-expanded="true"] .nxh__bar--c { transform: rotate(-45deg) translateY(-4.5px); }
   /* A ring for keyboard focus only, in the site's own blue, never after a tap. */
   .nxh__menu:focus { outline: none; }
   .nxh__menu:focus-visible { outline: 2px solid var(--color-accent, #1f6fdb); outline-offset: 2px; }
@@ -233,6 +233,9 @@ const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.ur
 
   /* Phones: the links fold into the menu. */
   @media (max-width: 40rem) {
+    /* Wider margins than the page gutter, so the pill floats rather than
+       spanning edge to edge. */
+    .nxh { padding-inline: 1.5rem; }
     .nxh__links { display: none; }
     .nxh__menu { display: inline-flex; }
     .nxh__logo { margin-right: auto; }
