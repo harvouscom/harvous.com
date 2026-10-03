@@ -108,6 +108,11 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         title: "Note templates",
         desc: "Start from a template — lesson prep, study outline, or your own — then make it yours.",
       },
+      {
+        icons: ["fa7-solid:lock"],
+        title: "Locked notes",
+        desc: "Lock a note with a PIN. It's encrypted on your device, so only you can open it — on the web for now.",
+      },
     ],
   },
   {

@@ -138,7 +138,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Private space for honest writing",
         paragraphs: [
-          "Prayer journaling needs a place that feels like yours. Harvous is built for personal study first — your notes stay in your space, linked to the scripture that sparked them.",
+          "Prayer journaling needs a place that feels like yours. Harvous is built for personal study first — your notes stay in your space, linked to the scripture that sparked them. For the ones that are only between you and God, lock the note with a PIN.",
           "You're not trying to produce content. You're trying to remember what you prayed, what you noticed, and what you want to bring back next time.",
         ],
       },
@@ -154,7 +154,7 @@ const audiences: ForAudience[] = [
       {
         icon: "fa7-solid:lock",
         heading: "Yours alone",
-        body: "Personal spaces are private. Write freely — the page is for remembering, not performing.",
+        body: "Personal spaces are private, and any note can be locked with a PIN — encrypted so even Harvous can't read it. Write freely.",
       },
       {
         icon: "fa7-solid:book-bible",

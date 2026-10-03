@@ -336,7 +336,7 @@ const categories: FeatureCategory[] = [
       {
         icon: "fa7-solid:lock",
         heading: "Private stays the default",
-        body: "Nothing is shared until you share it. What belongs to a space is what you put in the space.",
+        body: "Nothing is shared until you share it. Lock a note with a PIN and only you can open it — not a space, not a link, not a connected app.",
       },
     ],
     featureIds: ["shared-spaces"],
