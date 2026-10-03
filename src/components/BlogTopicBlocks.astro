@@ -169,7 +169,9 @@ let pyramidStagger = 0;
     max-width: 7.5rem;
     aspect-ratio: 1;
     height: auto;
-    border-radius: 1.15rem;
+    /* A share of the block, not a fixed size: the blocks shrink a lot on
+       phones, and a fixed radius rounds a small one into a circle. */
+    border-radius: 30%;
     opacity: 1;
     box-shadow: none;
     transform-origin: 50% 100%;
@@ -184,7 +186,6 @@ let pyramidStagger = 0;
   @media (min-width: 768px) {
     .blog-topic-icons--pyramid .blog-topic-icon {
       max-width: none;
-      border-radius: 1.45rem;
     }
   }
 
