@@ -2,8 +2,7 @@
 /**
  * OpenSource — "the code is public," on the home page and About. One short card
  * laid out like a blueprint sheet on the release notes' square grid: ruler ticks
- * along the top and left, and a drawing's title block in the bottom-right corner,
- * with
+ * along the top and left, with
  * one line of copy and the button beside it.
  *
  * Every mark sits on a grid line. The grid's square is the card's width divided
@@ -43,12 +42,6 @@ const license = `${repo}/blob/main/LICENSE`;
         <span class="oss__ruler oss__ruler--top"></span>
         <span class="oss__ruler oss__ruler--left"></span>
 
-        {/* A drawing's title block, ruled on the grid's own lines, in the bottom-right corner. */}
-        <div class="oss__block">
-          <span class="oss__block-row">harvouscom/harvous</span>
-          <span class="oss__block-cell">O'Saasy</span>
-          <span class="oss__block-cell">Sheet 1/1</span>
-        </div>
 
       </div>
 
@@ -102,9 +95,11 @@ const license = `${repo}/blob/main/LICENSE`;
 </script>
 
 <style>
+  .oss.nx-section { padding-block: clamp(3rem, 7vw, 5rem); }
+
   .oss__frame {
-    /* Two squares in from every edge; the title block's two rows sit below the words. */
-    --oss-pad: 3rem;
+    /* A square and a half in from every edge: clear of the half-square ruler ticks. */
+    --oss-pad: 2.25rem;
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -203,34 +198,6 @@ const license = `${repo}/blob/main/LICENSE`;
   }
 
   /* Crop marks: one square long, half a square clear of the edge and of the trim corner. */
-  /* The title block: ten squares by two, its top and left edges and its rules
-     on grid lines (a line n squares in sits on [n·g, n·g + 1px]). The right and
-     bottom edges are the card's own. */
-  .oss__block {
-    --w: calc(var(--g) * 10);
-    top: calc(100% - var(--g) * 2);
-    left: calc(100% - var(--w));
-    width: var(--w);
-    height: calc(var(--g) * 2);
-    display: grid;
-    grid-template-columns: 6fr 4fr;
-    grid-template-rows: 1fr 1fr;
-    border-top: 1px solid var(--ink);
-    border-left: 1px solid var(--ink);
-    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink);
-  }
-  /* The rules inside: across at one square down, and down at six squares in on the lower row. */
-  .oss__block::before { content: ""; position: absolute; left: 0; right: 0; top: calc(var(--g) - 1px); height: 1px; background: var(--ink); }
-  .oss__block::after { content: ""; position: absolute; top: calc(var(--g) - 1px); bottom: 0; left: calc(var(--g) * 6 - 1px); width: 1px; background: var(--ink); }
-  .oss__block-row { grid-column: 1 / -1; display: flex; align-items: center; padding: 0 0.6rem; text-transform: none; letter-spacing: 0.02em; font-size: 11px; }
-  .oss__block-cell { display: flex; align-items: center; padding: 0 0.6rem; white-space: nowrap; overflow: hidden; }
-  /* The last cell sits in the card's rounded corner; centring keeps its label clear of the curve. */
-  .oss__block-cell:last-child { justify-content: center; padding: 0 0.4rem; }
 
   /* ── Motion: the sheet draws itself in, rulers first, then the marks ───── */
 
@@ -238,7 +205,6 @@ const license = `${repo}/blob/main/LICENSE`;
     :global(html.js) .oss__grid { opacity: 0; }
     :global(html.js) .oss__ruler--top { clip-path: inset(0 100% 0 0); }
     :global(html.js) .oss__ruler--left { clip-path: inset(0 0 100% 0); }
-    :global(html.js) .oss__block { clip-path: inset(0 0 0 100%); }
 
     :global(html.js) .oss__frame:global(.revealed) .oss__grid {
       animation:
@@ -247,9 +213,6 @@ const license = `${repo}/blob/main/LICENSE`;
     }
     :global(html.js) .oss__frame:global(.revealed) .oss__ruler {
       animation: oss-rule 1400ms cubic-bezier(0.65, 0, 0.35, 1) 200ms both;
-    }
-    :global(html.js) .oss__frame:global(.revealed) .oss__block {
-      animation: oss-rule 900ms cubic-bezier(0.65, 0, 0.35, 1) 900ms both;
     }
   }
 
