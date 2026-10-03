@@ -1,18 +1,15 @@
 ---
 /**
  * OpenSource — "the code is public," on the home page and About. One short card
- * laid out like a blueprint sheet on the release notes' square grid: ruler ticks
- * along the top and left, with
- * one line of copy and the button beside it.
+ * on the release notes' square grid, with one line of copy and the button
+ * beside it.
  *
- * Every mark sits on a grid line. The grid's square is the card's width divided
- * into a whole number of ~24px columns (the formula in .release-notes-frame__grid);
- * the marks use the same formula, and a small script pads the card's height to
- * a whole number of squares so the bottom corners land on lines too.
- *
- * The marks draw in when the card scrolls into view (the shared data-reveal
- * observer adds `.revealed`), the way the /3/ numeral traces in, rather than on
- * load. Without JS, or with reduced motion, they arrive drawn.
+ * The grid's square is the card's width divided into a whole number of ~24px
+ * columns (the formula in .release-notes-frame__grid), and a small script pads
+ * the card's height to a whole number of squares, so the grid finishes on a
+ * line at the bottom edge as it does at the top. When the card scrolls into
+ * view (the shared data-reveal observer adds `.revealed`) the grid fades in and
+ * a short blue light runs once around the border, then goes out.
  *
  * The licence is O'Saasy (MIT plus a no-hosted-competitor clause), so the copy
  * says what it allows rather than leaning on "open source" alone.
@@ -33,17 +30,15 @@ const repo = "https://github.com/harvouscom/harvous";
 const license = `${repo}/blob/main/LICENSE`;
 ---
 
-<section class="oss nx-section" id="open-source" aria-labelledby="oss-title">
+<section class:list={["oss nx-section", page === "home" && "oss--flush"]} id="open-source" aria-labelledby="oss-title">
   <div class="nx-wrap">
     <div class="oss__frame" data-reveal>
       <div class="release-notes-frame__grid oss__grid" aria-hidden="true"></div>
-
-      <div class="oss__sheet" aria-hidden="true">
-        <span class="oss__ruler oss__ruler--top"></span>
-        <span class="oss__ruler oss__ruler--left"></span>
-
-
-      </div>
+      {/* A blue light that runs once around the card's edge as it comes into view. */}
+      <svg class="oss__trail" aria-hidden="true" focusable="false">
+        <rect class="oss__trail-glow" pathLength="1" />
+        <rect class="oss__trail-line" pathLength="1" />
+      </svg>
 
       <div class="oss__body">
         <div class="oss__words">
@@ -95,16 +90,21 @@ const license = `${repo}/blob/main/LICENSE`;
 </script>
 
 <style>
-  .oss.nx-section { padding-block: clamp(3rem, 7vw, 5rem); }
+  .oss.nx-section { padding-block: clamp(2.5rem, 6vw, 4rem); }
+  /* On the home page the blog strip follows, and its topic tiles fall in from
+     above, clipped at its top edge: ending flush with the card makes that edge
+     the card's own bottom, so the tiles come out from under it. */
+  .oss.oss--flush { padding-bottom: 0; }
 
   .oss__frame {
-    /* A square and a half in from every edge: clear of the half-square ruler ticks. */
-    --oss-pad: 2.25rem;
+    /* One grid square in from every edge. */
+    --oss-pad: 1.5rem;
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    padding: var(--oss-pad) clamp(1.5rem, 6vw, 5rem);
-    padding-bottom: calc(var(--oss-pad) + var(--snap, 0px));
+    /* The space that rounds the height up to whole squares is split top and
+       bottom, so the words sit centred with equal room above and below. */
+    padding: calc(var(--oss-pad) + var(--snap, 0px) / 2) clamp(1.5rem, 6vw, 5rem);
     border: 1px solid var(--color-rule);
     border-radius: var(--nx-radius-scene);
     background: var(--color-paper);
@@ -160,68 +160,58 @@ const license = `${repo}/blob/main/LICENSE`;
   }
   .oss__stars svg { width: 0.8rem; height: 0.8rem; }
 
-  /* ── Blueprint sheet ───────────────────────────────────────────────────── */
-
-  .oss__sheet {
+  /* The border trail: a rect just inside the card's 1px border (the card clips
+     at its padding edge, so this is as close to the edge as it can run), with
+     the matching inner corner radius. One short dash, normalised by pathLength,
+     is what travels; nothing shows at rest. */
+  .oss__trail {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
     pointer-events: none;
-    container-type: size;
-    --ink: #1a8dff;
-    --tick: color-mix(in oklab, #006eff 42%, transparent);
+    z-index: 2;
   }
-  /* One grid square, by the grid's own formula; a line n squares in occupies [n·g, n·g + 1px]. */
-  .oss__sheet > * {
-    --g: calc(100cqw / round(nearest, 100cqw / 24px, 1));
-    position: absolute;
+  .oss__trail rect {
+    x: 0.5px;
+    y: 0.5px;
+    width: calc(100% - 1px);
+    height: calc(100% - 1px);
+    rx: calc(var(--nx-radius-scene) - 1px);
+    fill: none;
+    stroke-dasharray: 0.14 0.86;
+    stroke-dashoffset: 0;
+    opacity: 0;
   }
+  .oss__trail-line { stroke: #1a8dff; stroke-width: 1.5; stroke-linecap: round; }
+  .oss__trail-glow { stroke: #2bb5ff; stroke-width: 6; filter: blur(4px); }
 
-  /* Ruler ticks: a short one every square, a long one every fourth. */
-  .oss__ruler--top {
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 12px;
-    background:
-      linear-gradient(to right, var(--tick) 1px, transparent 1px) 0 0 / var(--g) 5px repeat-x,
-      linear-gradient(to right, var(--tick) 1px, transparent 1px) 0 0 / calc(var(--g) * 4) 12px repeat-x;
-  }
-  .oss__ruler--left {
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 12px;
-    background:
-      linear-gradient(to bottom, var(--tick) 1px, transparent 1px) 0 0 / 5px var(--g) repeat-y,
-      linear-gradient(to bottom, var(--tick) 1px, transparent 1px) 0 0 / 12px calc(var(--g) * 4) repeat-y;
-  }
-
-  /* Crop marks: one square long, half a square clear of the edge and of the trim corner. */
-
-  /* ── Motion: the sheet draws itself in, rulers first, then the marks ───── */
+  /* ── Motion: the grid fades in, then drifts ─────────────────────────────── */
 
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .oss__grid { opacity: 0; }
-    :global(html.js) .oss__ruler--top { clip-path: inset(0 100% 0 0); }
-    :global(html.js) .oss__ruler--left { clip-path: inset(0 0 100% 0); }
 
+    :global(html.js) .oss__frame:global(.revealed) .oss__trail rect {
+      animation: oss-trail 2600ms cubic-bezier(0.45, 0, 0.25, 1) 350ms both;
+    }
     :global(html.js) .oss__frame:global(.revealed) .oss__grid {
       animation:
         oss-fade 1800ms ease-out 200ms both,
         oss-grid-drift 14000ms ease-in-out 2400ms infinite;
     }
-    :global(html.js) .oss__frame:global(.revealed) .oss__ruler {
-      animation: oss-rule 1400ms cubic-bezier(0.65, 0, 0.35, 1) 200ms both;
-    }
   }
 
+  /* One lap, starting top left, fading in and out at either end. */
+  @keyframes oss-trail {
+    0% { stroke-dashoffset: 0; opacity: 0; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { stroke-dashoffset: -1; opacity: 0; }
+  }
   @keyframes oss-fade {
     from { opacity: 0; }
     to { opacity: 1; }
-  }
-  @keyframes oss-rule {
-    to { clip-path: inset(0); }
   }
   @keyframes oss-grid-drift {
     0%, 100% { -webkit-mask-position: -14px 10px; mask-position: -14px 10px; }
