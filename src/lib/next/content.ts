@@ -14,78 +14,6 @@ export type Backdrop =
 
 export const backdropSrc = (id: Backdrop) => `/images/auth-hero/ai_bg_${id}.webp`;
 
-/**
- * A tour screenshot and where its app window sits inside it.
- *
- * The tour shots are already composited: a window on a soft background,
- * running off one edge. `crop` lifts the window back out — `x`/`y` are its
- * left edge and `w` its width, and `y` the gap on the edge it does not run off
- * (above it for `hang: "bottom"`, below it for `"top"`) — all fractions of the
- * image width, measured a hair inside the window's own border so our frame
- * replaces theirs.
- */
-export type Shot = {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  crop: { x: number; y: number; w: number; hang: "bottom" | "top" };
-};
-
-/**
- * Inline style that scales a shot so its window alone fills the frame's width,
- * then shifts it so the window's corner lands on the frame's corner. Margins in
- * % are of the containing width — the same unit `crop` is measured in.
- */
-export function shotCropStyle({ crop }: Shot): string {
-  const pct = (n: number) => `${(n * 100).toFixed(3)}%`;
-  return [
-    `width:${pct(1 / crop.w)}`,
-    `margin-left:${pct(-crop.x / crop.w)}`,
-    `${crop.hang === "bottom" ? "margin-top" : "margin-bottom"}:${pct(-crop.y / crop.w)}`,
-  ].join(";");
-}
-
-const WINDOW_3200 = { x: 0.057, y: 0.041, w: 0.886, hang: "bottom" } as const;
-
-export const SHOTS = {
-  activity: {
-    src: "/tour/tour-activity.png",
-    alt: "Harvous Activity: today's sheet with the notes written, a passage read, and a Suggestion to revisit an older note.",
-    width: 1920,
-    height: 1920,
-    crop: { x: 0.067, y: 0.066, w: 0.866, hang: "bottom" },
-  },
-  read: {
-    src: "/tour/tour-read.png",
-    alt: "The Harvous Bible reader with Exodus 5 in NLT and NIV side by side, a highlighted verse in the second column.",
-    width: 1920,
-    height: 1380,
-    crop: WINDOW_3200,
-  },
-  write: {
-    src: "/tour/tour-write.png",
-    alt: "A Harvous note titled God loves everyone, with scripture pills inline and a highlighted phrase.",
-    width: 1920,
-    height: 1380,
-    crop: { x: 0.057, y: 0.04, w: 0.886, hang: "top" },
-  },
-  library: {
-    src: "/tour/tour-library.png",
-    alt: "The Harvous library filtered by kind: notes, folders, threads, highlights, scripture, and resources.",
-    width: 1920,
-    height: 1380,
-    crop: WINDOW_3200,
-  },
-  share: {
-    src: "/tour/tour-share.png",
-    alt: "A Harvous shared space called Family, with its own cover image and the group's threads.",
-    width: 1920,
-    height: 1380,
-    crop: WINDOW_3200,
-  },
-} satisfies Record<string, Shot>;
-
 /** The app views AppScene can draw live. */
 export type AppView = "activity" | "read" | "write" | "library" | "share";
 
@@ -126,11 +54,7 @@ export type StoryStep = {
   title: string;
   body: string;
   backdrop: Backdrop;
-  shot: Shot;
-  /** Scene lean-in — see Scene's `zoom` / `focus`. */
-  zoom?: number;
-  focus?: number;
-  /** Which live vignette floats over the shot, if any. */
+  /** Which live vignette floats over the view, if any. */
   vignette?: "scripture" | "suggestion" | "thread";
   note: MarginNoteSpec;
 };
@@ -141,9 +65,6 @@ export const STORY_STEPS: StoryStep[] = [
     title: "Write a note. The verse comes with it.",
     body: "Type John 3:16 and it turns into a pill you can tap, in any of 11 translations. Headings, bullets, highlights. It writes like any doc you already know.",
     backdrop: "072",
-    shot: SHOTS.write,
-    zoom: 1.6,
-    focus: 0.45,
     vignette: "scripture",
     note: { text: "I just type the reference. That's it.", at: { top: "5%", right: "5%" }, arrow: "down-left", tilt: 3, target: { selector: "[data-anote-pill]", at: [0.8, -0.15] } },
   },
@@ -152,9 +73,6 @@ export const STORY_STEPS: StoryStep[] = [
     title: "Read the chapter with your notes beside it.",
     body: "Open a passage and every note you've written on it is marked in the margin. Tap the line and Harvous shows you which notes, so last year's thinking is right there beside the verse.",
     backdrop: "052",
-    shot: SHOTS.read,
-    zoom: 1.45,
-    focus: 0.62,
     note: { text: "Every note I've written on it, right in the margin.", at: { bottom: "8%", right: "5%" }, arrow: "up-left", side: "start", tilt: -3, target: { selector: "[data-ard-block='0']", at: [-0.04, 0.97] } },
   },
   {
@@ -162,9 +80,6 @@ export const STORY_STEPS: StoryStep[] = [
     title: "Brought back before it fades.",
     body: "Suggestions quietly brings back a note or highlight you haven't seen in a while. With Plus, a few review exercises a day have you finish a verse you marked or remember where a note lives. No score, no streak.",
     backdrop: "044",
-    shot: SHOTS.activity,
-    zoom: 1.35,
-    focus: 0.42,
     vignette: "suggestion",
     note: { text: "This is the part I built it for.", at: { top: "6%", right: "5%" }, arrow: "down-left", tilt: 3, target: { selector: "[data-aact-review]", at: [0.82, -0.03] } },
   },

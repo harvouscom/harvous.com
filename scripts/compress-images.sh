@@ -106,31 +106,4 @@ else
   echo "  all within 1920 — nothing to do"
 fi
 
-# Tour screenshots (see src/lib/app-tour-chapters.ts). OptimizedImage serves the
-# WebP sibling when it exists, so each PNG needs one — this is the step that
-# makes it.
-echo "→ Tour screenshots (public/tour)"
-shopt -s nullglob
-tour_shots=("$PUB"/tour/*.png)
-shopt -u nullglob
-if (( ${#tour_shots[@]} )); then
-  compress "${tour_shots[@]}" -w 1920
-else
-  echo "  none yet — drop tour-*.png into public/tour/ and re-run"
-fi
-
-# /3/'s What's new slides keep their own square shots (src/pages/3.astro). A
-# separate pass because compress() writes beside the first file it is handed,
-# and the glob above is not recursive — without this the subfolder ships as
-# PNG only.
-echo "→ What's new screenshots (public/tour/3)"
-shopt -s nullglob
-v3_shots=("$PUB"/tour/3/*.png)
-shopt -u nullglob
-if (( ${#v3_shots[@]} )); then
-  compress "${v3_shots[@]}" -w 1920
-else
-  echo "  none yet — drop the square shots into public/tour/3/ and re-run"
-fi
-
 echo "Done. WebP files written next to sources under public/."
