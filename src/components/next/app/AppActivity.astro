@@ -44,24 +44,23 @@ const { passage = false, review = false } = Astro.props;
     {review && (
       <>
         <p class="aui-label aact__label">Review exercises</p>
-        <div class="aui-card aact__review" data-aact-review>
-          <div class="aui-row">
-            <span class="aui-tile"><AppIcon name="note-sticky" /></span>
-            <span>
-              <span class="aui-title aact__rtitle">No Condemnation <span class="aact__steps" aria-hidden="true"><i class="is-on" /><i /><i /></span></span>
-              <span class="aui-sub">Folder<i>·</i>Pick a folder it is in</span>
-            </span>
-            <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+        {/* As of 3.12: each exercise opens as a roomier deck card (question, the
+            verse line, then your answer), and a first fill-in-the-blank gives
+            word tiles to place. The cards behind are the rest of today's. */}
+        <div class="aact__deck" data-aact-review>
+          <div class="aui-card aact__review">
+            <p class="aact__step">
+              Fill in the blank
+              <span class="aact__steps" aria-hidden="true"><i class="is-on" /><i /><i /></span>
+            </p>
+            <p class="aact__q">
+              We know that they help us develop <span class="aact__done">endurance</span>. And
+              endurance develops strength of <span class="aact__gap"></span>…
+            </p>
+            <p class="aact__ref"><span class="aui-pill">Romans 5:3–4 <span class="aui-tr">NLT</span></span></p>
+            <div class="aact__tiles"><span>hope</span><span class="is-picked">character</span><span>faith</span></div>
+            <p class="aact__more">1 of 8 today <AppIcon name="caret-down" /></p>
           </div>
-          <div class="aui-row">
-            <span class="aui-tile"><AppIcon name="book-open-reader" /></span>
-            <span>
-              <span class="aui-title">Romans 3 · NLT</span>
-              <span class="aui-sub">Blanks<i>·</i>Finish a verse from it<i>·</i>You marked a verse here.</span>
-            </span>
-            <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
-          </div>
-          <p class="aact__more">0 of 8 today <AppIcon name="caret-down" /></p>
         </div>
       </>
     )}
@@ -140,11 +139,61 @@ const { passage = false, review = false } = Astro.props;
   }
   .aact__chip :global(svg) { width: 11px; height: 11px; }
   .aact__label { margin: 14px 0 6px 2px !important; font-size: 12.5px !important; }
-  .aact__rtitle { display: flex; align-items: center; gap: 8px; }
+  /* The deck: today's exercise on top, two more peeking out beneath it. */
+  .aact__deck { position: relative; padding-bottom: 8px; }
+  .aact__deck::before,
+  .aact__deck::after {
+    content: "";
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    bottom: 4px;
+    height: 20px;
+    border-radius: 0 0 var(--pds-radius-card) var(--pds-radius-card);
+    background: var(--pds-bg-main);
+    box-shadow: 0 0 0 0.5px var(--pds-border), var(--pds-shadow-card);
+  }
+  .aact__deck::after { left: 8%; right: 8%; bottom: 0; z-index: -1; }
+  .aact__deck { isolation: isolate; }
+  .aact__review { position: relative; z-index: 1; padding: 13px 14px 0; font-size: 13.5px; }
+  .aact__step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--pds-text-tertiary);
+  }
+  .aact__q { margin: 0; line-height: 1.55; color: var(--pds-text-primary); }
+  .aact__done { font-weight: 500; }
+  .aact__gap {
+    display: inline-block;
+    width: 4.5em;
+    height: 1.1em;
+    vertical-align: -0.2em;
+    border-radius: 5px;
+    background: var(--pds-bg-chip);
+    box-shadow: inset 0 -1.5px 0 var(--pds-text-tertiary);
+  }
+  .aact__ref { margin: 9px 0 0; font-size: 11.5px; }
+  .aact__tiles { display: flex; flex-wrap: wrap; gap: 6px; margin: 11px 0 12px; }
+  .aact__tiles span {
+    padding: 5px 11px;
+    border-radius: var(--pds-radius-format);
+    font-size: 12.5px;
+    font-weight: 500;
+    background: var(--pds-bg-main);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card);
+  }
+  .aact__tiles .is-picked { color: var(--pds-bg-main); background: var(--pds-text-primary); box-shadow: none; }
   /* The exercise's progress: three short dashes, the first done. */
   .aact__steps { display: inline-flex; gap: 2px; }
   .aact__steps i { width: 6px; height: 2px; border-radius: 1px; background: var(--pds-border); }
   .aact__steps i.is-on { background: var(--pds-highlight-sky-blue); }
+  .aact__review .aact__more { margin: 0 -14px; }
   .aact__more {
     display: flex;
     align-items: center;

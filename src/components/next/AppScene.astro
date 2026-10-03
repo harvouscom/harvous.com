@@ -1,0 +1,36 @@
+---
+/**
+ * AppScene — one of the app's main views drawn live (SceneApp + AppWindow + the
+ * view) with its margin note, by name. The tour, each feature category page and
+ * /3/ show the same five views; naming them here keeps all three on the same
+ * drawing instead of each wiring up its own, and replaces the cropped tour
+ * screenshots they used to show.
+ */
+import SceneApp from "./SceneApp.astro";
+import MarginNote from "./MarginNote.astro";
+import AppWindow from "./app/AppWindow.astro";
+import AppActivity from "./app/AppActivity.astro";
+import AppReader from "./app/AppReader.astro";
+import AppNote from "./app/AppNote.astro";
+import AppLibrary from "./app/AppLibrary.astro";
+import AppSpace from "./app/AppSpace.astro";
+import type { AppView, Backdrop, MarginNoteSpec } from "../../lib/next/content.ts";
+
+interface Props {
+  view: AppView;
+  backdrop: Backdrop;
+  note?: MarginNoteSpec;
+  aspect?: string;
+  class?: string;
+}
+const { view, backdrop, note, aspect = "4 / 5", class: className } = Astro.props;
+---
+
+<SceneApp backdrop={backdrop} aspect={aspect} class={className}>
+  {view === "activity" && <AppWindow view="activity"><AppActivity review /></AppWindow>}
+  {view === "read" && <AppWindow view="bible"><AppReader lit /></AppWindow>}
+  {view === "write" && <AppWindow view="write" noteTools><AppNote /></AppWindow>}
+  {view === "library" && <AppWindow view="search"><AppLibrary /></AppWindow>}
+  {view === "share" && <AppWindow view="activity"><AppSpace /></AppWindow>}
+  {note && <MarginNote slot="overlay" {...note} />}
+</SceneApp>

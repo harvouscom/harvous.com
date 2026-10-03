@@ -4,7 +4,7 @@
  *
  * Same substance as the live /3/ (src/pages/3.astro), in the order people who
  * already use Harvous 2 want it: what's new, what changed, and why. The three
- * big views get a Scene each (the tour's rhythm, real screenshots); the six
+ * big views get a live AppScene each (the tour's rhythm); the six
  * smaller things sit on one even grid; the renames are a plain before → after
  * list; the letter is Derek's, word for word where it was already good.
  *
@@ -14,8 +14,7 @@ import AppIcon from "../components/next/app/AppIcon.astro";
 import { ogCard } from "../lib/og-card.ts";
 import { getCollection } from "astro:content";
 import NextLayout from "../layouts/NextLayout.astro";
-import Scene from "../components/next/Scene.astro";
-import MarginNote from "../components/next/MarginNote.astro";
+import AppScene from "../components/next/AppScene.astro";
 import ClosingCall from "../components/next/ClosingCall.astro";
 import SectionNav from "../components/next/SectionNav.astro";
 import HeroVideoLightbox from "../components/HeroVideoLightbox.astro";
@@ -23,23 +22,21 @@ import Harvous3Numeral from "../components/Harvous3Numeral.astro";
 import FounderLetter from "../components/FounderLetter.astro";
 import { getAddonDetailHref } from "../lib/addons-data.ts";
 import { blogReadingMinutes, isBlogPostListed } from "../lib/blog.ts";
-import { SHOTS, type Backdrop, type MarginNoteSpec, type Shot } from "../lib/next/content.ts";
+import type { AppView, Backdrop, MarginNoteSpec } from "../lib/next/content.ts";
 import { threeJsonLd } from "../lib/page-jsonld.ts";
 
 const APP_URL = "https://app.harvous.com/";
 
-/* The three views — each gets a Scene, the tour's way. Targets are points in
-   the 1920-wide screenshot; MarginNote lands the arrowhead on them. */
+/* The three views — each drawn live by AppScene, the tour's way. Targets are
+   elements in the view; MarginNote lands the arrowhead on them. */
 type Big = {
   key: string;
   kicker: string;
   title: string;
   lead: string;
   link: { label: string; href: string };
-  shot: Shot;
+  view: AppView;
   backdrop: Backdrop;
-  zoom: number;
-  focus: number;
   note: MarginNoteSpec;
 };
 
@@ -50,12 +47,10 @@ const BIG: Big[] = [
     title: "It opens on what you've studied.",
     lead: "What was My Home in the sidebar is a view of its own now, with room to actually show a week. Today sits on top, with the days before it stacked behind.",
     link: { label: "More about Activity", href: "/features/activity/" },
-    shot: SHOTS.activity,
+    view: "activity",
     backdrop: "044",
-    zoom: 1.3,
-    focus: 0.45,
     /* The "Yesterday" sheet behind today. Short enough for one line, so the paper fits above the target on a phone. */
-    note: { text: "The week, stacked.", at: { top: "4%", right: "4%" }, arrow: "down-left", tilt: 3, target: [1300, 382] },
+    note: { text: "The week, stacked.", at: { top: "4%", right: "4%" }, arrow: "down-left", tilt: 3, target: { selector: ".aact__edge--2", at: [0.72, 0.5] } },
   },
   {
     key: "reader",
@@ -63,12 +58,10 @@ const BIG: Big[] = [
     title: "Your notes beside the verse.",
     lead: "Eleven translations, including NLT, ESV, NIV, CSB, and KJV. Open it on its own, or expand into it from a Scripture pill in a note.",
     link: { label: "More about the reader", href: "/features/bible-reader/" },
-    shot: SHOTS.read,
+    view: "read",
     backdrop: "076",
-    zoom: 1.4,
-    focus: 0.4,
     /* The margin bars beside verses 1–5 (the tour points at the same spot). */
-    note: { text: "My notes, already in the margin.", at: { bottom: "10%", left: "8%" }, arrow: "up-left", side: "start", tilt: -3, target: [322, 560] },
+    note: { text: "My notes, already in the margin.", at: { bottom: "10%", left: "8%" }, arrow: "up-left", side: "start", tilt: -3, target: { selector: "[data-ard-block='0']", at: [-0.04, 0.97] } },
   },
   {
     key: "search",
@@ -76,12 +69,10 @@ const BIG: Big[] = [
     title: "Search lives in the top middle.",
     lead: "Search everything you've saved from one place. Or skip the typing and browse it by kind, the way you could in the sidebar.",
     link: { label: "More about Search", href: "/features/find/" },
-    shot: SHOTS.library,
+    view: "library",
     backdrop: "058",
-    zoom: 1.5,
-    focus: 0.6,
-    /* The "Everything" kind picker, from below-left so the open menu stays clear. */
-    note: { text: "Or browse it by kind.", at: { top: "30%", left: "20%" }, arrow: "up-right", side: "end", tilt: -2, target: [1300, 238] },
+    /* The row of kinds under the search field. */
+    note: { text: "Or browse it by kind.", at: { top: "4%", right: "4%" }, arrow: "down-left", tilt: 3, target: { selector: "[data-alib-kinds]", at: [0.62, -0.05] } },
   },
 ];
 
@@ -229,9 +220,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
             <a class="nx-link" href={b.link.href}>{b.link.label} →</a>
           </div>
           <div class="v3-row__visual" data-reveal="scale">
-            <Scene backdrop={b.backdrop} shot={b.shot} aspect="4 / 5" inset={9} zoom={b.zoom} focus={b.focus} eager={i === 0}>
-              <MarginNote {...b.note} />
-            </Scene>
+            <AppScene view={b.view} backdrop={b.backdrop} note={b.note} aspect="4 / 5" />
           </div>
         </div>
       </div>
@@ -254,39 +243,92 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
                     <img src="/images/auth-hero/ai_bg_076.webp" alt="" loading="lazy" />
                     <span class="mini__space-row">
                       <span class="mini__space-icon"><AppIcon name="user-group" /></span>
-                      <span><span class="aui-title">Family</span><span class="aui-sub">Just you<i>·</i>Invite</span></span>
+                      <span class="mini__grow"><span class="aui-title">Family</span><span class="aui-sub">4 members<i>·</i>Invite</span></span>
+                      <span class="mini__faces"><img src="/derek-avatar.jpeg" alt="" loading="lazy" /><b class="is-a">K</b><b class="is-b">J</b><b class="is-c">+1</b></span>
+                    </span>
+                    <span class="mini__label">Current thread</span>
+                    <span class="aui-row mini__inset">
+                      <span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span>
+                      <span><span class="aui-title">Going through Romans</span><span class="mini__progress"><i style="width: 50%"></i></span><span class="aui-sub">Step 2 of 4</span></span>
+                      <span class="aui-acts"><AppIcon name="caret-right" /></span>
                     </span>
                   </span>
                 )}
                 {s.visual === "review" && (
-                  <span class="mini__tiles">
-                    <span>hope</span><span class="is-on">character</span><span>faith</span>
+                  <span class="aui-card mini mini--review">
+                    <span class="mini__q">
+                      <span class="mini__label mini__label--flush">From your note on <span class="aui-pill">Romans 5:3–4</span></span>
+                      Endurance produces <span class="mini__blank">character</span>, and that produces hope.
+                    </span>
+                    <span class="mini__tiles">
+                      <span>hope</span><span class="is-on">character</span><span>faith</span>
+                    </span>
                   </span>
                 )}
                 {s.visual === "templates" && (
-                  <span class="mini__tiles mini__tiles--chips">
-                    <span class="is-on">SOAP</span><span>Inductive</span><span>Sermon outline</span>
+                  <span class="mini__stack">
+                    <span class="aui-paper mini mini--back">
+                      <span class="mini__h">Romans 12</span>
+                      <span class="mini__sec"><b>S</b> Scripture</span>
+                      <span class="mini__sec"><b>O</b> Observation</span>
+                      <span class="mini__sec"><b>A</b> Application</span>
+                    </span>
+                    <span class="aui-card mini mini--panel">
+                      <span class="mini__label">Templates</span>
+                      <span class="aui-row is-on"><span class="aui-tile"><AppIcon name="list-check" /></span><span><span class="aui-title">SOAP</span><span class="aui-sub">Scripture, observation…</span></span><span class="aui-acts"><AppIcon name="check" /></span></span>
+                      <span class="aui-row"><span class="aui-tile"><AppIcon name="magnifying-glass" /></span><span><span class="aui-title">Inductive</span></span><span></span></span>
+                      <span class="aui-row"><span class="aui-tile"><AppIcon name="microphone" /></span><span><span class="aui-title">Sermon outline</span></span><span></span></span>
+                      <span class="aui-row mini__add"><span class="aui-tile"><AppIcon name="plus" /></span><span><span class="aui-title">Your own</span></span><span></span></span>
+                    </span>
                   </span>
                 )}
                 {s.visual === "resources" && (
                   <span class="aui-card mini">
+                    <span class="mini__label">Resources</span>
                     <span class="aui-row">
-                      <span class="aui-tile mini__thumb"><img src="/images/discover-sources/bibleproject-the-story-of-the-bible.webp" alt="" loading="lazy" /></span>
-                      <span><span class="aui-title">The Story of the Bible</span><span class="aui-sub">BibleProject<i>·</i>Video</span></span>
+                      <span class="aui-tile mini__thumb mini__thumb--video"><img src="/images/discover-sources/bibleproject-the-story-of-the-bible.webp" alt="" loading="lazy" /><AppIcon name="play" /></span>
+                      <span><span class="aui-title">The Story of the Bible</span><span class="aui-sub">BibleProject<i>·</i>Video<i>·</i>5 min</span></span>
+                      <span class="mini__btn">Add to note</span>
+                    </span>
+                    <span class="aui-row">
+                      <span class="aui-tile mini__file"><AppIcon name="file-lines" /></span>
+                      <span><span class="aui-title">Small group guide, week 3</span><span class="aui-sub">From your church<i>·</i>PDF</span></span>
+                      <span class="aui-acts"><AppIcon name="caret-right" /></span>
+                    </span>
+                    <span class="aui-row">
+                      <span class="aui-tile mini__thumb"><img src="/images/discover-sources/bibleproject-gospel-of-mark.webp" alt="" loading="lazy" /></span>
+                      <span><span class="aui-title">Gospel of Mark</span><span class="aui-sub">BibleProject<i>·</i>Overview</span></span>
+                      <span class="aui-acts"><AppIcon name="caret-right" /></span>
                     </span>
                   </span>
                 )}
                 {s.visual === "reminders" && (
-                  <span class="aui-card mini">
-                    <span class="aui-row">
-                      <span class="aui-tile"><AppIcon name="bell" /></span>
-                      <span><span class="aui-title">Psalm 46</span><span class="aui-sub">Today's passage<i>·</i>Sunday</span></span>
+                  <span class="mini__stack mini__stack--col">
+                    <span class="mini mini--notif">
+                      <img class="mini__app" src="/images/harvous-icon-sm.png" alt="" loading="lazy" />
+                      <span class="mini__grow">
+                        <span class="mini__notif-top"><b>Harvous</b><span>now</span></span>
+                        <span class="aui-title">Psalm 46</span>
+                        <span class="aui-sub mini__wrap">Your Sunday passage is ready when you are.</span>
+                      </span>
+                    </span>
+                    <span class="aui-card mini mini--days">
+                      <span class="mini__label mini__label--flush">Remind me on</span>
+                      <span class="mini__days"><span class="is-on">S</span><span>M</span><span>T</span><span class="is-on">W</span><span>T</span><span>F</span><span>S</span></span>
+                      <span class="aui-sub">8:00 AM<i>·</i>with the passage</span>
                     </span>
                   </span>
                 )}
                 {s.visual === "mentions" && (
-                  <span class="aui-paper mini mini--line">
-                    Picks up from <span class="mini__mention"><AppIcon name="arrow-right-arrow-left" /> Faith before it made sense</span>
+                  <span class="mini__stack mini__stack--col">
+                    <span class="aui-paper mini mini--line">
+                      <span class="mini__h">Still, even here</span>
+                      Picks up from <span class="mini__mention"><AppIcon name="arrow-right-arrow-left" /> Faith before it made sense</span>, and <span class="mini__typing">@Gen<i></i></span>
+                    </span>
+                    <span class="aui-card mini mini--pop">
+                      <span class="aui-row is-on"><span class="aui-tile"><AppIcon name="note-sticky" /></span><span><span class="aui-title">Genesis 50 sermon</span><span class="aui-sub">Note<i>·</i>Sermon notes</span></span><span></span></span>
+                      <span class="aui-row"><span class="aui-tile"><AppIcon name="folder" /></span><span><span class="aui-title">Genesis</span><span class="aui-sub">Folder<i>·</i>12 notes</span></span><span></span></span>
+                    </span>
                   </span>
                 )}
               </span>
@@ -533,8 +575,9 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   .v3-card__stage {
     display: grid;
     place-items: center;
-    height: 8.5rem;
-    padding: 1rem 1.1rem;
+    height: 14rem;
+    padding: 1.1rem 1.2rem;
+    overflow: hidden;
     border-radius: 1.05rem;
     background: color-mix(in srgb, var(--tone) 58%, var(--color-paper));
     transition: transform 300ms var(--nx-ease);
@@ -559,18 +602,35 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
 
   /* Mini app moments (next-app-ui.css pieces, sized down to fit a stage). */
   .mini {
+    display: block;
     width: 100%;
-    max-width: 17rem;
+    max-width: 18.5rem;
     font-size: 13px;
     box-shadow: var(--pds-shadow-popover) !important;
   }
-  .mini :global(.aui-row) { padding: 8px 12px 8px 10px; }
-  .mini :global(.aui-title) { font-size: 14px; }
-  .mini :global(.aui-sub) { font-size: 12px; }
+  .mini :global(.aui-row) { padding: 7px 11px 7px 9px; }
+  .mini :global(.aui-title) { font-size: 13.5px; }
+  .mini :global(.aui-sub) { display: block; font-size: 11.5px; color: var(--pds-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mini :global(.aui-sub i) { font-style: normal; padding-inline: 0.3em; }
+  .mini :global(.aui-acts) { color: var(--pds-text-tertiary); }
+  .mini :global(.aui-acts svg) { width: 10px; height: 10px; }
+  .mini :global(.aui-row.is-on) { background: var(--pds-bg-row-selected); }
+  .mini__grow { flex: 1; min-width: 0; }
+  .mini__wrap { white-space: normal !important; }
+  .mini__label { display: block; padding: 9px 12px 3px; font-size: 11.5px; color: var(--pds-text-secondary); }
+  .mini__label--flush { padding: 0 0 6px; }
+  .mini__h { display: block; margin-bottom: 4px; font-family: var(--pds-font-display); font-size: 14.5px; font-weight: 600; color: var(--pds-text-primary); }
   .mini__thumb { overflow: hidden; padding: 0; }
   .mini__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .mini--space img { display: block; width: 100%; height: 38px; object-fit: cover; }
-  .mini__space-row { display: flex; align-items: center; gap: 10px; padding: 0 12px 10px; }
+  .mini__btn { padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; white-space: nowrap; color: var(--pds-on-accent); background: var(--pds-accent); }
+
+  /* Layered moments: one surface behind another. */
+  .mini__stack { position: relative; display: grid; place-items: center; width: 100%; max-width: 18.5rem; }
+  .mini__stack--col { gap: 8px; }
+
+  /* Shared space */
+  .mini--space > img { display: block; width: 100%; height: 34px; object-fit: cover; }
+  .mini__space-row { display: flex; align-items: center; gap: 10px; padding: 0 12px 2px; }
   .mini__space-icon {
     display: grid;
     place-items: center;
@@ -584,19 +644,80 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
     box-shadow: 0 0 0 2px var(--pds-bg-main);
   }
   .mini__space-icon :global(svg) { width: 13px; height: 13px; }
+  .mini__faces { display: flex; }
+  .mini__faces > * {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    margin-left: -5px;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    font-style: normal;
+    color: #fff;
+    object-fit: cover;
+    box-shadow: 0 0 0 1.5px var(--pds-bg-main);
+  }
+  .mini__faces .is-a { background: #e07a5f; }
+  .mini__faces .is-b { background: #3d8bd9; }
+  .mini__faces .is-c { color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .mini__inset { margin: 0 8px 8px; border-radius: 10px; box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium); }
+  .mini__progress { display: block; height: 3px; margin: 4px 0 2px; border-radius: 3px; background: var(--pds-bg-track); overflow: hidden; }
+  .mini__progress i { display: block; height: 100%; border-radius: inherit; background: var(--pill-thread, var(--pds-accent)); }
+
+  /* Review */
+  .mini--review { padding: 12px; }
+  .mini__q { display: block; font-size: 13.5px; line-height: 1.5; color: var(--pds-text-primary); }
+  .mini__blank { padding: 0 6px; border-bottom: 1.5px solid var(--pds-accent); font-weight: 600; color: var(--pds-accent); }
+  .mini--review .mini__tiles { justify-content: flex-start; margin-top: 10px; }
+
   .mini__tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
   .mini__tiles span {
-    padding: 6px 12px;
+    padding: 5px 11px;
     border-radius: var(--pds-radius-format);
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--pds-text-primary);
     background: var(--pds-bg-main);
     box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card);
   }
-  .mini__tiles--chips span { border-radius: 999px; }
   .mini__tiles .is-on { color: var(--pds-bg-main); background: var(--pds-text-primary); box-shadow: none; }
-  .mini--line { padding: 12px 14px; font-size: 13px; line-height: 1.5; text-align: left; }
+
+  /* Templates: the note behind, the side panel's list in front. */
+  .mini--back { position: absolute; top: -6px; left: -4px; width: 64%; padding: 12px 14px !important; transform: rotate(-3deg); opacity: 0.92; }
+  .mini__sec { display: flex; align-items: center; gap: 6px; margin-top: 5px; font-size: 12px; color: var(--pds-text-secondary); }
+  .mini__sec b { display: grid; place-items: center; width: 17px; height: 17px; border-radius: 5px; font-size: 10px; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .mini--panel { position: relative; width: 66%; margin-left: auto; transform: translateX(10px); }
+  .mini--panel :global(.aui-row.is-on .aui-acts) { color: var(--pds-accent); }
+  .mini__add :global(.aui-title) { color: var(--pds-text-secondary); }
+
+  /* Resources */
+  .mini__thumb--video { position: relative; }
+  .mini__thumb--video :global(svg) { position: absolute; inset: 0; margin: auto; width: 8px; height: 8px; color: #fff; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+  .mini__file { color: #d9534f !important; background: color-mix(in srgb, #d9534f 14%, var(--pds-bg-main)) !important; }
+
+  /* Reminders: the notification, and the rhythm behind it. */
+  .mini--notif {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--pds-bg-main) 86%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .mini__app { flex: none; width: 30px; height: 30px; border-radius: 8px; }
+  .mini__notif-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--pds-text-secondary); }
+  .mini__notif-top b { font-weight: 600; color: var(--pds-text-primary); }
+  .mini--days { padding: 10px 12px; }
+  .mini__days { display: flex; gap: 4px; margin-bottom: 6px; }
+  .mini__days span { display: grid; place-items: center; flex: 1; height: 24px; border-radius: 7px; font-size: 11px; font-weight: 600; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .mini__days .is-on { color: var(--pds-on-accent); background: var(--pds-accent); }
+
+  /* @ mentions: the note, and the suggestions under what you're typing. */
+  .mini--line { padding: 10px 13px; font-size: 13px; line-height: 1.55; text-align: left; color: var(--pds-text-secondary); }
   .mini__mention {
     display: inline-flex;
     align-items: center;
@@ -610,8 +731,13 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
     white-space: nowrap;
   }
   .mini__mention :global(svg) { width: 10px; height: 10px; color: var(--pill-thread); }
+  .mini__typing { font-weight: 500; color: var(--pds-accent); white-space: nowrap; }
+  .mini__typing i { display: inline-block; width: 1.5px; height: 1em; margin-left: 1px; vertical-align: -0.15em; background: var(--pds-accent); animation: mini-blink 1.1s steps(1) infinite; }
+  .mini--pop { position: relative; width: 82%; margin: -22px -6px 0 auto; }
+  @keyframes mini-blink { 50% { opacity: 0; } }
 
   @media (prefers-reduced-motion: reduce) {
+    .mini__typing i { animation: none; }
     .v3-card__stage > * { transition: none; }
     .v3-card:hover .v3-card__stage > * { transform: none; }
   }

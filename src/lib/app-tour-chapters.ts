@@ -1,21 +1,15 @@
 /**
- * The homepage tour — five chapters, each a screenshot with the features it
- * demonstrates beneath it.
+ * The tour — five chapters, each an app view (drawn live by AppScene, staged in
+ * lib/next/tour-staging.ts) with the features it demonstrates beside it.
  *
  * Ordered as a day of study rather than a feature taxonomy: open to what
  * happened, read, write, find, share. That ordering is the point — Harvous 3.0
  * is about study you can follow and return to, so the page should read the way
  * the product does rather than as a list of capabilities.
- *
- * SCREENSHOTS ARE NOT TAKEN YET. Every chapter names the file it wants and
- * carries `direction` — what the shot has to contain. Until a file exists at
- * `shot.src`, TourShotFrame renders a captioned placeholder at the right aspect
- * ratio, so the layout is final and dropping the real PNG in is the only
- * remaining step. See TourShotFrame.astro for how the swap is detected.
  */
 
 /**
- * An item is a caption for what the screenshot shows, not a destination. The card
+ * An item is a caption for what the view shows, not a destination. The card
  * links to its category page, which is where these features actually live.
  */
 export type TourItem = {
@@ -33,34 +27,8 @@ export type TourChapter = {
   eyebrow: string;
   title: string;
   lead: string;
-  shot: {
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-    /** Placeholder caption: what this shot must show. */
-    direction: string[];
-  };
   items: TourItem[];
 };
-
-/**
- * 2:1 at 2400×1200. The site's content column is 72rem (1152px), so this is
- * roughly 2x — enough that app text stays readable rather than turning into
- * texture, which is the whole failure mode for a tour built out of screenshots.
- */
-/*
-  The wide card is two columns from 720px up — a 2x2 of features on the left,
-  this shot square on the right — so its ratio is 1:1 rather than the letterbox
-  it was when the visual ran the card's full width beneath the text.
-*/
-/* 464px is the largest it ever renders — the card caps at 1024px and the two
-   columns are even — so 1400 is 3x, the same headroom the half cards' 1600
-   gives their ~490px. */
-const WIDE_W = 1400;
-const WIDE_H = 1400;
-const HALF_W = 1600;
-const HALF_H = 1150;
 
 export const APP_TOUR_CHAPTERS: TourChapter[] = [
   {
@@ -71,19 +39,6 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     title: "Filed for you, threaded by you, brought back by Suggestions.",
     lead:
       "Harvous starts on your study, not an empty page. Each day is its own sheet, and the days behind it are still there to flip back through.",
-    shot: {
-      src: "/tour/tour-activity.png",
-      alt: "The Activity view: a day sheet with the days before it stacked behind, listing the passages read and notes written that day.",
-      width: WIDE_W,
-      height: WIDE_H,
-      direction: [
-        "A finished day, not today — today is usually still empty.",
-        "Two previous-day edges visible above the sheet.",
-        "The day sentence at the top, with its count pill.",
-        "Morning / afternoon / evening sections with real rows.",
-        "At least one note card with readable words on it.",
-      ],
-    },
     // The first three follow the heading's own sequence — filed, threaded,
     // brought back — so the row reads left to right in the same order the
     // sentence above it does. Review exercises are a fourth, appended rather
@@ -121,18 +76,6 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     title: "Read the chapter with your notes in the margin.",
     lead:
       "Chapters sit like paper on both sides of the one you're reading, so turning back is the same motion as turning forward. Your notes and highlights are already in the margin.",
-    shot: {
-      src: "/tour/tour-read.png",
-      alt: "A Bible chapter open in Harvous, with the previous and next chapters visible as paper edges and margin marks alongside the text.",
-      width: HALF_W,
-      height: HALF_H,
-      direction: [
-        "A chapter with paper edges on BOTH sides.",
-        "Margin dots or bars showing where notes exist.",
-        "A passage with some real highlighting in it.",
-        "Translation chip visible in the header.",
-      ],
-    },
     items: [
       {
         icons: ["fa7-solid:book-bible", "fa7-solid:book-open"],
@@ -154,18 +97,6 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     title: "Write a note. The verse comes with it.",
     lead:
       "Write the way you'd write anywhere else. References become pills you can open, and anything you highlight stays findable long after you've closed the note.",
-    shot: {
-      src: "/tour/tour-write.png",
-      alt: "A note in Harvous containing a scripture pill, a highlighted phrase, and an annotation attached to it.",
-      width: HALF_W,
-      height: HALF_H,
-      direction: [
-        "One note holding all three at once:",
-        "a scripture pill, a highlighted phrase, an annotation.",
-        "Real sentences — not lorem, not one-word notes.",
-        "Title visible at the top.",
-      ],
-    },
     items: [
       {
         icons: ["fa7-solid:highlighter"],
@@ -187,18 +118,6 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     title: "Find the note you wrote months ago.",
     lead:
       "Browsing and searching stopped being two different places. Open Search, pick a kind or type what you remember, and act on what comes back without leaving the note underneath.",
-    shot: {
-      src: "/tour/tour-library.png",
-      alt: "Harvous's Search panel open over a note, showing tabs for each kind of saved thing and a list of results.",
-      width: HALF_W,
-      height: HALF_H,
-      direction: [
-        "The Search panel open OVER a note, note still visible behind.",
-        "The kind tabs showing (may need a wider window than 1280).",
-        "A query typed, so the actions row appears above results.",
-        "Results that look like real study — no scratch or test rows.",
-      ],
-    },
     items: [
       {
         icons: ["fa7-solid:magnifying-glass"],
@@ -225,18 +144,6 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
     title: "Study the same passage as your group.",
     lead:
       "Open a space for your group and it gets its own front door — its own cover, its own threads, its own tools. Your private study stays private.",
-    shot: {
-      src: "/tour/tour-share.png",
-      alt: "A shared space in Harvous with its own cover image, showing the notes and threads the group is studying together.",
-      width: HALF_W,
-      height: HALF_H,
-      direction: [
-        "A shared space hub with its cover image showing.",
-        "The space's own tools in its header.",
-        "Some group content — threads or notes, with names on them.",
-        "Use a demo space if a real one has anything private in it.",
-      ],
-    },
     // Split in two: the category's own two sections, a link for one note and
     // a space for a group — and the only pair here where one is free and the
     // other is Plus.

@@ -1,0 +1,103 @@
+---
+/**
+ * AppSpace — a shared space's own page: its cover, the group's tile and name,
+ * who's in it, the thread the group is working through, and the rest of its
+ * threads. Drawn from the tour's Family space with the app's own pieces.
+ */
+import AppIcon from "./AppIcon.astro";
+import { backdropSrc } from "../../../lib/next/content.ts";
+
+const THREADS = [
+  { title: "Going through Romans", sub: "Step 2 of 4 · 12 notes", step: 2 },
+  { title: "Joseph and his brothers", sub: "8 notes · Genesis 37–50", step: 0 },
+  { title: "Prayer requests", sub: "5 notes · updated Sunday", step: 0 },
+];
+---
+
+<div class="aspc">
+  <img class="aspc__cover" src={backdropSrc("076")} alt="" loading="lazy" data-aspc-cover />
+  <div class="aspc__body">
+    <div class="aspc__top">
+      <span class="aspc__icon"><AppIcon name="user-group" /></span>
+      <span class="aspc__faces">
+        <img src="/derek-avatar.webp" alt="" loading="lazy" />
+        <b class="is-a">K</b><b class="is-b">J</b><b class="is-c">M</b>
+      </span>
+    </div>
+    <p class="aui-h aspc__name">Family</p>
+    <p class="aspc__meta">4 members<i>·</i><strong>Invite</strong></p>
+    <p class="aspc__greet"><strong>Good evening, Derek.</strong> The group has added <span class="aspc__count">6 notes</span> here this week.</p>
+
+    <p class="aui-label aspc__label">Current thread</p>
+    <div class="aui-card aspc__group">
+      <div class="aui-row">
+        <span class="aui-tile aspc__thread"><AppIcon name="arrow-right-arrow-left" /></span>
+        <span><span class="aui-title">Going through Romans</span><span class="aspc__progress"><i style="width: 50%"></i></span><span class="aui-sub">Step 2 of 4<i>·</i>Romans 5–8 this week</span></span>
+        <span class="aui-acts"><AppIcon name="caret-right" /></span>
+      </div>
+    </div>
+
+    <p class="aui-label aspc__label">Threads</p>
+    <div class="aui-card aspc__group">
+      {THREADS.slice(1).map((t) => (
+        <div class="aui-row">
+          <span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span>
+          <span><span class="aui-title">{t.title}</span><span class="aui-sub">{t.sub}</span></span>
+          <span class="aui-acts"><AppIcon name="caret-right" /></span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .aspc { height: 100%; margin: 0 9%; font-size: 14px; background: var(--pds-bg-main); box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.1); }
+  .aspc__cover { display: block; width: 100%; height: 92px; object-fit: cover; }
+  .aspc__body { padding: 0 20px; }
+  .aspc__top { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -24px; }
+  .aspc__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    color: var(--pds-highlight-violet);
+    background: color-mix(in srgb, var(--pds-highlight-violet) 16%, var(--pds-bg-main));
+    box-shadow: 0 0 0 3px var(--pds-bg-main);
+  }
+  .aspc__icon :global(svg) { width: 19px; height: 19px; }
+  .aspc__faces { display: flex; padding-bottom: 2px; }
+  .aspc__faces > * {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin-left: -6px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    font-style: normal;
+    color: #fff;
+    object-fit: cover;
+    box-shadow: 0 0 0 2px var(--pds-bg-main);
+  }
+  .aspc__faces .is-a { background: #e07a5f; }
+  .aspc__faces .is-b { background: #3d8bd9; }
+  .aspc__faces .is-c { background: #8a6fd1; }
+  .aspc__name { margin: 10px 0 0 !important; font-size: 22px !important; }
+  .aspc__meta { margin: 2px 0 0; font-size: 12.5px; color: var(--pds-text-secondary); }
+  .aspc__meta i { font-style: normal; padding-inline: 0.3em; }
+  .aspc__meta strong { color: var(--pds-accent); font-weight: 600; }
+  .aspc__greet { margin: 12px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--pds-text-secondary); }
+  .aspc__greet strong { color: var(--pds-text-primary); font-weight: 600; }
+  .aspc__count { padding: 1px 7px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--pds-text-primary); background: var(--pds-bg-chip); white-space: nowrap; }
+  .aspc__label { margin: 16px 0 6px 2px !important; font-size: 12.5px !important; }
+  .aspc__group { border-radius: 12px !important; }
+  .aspc__group :global(.aui-sub) { display: block; font-size: 12px; color: var(--pds-text-secondary); }
+  .aspc__group :global(.aui-sub i) { font-style: normal; padding-inline: 0.3em; }
+  .aspc__group :global(.aui-acts) { color: var(--pds-text-tertiary); }
+  .aspc__group :global(.aui-acts svg) { width: 10px; height: 10px; }
+  .aspc__thread { color: var(--pill-thread, var(--pds-accent)) !important; }
+  .aspc__progress { display: block; height: 3px; margin: 5px 0 3px; border-radius: 3px; background: var(--pds-bg-track); overflow: hidden; }
+  .aspc__progress i { display: block; height: 100%; border-radius: inherit; background: var(--pill-thread, var(--pds-accent)); }
+</style>

@@ -10,7 +10,9 @@
 import AppIcon from "./AppIcon.astro";
 
 interface Props {
-  view?: "activity" | "bible" | "write";
+  /** Which tab is on; "search" is Search open over the page (the library): the
+      pill moves to the right-hand tools, as the app shows it. */
+  view?: "activity" | "bible" | "write" | "search";
   /** Show the right-side toolbar icons the note view has (share, more…). */
   noteTools?: boolean;
   class?: string;
@@ -31,9 +33,9 @@ const TABS = [
         <span class:list={["aw__tab", t.key === view && "is-on"]}><AppIcon name={t.icon} /></span>
       ))}
     </span>
-    <span class="aw__search"><AppIcon name="magnifying-glass" /> Search</span>
+    {view === "search" ? <span></span> : <span class="aw__search"><AppIcon name="magnifying-glass" /> Search</span>}
     <span class="aw__right">
-      {noteTools && (
+      {(noteTools || view === "search") && (
         <>
           <span class="aw__tool"><AppIcon name="magnifying-glass" /></span>
           <span class="aw__tool"><AppIcon name="share" /></span>
