@@ -467,7 +467,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   .v3-intro__watch :global(.hero-video-inline) {
     padding: 0.45rem 1rem 0.45rem 1.05rem;
     font-size: 0.9375rem;
-    background: #fff;
+    background: var(--color-card);
     border-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
     box-shadow: 0 8px 24px -14px rgba(15, 23, 42, 0.35);
   }
@@ -594,7 +594,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
     box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card);
   }
   .mini__tiles--chips span { border-radius: 999px; }
-  .mini__tiles .is-on { color: #fff; background: var(--pds-text-primary); box-shadow: none; }
+  .mini__tiles .is-on { color: var(--pds-bg-main); background: var(--pds-text-primary); box-shadow: none; }
   .mini--line { padding: 12px 14px; font-size: 13px; line-height: 1.5; text-align: left; }
   .mini__mention {
     display: inline-flex;
