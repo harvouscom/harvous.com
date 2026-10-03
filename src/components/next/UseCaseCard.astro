@@ -96,7 +96,7 @@ const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
     height: 2.5rem;
     border-radius: 0.75rem;
     color: color-mix(in srgb, var(--uc-ink) 70%, var(--color-ink));
-    background: rgba(255, 255, 255, 0.92);
+    background: color-mix(in srgb, var(--color-card) 92%, transparent);
     box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.35);
   }
   .ucard__icon :global(svg) { width: 1rem; height: 1rem; }
