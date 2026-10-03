@@ -185,7 +185,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   <header class="v3-hero">
     <div class="release-notes-frame__grid v3-hero__grid" aria-hidden="true"></div>
     <div class="v3-intro nx-wrap">
-      <Harvous3Numeral size="clamp(7rem, 19vw, 17rem)" />
+      <Harvous3Numeral size="clamp(5.5rem, 14vw, 12.5rem)" />
       <h1 class="v3-intro__title" data-reveal style="--reveal-delay: 1300ms;">Harvous 3 is here.</h1>
       <p class="nx-lead" data-reveal style="--reveal-delay: 1500ms;">
         The sidebar is gone. <strong>Activity</strong> opens on what you've studied, the
@@ -197,7 +197,6 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
           src="/harvous-3-walkthrough.mp4"
           label="Watch me walk through it in 4 min"
           variant="inline"
-          avatar="/derek-avatar.webp"
         />
       </div>
     </div>
@@ -464,14 +463,16 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   .v3-intro .nx-lead { margin: 1.5rem auto 0; }
   .v3-intro .nx-lead strong { color: var(--color-ink); font-weight: 600; }
   .v3-intro__watch { margin-top: 2rem; }
+  /* The same trigger as the home hero's (NextHero .hero__watch): play circle, frosted pill. */
   .v3-intro__watch :global(.hero-video-inline) {
-    padding: 0.45rem 1rem 0.45rem 1.05rem;
+    padding: 0.45rem 1rem 0.45rem 0.55rem;
     font-size: 0.9375rem;
-    background: #fff;
+    background: color-mix(in srgb, #fff 72%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
     box-shadow: 0 8px 24px -14px rgba(15, 23, 42, 0.35);
   }
-  .v3-intro__watch :global(.hero-video-inline__face) { margin-left: -0.55rem; }
 
 
   /* ── Section heads ── */

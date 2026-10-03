@@ -61,7 +61,8 @@ const hasMenu = menu || compact;
   .snav {
     position: sticky;
     top: 4.35rem;
-    z-index: 45;
+    /* Under the header (50) and the sticky "Try Harvous free" pill (40), which share the screen with it. */
+    z-index: 35;
     display: flex;
     justify-content: center;
     padding: 0 var(--nx-gutter, 1rem);
