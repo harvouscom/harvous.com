@@ -15,6 +15,8 @@ import ClosingCall from "../../components/next/ClosingCall.astro";
 import BlogNextCard from "../../components/next/BlogNextCard.astro";
 import AppIcon from "../../components/next/app/AppIcon.astro";
 import ChurchInterestForm from "../../components/ChurchInterestForm.astro";
+import ChurchScenes from "../../components/next/ChurchScenes.astro";
+import { fathomCta } from "../../lib/fathom-events.ts";
 import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
 import {
@@ -96,6 +98,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
 ---
 
 <NextLayout
+  stickySecondary={audience.interestForm ? { label: "Share interest", href: "#interest", track: fathomCta.churchInterestSticky } : undefined}
   title={audience.seoTitle}
   description={audience.seoDescription}
   ogImage={ogCard(`for-${audience.slug}`)}
@@ -125,6 +128,9 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
       </span>
     </figure>
 
+    {audience.sections.some((section) => section.visual) ? (
+      <ChurchScenes sections={audience.sections} />
+    ) : (
     <section class="nx-wrap fa-story" aria-label="The story">
       {audience.sections.map((section) => (
         <div class="fa-story__part" data-reveal>
@@ -149,6 +155,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
         </aside>
       )}
     </section>
+    )}
 
     {audience.moments.length > 0 && (
       <section class="nx-wrap fa-sec" aria-labelledby="moments-title">
@@ -239,7 +246,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
   </article>
 
   {audience.interestForm && (
-    <section class="nx-wrap fa-form">
+    <section class="nx-wrap fa-form" data-hides-sticky>
       <div class="fa-form__card"><ChurchInterestForm id="interest" /></div>
     </section>
   )}

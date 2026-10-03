@@ -1,0 +1,596 @@
+---
+/**
+ * ChurchScenes — the churches page's story, one row per section: short words on
+ * one side and, on the other, a small example of the church side working, drawn
+ * with the app UI recipes (next-app-ui.css) the way the Connector page is.
+ *
+ * Each section names its example with `visual`:
+ *   feed    — "New from your church" → Home's "From your church" → This Sunday's note
+ *   planner — each ministry's teaching plan (pick a ministry), scheduled and approval states
+ *   roles   — the staff roster, a volunteer's one room (switch), approval for teachers' posts
+ *   join    — the join link and its QR code (copy, rotate)
+ *   review  — a question from a ministry (answer it), and the count staff see
+ *   sees    — the counts a church gets, and what it never sees
+ * A section without one is a full-width line of text.
+ *
+ * Only what has shipped, and the app's own limits: counts never names, nothing
+ * shown below five, no attendance, no bulletin. Names and numbers are made up.
+ */
+import AppIcon from "./app/AppIcon.astro";
+import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
+import type { ForAudienceSection } from "../../lib/for-audiences-data.ts";
+
+interface Props {
+  sections: ForAudienceSection[];
+}
+const { sections } = Astro.props;
+
+const washes = ["coral", "sky", "amber", "mint", "violet", "blue"];
+
+/*
+ * An illustrative QR code: the three finder squares plus a seeded scatter of
+ * modules, so it reads as a QR at a glance without encoding anything. Two seeds,
+ * so "Rotate link" visibly swaps it for a new one.
+ */
+const QR = 25;
+const qrPath = (seed: number) => {
+  let x = seed;
+  const rand = () => ((x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  const finder = (r: number, c: number) =>
+    [[0, 0], [0, QR - 7], [QR - 7, 0]].some(([fr, fc]) => r >= fr && r < fr + 7 && c >= fc && c < fc + 7);
+  const inFinder = (r: number, c: number) => {
+    for (const [fr, fc] of [[0, 0], [0, QR - 7], [QR - 7, 0]]) {
+      const dr = r - fr, dc = c - fc;
+      if (dr >= 0 && dr < 7 && dc >= 0 && dc < 7) {
+        const ring = Math.min(dr, dc, 6 - dr, 6 - dc);
+        return ring === 0 || ring >= 2;
+      }
+    }
+    return false;
+  };
+  let d = "";
+  for (let r = 0; r < QR; r++) {
+    for (let c = 0; c < QR; c++) {
+      const on = finder(r, c) ? inFinder(r, c) : (r === 7 || c === 7 || (r < 8 && c > QR - 9) || (c < 8 && r > QR - 9)) ? false : rand() > 0.52;
+      if (on) d += `M${c} ${r}h1v1h-1z`;
+    }
+  }
+  return d;
+};
+const qrA = qrPath(7);
+const qrB = qrPath(31);
+
+const plans = {
+  church: [
+    { date: "Sun · Oct 5", title: "The church is born", series: "Acts · week 3", ref: "Acts 2", status: "Published", tone: "ok" },
+    { date: "Sun · Oct 12", title: "Devoted to the teaching", series: "Acts · week 4", ref: "Acts 2:42–47", status: "Scheduled · Sun 9:00", tone: "time" },
+    { date: "Sun · Oct 19", title: "Silver and gold have I none", series: "Acts · week 5", ref: "Acts 3", status: "Draft", tone: "draft" },
+  ],
+  youth: [
+    { date: "Wed · Oct 8", title: "Who do you say I am?", series: "Who is Jesus? · week 2", ref: "Mark 8:27–30", status: "Published", tone: "ok" },
+    { date: "Wed · Oct 15", title: "The one who calms the storm", series: "Who is Jesus? · week 3", ref: "Mark 4:35–41", status: "Waiting for approval", tone: "wait" },
+    { date: "Wed · Oct 22", title: "Bread for thousands", series: "Who is Jesus? · week 4", ref: "Mark 6:30–44", status: "Draft", tone: "draft" },
+  ],
+  women: [
+    { date: "Tue · Oct 7", title: "Where you go, I will go", series: "Ruth · week 2", ref: "Ruth 1", status: "Published", tone: "ok" },
+    { date: "Tue · Oct 14", title: "Gleaning in Boaz's field", series: "Ruth · week 3", ref: "Ruth 2", status: "Scheduled · Tue 6:30", tone: "time" },
+    { date: "Tue · Oct 21", title: "The redeemer", series: "Ruth · week 4", ref: "Ruth 3–4", status: "Draft", tone: "draft" },
+  ],
+};
+---
+
+<section class="nx-wrap chs" aria-label="How Harvous works for a church">
+  {sections.map((section, i) => {
+    const flip = sections.slice(0, i).filter((s) => s.visual).length % 2 === 1;
+    return section.visual ? (
+      <div class:list={["chs__row", flip && "is-flip"]}>
+        <div class="chs__text" data-reveal>
+          <p class="chs__num">{String(i + 1).padStart(2, "0")}</p>
+          <h2 class="chs__h">{section.heading}</h2>
+          {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+          {section.ctaHref && section.ctaLabel && (
+            <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref}>{section.ctaLabel}</a></p>
+          )}
+        </div>
+
+        <div class="chs__stage" style={`--wash: var(--tint-${washes[i % washes.length]}); --reveal-delay: 120ms;`} data-reveal>
+          {section.visual === "feed" && (
+            <div class="aui feed" data-scene="feed" data-state="push" role="group" aria-label="Example: a congregant's Home after their church publishes">
+              <button type="button" class="feed__push" data-go="feed">
+                <img src="/images/harvous-icon-sm.png" alt="" width="30" height="30" loading="lazy" />
+                <span class="feed__push-text">
+                  <span class="feed__push-top"><b>Harvous</b><span>now</span></span>
+                  <span class="aui-title">New from your church</span>
+                  <span class="aui-sub">3 new in Youth · 1 new in Women's</span>
+                </span>
+              </button>
+
+              <div class="aui-card feed__home">
+                <p class="feed__label"><AppIcon name="church" /> From your church <span>Grace Church</span></p>
+                <button type="button" class="aui-row feed__row feed__row--sunday" data-go="sunday">
+                  <span class="aui-tile feed__tile--sun"><AppIcon name="sun" /></span>
+                  <span><span class="aui-title">This Sunday · The church is born</span><span class="aui-sub">Acts 2 · Sunday service</span></span>
+                  <span class="feed__new">New</span>
+                </button>
+                <div class="aui-row feed__row">
+                  <span class="aui-tile"><AppIcon name="note-sticky" /></span>
+                  <span><span class="aui-title">Who do you say I am?</span><span class="aui-sub">Youth · Wednesday</span></span>
+                  <span class="feed__new">New</span>
+                </div>
+                <div class="aui-row feed__row">
+                  <span class="aui-tile"><AppIcon name="list-check" /></span>
+                  <span><span class="aui-title">Study plan: Ruth</span><span class="aui-sub">Women's · week 3 of 4</span></span>
+                  <span class="feed__new">New</span>
+                </div>
+              </div>
+
+              <div class="aui-paper feed__note">
+                <p class="feed__crumb"><AppIcon name="church" /> From Grace Church · This Sunday</p>
+                <p class="feed__title">The church is born</p>
+                <p class="feed__sec">Scripture</p>
+                <p><span class="aui-pill">Acts 2:1–13 <span class="aui-tr">NLT</span></span></p>
+                <p class="feed__sec">What I noticed</p>
+                <p class="feed__caret"><span aria-hidden="true"></span></p>
+                <p class="feed__sec">Prayer</p>
+                <p class="feed__foot"><AppIcon name="lock" /> Your note. The church never sees it.</p>
+              </div>
+              <button type="button" class="chs__replay" data-replay><AppIcon name="arrow-rotate-left" /> Replay</button>
+            </div>
+          )}
+
+          {section.visual === "planner" && (
+            <div class="aui aui-card plan" data-scene="planner" role="group" aria-label="Example: each ministry's teaching plan">
+              <div class="plan__bar">
+                <p class="plan__h"><AppIcon name="calendar-days" /> Teaching plan</p>
+                <span class="chs__seg" role="group" aria-label="Ministry">
+                  <button type="button" data-plan="church" aria-pressed="true">Church</button>
+                  <button type="button" data-plan="youth" aria-pressed="false">Youth</button>
+                  <button type="button" data-plan="women" aria-pressed="false">Women's</button>
+                </span>
+              </div>
+              {Object.entries(plans).map(([key, rows]) => (
+                <div class="plan__list" data-plan-list={key} hidden={key !== "church"}>
+                  {rows.map((r) => (
+                    <div class="plan__row">
+                      <span class="plan__date">{r.date}</span>
+                      <span class="plan__main">
+                        <span class="aui-title">{r.title}</span>
+                        <span class="plan__meta"><span class="plan__series"><AppIcon name="layer-group" />{r.series}</span><span class="aui-pill">{r.ref}</span></span>
+                      </span>
+                      <span class:list={["plan__status", `is-${r.tone}`]}>{r.tone === "ok" && <AppIcon name="check" />}{r.tone === "time" && <AppIcon name="clock" />}{r.status}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {section.visual === "roles" && (
+            <div class="aui aui-card roles" data-scene="roles" role="group" aria-label="Example: a church's staff and roles">
+              <p class="roles__crumb">Grace Church <AppIcon name="chevron-right" /> <strong>Staff</strong></p>
+              <div class="aui-card roles__group">
+                {[
+                  ["D", "Pastor Dana", "Decides what the church teaches", "Pastor"],
+                  ["M", "Marcus", "Keeps the plan and settings tidy", "Coordinator"],
+                  ["P", "Priya", "Publishes to Youth", "Teacher · Youth only"],
+                ].map(([i, name, sub, role]) => (
+                  <div class="aui-row">
+                    <span class="roles__face">{i}</span>
+                    <span><span class="aui-title">{name}</span><span class="aui-sub">{sub}</span></span>
+                    <span class="roles__chip">{role}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="aui-label roles__label">Group leaders</p>
+              <div class="aui-card roles__group">
+                <div class="aui-row roles__lead" data-lead-row>
+                  <span class="roles__face">J</span>
+                  <span><span class="aui-title">Jordan</span><span class="aui-sub" data-lead-sub data-on="Leads Thursday Youth group, nothing else" data-off="No longer leads a group">Leads Thursday Youth group, nothing else</span></span>
+                  <button type="button" class="chs__switch" role="switch" aria-checked="true" aria-label="Jordan leads Thursday Youth group" data-lead-switch><span></span></button>
+                </div>
+              </div>
+              <div class="aui-card roles__group roles__approve">
+                <div class="aui-row">
+                  <span class="aui-tile"><AppIcon name="circle-check" /></span>
+                  <span><span class="aui-title">Pastors approve teachers' posts</span><span class="aui-sub">Before anything goes out</span></span>
+                  <button type="button" class="chs__switch" role="switch" aria-checked="false" aria-label="Pastors approve teachers' posts" data-switch><span></span></button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {section.visual === "join" && (
+            <div class="aui aui-card join" data-scene="join" data-qr="a" role="group" aria-label="Example: a church's join link and QR code">
+              <p class="join__h"><AppIcon name="link" /> Invite to Grace Church</p>
+              <div class="join__qr" aria-hidden="true">
+                <svg viewBox={`-2 -2 ${QR + 4} ${QR + 4}`} class="join__code join__code--a"><rect x="-2" y="-2" width={QR + 4} height={QR + 4} rx="2" class="join__qr-bg" /><path d={qrA} /></svg>
+                <svg viewBox={`-2 -2 ${QR + 4} ${QR + 4}`} class="join__code join__code--b"><rect x="-2" y="-2" width={QR + 4} height={QR + 4} rx="2" class="join__qr-bg" /><path d={qrB} /></svg>
+                <img src="/images/harvous-icon-sm.png" alt="" width="40" height="40" loading="lazy" class="join__qr-logo" />
+              </div>
+              <p class="join__link"><AppIcon name="link" /><span data-join-url data-a="harvous.com/churches/join/k4f9-grace" data-b="harvous.com/churches/join/q2m7-grace">harvous.com/churches/join/k4f9-grace</span><button type="button" class="join__btn join__btn--go" data-copy>Copy</button></p>
+              <p class="join__acts">
+                <button type="button" class="join__btn" data-rotate><AppIcon name="arrows-rotate" /> Rotate link</button>
+                <span class="join__btn join__btn--ghost"><AppIcon name="download" /> QR as PNG</span>
+              </p>
+              <p class="join__stat"><b data-join-count>38</b> joined via link <span class="join__old" data-join-old>· the old link stopped working</span></p>
+            </div>
+          )}
+
+          {section.visual === "review" && (
+            <div class="aui rev" data-scene="review" role="group" aria-label="Example: a review question from a ministry">
+              <div class="aui-card rev__card">
+                <p class="rev__from">From Youth.</p>
+                <p class="rev__q">In Acts 2, what did the first believers devote themselves to?</p>
+                <div class="rev__opts">
+                  <button type="button" class="rev__opt" data-right="true">The apostles' teaching and prayer</button>
+                  <button type="button" class="rev__opt">Building a new temple</button>
+                  <button type="button" class="rev__opt">Choosing a king</button>
+                </div>
+                <p class="rev__done" data-rev-done><AppIcon name="check" /> That's it. Acts 2:42.</p>
+              </div>
+              <div class="aui-card rev__staff">
+                <p class="rev__staff-h">What staff see</p>
+                <span class="chs__seg" role="group" aria-label="Channel">
+                  <button type="button" data-count="youth" aria-pressed="true">Youth</button>
+                  <button type="button" data-count="men" aria-pressed="false">Men's breakfast</button>
+                </span>
+                <p class="rev__count" data-count-of="youth"><b>Answered by 23</b> · no names, no scores</p>
+                <p class="rev__count" data-count-of="men" hidden><b>Fewer than 5 answered</b> · counts show from five</p>
+              </div>
+            </div>
+          )}
+
+          {section.visual === "sees" && (
+            <div class="aui aui-card sees" data-scene="sees" role="group" aria-label="What a church can and can't see">
+              <p class="sees__h">Grace Church <span>this month</span></p>
+              <p class="sees__big"><b>214</b> connected</p>
+              {[
+                ["Sunday service", 168],
+                ["Youth", 46],
+                ["Women's", 31],
+              ].map(([name, n]) => (
+                <div class="sees__bar" style={`--w: ${(Number(n) / 214) * 100}%;`}>
+                  <span class="sees__name">{name}</span>
+                  <span class="sees__track"><i></i></span>
+                  <span class="sees__n">{n} follow</span>
+                </div>
+              ))}
+              <p class="aui-label sees__label">Never shown</p>
+              {["Who wrote notes", "What anyone wrote", "Who came on Sunday"].map((t) => (
+                <div class="aui-row sees__no">
+                  <span class="aui-tile"><AppIcon name="eye-slash" /></span>
+                  <span><span class="aui-title">{t}</span></span>
+                  <span class="sees__mark"><AppIcon name="xmark" /></span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    ) : (
+      <div class="chs__note" data-reveal>
+        <h2 class="chs__h">{section.heading}</h2>
+        {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+      </div>
+    );
+  })}
+</section>
+
+<script>
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /** Runs `play` once, when `el` first scrolls into view (or straight away without IO). */
+  const onFirstView = (el: Element, play: () => void) => {
+    if (!("IntersectionObserver" in window)) return play();
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        play();
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(el);
+  };
+
+  /** A segmented control: each button shows its own panel. */
+  const segmented = (scene: Element, btnAttr: string, panelAttr: string) => {
+    const btns = scene.querySelectorAll<HTMLButtonElement>(`[${btnAttr}]`);
+    btns.forEach((btn) =>
+      btn.addEventListener("click", () => {
+        btns.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        scene.querySelectorAll<HTMLElement>(`[${panelAttr}]`).forEach((p) => {
+          p.hidden = p.getAttribute(panelAttr) !== btn.getAttribute(btnAttr);
+        });
+      })
+    );
+  };
+
+  // Feed: the push arrives, opens Home's "From your church", then This Sunday's note.
+  document.querySelectorAll<HTMLElement>('[data-scene="feed"]').forEach((scene) => {
+    let timers: ReturnType<typeof setTimeout>[] = [];
+    const go = (state: string) => (scene.dataset.state = state);
+    const play = () => {
+      timers.forEach(clearTimeout);
+      go("push");
+      if (still) return go("sunday");
+      timers = [setTimeout(() => go("feed"), 2200), setTimeout(() => go("sunday"), 4600)];
+    };
+    scene.querySelectorAll<HTMLElement>("[data-go]").forEach((el) =>
+      el.addEventListener("click", () => {
+        timers.forEach(clearTimeout);
+        go(el.dataset.go ?? "feed");
+      })
+    );
+    scene.querySelector("[data-replay]")?.addEventListener("click", play);
+    if (still) return go("sunday");
+    onFirstView(scene, play);
+  });
+
+  // Planner: each ministry's plan.
+  document.querySelectorAll('[data-scene="planner"]').forEach((scene) => segmented(scene, "data-plan", "data-plan-list"));
+
+  // Roles: a volunteer's one room, granted and taken back; the approval switch.
+  document.querySelectorAll<HTMLElement>('[data-scene="roles"]').forEach((scene) => {
+    const lead = scene.querySelector<HTMLButtonElement>("[data-lead-switch]");
+    const row = scene.querySelector<HTMLElement>("[data-lead-row]");
+    const sub = scene.querySelector<HTMLElement>("[data-lead-sub]");
+    lead?.addEventListener("click", () => {
+      const on = lead.getAttribute("aria-checked") !== "true";
+      lead.setAttribute("aria-checked", String(on));
+      row?.classList.toggle("is-off", !on);
+      if (sub) sub.textContent = (on ? sub.dataset.on : sub.dataset.off) ?? "";
+    });
+    scene.querySelectorAll<HTMLButtonElement>("[data-switch]").forEach((sw) =>
+      sw.addEventListener("click", () => sw.setAttribute("aria-checked", String(sw.getAttribute("aria-checked") !== "true")))
+    );
+  });
+
+  // Join: copy the link; rotate it for a new link and code.
+  document.querySelectorAll<HTMLElement>('[data-scene="join"]').forEach((scene) => {
+    const url = scene.querySelector<HTMLElement>("[data-join-url]");
+    const copy = scene.querySelector<HTMLButtonElement>("[data-copy]");
+    copy?.addEventListener("click", () => {
+      copy.textContent = "Copied";
+      setTimeout(() => (copy.textContent = "Copy"), 1600);
+    });
+    scene.querySelector("[data-rotate]")?.addEventListener("click", () => {
+      const next = scene.dataset.qr === "a" ? "b" : "a";
+      scene.dataset.qr = next;
+      scene.classList.add("is-rotated");
+      if (url) url.textContent = url.dataset[next] ?? url.textContent;
+    });
+  });
+
+  // Review: answer the question; switch which channel's count staff see.
+  document.querySelectorAll<HTMLElement>('[data-scene="review"]').forEach((scene) => {
+    scene.querySelectorAll<HTMLButtonElement>(".rev__opt").forEach((opt) =>
+      opt.addEventListener("click", () => {
+        scene.querySelectorAll(".rev__opt").forEach((o) => o.classList.remove("is-right", "is-wrong"));
+        opt.classList.add(opt.dataset.right ? "is-right" : "is-wrong");
+        scene.classList.toggle("is-answered", Boolean(opt.dataset.right));
+      })
+    );
+    segmented(scene, "data-count", "data-count-of");
+  });
+</script>
+
+<style>
+  .chs {
+    max-width: calc(68rem + 2 * var(--nx-gutter));
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: clamp(4rem, 9vw, 7rem);
+  }
+
+  .chs__row { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 56rem) {
+    .chs__row { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 5rem); }
+    .chs__row.is-flip { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+    .chs__row.is-flip .chs__stage { order: -1; }
+  }
+  .chs__num {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--aud-ink, var(--color-ink-faint));
+  }
+  .chs__h {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .chs__text p:not(.chs__num, .chs__cta), .chs__note p {
+    margin: 0.9rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .chs__cta { margin: 1.5rem 0 0; }
+  .chs__note { max-width: 40rem; margin-inline: auto; text-align: center; }
+
+  .chs__stage {
+    display: grid;
+    place-items: center;
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.75rem);
+    border-radius: var(--nx-radius-scene);
+    background: var(--wash);
+    min-height: 22rem;
+  }
+  .chs__stage > * { width: 100%; max-width: 30rem; }
+  .chs button { font: inherit; cursor: pointer; border: 0; }
+  .chs button:focus-visible { outline: 2px solid var(--pds-accent); outline-offset: 2px; }
+  .chs :global(svg) { flex: none; }
+  .chs :global(.aui-sub) { display: block; font-size: 12px; color: var(--pds-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chs :global(.aui-row) { padding: 9px 13px 9px 11px; }
+
+  /* Shared controls */
+  .chs__seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: 999px; background: var(--pds-bg-chip); }
+  .chs__seg button { padding: 4px 10px; border-radius: 999px; font-size: 12px; color: var(--pds-text-secondary); background: none; }
+  .chs__seg button[aria-pressed="true"] { color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-chip-selected); }
+  .chs__switch { position: relative; width: 40px; height: 24px; padding: 0; border-radius: 999px; background: var(--pds-bg-track); transition: background-color 200ms ease; }
+  .chs__switch span { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: var(--pds-shadow-track-knob); transition: transform 200ms var(--nx-ease); }
+  .chs__switch[aria-checked="true"] { background: var(--pds-accent); }
+  .chs__switch[aria-checked="true"] span { transform: translateX(16px); }
+  .chs__replay { display: inline-flex; align-items: center; gap: 5px; margin: 10px 0 0 auto; padding: 4px 10px; border-radius: 999px; font-size: 12px; color: var(--pds-text-secondary); background: color-mix(in srgb, var(--pds-bg-main) 70%, transparent); }
+  .chs__replay :global(svg) { width: 10px; height: 10px; }
+
+  /* ── Feed: push → From your church → This Sunday ──────────────────────── */
+  .feed { position: relative; display: grid; font-size: 14px; }
+  .feed > .feed__push, .feed > .feed__home, .feed > .feed__note { grid-area: 1 / 1; align-self: start; }
+  .feed > .chs__replay { grid-area: 2 / 1; }
+  .feed__push {
+    display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 11px 13px; border-radius: 16px; text-align: left;
+    background: color-mix(in srgb, var(--pds-bg-main) 88%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--pds-shadow-popover), 0 20px 40px -24px rgba(15, 23, 42, 0.35);
+    z-index: 2; transition: transform 500ms var(--nx-ease), opacity 400ms ease;
+  }
+  .feed__push img { width: 30px; height: 30px; border-radius: 8px; }
+  .feed__push-text { flex: 1; min-width: 0; color: var(--pds-text-primary); }
+  .feed__push-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--pds-text-secondary); }
+  .feed__push-top b { font-weight: 600; color: var(--pds-text-primary); }
+  .feed__home, .feed__note { box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; transition: transform 550ms var(--nx-ease), opacity 400ms ease; }
+  .feed__home { margin-top: 74px; }
+  .feed__label { display: flex; align-items: center; gap: 6px; margin: 0; padding: 11px 13px 5px; font-size: 12.5px; color: var(--pds-text-secondary); }
+  .feed__label span { margin-left: auto; font-size: 11.5px; color: var(--pds-text-tertiary); }
+  .feed__label :global(svg) { width: 11px; height: 11px; }
+  .feed__row { width: 100%; text-align: left; background: none; color: inherit; }
+  .feed__row--sunday { border-radius: 10px; }
+  .feed__row--sunday:hover { background: var(--pds-bg-row-hover); }
+  .feed__tile--sun { color: #d99a1c !important; background: color-mix(in srgb, #f5b83d 18%, var(--pds-bg-main)) !important; }
+  .feed__new { padding: 2px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 600; color: var(--pds-on-accent); background: var(--pds-accent); }
+  .feed__note { padding: 14px 16px !important; font-size: 13.5px; line-height: 1.5; }
+  .feed__note p { margin: 0; }
+  .feed__crumb { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--pds-text-secondary); }
+  .feed__crumb :global(svg) { width: 10px; height: 10px; }
+  .feed__title { margin: 4px 0 4px !important; font-family: var(--pds-font-display); font-size: 18px; font-weight: 600; color: var(--pds-text-primary); }
+  .feed__sec { margin-top: 10px !important; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--pds-text-tertiary); }
+  .feed__caret { height: 1.3em; display: flex; align-items: center; }
+  .feed__caret span { width: 1.5px; height: 1.1em; background: var(--pds-accent); animation: chs-blink 1.1s steps(1) infinite; }
+  .feed__foot { display: flex; align-items: center; gap: 6px; margin-top: 12px !important; padding-top: 10px; font-size: 12px; color: var(--pds-text-secondary); box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .feed__foot :global(svg) { width: 10px; height: 10px; }
+  /* States */
+  .feed[data-state="push"] .feed__home { opacity: 0; transform: translateY(14px); }
+  .feed[data-state="push"] .feed__note, .feed[data-state="feed"] .feed__note { opacity: 0; transform: translateY(20px) scale(0.98); pointer-events: none; }
+  .feed[data-state="feed"] .feed__push, .feed[data-state="sunday"] .feed__push { opacity: 0; transform: translateY(-14px) scale(0.96); pointer-events: none; }
+  .feed[data-state="sunday"] .feed__home { opacity: 0; transform: scale(0.96); pointer-events: none; }
+  .feed[data-state="push"] .feed__push { animation: chs-drop 600ms var(--nx-ease) both; }
+
+  /* ── Planner ──────────────────────────────────────────────────────────── */
+  .plan { font-size: 14px; box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
+  .plan__bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px; box-shadow: inset 0 -0.5px 0 var(--pds-border); }
+  .plan__h { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; }
+  .plan__h :global(svg) { width: 12px; height: 12px; }
+  .plan__list { padding: 6px; }
+  .plan__list[hidden] { display: none; }
+  .plan__row { display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); gap: 4px 10px; align-items: center; padding: 9px 8px; border-radius: 10px; animation: chs-in 350ms var(--nx-ease) both; }
+  .plan__row:nth-child(2) { animation-delay: 60ms; } .plan__row:nth-child(3) { animation-delay: 120ms; }
+  .plan__row + .plan__row { box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .plan__date { font-size: 11.5px; font-weight: 600; white-space: nowrap; color: var(--pds-text-secondary); }
+  .plan__main { min-width: 0; }
+  .plan__meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; font-size: 11.5px; }
+  .plan__series { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; font-weight: 500; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .plan__series :global(svg) { width: 9px; height: 9px; }
+  .plan__status { grid-column: 2; justify-self: start; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .plan__status :global(svg) { width: 9px; height: 9px; }
+  .plan__status.is-ok { padding-inline: 0; color: var(--pds-text-tertiary); }
+  .plan__status.is-time { color: var(--pds-accent); background: color-mix(in srgb, var(--pds-accent) 14%, transparent); }
+  .plan__status.is-wait { color: #c47f12; background: color-mix(in srgb, #f5b83d 22%, transparent); }
+  .plan__status.is-draft { color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+
+  /* ── Roles ────────────────────────────────────────────────────────────── */
+  .roles { padding: 14px; background: var(--pds-bg-page) !important; font-size: 14px; box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
+  .roles__crumb { display: flex; align-items: center; gap: 6px; margin: 2px 4px 12px; font-size: 13px; color: var(--pds-text-secondary); }
+  .roles__crumb strong { color: var(--pds-text-primary); font-weight: 600; }
+  .roles__crumb :global(svg) { width: 10px; height: 10px; }
+  .roles__group { border-radius: 12px !important; }
+  .roles__label { margin: 14px 4px 6px !important; font-size: 12.5px !important; }
+  .roles__approve { margin-top: 10px; }
+  /* One family, not a rainbow: soft tints of the page's own accent. */
+  .roles__face { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 700; color: color-mix(in srgb, var(--aud-ink, var(--pds-accent)) 80%, var(--pds-text-primary)); background: color-mix(in srgb, var(--aud-ink, var(--pds-accent)) 16%, var(--pds-bg-main)); transition: opacity 200ms ease, filter 200ms ease; }
+  .roles__chip { padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .roles__lead.is-off .roles__face { opacity: 0.4; filter: grayscale(1); }
+  .roles__lead.is-off :global(.aui-title) { color: var(--pds-text-secondary); }
+
+  /* ── Join link and QR ─────────────────────────────────────────────────── */
+  .join { padding: 16px; font-size: 14px; box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
+  .join__h { display: flex; align-items: center; gap: 7px; margin: 0; font-weight: 600; }
+  .join__h :global(svg) { width: 12px; height: 12px; }
+  .join__qr { position: relative; display: grid; place-items: center; width: 9.5rem; height: 9.5rem; margin: 14px auto 12px; }
+  .join__code { grid-area: 1 / 1; width: 100%; height: 100%; transition: opacity 350ms ease, transform 450ms var(--nx-ease); }
+  .join__code path { fill: #0d0e12; }
+  .join__qr-bg { fill: #fff; }
+  .join__code--b { opacity: 0; transform: rotate(-8deg) scale(0.9); }
+  .join[data-qr="b"] .join__code--a { opacity: 0; transform: rotate(8deg) scale(0.9); }
+  .join[data-qr="b"] .join__code--b { opacity: 1; transform: none; }
+  .join__qr-logo { position: absolute; width: 30px; height: 30px; border-radius: 8px; box-shadow: 0 0 0 4px #fff; }
+  .join__link { display: flex; align-items: center; gap: 8px; margin: 0; padding: 6px 6px 6px 11px; border-radius: 10px; font-size: 12.5px; background: var(--pds-bg-chip); }
+  .join__link span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .join__link > :global(svg) { width: 11px; height: 11px; color: var(--pds-text-secondary); }
+  .join__btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .join__btn :global(svg) { width: 10px; height: 10px; }
+  .join__btn--go { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .join__btn--ghost { color: var(--pds-text-secondary); background: none; box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium); }
+  .join__acts { display: flex; gap: 8px; margin: 10px 0 0; }
+  .join__stat { margin: 12px 0 0; padding-top: 10px; font-size: 12.5px; color: var(--pds-text-secondary); box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .join__stat b { color: var(--pds-text-primary); }
+  .join__old { opacity: 0; transition: opacity 300ms ease; }
+  .join.is-rotated .join__old { opacity: 1; }
+
+  /* ── Review ───────────────────────────────────────────────────────────── */
+  .rev { display: grid; gap: 10px; font-size: 14px; }
+  .rev__card, .rev__staff { box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
+  .rev__card { padding: 14px 16px; }
+  .rev__from { margin: 0; font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--pds-text-tertiary); }
+  .rev__q { margin: 6px 0 0; font-size: 15px; line-height: 1.45; color: var(--pds-text-primary); }
+  .rev__opts { display: grid; gap: 6px; margin-top: 12px; }
+  .rev__opt { padding: 9px 12px; border-radius: 10px; text-align: left; font-size: 13.5px; color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card); transition: background-color 150ms ease, box-shadow 150ms ease; }
+  .rev__opt:hover { background: var(--pds-bg-row-hover); }
+  .rev__opt.is-right { color: #1f7a45; background: color-mix(in srgb, #2f9e5b 14%, var(--pds-bg-main)); box-shadow: inset 0 0 0 1.5px #2f9e5b; }
+  .rev__opt.is-wrong { animation: chs-shake 360ms ease; }
+  .rev__done { display: none; align-items: center; gap: 6px; margin: 10px 0 0; font-size: 12.5px; color: #2f9e5b; }
+  .rev__done :global(svg) { width: 11px; height: 11px; }
+  .rev.is-answered .rev__done { display: flex; animation: chs-in 300ms var(--nx-ease); }
+  .rev__staff { display: grid; gap: 8px; justify-items: start; padding: 12px 14px; }
+  .rev__staff-h { margin: 0; font-size: 12px; color: var(--pds-text-secondary); }
+  .rev__count { margin: 0; font-size: 13px; color: var(--pds-text-secondary); }
+  .rev__count b { color: var(--pds-text-primary); font-weight: 600; }
+  .rev__count[hidden] { display: none; }
+
+  /* ── What a church sees ───────────────────────────────────────────────── */
+  .sees { padding: 14px 16px; font-size: 14px; box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
+  .sees__h { display: flex; justify-content: space-between; margin: 0; font-weight: 600; }
+  .sees__h span { font-weight: 400; font-size: 12px; color: var(--pds-text-tertiary); }
+  .sees__big { margin: 8px 0 10px; font-size: 13px; color: var(--pds-text-secondary); }
+  .sees__big b { font-family: var(--pds-font-display); font-size: 28px; font-weight: 600; color: var(--pds-text-primary); margin-right: 4px; }
+  .sees__bar { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 4.5rem; gap: 10px; align-items: center; margin-top: 7px; font-size: 12.5px; }
+  .sees__name { color: var(--pds-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sees__track { height: 6px; border-radius: 6px; background: var(--pds-bg-track); overflow: hidden; }
+  .sees__track i { display: block; width: var(--w); height: 100%; border-radius: inherit; background: var(--pds-accent); transform-origin: left; }
+  .sees__n { text-align: right; color: var(--pds-text-secondary); white-space: nowrap; }
+  .sees__label { margin: 16px 0 4px 2px !important; font-size: 12.5px !important; }
+  .sees__no { padding: 7px 4px !important; }
+  .sees__no :global(.aui-title) { color: var(--pds-text-secondary); text-decoration: line-through; text-decoration-color: color-mix(in srgb, #e0475b 60%, transparent); }
+  .sees__mark { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #e0475b; background: color-mix(in srgb, #e0475b 14%, transparent); }
+  .sees__mark :global(svg) { width: 10px; height: 10px; }
+
+  @keyframes chs-in { from { opacity: 0; transform: translateY(4px); } }
+  @keyframes chs-drop { from { opacity: 0; transform: translateY(-18px) scale(0.97); } }
+  @keyframes chs-blink { 50% { opacity: 0; } }
+  @keyframes chs-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+  @keyframes chs-grow { from { transform: scaleX(0); } }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .chs__stage:global(.revealed) .sees__track i { animation: chs-grow 900ms var(--nx-ease) 300ms both; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chs *, .chs *::before { animation: none !important; transition: none !important; }
+  }
+</style>

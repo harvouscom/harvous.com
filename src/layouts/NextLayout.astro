@@ -19,7 +19,7 @@
 import BaseLayout from "./BaseLayout.astro";
 import NextHeader from "../components/next/NextHeader.astro";
 import NextFooter from "../components/next/NextFooter.astro";
-import StickyTryPill from "../components/next/StickyTryPill.astro";
+import StickyTryPill, { type StickySecondary } from "../components/next/StickyTryPill.astro";
 import "../styles/next.css";
 import "../styles/next-app-ui.css";
 
@@ -36,9 +36,11 @@ interface Props {
   /** Keep the previous design's page rails (.page-frame) inside the new
       chrome — for pages still on the old body design (the blog hub). */
   frame?: boolean;
+  /** A second action beside the fixed "Try Harvous free" pill (see StickyTryPill). */
+  stickySecondary?: StickySecondary;
 }
 
-const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogImageHeight, ogType, articlePublishedTime, frame = false } = Astro.props;
+const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogImageHeight, ogType, articlePublishedTime, frame = false, stickySecondary } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} ogImage={ogImage} ogImageWidth={ogImageWidth} ogImageHeight={ogImageHeight} ogType={ogType} articlePublishedTime={articlePublishedTime} noindex={noindex} jsonLd={jsonLd} bare>
@@ -58,6 +60,6 @@ const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogIm
       {frame ? <div class="page-frame nx-frame"><slot /></div> : <slot />}
     </main>
     <NextFooter />
-    <StickyTryPill />
+    <StickyTryPill secondary={stickySecondary} />
   </div>
 </BaseLayout>

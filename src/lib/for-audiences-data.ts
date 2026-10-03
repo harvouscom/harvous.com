@@ -9,6 +9,12 @@ export type ForAudienceMoment = {
 export type ForAudienceSection = {
   heading: string;
   paragraphs: string[];
+  /**
+   * A stylized app moment drawn beside the section, by name (ChurchScenes.astro).
+   * A page whose sections carry one renders as text-and-example rows instead of
+   * a single column of prose.
+   */
+  visual?: string;
   /** Optional gradient CTA under the section body (e.g. link to #interest). */
   ctaHref?: string;
   ctaLabel?: string;
@@ -622,65 +628,58 @@ const audiences: ForAudience[] = [
       "Harvous serves how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
     sections: [
       {
-        heading: "A room for the group",
+        heading: "From your church, on Sunday",
+        visual: "feed",
         paragraphs: [
-          "The first group layer is [Shared Spaces](/add-ons/shared-spaces/) — a room your church or small group can study in together, with threads, scripture, and notes that live beyond the hour you meet. Joining a space is free for members; hosting is included with [Harvous Plus](/pricing/).",
-          "If your church needs a shared study space for a class or small group, start there.",
+          "People connect to their church in Settings and pick the ministries they want. What the church publishes lands on their Home as \"From your church\", and This Sunday opens with the church's note template, ready for their own words. The note stays theirs.",
         ],
       },
       {
         heading: "Plan what each ministry teaches",
+        visual: "planner",
         paragraphs: [
-          "Your church keeps a teaching plan — the date, the passage, the title, the series it belongs to. Each ministry can keep its own alongside it, so the youth group's Wednesdays sit next to the main service's Sundays instead of competing for the same row.",
-          "A series is a real thing rather than a label you retype each week. Name it once and every week carries it; rename it in one place and week eight and week one agree again. When you know the shape of a run, plan the whole quarter in one pass instead of thirteen trips through the same form.",
+          "Each ministry keeps its own teaching plan, so Youth's Wednesdays sit beside the Sunday service. Name a series once and every week carries it. Schedule a post for Sunday morning, or have a pastor approve it first.",
         ],
       },
       {
-        heading: "Roles that match how a church actually works",
+        heading: "Roles that match how a church works",
+        visual: "roles",
         paragraphs: [
-          "A pastor decides what the church teaches and what its notes start from. A teacher reads the plan they teach from and publishes to the room they lead. Those are different jobs, and Harvous treats them that way.",
-          "The volunteer who actually runs the youth channel can lead it — one room, granted deliberately and taken back the same way. That leadership is theirs alone; it reaches the room they were given and nothing else in the church.",
+          "A pastor decides what the church teaches. A teacher publishes to the ministry they lead, and only there. The volunteer who runs a group can lead that one room, granted on purpose and taken back the same way.",
         ],
         ctaHref: "#interest",
         ctaLabel: "Tell us about your church",
       },
       {
-        heading: "What a church sees",
+        heading: "Invite with a link",
+        visual: "join",
         paragraphs: [
-          "How many people are connected, and how many follow each channel. That is the whole of it. A ministry that is reaching people looks different from one that is quiet, which is the question worth answering.",
-          "Harvous never shows a church who wrote what, or whether anyone wrote at all. Not a summary, not a name, not a count of who took notes on Sunday. Study belongs to the person doing it — a church that could see it would be a different kind of tool than this one.",
+          "Share a join link, or print its QR code for the bulletin board or the projector. Rotate it whenever you like, and see how many people joined through it.",
+        ],
+      },
+      {
+        heading: "Review from your church",
+        visual: "review",
+        paragraphs: [
+          "Teachers write a few questions on what their ministry is studying: multiple choice, put in order, match the pairs. They're free for anyone who follows, and staff only ever see how many answered.",
+        ],
+      },
+      {
+        heading: "What a church sees",
+        visual: "sees",
+        paragraphs: [
+          "How many people are connected, and how many follow each channel. That's all. Harvous never shows a church who wrote what, or whether anyone wrote at all.",
         ],
       },
       {
         heading: "What Harvous is not",
         paragraphs: [
-          "Harvous is a notes and study tool — not a full church management system. It complements tools churches already use for people, groups, services, and resource distribution. It is never a substitute for pastors, friends, or the gathered body.",
-          "Down the road, we plan integrations with church tools like Planning Center (and similar systems) so rosters and groups can sync into Harvous — keep your ChMS and Groups Resources; use Harvous where Bible study lives.",
+          "A notes and study tool, not a church management system: no giving, check-in, or scheduling, and never a substitute for pastors or the gathered body. Down the road, I plan integrations with tools like Planning Center so rosters can sync in.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:user-group",
-        heading: "Groups study together",
-        body: "Shared Spaces keep what a class or small group discovers — in the same threads, after you leave the room.",
-      },
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "A plan per ministry",
-        body: "Youth's Wednesdays sit beside the church's Sundays — each ministry keeps its own, and a series holds its weeks together.",
-      },
-      {
-        icon: "fa7-solid:link",
-        heading: "Connect, don’t clutter",
-        body: "Congregants link to their church to receive curriculum — no staff roster to join, and one next gathering rather than a calendar.",
-      },
-      {
-        icon: "fa7-solid:hands-praying",
-        heading: "A tool for education",
-        body: "Believers study, pastors teach, churches organize — Harvous helps the memory and the materials, not the ministry itself.",
-      },
-    ],
+    /* The scenes beside each section show these moments, so the grid is left out here. */
+    moments: [],
     featureIds: ["shared-spaces", "threads", "scripture-pills", "highlights"],
     featuresHeading: "What church study builds on",
     featuresLead:
@@ -690,7 +689,7 @@ const audiences: ForAudience[] = [
       "band",
       "groupme",
       "whatsapp",
-      "church-notes",
+      "subsplash-groups",
       "youversion",
       "notion",
     ],

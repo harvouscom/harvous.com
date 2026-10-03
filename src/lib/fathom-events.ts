@@ -138,4 +138,6 @@ export const fathomCta = {
   videoTour: "video_tour_click",
   /** Homepage hero — the small "Harvous 3 is here" callout linking to /3/. */
   v3Announce: "cta_v3_announce",
+  /** /for/churches/ — "Share interest" in the fixed bottom bar, to the interest form. */
+  churchInterestSticky: "church_interest_sticky",
 } as const;
