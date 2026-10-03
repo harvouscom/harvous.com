@@ -55,8 +55,8 @@ const ADDON_PAGES: AddonPage[] = [
           "Week four of your James study gets its own thread. Everyone's notes from that session live together — questions, answers, and scripture references in one place.",
           "Look back at what the group found, weeks after the night everyone was in the room.",
         ],
-        image: "/app-organize.png",
-        imageAlt: "Notes organized into folders and threads in Harvous",
+        visual: "group-threads",
+        label: "A group's thread for week four of James, with notes and passages from three members",
       },
     ],
     moments: [

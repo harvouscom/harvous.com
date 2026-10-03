@@ -60,15 +60,6 @@ compress() {
   "$DINKY" compress-image "$@" -f webp --smart-quality --strip-metadata -o "$outdir" --json
 }
 
-echo "→ Hero + feature screenshots (max 1920px)"
-compress \
-  "$PUB/app-full.png" \
-  "$PUB/app-note.png" \
-  "$PUB/app-scripture.png" \
-  "$PUB/app-highlight.png" \
-  "$PUB/app-organize.png" \
-  -w 1920
-
 echo "→ Open Graph + founder assets"
 # og.png deliberately has no WebP sibling. It is only ever a meta tag URL
 # (BaseLayout sets og:image / twitter:image to it), never routed through
