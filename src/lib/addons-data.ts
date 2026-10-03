@@ -191,37 +191,56 @@ const ADDON_PAGES: AddonPage[] = [
     slug: "connector",
     href: "/add-ons/connector/",
     title: "Connector",
-    tagline: "Ask Claude or ChatGPT about your own notes. They can read your study, never change it.",
-    seoTitle: "Connector — use your Bible study in Claude and ChatGPT | Harvous Plus",
+    tagline: "Ask Claude, ChatGPT, and other AI apps about your own notes, then keep going in Harvous. They can read your study, never change it.",
+    seoTitle: "Connector — use your Bible study in Claude, ChatGPT, and other AI apps | Harvous Plus",
     seoDescription:
-      "Connect Claude, ChatGPT, and other AI apps to your Harvous notes. They read your study to answer your questions, and can never add, edit, or delete anything. Included with Harvous Plus.",
+      "Connect Claude, ChatGPT, Grok, and other AI apps to your Harvous notes. They read your study to answer your questions, can start a new note when you ask, and can never edit or delete anything. Included with Harvous Plus.",
     icon: "fa7-solid:puzzle-piece",
     ink: "var(--study-dock-accent-neutral)",
     image: "/images/auth-hero/ai_bg_053.webp",
     comingSoon: false,
     heroTitle: "Ask your AI app about what you've actually studied.",
     heroLead:
-      "Connector lets Claude, ChatGPT, and other AI apps read your Harvous notes, so when you ask about a passage they start from what you wrote instead of a guess. They can read your study. They can't change it.",
+      "Connector lets Claude, ChatGPT, and other AI apps read your Harvous notes, so when you ask about a passage they start from what you wrote instead of a guess. When a conversation is worth keeping, they can start a new note for you to pick up in Harvous. What's already there, they can't change.",
     sections: [
       {
         heading: "Start from what you wrote",
+        visual: "ask",
         paragraphs: [
           "Ask \"What have I written on Romans 8?\" and the app looks through your notes, including the one that only cites Romans 8:28–30, along with the verses you highlighted and anything you wrote on them while reading. It comes back with your own words, and Scripture as references, so you're pointed back to the passage itself.",
-          "It works for groups too. Ask for help preparing for Thursday night and it can read your shared space the way you see it in Harvous, next to your own notes on the passage.",
+          "It works for groups too. Ask for help preparing for Thursday night and it can read your shared space the way you see it in Harvous, next to your own notes on the passage. In ChatGPT's deep research, your notes show up as sources, each linking back to the note in Harvous.",
         ],
       },
       {
-        heading: "Read-only, on purpose",
+        heading: "Pick up where you left off",
+        visual: "pickup",
         paragraphs: [
-          "I wanted my AI app to know my notes without ever touching them, so Connector only goes one way. An app can read your study. It can't add, edit, or delete anything. A locked note shows only its title and date, and Scripture comes through as references, never verse text.",
+          "Ask \"Where was I?\" and you get the same answer Harvous Home gives you: the note you were last working on, the chapter to keep reading, and your most recent notes. Ask about a series, like your Romans study or your sermon notes, and it can read that thread in order.",
+          "When you want to go further into a passage, it can bring in what Harvous knows about it: themes, cross-references, and the people and places in it, next to your own notes that connect to it. Names and references only, never verse text, so you still open your Bible for the words.",
+        ],
+      },
+      {
+        heading: "Keep going in Harvous",
+        visual: "start-note",
+        paragraphs: [
+          "Some conversations are worth more than a chat history. Say \"start a note in Harvous\" and the app starts one new note in My Home. It opens with a card labeled with the app's name, holding a short summary of what you talked about, the passages, and any question you were left with. Below it is an empty page for you to write in.",
+          "The app asks before it starts one, and it never writes your reflections for you: the card is its words, the page is yours. Remove the card whenever you like and the note stays. Apps can start up to 20 notes a day, and if you'd rather they didn't, turn off \"Let apps start notes\" in Settings › Connector.",
+        ],
+      },
+      {
+        heading: "Your study stays as you left it",
+        visual: "boundaries",
+        paragraphs: [
+          "I wanted my AI app to know my notes without ever touching them. Starting a new note is the only thing an app can add. It can't edit or delete anything, including the notes it started. A locked note shows only its title and date, and Scripture comes through as references, never verse text.",
           "There's no export-everything button either. An app asks for what it needs, a few notes at a time, and Harvous limits how much it can ask for in a day.",
         ],
       },
       {
         heading: "You decide what's connected",
+        visual: "settings",
         paragraphs: [
           "When you connect an app, what it reads becomes part of your conversation with that service, under its own terms. That's the real trade, and it's yours to make.",
-          "Settings lists every app you've connected and when it last read your notes. Disconnect any of them and it stops reading your study.",
+          "Settings lists every app you've connected and when it last read your notes. Disconnect any of them and it stops reading your study. For apps that need a key instead of a sign-in, like Grok, Settings makes a personal token that's shown once and can be revoked anytime.",
         ],
       },
     ],
@@ -230,7 +249,7 @@ const ADDON_PAGES: AddonPage[] = [
       {
         icon: "fa7-solid:puzzle-piece",
         heading: "Claude, ChatGPT, and others",
-        body: "Add Harvous by its address in Claude or ChatGPT, or in any app that connects to outside tools. Settings walks you through each one, step by step.",
+        body: "Add Harvous in Claude, ChatGPT, Grok, Muse, or any app that connects to outside tools. Settings walks you through each one, step by step.",
       },
       {
         icon: "fa7-solid:book-bible",
@@ -238,9 +257,14 @@ const ADDON_PAGES: AddonPage[] = [
         body: "Ask about Romans 8 and it finds your note on Romans 8:28–30 too, plus your highlights and annotations from reading it.",
       },
       {
+        icon: "fa7-solid:pen-to-square",
+        heading: "Start a note from a chat",
+        body: "Say \"start a note in Harvous\" and one opens with the app's summary in a labeled card, and a blank page for you.",
+      },
+      {
         icon: "fa7-solid:lock",
         heading: "Locked stays locked",
-        body: "Apps can't add, edit, or delete anything. Locked notes show a title and a date, and Scripture is shared as references only.",
+        body: "Apps can't edit or delete anything. Locked notes show a title and a date, and Scripture is shared as references only.",
       },
       {
         icon: "fa7-solid:user-group",
@@ -249,8 +273,8 @@ const ADDON_PAGES: AddonPage[] = [
       },
       {
         icon: "fa7-solid:list",
-        heading: "A few starting points in Claude",
-        body: "Harvous adds ready-made prompts to Claude's + menu: what you've studied on a passage, getting ready for your group, a look back at recent study.",
+        heading: "A few starting points",
+        body: "In apps that offer them, like Claude's + menu, Harvous adds ready-made prompts: a passage you've studied, prep for your group, a theme through your notes, where you left off.",
       },
     ],
     relatedIds: ["review-exercises", "shared-spaces"],
@@ -259,7 +283,7 @@ const ADDON_PAGES: AddonPage[] = [
       "Connector is included with Harvous Plus. See the free plan, and what else Plus includes.",
     closingHeading: "Take your study with you.",
     closingLead:
-      "Get Harvous Plus to connect Claude, ChatGPT, and other AI apps. Read-only, and yours to disconnect.",
+      "Get Harvous Plus to connect Claude, ChatGPT, and other AI apps. Your notes stay as you left them, and every app is yours to disconnect.",
     closingHref: APP_UPGRADE_URL,
     closingLabel: "Get Harvous Plus",
     draft: false,

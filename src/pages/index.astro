@@ -4,7 +4,8 @@
  * people say (straight after it, as proof), how it works (01–03), however you
  * study (the use cases), what else it does (bento), privacy, who makes it, and
  * one closing line. FAQ moved to pricing;
- * the blog gets a small way in (BlogPreview) after the maker note.
+ * the code being public gets one card (OpenSource) after the maker note, and
+ * the blog gets a small way in (BlogPreview) after that.
  */
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
@@ -13,6 +14,7 @@ import StoryScroller from "../components/next/StoryScroller.astro";
 import Bento from "../components/next/Bento.astro";
 import ToggleWall from "../components/next/ToggleWall.astro";
 import MakerNote from "../components/next/MakerNote.astro";
+import OpenSource from "../components/next/OpenSource.astro";
 import ProofStrip from "../components/next/ProofStrip.astro";
 import UseCaseRow from "../components/next/UseCaseRow.astro";
 import ClosingCall from "../components/next/ClosingCall.astro";
@@ -64,6 +66,8 @@ const homeJsonLd = await buildHomeJsonLd();
   <ToggleWall />
 
   <MakerNote />
+
+  <OpenSource />
 
   <BlogPreview />
 

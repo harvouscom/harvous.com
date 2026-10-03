@@ -110,6 +110,9 @@ export const fathomHome = {
   about: "home_about",
   now: "home_now",
   email: "home_email",
+  /** The open source card: the app repo, and its licence. */
+  github: "home_github",
+  license: "home_license",
 } as const;
 
 /**

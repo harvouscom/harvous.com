@@ -8,6 +8,12 @@ export type FeatureShowcaseColor = "amber" | "sky" | "mint" | "violet" | "coral"
 export type ProductSection = {
   heading: string;
   paragraphs: string[];
+  /**
+   * A stylized UI example drawn beside the section, by name. Only the Connector page has
+   * these so far (ConnectorScenes.astro); a page whose sections carry one renders them as
+   * text-and-example rows instead of a single column of prose.
+   */
+  visual?: string;
 };
 
 export type ProductMoment = {

@@ -1,0 +1,289 @@
+---
+/**
+ * OpenSource — the home page's "the code is public." One card laid out like a
+ * blueprint sheet on the release notes' square grid: ruler ticks along the top
+ * and left, crop marks two squares in from each corner, and a dimension line
+ * down the right that measures the whole sheet as "the whole app".
+ *
+ * Every mark sits on a grid line. The grid's square is the card's width divided
+ * into a whole number of ~24px columns (the formula in .release-notes-frame__grid);
+ * the marks use the same formula, and a small script pads the card's height to
+ * a whole number of squares so the bottom corners land on lines too.
+ *
+ * The marks draw in when the card scrolls into view (the shared data-reveal
+ * observer adds `.revealed`), the way the /3/ numeral traces in, rather than on
+ * load. Without JS, or with reduced motion, they arrive drawn.
+ *
+ * The licence is O'Saasy (MIT plus a no-hosted-competitor clause), so the copy
+ * says what it allows rather than leaning on "open source" alone.
+ */
+import { fathomHome } from "../../lib/fathom-events.ts";
+
+const repo = "https://github.com/harvouscom/harvous";
+const license = `${repo}/blob/main/LICENSE`;
+---
+
+<section class="oss nx-section" id="open-source" aria-labelledby="oss-title">
+  <div class="nx-wrap">
+    <div class="oss__frame" data-reveal>
+      <div class="release-notes-frame__grid oss__grid" aria-hidden="true"></div>
+
+      <div class="oss__sheet" aria-hidden="true">
+        <span class="oss__ruler oss__ruler--top"></span>
+        <span class="oss__ruler oss__ruler--left"></span>
+
+        {/* Crop marks: each corner's pair points at the trim corner, two squares in. */}
+        <span class="oss__crop oss__crop--h oss__crop--tl"></span>
+        <span class="oss__crop oss__crop--v oss__crop--tl"></span>
+        <span class="oss__crop oss__crop--h oss__crop--tr"></span>
+        <span class="oss__crop oss__crop--v oss__crop--tr"></span>
+        <span class="oss__crop oss__crop--h oss__crop--bl"></span>
+        <span class="oss__crop oss__crop--v oss__crop--bl"></span>
+        <span class="oss__crop oss__crop--h oss__crop--br"></span>
+        <span class="oss__crop oss__crop--v oss__crop--br"></span>
+
+        {/* Trim corner to trim corner, on the same line as the right-hand crop marks. */}
+        <div class="oss__dim">
+          <svg class="oss__dim-head" viewBox="0 0 15 9"><path d="M2 8 L7.5 1 L13 8" /></svg>
+          <span class="oss__dim-line oss__dim-line--up"></span>
+          <span class="oss__dim-label nx-hand">the whole app</span>
+          <span class="oss__dim-line oss__dim-line--down"></span>
+          <svg class="oss__dim-head" viewBox="0 0 15 9"><path d="M2 1 L7.5 8 L13 1" /></svg>
+        </div>
+      </div>
+
+      <div class="oss__body">
+        <p class="nx-kicker">Open source</p>
+        <h2 id="oss-title" class="nx-title oss__title">Harvous is open source.<br /> Read every line.</h2>
+        <p class="nx-lead oss__lead">
+          The whole app is on GitHub: every screen, every sync, and exactly how your notes are
+          stored. Look under the hood, open an issue, or send a fix. It's under the O'Saasy
+          License, so you can read it, learn from it, and run it yourself; just don't resell it
+          as a hosted Harvous.
+        </p>
+        <div class="oss__ctas">
+          <a class="nx-btn nx-btn--accent" href={repo} data-fathom-track={fathomHome.github}>
+            <svg class="oss__gh-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            View on GitHub
+          </a>
+          <a class="nx-link" href={license} data-fathom-track={fathomHome.license}>Read the license →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Pad the card to a whole number of grid squares so its bottom edge, and the
+  // marks measured from it, fall on grid lines. The square matches the grid's
+  // CSS: the padding-box width split into the nearest whole number of 24px columns.
+  document.querySelectorAll<HTMLElement>(".oss__frame").forEach((frame) => {
+    const snap = () => {
+      // Fractional sizes (clientWidth/Height round to whole pixels); the border is 1px a side.
+      const rect = frame.getBoundingClientRect();
+      const w = rect.width - 2;
+      if (w <= 0) return;
+      const g = w / Math.max(1, Math.round(w / 24));
+      const fix = parseFloat(frame.style.getPropertyValue("--snap")) || 0;
+      const natural = rect.height - 2 - fix;
+      const next = Math.ceil(natural / g - 0.01) * g - natural;
+      if (Math.abs(next - fix) > 0.05) frame.style.setProperty("--snap", `${next}px`);
+    };
+    new ResizeObserver(snap).observe(frame);
+    snap();
+  });
+</script>
+
+<style>
+  .oss__frame {
+    /* At least three squares, so the content starts clear of the crop marks two squares in. */
+    --oss-pad: clamp(4.5rem, 7vw, 5.5rem);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: var(--oss-pad) clamp(1.5rem, 6vw, 5rem);
+    padding-bottom: calc(var(--oss-pad) + var(--snap, 0px));
+    border: 1px solid var(--color-rule);
+    border-radius: var(--nx-radius-scene);
+    background: var(--color-paper);
+  }
+
+  /* The release notes' grid, spread edge to edge and dissolving outward like /3/'s hero. */
+  .oss__grid {
+    inset-inline: 0;
+    -webkit-mask-image: radial-gradient(75% 85% at 35% 45%, #000 30%, transparent 100%);
+    mask-image: radial-gradient(75% 85% at 35% 45%, #000 30%, transparent 100%);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  /* A touch darker than on release notes: here the grid is the sheet itself. */
+  .oss__grid::before {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--color-rule) 85%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--color-rule) 85%, transparent) 1px, transparent 1px);
+  }
+
+  .oss__body { position: relative; max-width: 46rem; }
+  .oss__title { margin: 0.75rem 0 0; }
+  .oss__lead { margin: 1.25rem 0 0; }
+
+  .oss__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+    margin-top: 2rem;
+  }
+  .oss__gh-icon { width: 1.1rem; height: 1.1rem; }
+
+  /* ── Blueprint sheet ───────────────────────────────────────────────────── */
+
+  .oss__sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    container-type: size;
+    --ink: #1a8dff;
+    --tick: color-mix(in oklab, #006eff 42%, transparent);
+  }
+  /* One grid square, by the grid's own formula; a line n squares in occupies [n·g, n·g + 1px]. */
+  .oss__sheet > * {
+    --g: calc(100cqw / round(nearest, 100cqw / 24px, 1));
+    position: absolute;
+  }
+
+  /* Ruler ticks: a short one every square, a long one every fourth. */
+  .oss__ruler--top {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background:
+      linear-gradient(to right, var(--tick) 1px, transparent 1px) 0 0 / var(--g) 5px repeat-x,
+      linear-gradient(to right, var(--tick) 1px, transparent 1px) 0 0 / calc(var(--g) * 4) 12px repeat-x;
+  }
+  .oss__ruler--left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 12px;
+    background:
+      linear-gradient(to bottom, var(--tick) 1px, transparent 1px) 0 0 / 5px var(--g) repeat-y,
+      linear-gradient(to bottom, var(--tick) 1px, transparent 1px) 0 0 / 12px calc(var(--g) * 4) repeat-y;
+  }
+
+  /* Crop marks: one square long, half a square clear of the edge and of the trim corner. */
+  .oss__crop { background: var(--ink); }
+  .oss__crop--h { width: var(--g); height: 1px; }
+  .oss__crop--v { width: 1px; height: var(--g); }
+  .oss__crop--h.oss__crop--tl { top: calc(var(--g) * 2); left: calc(var(--g) * 0.5); transform-origin: right; }
+  .oss__crop--v.oss__crop--tl { left: calc(var(--g) * 2); top: calc(var(--g) * 0.5); transform-origin: bottom; }
+  .oss__crop--h.oss__crop--tr { top: calc(var(--g) * 2); left: calc(100% - var(--g) * 1.5); transform-origin: left; }
+  .oss__crop--v.oss__crop--tr { left: calc(100% - var(--g) * 2); top: calc(var(--g) * 0.5); transform-origin: bottom; }
+  .oss__crop--h.oss__crop--bl { top: calc(100% - var(--g) * 2); left: calc(var(--g) * 0.5); transform-origin: right; }
+  .oss__crop--v.oss__crop--bl { left: calc(var(--g) * 2); top: calc(100% - var(--g) * 1.5); transform-origin: top; }
+  .oss__crop--h.oss__crop--br { top: calc(100% - var(--g) * 2); left: calc(100% - var(--g) * 1.5); transform-origin: left; }
+  .oss__crop--v.oss__crop--br { left: calc(100% - var(--g) * 2); top: calc(100% - var(--g) * 1.5); transform-origin: top; }
+
+  /* The dimension line: a 15px column whose middle pixel sits on the grid line two squares in from the right. */
+  .oss__dim {
+    top: calc(var(--g) * 2 + 1px);
+    bottom: calc(var(--g) * 2 - 1px);
+    left: calc(100% - var(--g) * 2 - 7px);
+    width: 15px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+  .oss__dim-head {
+    flex: none;
+    width: 15px;
+    height: 9px;
+    overflow: visible;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .oss__dim-line {
+    flex: 1;
+    width: 1px;
+    background: var(--ink);
+  }
+  .oss__dim-line--up { transform-origin: bottom; }
+  .oss__dim-line--down { transform-origin: top; }
+  .oss__dim-label {
+    flex: none;
+    padding-block: 0.6rem;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 1.3rem;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+  @media (min-width: 48rem) {
+    .oss__frame { padding-right: max(clamp(1.5rem, 6vw, 5rem), 5rem); }
+    .oss__dim { display: flex; }
+  }
+
+  /* ── Motion: the sheet draws itself in, rulers first, then the marks ───── */
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .oss__grid { opacity: 0; }
+    :global(html.js) .oss__ruler--top { clip-path: inset(0 100% 0 0); }
+    :global(html.js) .oss__ruler--left { clip-path: inset(0 0 100% 0); }
+    :global(html.js) .oss__crop,
+    :global(html.js) .oss__dim-line { transform: scale(0); }
+    :global(html.js) .oss__dim-head,
+    :global(html.js) .oss__dim-label { opacity: 0; }
+
+    :global(html.js) .oss__frame:global(.revealed) .oss__grid {
+      animation:
+        oss-fade 1800ms ease-out 200ms both,
+        oss-grid-drift 14000ms ease-in-out 2400ms infinite;
+    }
+    :global(html.js) .oss__frame:global(.revealed) .oss__ruler {
+      animation: oss-rule 1400ms cubic-bezier(0.65, 0, 0.35, 1) 200ms both;
+    }
+    :global(html.js) .oss__frame:global(.revealed) .oss__crop--h {
+      animation: oss-draw-x 600ms cubic-bezier(0.65, 0, 0.35, 1) 900ms both;
+    }
+    :global(html.js) .oss__frame:global(.revealed) .oss__crop--v {
+      animation: oss-draw-y 600ms cubic-bezier(0.65, 0, 0.35, 1) 1000ms both;
+    }
+    :global(html.js) .oss__frame:global(.revealed) .oss__dim-label {
+      animation: oss-fade 500ms ease-out 1300ms both;
+    }
+    :global(html.js) .oss__frame:global(.revealed) .oss__dim-line {
+      animation: oss-draw-y 900ms cubic-bezier(0.65, 0, 0.35, 1) 1450ms both;
+    }
+    :global(html.js) .oss__frame:global(.revealed) .oss__dim-head {
+      animation: oss-fade 300ms ease-out 2250ms both;
+    }
+  }
+
+  @keyframes oss-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes oss-rule {
+    to { clip-path: inset(0); }
+  }
+  @keyframes oss-draw-x {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes oss-draw-y {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  @keyframes oss-grid-drift {
+    0%, 100% { -webkit-mask-position: -14px 10px; mask-position: -14px 10px; }
+    50% { -webkit-mask-position: 14px -10px; mask-position: 14px -10px; }
+  }
+</style>
