@@ -57,9 +57,10 @@ const posts =
     : [];
 
 const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJsonLd(page);
-const category = page.kind === "feature" ? getCategoryForFeature(page.slug) : undefined;
-const backHref = page.kind === "feature" ? (category?.href ?? "/tour/") : "/pricing/";
-const backLabel = page.kind === "feature" ? (category?.title ?? "The tour") : "Pricing";
+// An add-on that sits in a tour category's grid (Connector in Find) links back there.
+const category = getCategoryForFeature(page.slug);
+const backHref = category?.href ?? (page.kind === "feature" ? "/tour/" : "/pricing/");
+const backLabel = category?.title ?? (page.kind === "feature" ? "The tour" : "Pricing");
 const fathomTrack = page.kind === "feature" ? fathomTry.featureDetail(page.slug) : fathomSignup.addonDetail(page.slug);
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
 const draftSlug = page.href.replace(/^\/|\/$/g, "");
