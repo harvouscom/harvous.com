@@ -12,11 +12,16 @@
  *   boundaries — what an app can and can't do, as a list
  *   settings   — Settings › Connector: the switch, connected apps, a token (try it)
  *
+ * The app is chosen once for the page: the switcher in `ask` sets `.cs[data-app]`,
+ * and every scene follows it — the thinking beat (ConnectorThinking: the app's
+ * mark at work beside Harvous) and every "From Claude" name.
+ *
  * The examples are illustrations, so the AI app is a plain, generic chat window
  * wearing only the app's mark, not its interface. The words in them are what Harvous really returns —
  * references, never verse text; locked notes as a title and a date.
  */
 import AppIcon from "./app/AppIcon.astro";
+import ConnectorThinking from "./ConnectorThinking.astro";
 import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
 import type { ProductSection } from "../../lib/product-page-data.ts";
 // The apps' own marks: LobeHub icons (MIT), inlined so the one-colour ones follow the theme,
@@ -42,7 +47,7 @@ const apps = [
 const washes = ["sky", "violet", "amber", "mint", "blue"];
 ---
 
-<section class="nx-wrap cs" aria-label="How Connector works">
+<section class="nx-wrap cs" data-app="claude" aria-label="How Connector works">
   <ul class="cs__apps" role="list" data-reveal>
     <li class="cs__apps-label">Works in</li>
     {apps.map((a) => (
@@ -75,6 +80,7 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
             </div>
             <div class="chat__body">
               <p class="chat__ask">What have I written on Romans 8?</p>
+              <ConnectorThinking text="Reading your Romans notes in Harvous" class="ask__think" />
               <div class="chat__tool" data-step="tool">
                 <img src="/images/harvous-icon-sm.png" alt="" width="26" height="26" loading="lazy" />
                 <span>
@@ -108,6 +114,7 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
               <button type="button" class="pick__prompt" data-pick="series" aria-pressed="false">My Romans series</button>
             </div>
             <div class="chat__body">
+              <ConnectorThinking text="Looking in Harvous" class="pick__think" />
               <div class="pick__answer" data-answer="where">
                 <p class="aui-label">Continue</p>
                 <div class="aui-card pick__group">
@@ -189,13 +196,14 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
                     <button type="button" class="sn__btn" data-start>Not now</button>
                   </p>
                 </div>
+                <ConnectorThinking text="Starting a note in Harvous" class="sn__think" />
               </div>
             </div>
 
             <div class="aui sn__note">
-              <p class="sn__done"><AppIcon name="check" /> Claude started a note in Harvous</p>
+              <p class="sn__done"><AppIcon name="check" /> <span data-app-name>Claude</span> started a note in Harvous</p>
               <div class="aui-card sn__origin" data-origin>
-                <p class="sn__from"><AppIcon name="puzzle-piece" /> From Claude</p>
+                <p class="sn__from"><AppIcon name="puzzle-piece" /> From <span data-app-name>Claude</span></p>
                 <p class="sn__summary">
                   We talked about Genesis 50, where Joseph tells his brothers that what they meant for
                   harm, God meant for good, and how forgiving them didn't mean pretending it hadn't hurt.
@@ -285,34 +293,57 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
     io.observe(el);
   };
 
-  // Ask: the tool call, then the answer, the first time it's seen. Tabs swap the app.
+  const page = document.querySelector<HTMLElement>(".cs");
+
+  // Ask: the app thinks (its mark at work beside Harvous), then the tool call,
+  // then the answer. Plays on first view, and again whenever the app changes —
+  // which also switches the app for every scene on the page.
   document.querySelectorAll<HTMLElement>('[data-scene="ask"]').forEach((scene) => {
+    let timers: ReturnType<typeof setTimeout>[] = [];
+    const play = () => {
+      if (still) return;
+      timers.forEach(clearTimeout);
+      scene.classList.remove("is-tool", "is-reply");
+      scene.classList.add("is-waiting", "is-thinking");
+      timers = [
+        setTimeout(() => scene.classList.replace("is-thinking", "is-tool"), 1700),
+        setTimeout(() => scene.classList.add("is-reply"), 2500),
+      ];
+    };
     if (!still) {
       scene.classList.add("is-waiting");
-      onFirstView(scene, () => {
-        setTimeout(() => scene.classList.add("is-tool"), 350);
-        setTimeout(() => scene.classList.add("is-reply"), 1300);
-      });
+      onFirstView(scene, play);
     }
-    const name = scene.querySelector("[data-app-name]");
     scene.querySelectorAll<HTMLButtonElement>("[data-app-tab]").forEach((tab) => {
       tab.addEventListener("click", () => {
         scene.querySelectorAll("[data-app-tab]").forEach((t) => t.setAttribute("aria-pressed", String(t === tab)));
         scene.dataset.app = tab.dataset.appTab;
-        if (name) name.textContent = tab.textContent;
+        if (page) page.dataset.app = tab.dataset.appTab;
+        document.querySelectorAll(".cs [data-app-name]").forEach((n) => (n.textContent = tab.textContent));
+        play();
       });
     });
   });
 
-  // Pick up: each question shows its answer.
+  // Pick up: asking a question shows the app thinking for a beat, then its answer.
   document.querySelectorAll<HTMLElement>('[data-scene="pickup"]').forEach((scene) => {
     const prompts = scene.querySelectorAll<HTMLButtonElement>("[data-pick]");
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const show = (key?: string) =>
+      scene.querySelectorAll<HTMLElement>("[data-answer]").forEach((a) => {
+        a.hidden = a.dataset.answer !== key;
+      });
     prompts.forEach((btn) => {
       btn.addEventListener("click", () => {
         prompts.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
-        scene.querySelectorAll<HTMLElement>("[data-answer]").forEach((a) => {
-          a.hidden = a.dataset.answer !== btn.dataset.pick;
-        });
+        clearTimeout(timer);
+        if (still) return show(btn.dataset.pick);
+        show();
+        scene.classList.add("is-thinking");
+        timer = setTimeout(() => {
+          scene.classList.remove("is-thinking");
+          show(btn.dataset.pick);
+        }, 1100);
       });
     });
   });
@@ -320,15 +351,20 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
   // Start a note: offer → started note. Plays by itself once if no one clicks first.
   document.querySelectorAll<HTMLElement>('[data-scene="start-note"]').forEach((scene) => {
     let auto: ReturnType<typeof setTimeout> | undefined;
+    let made: ReturnType<typeof setTimeout> | undefined;
     const start = () => {
       clearTimeout(auto);
-      scene.dataset.state = "started";
+      if (still) return void (scene.dataset.state = "started");
+      // The app works for a beat (its mark beside Harvous), then the note appears.
+      scene.dataset.state = "thinking";
+      made = setTimeout(() => (scene.dataset.state = "started"), 1400);
     };
     scene.querySelectorAll("[data-start]").forEach((b) => b.addEventListener("click", start));
     scene.querySelector("[data-remove]")?.addEventListener("click", () => {
       scene.querySelector("[data-origin]")?.classList.add("is-removed");
     });
     scene.querySelector("[data-replay]")?.addEventListener("click", () => {
+      clearTimeout(made);
       scene.querySelector("[data-origin]")?.classList.remove("is-removed");
       scene.dataset.state = "offer";
     });
@@ -526,6 +562,16 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
   .chat.is-waiting.is-reply [data-step="reply"] { opacity: 1; transform: none; }
   .chat.is-waiting .chat__check { transform: scale(0); transition: transform 300ms var(--nx-ease) 500ms; }
   .chat.is-waiting.is-tool .chat__check { transform: scale(1); }
+
+  /* The thinking beat: hidden until its scene is working. */
+  .cs :global(.ask__think),
+  .cs :global(.pick__think),
+  .cs :global(.sn__think) { display: none; }
+  .chat.is-thinking :global(.ask__think),
+  .pick.is-thinking :global(.pick__think),
+  .sn[data-state="thinking"] :global(.sn__think) { display: flex; animation: cs-in 300ms var(--nx-ease); }
+  .sn[data-state="thinking"] .sn__offer { display: none; }
+  .chat.is-waiting.is-thinking [data-step="tool"] { display: none; }
 
   /* ── Pick up ───────────────────────────────────────────────────────────── */
 

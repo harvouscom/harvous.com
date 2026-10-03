@@ -588,8 +588,8 @@ details > summary::-webkit-details-marker {
     --color-ink-faint: oklch(96% 0 0 / 0.42);
     --color-rule: oklch(100% 0 0 / 0.1);
     --color-warm: oklch(20% 0.01 285);
-    --color-accent: oklch(72% 0.18 265);
-    --color-accent-soft: oklch(72% 0.18 265 / 0.2);
+    --color-accent: oklch(70% 0.17 250);
+    --color-accent-soft: oklch(70% 0.17 250 / 0.2);
     --color-highlight: #ffe8a8;
 
     --color-peach: oklch(46% 0.1 40);
@@ -606,7 +606,7 @@ details > summary::-webkit-details-marker {
     --color-cream-ink: oklch(90% 0.05 90);
 
     --glow-highlight: rgba(255, 224, 150, 0.5);
-    --glow-accent: oklch(72% 0.18 265 / 0.45);
+    --glow-accent: oklch(70% 0.17 250 / 0.45);
     --hero-light: radial-gradient(55% 55% at 70% 28%, rgba(255, 224, 150, 0.22), transparent 72%);
     --paper-sheet: oklch(20% 0.01 285);
 
@@ -635,8 +635,8 @@ details > summary::-webkit-details-marker {
   --color-ink-faint: oklch(96% 0 0 / 0.42);
   --color-rule: oklch(100% 0 0 / 0.1);
   --color-warm: oklch(20% 0.01 285);
-  --color-accent: oklch(72% 0.18 265);
-  --color-accent-soft: oklch(72% 0.18 265 / 0.2);
+  --color-accent: oklch(70% 0.17 250);
+  --color-accent-soft: oklch(70% 0.17 250 / 0.2);
   --color-highlight: #ffe8a8;
 
   --color-peach: oklch(46% 0.1 40);
@@ -653,7 +653,7 @@ details > summary::-webkit-details-marker {
   --color-cream-ink: oklch(90% 0.05 90);
 
   --glow-highlight: rgba(255, 224, 150, 0.5);
-  --glow-accent: oklch(72% 0.18 265 / 0.45);
+  --glow-accent: oklch(70% 0.17 250 / 0.45);
   --hero-light: radial-gradient(55% 55% at 70% 28%, rgba(255, 224, 150, 0.22), transparent 72%);
   --paper-sheet: oklch(20% 0.01 285);
 

@@ -20,8 +20,9 @@ const productShowcase = z.object({
   color: showcaseColor.default("sky"),
   reverse: z.boolean().optional(),
   body: z.array(z.string()),
-  image: z.string(),
-  imageAlt: z.string(),
+  /** Which stylized app moment to draw (ShowcaseVisual.astro), and its alt text. */
+  visual: z.string(),
+  label: z.string(),
 });
 
 const features = defineCollection({

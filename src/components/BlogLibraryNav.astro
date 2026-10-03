@@ -75,7 +75,7 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
               >
                 <span
                   class="blog-library-nav__item-icon"
-                  style="background: color-mix(in oklab, var(--color-warm) 70%, white); color: var(--color-ink);"
+                  style="background: color-mix(in oklab, var(--color-warm) 70%, var(--color-card)); color: var(--color-ink);"
                   aria-hidden="true"
                 >
                   <Icon name="fa7-solid:layer-group" class="h-3.5 w-3.5" />
@@ -100,7 +100,7 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
                 >
                   <span
                     class="blog-library-nav__item-icon"
-                    style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink};`}
+                    style={`background: color-mix(in oklab, ${topic.color.bg} 55%, var(--color-card)); color: ${topic.color.ink};`}
                     aria-hidden="true"
                   >
                     <Icon name={topic.icon} class="h-3.5 w-3.5" />
@@ -116,7 +116,7 @@ const searchInputId = mode === "filter" ? "blog-search-page-q" : "blog-library-s
                 <a href={topic.href} class="blog-library-nav__item" role="menuitem">
                   <span
                     class="blog-library-nav__item-icon"
-                    style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink};`}
+                    style={`background: color-mix(in oklab, ${topic.color.bg} 55%, var(--color-card)); color: ${topic.color.ink};`}
                     aria-hidden="true"
                   >
                     <Icon name={topic.icon} class="h-3.5 w-3.5" />

@@ -122,9 +122,16 @@ export function getCompareBySlug(slug: string): CompareEntry | undefined {
   return getCompareEntries().find((e) => e.slug === slug);
 }
 
+/**
+ * The kinds of app Harvous is compared with, alphabetical except that Bible
+ * Notes leads: those are the apps someone choosing Harvous is most likely
+ * weighing it against, so the hub opens on them.
+ */
+const LEADING_TYPE = "Bible Notes";
+
 export function getCompareTypes(): string[] {
   const types = new Set(getCompareEntries().map((e) => e.competitorType).filter(Boolean));
-  return [...types].sort();
+  return [...types].sort((a, b) => (a === LEADING_TYPE ? -1 : b === LEADING_TYPE ? 1 : a.localeCompare(b)));
 }
 
 export function getCompareByType(type: string): CompareEntry[] {

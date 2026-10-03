@@ -1,0 +1,301 @@
+---
+/**
+ * ShowcaseVisual — the "closer look" picture on a feature or add-on page, drawn
+ * with the app's own pieces (next-app-ui.css) instead of a screenshot, so it is
+ * sharp at any size and follows the theme. One small moment per feature, named
+ * by the showcase's `visual`.
+ *
+ * Verse text appears only where the app shows it (the passage card, an opened
+ * pill), from the NLT, as the rest of the site's replicas do.
+ */
+import AppIcon from "./app/AppIcon.astro";
+
+interface Props {
+  name: string;
+  label: string;
+}
+const { name, label } = Astro.props;
+---
+
+<div class="aui sv" role="img" aria-label={label}>
+  {name === "passage" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Today's passage</p>
+      <p class="sv__ref">Psalms 56:3–4 <span class="aui-tr">NLT</span></p>
+      <p class="sv__verse"><sup>3</sup>But when I am afraid, I will put my trust in you. <sup>4</sup>I praise God for what he has promised. I trust in God, so why should I be afraid?</p>
+      <p class="sv__acts">
+        <span class="sv__btn sv__btn--go"><AppIcon name="book-open" /> Read the chapter</span>
+        <span class="sv__btn"><AppIcon name="bookmark" /> Keep</span>
+      </p>
+    </div>
+  )}
+
+  {name === "suggestions" && (
+    <div class="sv__stack">
+      <div class="aui-card sv__card sv__hero">
+        <p class="sv__label">Suggested</p>
+        <div class="aui-row">
+          <span class="aui-tile sv__tile--violet"><AppIcon name="clock-rotate-left" /></span>
+          <span><span class="aui-title">Faith before it made sense</span><span class="aui-sub">You wrote this in July<i>·</i>Worth another look</span></span>
+          <span class="aui-acts"><AppIcon name="caret-right" /></span>
+        </div>
+        <p class="sv__quote">“Abraham went without knowing where. Maybe I don't need the whole map either.”</p>
+      </div>
+      <div class="aui-card sv__card">
+        <div class="aui-row">
+          <span class="aui-tile"><AppIcon name="magnifying-glass" /></span>
+          <span><span class="aui-title">God's timing</span><span class="aui-sub">Seems to be on your mind<i>·</i>Since June</span></span>
+          <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+        </div>
+        <div class="aui-row">
+          <span class="aui-tile"><AppIcon name="highlighter" /></span>
+          <span><span class="aui-title">Romans 8:28</span><span class="aui-sub">A highlight you haven't seen in a while</span></span>
+          <span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span>
+        </div>
+      </div>
+    </div>
+  )}
+
+  {name === "threads" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="aui-tile sv__tile--thread"><AppIcon name="arrow-right-arrow-left" /></span><span><b>Going through Romans</b><small>Thread · 4 notes · connected by you</small></span></p>
+      <ol class="sv__thread">
+        {[
+          ["Grace before anything", "Romans 1–3", "Folder: Romans"],
+          ["Peace with God", "Romans 5", "Folder: Romans"],
+          ["No condemnation", "Romans 8:1–11", "Folder: Holy Spirit"],
+          ["Called and known", "Romans 8:28–30", "Folder: God's timing"],
+        ].map(([t, ref, folder], i) => (
+          <li class:list={[i === 2 && "is-on"]}>
+            <span class="sv__dot"></span>
+            <span><span class="aui-title">{t}</span><span class="aui-sub">{ref}<i>·</i>{folder}</span></span>
+          </li>
+        ))}
+      </ol>
+      <p class="sv__foot"><AppIcon name="wand-magic-sparkles" /> Folders sorted themselves; the thread is yours.</p>
+    </div>
+  )}
+
+  {name === "mentions" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">Still, even here</p>
+        <p>Picks up from <span class="sv__mention"><AppIcon name="arrow-right-arrow-left" /> Faith before it made sense</span>, and the sermon on <span class="sv__typing">@Gen<i></i></span></p>
+      </div>
+      <div class="aui-card sv__card sv__pop">
+        <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="note-sticky" /></span><span><span class="aui-title">Genesis 50 sermon</span><span class="aui-sub">Note<i>·</i>Sermon notes</span></span><span class="sv__kbd">↵</span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="folder" /></span><span><span class="aui-title">Genesis</span><span class="aui-sub">Folder<i>·</i>12 notes</span></span><span></span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span><span><span class="aui-title">Joseph and his brothers</span><span class="aui-sub">Thread<i>·</i>8 notes</span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  {name === "templates" && (
+    <div class="sv__stack sv__stack--side">
+      <div class="aui-paper sv__paper sv__paper--back">
+        <p class="sv__title">Romans 12</p>
+        <p class="sv__sec"><b>S</b> Scripture</p>
+        <p class="sv__sec"><b>O</b> Observation</p>
+        <p class="sv__sec"><b>A</b> Application</p>
+        <p class="sv__sec"><b>P</b> Prayer</p>
+      </div>
+      <div class="aui-card sv__card sv__panel">
+        <p class="sv__label sv__label--in">Templates</p>
+        <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="list-check" /></span><span><span class="aui-title">SOAP</span><span class="aui-sub">Scripture, observation…</span></span><span class="aui-acts sv__ok"><AppIcon name="check" /></span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="magnifying-glass" /></span><span><span class="aui-title">Inductive</span><span class="aui-sub">Observe, interpret, apply</span></span><span></span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="microphone" /></span><span><span class="aui-title">Sermon outline</span><span class="aui-sub">Points and the passages</span></span><span></span></div>
+        <div class="aui-row sv__add"><span class="aui-tile"><AppIcon name="plus" /></span><span><span class="aui-title">Make your own</span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  {name === "dictionary" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">The cost of obedience</p>
+        <p>God keeps his <span class="sv__word">covenant</span> even when Israel can't see it yet. <span class="aui-pill">Exodus 6:4 <span class="aui-tr">NLT</span></span></p>
+      </div>
+      <div class="aui-card sv__card sv__pad sv__dict">
+        <p class="sv__dict-head"><b>Covenant</b><span>Easton's Bible Dictionary</span></p>
+        <p class="sv__dict-body">A binding agreement between two parties. In Scripture, chiefly the promise God makes and keeps with his people, first with Noah, then Abraham, then at Sinai.</p>
+        <p class="sv__dict-refs"><span class="aui-pill">Genesis 9:9</span><span class="aui-pill">Genesis 17:7</span></p>
+      </div>
+    </div>
+  )}
+
+  {name === "sharing" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="aui-tile"><AppIcon name="share" /></span><span><b>Share “God loves everyone”</b><small>Scripture and highlights come with it</small></span></p>
+      <p class="sv__link"><AppIcon name="link" /><span>harvous.com/s/god-loves-everyone</span><span class="sv__btn sv__btn--go">Copy</span></p>
+      <p class="sv__row"><AppIcon name="globe" /> Anyone with the link can read it<span class="sv__switch is-on"><i></i></span></p>
+      <p class="sv__row sv__row--soft"><AppIcon name="user-slash" /> No account needed to open it</p>
+    </div>
+  )}
+
+  {name === "pills" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">God is faithful, even here</p>
+        <p>God's timing then, and now. <span class="aui-pill sv__pill-on">Romans 8:28 <span class="aui-tr">NLT</span></span></p>
+      </div>
+      <div class="aui-card sv__card sv__pad sv__verse-pop">
+        <p class="sv__vhead"><b>Romans 8:28</b><span class="sv__tr">NLT <AppIcon name="caret-down" /></span></p>
+        <p class="sv__verse">And we know that God causes everything to work together for the good of those who love God and are called according to his purpose for them.</p>
+        <p class="sv__trs"><span class="is-on">NLT</span><span>ESV</span><span>NIV</span><span>CSB</span><span>KJV</span><span>+6</span></p>
+      </div>
+    </div>
+  )}
+
+  {name === "highlights" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">Let my people go</p>
+        <p>Pharaoh asks, “Who is the LORD?” and Moses doesn't argue. He just <span class="sv__hl">keeps showing up</span>. <span class="aui-pill">Exodus 5:1–5</span></p>
+      </div>
+      <div class="sv__note">
+        <span class="sv__swatches"><i class="is-amber is-on"></i><i class="is-sky"></i><i class="is-mint"></i><i class="is-violet"></i><i class="is-coral"></i></span>
+        <span class="sv__annot"><AppIcon name="comment" /> Same as Gideon: obedience before confidence.</span>
+      </div>
+    </div>
+  )}
+
+  {name === "group-threads" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="aui-tile sv__tile--violet"><AppIcon name="user-group" /></span><span><b>Thursday group · James</b><small>Week 4 · 6 notes from the group</small></span></p>
+      {[
+        ["K", "is-a", "What does faith without works look like on a Monday?", "James 2:14–17"],
+        ["J", "is-b", "Abraham and Rahab: two very different people, same point.", "James 2:21–25"],
+        ["D", "is-me", "The tongue as a rudder. Small thing, steers everything.", "James 3:4–5"],
+      ].map(([who, cls, text, ref]) => (
+        <div class="sv__post">
+          <span class:list={["sv__face", cls]}>{who}</span>
+          <span><span class="sv__post-t">{text}</span><span class="aui-pill">{ref}</span></span>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+<style>
+  .sv { width: 100%; max-width: 26rem; font-size: 14px; }
+  .sv :global(p) { margin: 0; }
+  .sv__card { box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
+  .sv__pad { padding: 14px 16px; }
+  .sv :global(.aui-row) { padding: 9px 13px 9px 11px; }
+  .sv :global(.aui-row.is-on) { background: var(--pds-bg-row-selected); }
+  .sv :global(.aui-sub) { display: block; font-size: 12px; color: var(--pds-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sv :global(.aui-sub i) { font-style: normal; padding-inline: 0.3em; }
+  .sv :global(.aui-acts) { color: var(--pds-text-tertiary); }
+  .sv :global(.aui-acts svg) { width: 11px; height: 11px; }
+  .sv__label { margin-bottom: 6px !important; font-size: 12.5px; color: var(--pds-text-secondary); }
+  .sv__label--in { padding: 11px 13px 2px; margin: 0 !important; }
+  .sv__title { margin-bottom: 6px !important; font-family: var(--pds-font-display); font-size: 17px; font-weight: 600; color: var(--pds-text-primary); }
+  .sv__ref { font-size: 12px; color: var(--pds-text-secondary); }
+  .sv__verse { margin-top: 6px !important; font-size: 14px; line-height: 1.6; color: var(--pds-text-primary); }
+  .sv__verse sup { font-size: 0.65em; color: var(--pds-text-tertiary); margin-right: 2px; }
+  .sv__acts { display: flex; gap: 8px; margin-top: 12px !important; }
+  .sv__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-chip);
+    white-space: nowrap;
+  }
+  .sv__btn--go { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__btn :global(svg) { width: 11px; height: 11px; }
+
+  /* Layered: one surface over another. */
+  .sv__stack { display: grid; gap: 10px; }
+  .sv__paper { padding: 14px 16px !important; font-size: 14px; line-height: 1.6; color: var(--pds-text-secondary); }
+  .sv__pop { width: 82%; margin: -22px -8px 0 auto; position: relative; }
+  .sv__hero .sv__label { padding: 11px 13px 0; }
+  .sv__quote { padding: 0 14px 12px 50px; font-size: 13px; line-height: 1.5; font-style: italic; color: var(--pds-text-secondary); }
+  .sv__tile--violet { color: var(--pds-highlight-violet) !important; background: color-mix(in srgb, var(--pds-highlight-violet) 16%, var(--pds-bg-main)) !important; }
+  .sv__tile--thread { color: var(--pill-thread, var(--pds-accent)) !important; }
+
+  .sv__head { display: flex; align-items: center; gap: 10px; }
+  .sv__head b { display: block; font-size: 15px; font-weight: 600; color: var(--pds-text-primary); }
+  .sv__head small { display: block; font-size: 12px; color: var(--pds-text-secondary); }
+
+  /* Threads: connected notes in order, on a line. */
+  .sv__thread { position: relative; margin: 12px 0 0; padding: 0; list-style: none; }
+  .sv__thread::before { content: ""; position: absolute; left: 6px; top: 10px; bottom: 10px; width: 2px; border-radius: 2px; background: color-mix(in srgb, var(--pill-thread, var(--pds-accent)) 45%, transparent); }
+  .sv__thread li { position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 12px; align-items: center; padding: 6px 8px 6px 0; border-radius: 10px; }
+  .sv__thread li.is-on { background: var(--pds-bg-row-selected); }
+  .sv__dot { width: 14px; height: 14px; border-radius: 50%; background: var(--pds-bg-main); box-shadow: inset 0 0 0 2.5px var(--pill-thread, var(--pds-accent)); }
+  .sv__thread li.is-on .sv__dot { background: var(--pill-thread, var(--pds-accent)); }
+  .sv__foot { display: flex; align-items: center; gap: 6px; margin-top: 10px !important; padding-top: 10px; font-size: 12px; color: var(--pds-text-secondary); box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .sv__foot :global(svg) { width: 11px; height: 11px; }
+
+  /* @ mentions */
+  .sv__mention { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; font-weight: 500; color: var(--pds-text-primary); background: var(--pds-bg-chip); box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium); white-space: nowrap; }
+  .sv__mention :global(svg) { width: 10px; height: 10px; color: var(--pill-thread); }
+  .sv__typing { font-weight: 500; color: var(--pds-accent); white-space: nowrap; }
+  .sv__typing i { display: inline-block; width: 1.5px; height: 1em; margin-left: 1px; vertical-align: -0.15em; background: var(--pds-accent); animation: sv-blink 1.1s steps(1) infinite; }
+  .sv__kbd { font-size: 11px; color: var(--pds-text-tertiary); }
+
+  /* Templates */
+  .sv__stack--side { position: relative; display: block; min-height: 15rem; }
+  .sv__paper--back { position: absolute; top: 0; left: 0; width: 62%; transform: rotate(-3deg); }
+  .sv__sec { display: flex; align-items: center; gap: 7px; margin-top: 6px !important; font-size: 12.5px; }
+  .sv__sec b { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 5px; font-size: 10.5px; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .sv__panel { position: relative; width: 62%; margin: 22px 0 0 auto; }
+  .sv__ok { color: var(--pds-accent) !important; }
+  .sv__add :global(.aui-title) { color: var(--pds-text-secondary); }
+
+  /* Dictionary */
+  .sv__word { text-decoration: underline dotted var(--pds-accent) 2px; text-underline-offset: 3px; color: var(--pds-text-primary); font-weight: 500; background: color-mix(in srgb, var(--pds-accent) 10%, transparent); border-radius: 3px; }
+  .sv__dict { width: 88%; margin: -14px 0 0 auto; position: relative; }
+  .sv__dict-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .sv__dict-head b { font-family: var(--pds-font-display); font-size: 17px; font-weight: 600; color: var(--pds-text-primary); }
+  .sv__dict-head span { font-size: 11px; color: var(--pds-text-tertiary); }
+  .sv__dict-body { margin-top: 6px !important; font-size: 13px; line-height: 1.55; color: var(--pds-text-secondary); }
+  .sv__dict-refs { display: flex; gap: 6px; margin-top: 10px !important; font-size: 12px; }
+
+  /* Sharing */
+  .sv__link { display: flex; align-items: center; gap: 8px; margin-top: 14px !important; padding: 6px 6px 6px 11px; border-radius: 10px; font-size: 13px; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .sv__link span:not(.sv__btn) { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sv__link :global(svg), .sv__row :global(svg) { width: 12px; height: 12px; color: var(--pds-text-secondary); }
+  .sv__row { display: flex; align-items: center; gap: 8px; margin-top: 12px !important; font-size: 13px; color: var(--pds-text-primary); }
+  .sv__row--soft { color: var(--pds-text-secondary); }
+  .sv__switch { position: relative; width: 34px; height: 20px; margin-left: auto; border-radius: 999px; background: var(--pds-bg-track); }
+  .sv__switch i { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: var(--pds-shadow-track-knob); }
+  .sv__switch.is-on { background: var(--pds-accent); }
+  .sv__switch.is-on i { transform: translateX(14px); }
+
+  /* Scripture pill, opened */
+  .sv__pill-on { box-shadow: 0 0 0 2px color-mix(in srgb, var(--pds-accent) 45%, transparent) !important; }
+  .sv__verse-pop { width: 90%; margin: -16px 0 0 auto; position: relative; }
+  .sv__vhead { display: flex; align-items: center; justify-content: space-between; }
+  .sv__vhead b { font-size: 14px; font-weight: 600; color: var(--pds-text-primary); }
+  .sv__tr { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 8px; font-size: 11.5px; font-weight: 600; background: var(--pds-bg-chip); }
+  .sv__tr :global(svg) { width: 8px; height: 8px; }
+  .sv__trs { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px !important; }
+  .sv__trs span { padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .sv__trs .is-on { color: var(--pds-on-accent); background: var(--pds-accent); }
+
+  /* Highlights */
+  .sv__hl { padding: 0 2px; border-radius: 3px; color: var(--pds-text-primary); background: color-mix(in srgb, #f5b83d 38%, transparent); box-shadow: inset 0 -2px 0 #f5b83d; }
+  .sv__note { display: grid; gap: 8px; justify-items: end; margin-top: -4px; }
+  .sv__swatches { display: inline-flex; gap: 6px; padding: 6px 9px; border-radius: 999px; background: var(--pds-bg-main); box-shadow: var(--pds-shadow-popover); }
+  .sv__swatches i { width: 16px; height: 16px; border-radius: 50%; }
+  .sv__swatches .is-on { box-shadow: 0 0 0 2px var(--pds-bg-main), 0 0 0 3.5px var(--pds-text-primary); }
+  .is-amber { background: #f5b83d; } .is-sky { background: #5aaaf0; } .is-mint { background: #5cc99b; } .is-violet { background: #a98bf0; } .is-coral { background: #f07a7a; }
+  .sv__annot { display: inline-flex; align-items: center; gap: 7px; max-width: 85%; padding: 9px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-popover); }
+  .sv__annot :global(svg) { flex: none; width: 12px; height: 12px; color: #d99a1c; }
+
+  /* Group threads */
+  .sv__post { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; margin-top: 12px; padding-top: 12px; box-shadow: inset 0 0.5px 0 var(--pds-border); font-size: 13px; line-height: 1.45; }
+  .sv__post-t { display: block; margin-bottom: 5px; color: var(--pds-text-primary); }
+  .sv__post :global(.aui-pill) { font-size: 11.5px; }
+  .sv__face { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 700; color: #fff; }
+  .sv__face.is-a { background: #e07a5f; } .sv__face.is-b { background: #3d8bd9; } .sv__face.is-me { background: #6b7280; }
+
+  @keyframes sv-blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .sv__typing i { animation: none; } }
+</style>

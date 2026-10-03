@@ -7,12 +7,26 @@
  * It steps aside while anything marked `[data-hides-sticky]` is on screen (the
  * home closing section, the footer), so there is never two of the same button
  * in view at once.
+ *
+ * A page can add a `secondary` action beside it (the churches page's "Share
+ * interest"), drawn as a quieter frosted pill so "Try Harvous free" still leads.
  */
 import { buildTryUrl } from "../../lib/signup-url.ts";
 import { fathomTry } from "../../lib/fathom-events.ts";
+
+export interface StickySecondary {
+  label: string;
+  href: string;
+  track?: string;
+}
+interface Props {
+  secondary?: StickySecondary;
+}
+const { secondary } = Astro.props;
 ---
 
 <div class="nxs" data-sticky-try>
+  <div class:list={["nxs__acts", secondary && "nxs__acts--pair"]}>
   <a
     class="nxs__pill"
     href={buildTryUrl({ source: "next_sticky" })}
@@ -22,6 +36,10 @@ import { fathomTry } from "../../lib/fathom-events.ts";
     Try Harvous free
     <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </a>
+  {secondary && (
+    <a class="nxs__pill nxs__pill--alt" href={secondary.href} data-fathom-track={secondary.track}>{secondary.label}</a>
+  )}
+  </div>
   <p class="nxs__note">Free · no account needed · on the web today</p>
 </div>
 
@@ -49,6 +67,23 @@ import { fathomTry } from "../../lib/fathom-events.ts";
     transform: translateY(1rem);
   }
   .nxs.is-hidden .nxs__pill { pointer-events: none; }
+
+  .nxs__acts { display: flex; justify-content: center; gap: 0.6rem; width: 100%; }
+  /* Two pills: each gives up its minimum width, so the pair fits a phone side by side. */
+  .nxs__acts--pair .nxs__pill { min-width: 0; }
+  @media (max-width: 30rem) {
+    .nxs__acts--pair .nxs__pill { padding: 0.85rem 1.1rem; font-size: 0.975rem; }
+  }
+  .nxs__pill.nxs__pill--alt {
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-card) 82%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 10%, transparent),
+      0 14px 32px -18px rgba(15, 23, 42, 0.45);
+  }
+  .nxs__pill.nxs__pill--alt:hover { color: var(--color-ink); filter: none; background: var(--color-card); }
 
   .nxs__pill {
     pointer-events: auto;

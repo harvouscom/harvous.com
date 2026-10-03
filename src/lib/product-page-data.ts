@@ -28,8 +28,10 @@ export type ProductShowcase = {
   color: FeatureShowcaseColor;
   reverse?: boolean;
   body: string[];
-  image: string;
-  imageAlt: string;
+  /** Which stylized app moment to draw (ShowcaseVisual.astro). */
+  visual: string;
+  /** What it shows, for screen readers. */
+  label: string;
 };
 
 export type ProductPage = {

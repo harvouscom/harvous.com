@@ -55,8 +55,8 @@ const ADDON_PAGES: AddonPage[] = [
           "Week four of your James study gets its own thread. Everyone's notes from that session live together — questions, answers, and scripture references in one place.",
           "Look back at what the group found, weeks after the night everyone was in the room.",
         ],
-        image: "/app-organize.png",
-        imageAlt: "Notes organized into folders and threads in Harvous",
+        visual: "group-threads",
+        label: "A group's thread for week four of James, with notes and passages from three members",
       },
     ],
     moments: [
@@ -201,46 +201,41 @@ const ADDON_PAGES: AddonPage[] = [
     comingSoon: false,
     heroTitle: "Ask your AI app about what you've actually studied.",
     heroLead:
-      "Connector lets Claude, ChatGPT, and other AI apps read your Harvous notes, so when you ask about a passage they start from what you wrote instead of a guess. When a conversation is worth keeping, they can start a new note for you to pick up in Harvous. What's already there, they can't change.",
+      "Claude, ChatGPT, and other AI apps can read your Harvous notes, so they answer from what you wrote, not a guess. They can start a new note when you ask, and never change what's already there.",
     sections: [
       {
         heading: "Start from what you wrote",
         visual: "ask",
         paragraphs: [
-          "Ask \"What have I written on Romans 8?\" and the app looks through your notes, including the one that only cites Romans 8:28–30, along with the verses you highlighted and anything you wrote on them while reading. It comes back with your own words, and Scripture as references, so you're pointed back to the passage itself.",
-          "It works for groups too. Ask for help preparing for Thursday night and it can read your shared space the way you see it in Harvous, next to your own notes on the passage. In ChatGPT's deep research, your notes show up as sources, each linking back to the note in Harvous.",
+          "Ask about a passage and the app answers from your own notes and highlights, including the note that only cites one verse. In ChatGPT's deep research, each note it uses links back to Harvous.",
         ],
       },
       {
         heading: "Pick up where you left off",
         visual: "pickup",
         paragraphs: [
-          "Ask \"Where was I?\" and you get the same answer Harvous Home gives you: the note you were last working on, the chapter to keep reading, and your most recent notes. Ask about a series, like your Romans study or your sermon notes, and it can read that thread in order.",
-          "When you want to go further into a passage, it can bring in what Harvous knows about it: themes, cross-references, and the people and places in it, next to your own notes that connect to it. Names and references only, never verse text, so you still open your Bible for the words.",
+          "Ask \"Where was I?\" for the note you were last in and the chapter to read next. Or go deeper: themes, cross-references, people and places, next to your notes. Names and references only, never verse text.",
         ],
       },
       {
         heading: "Keep going in Harvous",
         visual: "start-note",
         paragraphs: [
-          "Some conversations are worth more than a chat history. Say \"start a note in Harvous\" and the app starts one new note in My Home. It opens with a card labeled with the app's name, holding a short summary of what you talked about, the passages, and any question you were left with. Below it is an empty page for you to write in.",
-          "The app asks before it starts one, and it never writes your reflections for you: the card is its words, the page is yours. Remove the card whenever you like and the note stays. Apps can start up to 20 notes a day, and if you'd rather they didn't, turn off \"Let apps start notes\" in Settings › Connector.",
+          "Say \"start a note in Harvous\" and the app opens one with its short summary in a labeled card, and a blank page for you. It asks first, it's up to 20 a day, and you can turn it off in Settings.",
         ],
       },
       {
         heading: "Your study stays as you left it",
         visual: "boundaries",
         paragraphs: [
-          "I wanted my AI app to know my notes without ever touching them. Starting a new note is the only thing an app can add. It can't edit or delete anything, including the notes it started. A locked note shows only its title and date, and Scripture comes through as references, never verse text.",
-          "There's no export-everything button either. An app asks for what it needs, a few notes at a time, and Harvous limits how much it can ask for in a day.",
+          "Starting a new note is the only thing an app can add. It can't edit or delete anything, locked notes show only a title and date, and it reads a few notes at a time, never your whole account.",
         ],
       },
       {
         heading: "You decide what's connected",
         visual: "settings",
         paragraphs: [
-          "When you connect an app, what it reads becomes part of your conversation with that service, under its own terms. That's the real trade, and it's yours to make.",
-          "Settings lists every app you've connected and when it last read your notes. Disconnect any of them and it stops reading your study. For apps that need a key instead of a sign-in, like Grok, Settings makes a personal token that's shown once and can be revoked anytime.",
+          "Settings shows every connected app and when it last read your notes. Disconnect any of them in one tap; apps that need a key, like Grok, get a token you can revoke.",
         ],
       },
     ],

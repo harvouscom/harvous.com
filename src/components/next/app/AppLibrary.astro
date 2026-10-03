@@ -1,0 +1,153 @@
+---
+/**
+ * AppLibrary — Search open over the page, as the tour's library screen shows it:
+ * the panel with its field, history and the kind menu ("Everything", open, with
+ * Notes, Folders, Threads, Highlights, Scripture, Resources), and the mixed list
+ * behind it: pinned notes, folders, a highlight, books with their passages.
+ */
+import AppIcon from "./AppIcon.astro";
+
+const KINDS = [
+  { label: "Everything", icon: "layer-group", on: true },
+  { label: "Notes", icon: "note-sticky" },
+  { label: "Folders", icon: "folder" },
+  { label: "Threads", icon: "arrow-right-arrow-left" },
+  { label: "Highlights", icon: "highlighter" },
+  { label: "Scripture", icon: "scroll" },
+  { label: "Resources", icon: "newspaper" },
+];
+---
+
+<div class="alib">
+  <div class="alib__panel">
+    <div class="alib__bar">
+      <span class="alib__collapse"><AppIcon name="down-left-and-up-right-to-center" /></span>
+      <span class="alib__field"><AppIcon name="magnifying-glass" /><span>Search my Harvous…</span><AppIcon name="clock-rotate-left" /></span>
+      <span class="alib__kind">Everything <AppIcon name="caret-up" /></span>
+    </div>
+
+    <div class="alib__list">
+      <div class="alib__item">
+        <span class="alib__ico"><AppIcon name="note-sticky" /></span>
+        <span><span class="alib__t"><AppIcon name="thumbtack" /> God loves everyone</span><span class="alib__s"><b>4d ago</b> Exodus 6:28–7:7 NLT · God reminding Moses</span></span>
+      </div>
+      <div class="alib__item">
+        <span class="alib__ico"><AppIcon name="note-sticky" /></span>
+        <span><span class="alib__t"><AppIcon name="thumbtack" /> Joy Breaks Out</span><span class="alib__s"><b>2w ago</b> Luke 2:8–14</span></span>
+      </div>
+      <div class="alib__item is-card">
+        <span class="alib__ico"><AppIcon name="folder" /></span>
+        <span><span class="alib__t">Exodus</span><span class="alib__s alib__s--dark">4 notes</span></span>
+      </div>
+      <div class="alib__item is-card">
+        <span class="alib__ico"><AppIcon name="folder" /></span>
+        <span><span class="alib__t">Holy Spirit</span><span class="alib__s alib__s--dark">4 notes</span></span>
+      </div>
+      <div class="alib__item">
+        <span class="alib__ico"><AppIcon name="highlighter" /></span>
+        <span><span class="alib__t">Being made like God</span><span class="alib__s"><b>4d ago</b> God loves everyone</span></span>
+      </div>
+      <div class="alib__item is-card">
+        <span class="alib__ico"><AppIcon name="scroll" /></span>
+        <span><span class="alib__t">Exodus</span><span class="alib__s alib__s--dark">29 passages · 12 notes</span></span>
+      </div>
+      <div class="alib__item is-card">
+        <span class="alib__ico"><AppIcon name="scroll" /></span>
+        <span><span class="alib__t">Psalms</span><span class="alib__s alib__s--dark">10 passages · 8 notes</span></span>
+      </div>
+    </div>
+
+    <div class="alib__menu" data-alib-kinds>
+      {KINDS.map((k) => (
+        <span class:list={["alib__opt", k.on && "is-on"]}>
+          <AppIcon name={k.icon} /> {k.label}
+          {k.on && <span class="alib__check"><AppIcon name="check" /></span>}
+        </span>
+      ))}
+      <span class="alib__sep"></span>
+      <span class="alib__opt"><AppIcon name="check-double" /> Select multiple items</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .alib { height: 100%; padding: 4px 6% 0; font-size: 14px; }
+  .alib__panel {
+    position: relative;
+    height: 100%;
+    padding: 8px 8px 0;
+    border-radius: 16px 16px 0 0;
+    background: var(--pds-bg-main);
+    box-shadow: 0 0 0 0.5px var(--pds-border), var(--pds-shadow-popover);
+  }
+  .alib__bar { display: flex; align-items: center; gap: 8px; }
+  .alib__collapse { display: grid; place-items: center; width: 26px; color: var(--pds-text-primary); }
+  .alib__collapse :global(svg) { width: 13px; height: 13px; }
+  .alib__field {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: var(--pds-text-tertiary);
+    background: var(--pds-bg-input, var(--pds-bg-chip));
+  }
+  .alib__field span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .alib__field :global(svg) { width: 13px; height: 13px; color: var(--pds-text-secondary); }
+  .alib__kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 11px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-chip);
+    white-space: nowrap;
+  }
+  .alib__kind :global(svg) { width: 8px; height: 8px; }
+
+  .alib__list { display: grid; gap: 6px; margin-top: 8px; }
+  .alib__item { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 9px; align-items: start; padding: 7px 10px; }
+  .alib__item.is-card { border-radius: 10px; background: var(--pds-bg-faint, var(--pds-bg-main)); box-shadow: 0 0 0 0.5px var(--pds-border), var(--pds-shadow-card); }
+  .alib__ico { display: grid; place-items: center; height: 18px; color: var(--pds-text-primary); }
+  .alib__ico :global(svg) { width: 13px; height: 13px; }
+  .alib__t { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 500; color: var(--pds-text-primary); }
+  .alib__t :global(svg) { width: 10px; height: 10px; }
+  .alib__s { display: block; margin-top: 1px; font-size: 12px; color: var(--pds-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .alib__s b { font-weight: 500; color: var(--pds-text-secondary); }
+  .alib__s--dark { color: var(--pds-text-secondary); }
+
+  /* The kind menu, open over the right of the list. */
+  .alib__menu {
+    position: absolute;
+    top: 46px;
+    right: 8px;
+    width: 46%;
+    min-width: 170px;
+    max-width: 210px;
+    padding: 5px;
+    border-radius: 12px;
+    background: var(--pds-bg-popover-solid, var(--pds-bg-main));
+    box-shadow: 0 0 0 0.5px var(--pds-border), var(--pds-shadow-menu, var(--pds-shadow-popover));
+  }
+  .alib__opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--pds-text-primary);
+  }
+  .alib__opt :global(svg) { width: 12px; height: 12px; }
+  .alib__opt.is-on { background: var(--pds-bg-row-selected, var(--pds-bg-chip)); }
+  .alib__check { margin-left: auto; display: grid; }
+  .alib__sep { display: block; height: 0.5px; margin: 4px 6px; background: var(--pds-border); }
+</style>

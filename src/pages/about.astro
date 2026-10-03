@@ -10,6 +10,7 @@ import { ogCard } from "../lib/og-card.ts";
 import FounderLetter from "../components/FounderLetter.astro";
 import OptimizedImage from "../components/OptimizedImage.astro";
 import ClosingCall from "../components/next/ClosingCall.astro";
+import OpenSource from "../components/next/OpenSource.astro";
 import { ABOUT_BELIEFS } from "../lib/about-beliefs.ts";
 import { backdropSrc } from "../lib/next/content.ts";
 import { aboutJsonLd } from "../lib/page-jsonld.ts";
@@ -73,6 +74,8 @@ import { aboutJsonLd } from "../lib/page-jsonld.ts";
       ))}
     </ol>
   </section>
+
+  <OpenSource page="about" />
 
   <section class="nx-wrap about-who" aria-labelledby="who-title">
     <h2 id="who-title" class="nx-title">One person, for now.</h2>

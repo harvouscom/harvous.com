@@ -115,6 +115,12 @@ export const fathomHome = {
   license: "home_license",
 } as const;
 
+/** The About page's compact open source card: the app repo, and its licence. */
+export const fathomAbout = {
+  github: "about_github",
+  license: "about_license",
+} as const;
+
 /**
  * Fallbacks applied by BaseLayout to any link that carries no event of its own,
  * so a new CTA is counted from day one. A link's own `data-fathom-track` always
@@ -132,4 +138,6 @@ export const fathomCta = {
   videoTour: "video_tour_click",
   /** Homepage hero — the small "Harvous 3 is here" callout linking to /3/. */
   v3Announce: "cta_v3_announce",
+  /** /for/churches/ — "Share interest" in the fixed bottom bar, to the interest form. */
+  churchInterestSticky: "church_interest_sticky",
 } as const;
