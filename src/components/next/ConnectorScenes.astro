@@ -1,0 +1,734 @@
+---
+/**
+ * ConnectorScenes — the Connector page's story, one row per section: the words on
+ * one side and, on the other, a stylized example of it working, built from the
+ * app UI recipes (next-app-ui.css) rather than screenshots, so it stays crisp and
+ * follows the theme.
+ *
+ * Each section names its example with `visual`:
+ *   ask        — a chat in an AI app that answers from your own notes (switch apps)
+ *   pickup     — "where was I?", passage context, a series (pick a question)
+ *   start-note — the app offers to start a note, and the note it starts (try it)
+ *   boundaries — what an app can and can't do, as a list
+ *   settings   — Settings › Connector: the switch, connected apps, a token (try it)
+ *
+ * The examples are illustrations, so the AI app is a plain, generic chat window
+ * wearing only the app's mark, not its interface. The words in them are what Harvous really returns —
+ * references, never verse text; locked notes as a title and a date.
+ */
+import AppIcon from "./app/AppIcon.astro";
+import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
+import type { ProductSection } from "../../lib/product-page-data.ts";
+// The apps' own marks: LobeHub icons (MIT), inlined so the one-colour ones follow the theme,
+// and Meta's own Muse app icon (from ai.meta.com/muse), which is a picture rather than a path.
+import claudeLogo from "../../assets/ai-logos/claude.svg?raw";
+import chatgptLogo from "../../assets/ai-logos/chatgpt.svg?raw";
+import grokLogo from "../../assets/ai-logos/grok.svg?raw";
+import museIcon from "../../assets/ai-logos/muse.webp";
+const museLogo = `<img src="${museIcon.src}" alt="" width="128" height="128" loading="lazy" decoding="async" />`;
+
+interface Props {
+  sections: ProductSection[];
+}
+const { sections } = Astro.props;
+
+const apps = [
+  { id: "claude", name: "Claude", logo: claudeLogo },
+  { id: "chatgpt", name: "ChatGPT", logo: chatgptLogo },
+  { id: "grok", name: "Grok", logo: grokLogo },
+  { id: "muse", name: "Muse", logo: museLogo },
+];
+
+const washes = ["sky", "violet", "amber", "mint", "blue"];
+---
+
+<section class="nx-wrap cs" aria-label="How Connector works">
+  <ul class="cs__apps" role="list" data-reveal>
+    <li class="cs__apps-label">Works in</li>
+    {apps.map((a) => (
+      <li class="cs__app"><span class="cs__logo" set:html={a.logo} />{a.name}</li>
+    ))}
+    <li>and other apps that connect to outside tools</li>
+  </ul>
+
+  {sections.map((section, i) => (
+    <div class:list={["cs__row", i % 2 === 1 && "is-flip"]}>
+      <div class="cs__text" data-reveal>
+        <p class="cs__num">{String(i + 1).padStart(2, "0")}</p>
+        <h2 class="cs__h">{section.heading}</h2>
+        {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+      </div>
+
+      <div class="cs__stage" style={`--wash: var(--tint-${washes[i % washes.length]}); --reveal-delay: 120ms;`} data-reveal>
+        {section.visual === "ask" && (
+          <div class="aui aui-card aui-card--float chat" data-scene="ask" data-app="claude" role="group" aria-label="Example: asking an AI app about your notes">
+            <div class="chat__bar">
+              <span class="chat__logos" aria-hidden="true">
+                {apps.map((a) => <span class="cs__logo" data-logo={a.id} set:html={a.logo} />)}
+              </span>
+              <span class="chat__app" data-app-name>Claude</span>
+              <span class="chat__switch" role="group" aria-label="Try it in">
+                {apps.map((a, j) => (
+                  <button type="button" class="chat__tab" data-app-tab={a.id} aria-pressed={j === 0 ? "true" : "false"}>{a.name}</button>
+                ))}
+              </span>
+            </div>
+            <div class="chat__body">
+              <p class="chat__ask">What have I written on Romans 8?</p>
+              <div class="chat__tool" data-step="tool">
+                <img src="/images/harvous-icon-sm.png" alt="" width="26" height="26" loading="lazy" />
+                <span>
+                  <span class="aui-title">Harvous <i>·</i> Find by passage</span>
+                  <span class="aui-sub chat__tool-sub"><AppIcon name="lock" /> Read only <i>·</i> 3 notes <i>·</i> 4 highlights</span>
+                </span>
+                <span class="chat__check"><AppIcon name="check" /></span>
+              </div>
+              <div class="chat__reply" data-step="reply">
+                <p>
+                  In <strong>No condemnation</strong> you wrote that verse 1 is the hinge: everything
+                  after it is <em>because</em> of it. You came back to it in your note on
+                  <span class="cs__nowrap"><span class="aui-pill">Romans 8:28–30 <span class="aui-tr">NLT</span></span>,</span>
+                  and you highlighted <span class="aui-pill">Romans 8:38–39</span> twice while reading.
+                </p>
+                <p class="chat__cites">
+                  <span class="chat__cite"><AppIcon name="note-sticky" /> No condemnation</span>
+                  <span class="chat__cite"><AppIcon name="note-sticky" /> Called and known</span>
+                  <span class="chat__cite"><AppIcon name="highlighter" /> 4 highlights</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {section.visual === "pickup" && (
+          <div class="aui aui-card aui-card--float chat pick" data-scene="pickup" role="group" aria-label="Example: picking up where you left off">
+            <div class="pick__prompts" role="group" aria-label="Ask">
+              <button type="button" class="pick__prompt" data-pick="where" aria-pressed="true">Where was I?</button>
+              <button type="button" class="pick__prompt" data-pick="context" aria-pressed="false">What connects to Romans 8:28?</button>
+              <button type="button" class="pick__prompt" data-pick="series" aria-pressed="false">My Romans series</button>
+            </div>
+            <div class="chat__body">
+              <div class="pick__answer" data-answer="where">
+                <p class="aui-label">Continue</p>
+                <div class="aui-card pick__group">
+                  <div class="aui-row">
+                    <span class="aui-tile"><AppIcon name="pen-to-square" /></span>
+                    <span><span class="aui-title">Called and known</span><span class="aui-sub">You edited it yesterday</span></span>
+                    <span class="aui-acts"><AppIcon name="caret-right" /></span>
+                  </div>
+                  <div class="aui-row">
+                    <span class="aui-tile pick__tile--read"><AppIcon name="book-open" /></span>
+                    <span><span class="aui-title">Romans 9</span><span class="aui-sub">Keep reading · next chapter</span></span>
+                    <span class="aui-acts"><AppIcon name="caret-right" /></span>
+                  </div>
+                </div>
+                <p class="aui-label pick__label">Recently</p>
+                <div class="aui-card pick__group">
+                  <div class="aui-row">
+                    <span class="aui-tile"><AppIcon name="note-sticky" /></span>
+                    <span><span class="aui-title">No condemnation</span><span class="aui-sub">Going through Romans</span></span>
+                    <span></span>
+                  </div>
+                  <div class="aui-row">
+                    <span class="aui-tile"><AppIcon name="note-sticky" /></span>
+                    <span><span class="aui-title">Sermon: the vine and the branches</span><span class="aui-sub">Sermon notes</span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pick__answer" data-answer="context" hidden>
+                <p class="aui-label">Themes</p>
+                <p class="pick__chips"><span>Adoption</span><span>Providence</span><span>Hope</span><span>Calling</span></p>
+                <p class="aui-label pick__label">Cross-references</p>
+                <p class="pick__chips pick__chips--pills">
+                  <span class="aui-pill">Genesis 50:20</span><span class="aui-pill">Ephesians 1:11</span><span class="aui-pill">James 1:2–4</span>
+                </p>
+                <p class="aui-label pick__label">People and places</p>
+                <p class="pick__chips"><span><AppIcon name="user" /> Paul</span><span><AppIcon name="location-dot" /> Rome</span></p>
+                <p class="aui-label pick__label">Your notes that connect</p>
+                <div class="aui-card pick__group">
+                  <div class="aui-row">
+                    <span class="aui-tile"><AppIcon name="note-sticky" /></span>
+                    <span><span class="aui-title">God is faithful, even here</span><span class="aui-sub">Cites Genesis 50:20</span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pick__answer" data-answer="series" hidden>
+                <p class="aui-label">Going through Romans <span class="pick__count">4 notes</span></p>
+                <div class="aui-card pick__group">
+                  {[
+                    ["Grace before anything", "Romans 1–3"],
+                    ["Peace with God", "Romans 5"],
+                    ["No condemnation", "Romans 8:1–11"],
+                    ["Called and known", "Romans 8:28–30"],
+                  ].map(([title, ref], k) => (
+                    <div class="aui-row">
+                      <span class="aui-tile pick__step">{k + 1}</span>
+                      <span><span class="aui-title">{title}</span><span class="aui-sub">{ref}</span></span>
+                      <span></span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {section.visual === "start-note" && (
+          <div class="sn" data-scene="start-note" data-state="offer" role="group" aria-label="Example: starting a Harvous note from a chat">
+            <div class="aui aui-card aui-card--float chat sn__chat">
+              <div class="chat__body">
+                <p class="chat__ask">That helps. I want to keep thinking about why Joseph didn't take revenge.</p>
+                <div class="chat__reply sn__offer">
+                  <p>Want me to start a Harvous note so you can keep going there?</p>
+                  <p class="sn__actions">
+                    <button type="button" class="sn__btn sn__btn--go" data-start>Start a note</button>
+                    <button type="button" class="sn__btn" data-start>Not now</button>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="aui sn__note">
+              <p class="sn__done"><AppIcon name="check" /> Claude started a note in Harvous</p>
+              <div class="aui-card sn__origin" data-origin>
+                <p class="sn__from"><AppIcon name="puzzle-piece" /> From Claude</p>
+                <p class="sn__summary">
+                  We talked about Genesis 50, where Joseph tells his brothers that what they meant for
+                  harm, God meant for good, and how forgiving them didn't mean pretending it hadn't hurt.
+                </p>
+                <p class="sn__passages"><span class="aui-pill">Genesis 50:15–21</span><span class="aui-pill">Romans 12:19</span></p>
+                <p class="sn__q"><AppIcon name="circle-question" /> What made it possible for him to leave it with God?</p>
+                <button type="button" class="sn__remove" data-remove>Remove card</button>
+              </div>
+              <div class="aui-paper sn__paper">
+                <p class="aui-h sn__title">Why Joseph didn't take revenge</p>
+                <p class="sn__caret"><span aria-hidden="true"></span>Your page to write on…</p>
+              </div>
+              <button type="button" class="sn__replay" data-replay><AppIcon name="arrow-rotate-left" /> Replay</button>
+            </div>
+          </div>
+        )}
+
+        {section.visual === "boundaries" && (
+          <div class="aui aui-card aui-card--float bd" role="group" aria-label="What a connected app can and can't do">
+            <p class="bd__head"><img src="/images/harvous-icon-sm.png" alt="" width="22" height="22" loading="lazy" /> What a connected app can do</p>
+            {[
+              ["yes", "magnifying-glass", "Search and read your notes", "A few at a time, never the whole account"],
+              ["yes", "book-bible", "Find what you wrote on a passage", "With your highlights from reading it"],
+              ["yes", "pen-to-square", "Start a new note", "Only when you ask, up to 20 a day"],
+              ["no", "pen", "Edit a note", "Not even one it started"],
+              ["no", "trash-can", "Delete anything", ""],
+              ["part", "lock", "Locked notes", "Title and date only"],
+              ["part", "book-open", "Scripture", "References, never verse text"],
+            ].map(([kind, icon, title, sub]) => (
+              <div class:list={["aui-row bd__row", `bd__row--${kind}`]}>
+                <span class="aui-tile"><AppIcon name={icon} /></span>
+                <span><span class="aui-title">{title}</span>{sub && <span class="aui-sub">{sub}</span>}</span>
+                <span class="bd__mark" aria-label={kind === "yes" ? "Yes" : kind === "no" ? "No" : "Limited"}>
+                  <AppIcon name={kind === "yes" ? "check" : kind === "no" ? "xmark" : "minus"} />
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {section.visual === "settings" && (
+          <div class="aui aui-card aui-card--float st" data-scene="settings" role="group" aria-label="Example: Settings › Connector">
+            <p class="st__crumb">Settings <AppIcon name="chevron-right" /> <strong><AppIcon name="puzzle-piece" /> Connector</strong></p>
+            <div class="aui-card st__group">
+              <div class="aui-row">
+                <span class="aui-tile"><AppIcon name="pen-to-square" /></span>
+                <span><span class="aui-title">Let apps start notes</span><span class="aui-sub">They ask first, every time</span></span>
+                <button type="button" class="st__switch" role="switch" aria-checked="true" aria-label="Let apps start notes" data-switch><span></span></button>
+              </div>
+            </div>
+            <p class="aui-label st__label">Connected apps</p>
+            <div class="aui-card st__group">
+              {[
+                [apps[0], "Read your notes 2 hours ago", "Disconnect"],
+                [apps[1], "Read your notes yesterday", "Disconnect"],
+                [apps[2], "Personal token hv_••••3f9a", "Revoke"],
+                [apps[3], "Read your notes 3 days ago", "Disconnect"],
+              ].map(([app, sub, action]) => (
+                <div class="aui-row st__app" data-app-row>
+                  <span class="aui-tile st__logo"><span class="cs__logo" set:html={app.logo} /></span>
+                  <span><span class="aui-title">{app.name}</span><span class="aui-sub" data-sub data-was={sub}>{sub}</span></span>
+                  <button type="button" class="st__act" data-disconnect data-label={action}>{action}</button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  ))}
+</section>
+
+<script>
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /** Runs `play` once, when `el` first scrolls into view (or straight away without IO). */
+  const onFirstView = (el: Element, play: () => void) => {
+    if (!("IntersectionObserver" in window)) return play();
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        play();
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(el);
+  };
+
+  // Ask: the tool call, then the answer, the first time it's seen. Tabs swap the app.
+  document.querySelectorAll<HTMLElement>('[data-scene="ask"]').forEach((scene) => {
+    if (!still) {
+      scene.classList.add("is-waiting");
+      onFirstView(scene, () => {
+        setTimeout(() => scene.classList.add("is-tool"), 350);
+        setTimeout(() => scene.classList.add("is-reply"), 1300);
+      });
+    }
+    const name = scene.querySelector("[data-app-name]");
+    scene.querySelectorAll<HTMLButtonElement>("[data-app-tab]").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        scene.querySelectorAll("[data-app-tab]").forEach((t) => t.setAttribute("aria-pressed", String(t === tab)));
+        scene.dataset.app = tab.dataset.appTab;
+        if (name) name.textContent = tab.textContent;
+      });
+    });
+  });
+
+  // Pick up: each question shows its answer.
+  document.querySelectorAll<HTMLElement>('[data-scene="pickup"]').forEach((scene) => {
+    const prompts = scene.querySelectorAll<HTMLButtonElement>("[data-pick]");
+    prompts.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        prompts.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        scene.querySelectorAll<HTMLElement>("[data-answer]").forEach((a) => {
+          a.hidden = a.dataset.answer !== btn.dataset.pick;
+        });
+      });
+    });
+  });
+
+  // Start a note: offer → started note. Plays by itself once if no one clicks first.
+  document.querySelectorAll<HTMLElement>('[data-scene="start-note"]').forEach((scene) => {
+    let auto: ReturnType<typeof setTimeout> | undefined;
+    const start = () => {
+      clearTimeout(auto);
+      scene.dataset.state = "started";
+    };
+    scene.querySelectorAll("[data-start]").forEach((b) => b.addEventListener("click", start));
+    scene.querySelector("[data-remove]")?.addEventListener("click", () => {
+      scene.querySelector("[data-origin]")?.classList.add("is-removed");
+    });
+    scene.querySelector("[data-replay]")?.addEventListener("click", () => {
+      scene.querySelector("[data-origin]")?.classList.remove("is-removed");
+      scene.dataset.state = "offer";
+    });
+    if (still) return;
+    onFirstView(scene, () => {
+      auto = setTimeout(start, 2600);
+    });
+  });
+
+  // Settings: the switch switches; apps disconnect and reconnect.
+  document.querySelectorAll<HTMLElement>('[data-scene="settings"]').forEach((scene) => {
+    const sw = scene.querySelector<HTMLButtonElement>("[data-switch]");
+    sw?.addEventListener("click", () => sw.setAttribute("aria-checked", String(sw.getAttribute("aria-checked") !== "true")));
+    scene.querySelectorAll<HTMLElement>("[data-app-row]").forEach((row) => {
+      const btn = row.querySelector<HTMLButtonElement>("[data-disconnect]");
+      const sub = row.querySelector<HTMLElement>("[data-sub]");
+      btn?.addEventListener("click", () => {
+        const off = row.classList.toggle("is-off");
+        btn.textContent = off ? "Reconnect" : (btn.dataset.label ?? "");
+        if (sub) sub.textContent = off ? "Disconnected" : (sub.dataset.was ?? "");
+      });
+    });
+  });
+</script>
+
+<style>
+  .cs {
+    max-width: calc(68rem + 2 * var(--nx-gutter));
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: clamp(4rem, 9vw, 7rem);
+  }
+
+  /* Where it works: a quiet row of names. */
+  .cs__apps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cs__apps li {
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+  }
+  .cs__apps .cs__apps-label {
+    padding-inline: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    background: none;
+  }
+  .cs__app { display: inline-flex; align-items: center; gap: 0.45rem; }
+  .cs__logo { display: inline-grid; place-items: center; width: 1.05em; height: 1.05em; }
+  .cs__logo :global(svg),
+  .cs__logo :global(img) { display: block; width: 100%; height: 100%; }
+  .cs__apps li:last-child { color: var(--color-ink-soft); font-weight: 400; background: none; }
+
+  .cs__row { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 56rem) {
+    .cs__row { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 5rem); }
+    .cs__row.is-flip { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+    .cs__row.is-flip .cs__stage { order: -1; }
+  }
+
+  .cs__num {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--pd-ink-fg, var(--color-ink-faint));
+  }
+  .cs__h {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .cs__text p:not(.cs__num) {
+    margin: 0.9rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+
+  .cs__stage {
+    display: grid;
+    place-items: center;
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.75rem);
+    border-radius: var(--nx-radius-scene);
+    background: var(--wash);
+    min-height: 22rem;
+  }
+  .cs__stage > * { width: 100%; max-width: 30rem; }
+
+  .cs button { font: inherit; cursor: pointer; }
+  .cs__nowrap { white-space: nowrap; }
+  .cs button:focus-visible { outline: 2px solid var(--pds-accent); outline-offset: 2px; }
+  .cs :global(svg) { flex: none; }
+
+  /* ── A generic chat window ─────────────────────────────────────────────── */
+
+  .chat { font-size: 14px; line-height: 1.55; }
+  .chat__bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px 10px 14px;
+    box-shadow: inset 0 -0.5px 0 var(--pds-border);
+  }
+  .chat__logos { display: grid; font-size: 16px; }
+  .chat__logos > * { grid-area: 1 / 1; opacity: 0; transform: scale(0.7); transition: opacity 200ms ease, transform 250ms var(--nx-ease); }
+  .chat[data-app="claude"] [data-logo="claude"],
+  .chat[data-app="chatgpt"] [data-logo="chatgpt"],
+  .chat[data-app="grok"] [data-logo="grok"],
+  .chat[data-app="muse"] [data-logo="muse"] { opacity: 1; transform: none; }
+  .chat__app { font-weight: 600; }
+  /* Four apps in the switcher leave no room for the name too on a phone; the mark says it. */
+  @media (max-width: 30rem) { .chat__app { display: none; } }
+  .chat__switch {
+    display: flex;
+    gap: 2px;
+    margin-left: auto;
+    padding: 2px;
+    border-radius: 999px;
+    background: var(--pds-bg-chip);
+  }
+  .chat__tab {
+    padding: 3px 9px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 12px !important;
+    color: var(--pds-text-secondary);
+    background: none;
+  }
+  .chat__tab[aria-pressed="true"] { color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-chip-selected); }
+
+  .chat__body { padding: 16px 16px 18px; }
+  .chat__ask {
+    width: fit-content;
+    max-width: 85%;
+    margin: 0 0 12px auto;
+    padding: 7px 12px;
+    border-radius: 14px 14px 4px 14px;
+    background: var(--pds-bg-chip);
+  }
+  .chat__tool {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium);
+  }
+  .chat__tool img { width: 26px; height: 26px; border-radius: 7px; }
+  .chat__tool i, .sn__from i { font-style: normal; padding-inline: 0.25em; color: var(--pds-text-tertiary); }
+  .chat__tool-sub { white-space: normal !important; }
+  .chat__tool-sub :global(svg) { display: inline; width: 9px; height: 9px; margin-right: 2px; vertical-align: -0.05em; }
+  .chat__check { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: #fff; background: var(--pds-accent); }
+  .chat__check :global(svg) { width: 9px; height: 9px; }
+  .chat__reply { margin-top: 12px; color: var(--pds-text-secondary); }
+  .chat__reply p { margin: 0; }
+  .chat__reply strong { color: var(--pds-text-primary); font-weight: 600; }
+  .chat__cites { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px !important; }
+  .chat__cite {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--pds-text-primary);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium);
+  }
+  .chat__cite :global(svg) { width: 10px; height: 10px; color: var(--pds-text-tertiary); }
+
+  /* The ask scene plays in: tool call, then reply. */
+  .chat.is-waiting [data-step] { opacity: 0; transform: translateY(6px); transition: opacity 450ms ease, transform 450ms var(--nx-ease); }
+  .chat.is-waiting.is-tool [data-step="tool"],
+  .chat.is-waiting.is-reply [data-step="reply"] { opacity: 1; transform: none; }
+  .chat.is-waiting .chat__check { transform: scale(0); transition: transform 300ms var(--nx-ease) 500ms; }
+  .chat.is-waiting.is-tool .chat__check { transform: scale(1); }
+
+  /* ── Pick up ───────────────────────────────────────────────────────────── */
+
+  .pick__prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px 14px;
+    box-shadow: inset 0 -0.5px 0 var(--pds-border);
+  }
+  .pick__prompt {
+    padding: 5px 11px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 13px !important;
+    color: var(--pds-text-secondary);
+    background: var(--pds-bg-chip);
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .pick__prompt:hover { color: var(--pds-text-primary); }
+  .pick__prompt[aria-pressed="true"] { color: var(--pds-on-accent); background: var(--pds-accent); }
+  /* Tall enough for the longest answer, so switching questions doesn't move the page. */
+  .pick .chat__body { min-height: 21.5rem; }
+  .pick__answer { animation: cs-in 350ms var(--nx-ease); }
+  .pick__answer[hidden] { display: none; }
+  .pick__group { border-radius: 12px !important; }
+  .pick__group :global(.aui-row) { padding: 8px 12px 8px 10px; }
+  .pick__group :global(.aui-acts) { color: var(--pds-text-tertiary); }
+  .pick__group :global(.aui-acts svg) { width: 10px; height: 10px; }
+  .pick__label { margin-top: 14px !important; }
+  .pick__tile--read { color: var(--pds-accent) !important; }
+  .pick__step { font-size: 12px; font-weight: 600; color: var(--pds-text-secondary) !important; }
+  .pick__count { margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11px; background: var(--pds-bg-chip); }
+  .pick__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+  .pick__chips:not(.pick__chips--pills) span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium);
+  }
+  .pick__chips :global(svg) { width: 10px; height: 10px; color: var(--pds-text-tertiary); }
+
+  /* ── Start a note ──────────────────────────────────────────────────────── */
+
+  .sn { position: relative; display: grid; }
+  .sn > * { grid-area: 1 / 1; }
+  .sn__chat { transition: transform 600ms var(--nx-ease), opacity 600ms ease; }
+  .sn__actions { display: flex; gap: 6px; margin-top: 10px !important; }
+  .sn__btn {
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 13px !important;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-chip);
+  }
+  .sn__btn--go { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sn__done {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    margin: 0 auto 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-main);
+    box-shadow: var(--pds-shadow-card);
+  }
+  .sn__done :global(svg) { width: 11px; height: 11px; color: var(--pds-accent); }
+
+  .sn__note {
+    align-self: center;
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+    pointer-events: none;
+    transition: transform 650ms var(--nx-ease), opacity 450ms ease;
+  }
+  .sn[data-state="started"] .sn__chat { transform: translateY(-16px) scale(0.96); opacity: 0; pointer-events: none; }
+  .sn[data-state="started"] .sn__note { opacity: 1; transform: none; pointer-events: auto; transition-delay: 150ms; }
+
+  .sn__origin {
+    position: relative;
+    padding: 12px 14px 12px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    border-radius: 14px !important;
+    box-shadow: var(--pds-shadow-popover), 0 20px 40px -24px rgba(15, 23, 42, 0.35) !important;
+    transition: opacity 300ms ease, transform 300ms ease, max-height 400ms ease, margin 400ms ease, padding 400ms ease;
+    max-height: 20rem;
+  }
+  .sn__origin.is-removed { opacity: 0; transform: scale(0.97); max-height: 0; margin: 0; padding-block: 0; }
+  .sn__origin p { margin: 0; }
+  .sn__from { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--pds-text-secondary); }
+  .sn__from :global(svg) { width: 11px; height: 11px; }
+  .sn__summary { margin-top: 6px !important; color: var(--pds-text-primary); }
+  .sn__passages { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px !important; }
+  .sn__q { display: flex; align-items: baseline; gap: 6px; margin-top: 8px !important; color: var(--pds-text-secondary); font-style: italic; }
+  .sn__q :global(svg) { width: 11px; height: 11px; transform: translateY(1px); }
+  .sn__remove {
+    position: absolute;
+    top: 9px;
+    right: 10px;
+    padding: 2px 8px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 11.5px !important;
+    color: var(--pds-text-secondary);
+    background: var(--pds-bg-chip);
+  }
+  .sn__paper { min-height: 7.5rem; }
+  .sn__title { margin-bottom: 6px !important; font-size: 18px; }
+  .sn__caret { display: flex; align-items: center; gap: 2px; color: var(--pds-text-tertiary); }
+  .sn__caret span { width: 1.5px; height: 1.1em; background: var(--pds-accent); animation: cs-blink 1.1s steps(1) infinite; }
+  .sn__replay {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 10px 0 0 auto;
+    padding: 4px 10px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 12px !important;
+    color: var(--pds-text-secondary);
+    background: color-mix(in srgb, var(--pds-bg-main) 70%, transparent);
+  }
+  .sn__note { display: flex; flex-direction: column; }
+  .sn__replay :global(svg) { width: 10px; height: 10px; }
+
+  /* ── Boundaries ────────────────────────────────────────────────────────── */
+
+  .bd { font-size: 14px; }
+  .bd__head { display: flex; align-items: center; gap: 8px; margin: 0; padding: 12px 14px; font-weight: 600; box-shadow: inset 0 -0.5px 0 var(--pds-border); }
+  .bd__head img { width: 22px; height: 22px; border-radius: 6px; }
+  .bd__row { padding: 9px 14px 9px 13px !important; }
+  .bd__mark { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; }
+  .bd__mark :global(svg) { width: 10px; height: 10px; }
+  /* Not the highlighter hues (--pds-highlight-*): those are made to sit under text, and go
+     neon as solid dots in dark mode. A quiet tint with a mid-tone mark reads in both themes. */
+  .bd__row--yes .bd__mark { --mark: #2f9e5b; color: var(--mark); background: color-mix(in srgb, var(--mark) 16%, transparent); }
+  .bd__row--no .bd__mark { --mark: #e0475b; color: var(--mark); background: color-mix(in srgb, var(--mark) 14%, transparent); }
+  .bd__row--part .bd__mark { color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .bd__row--no :global(.aui-title) { color: var(--pds-text-secondary); text-decoration: line-through; text-decoration-color: color-mix(in srgb, #e0475b 60%, transparent); }
+
+  /* ── Settings › Connector ──────────────────────────────────────────────── */
+
+  .st { padding: 14px; background: var(--pds-bg-page) !important; font-size: 14px; }
+  .st__crumb { display: flex; align-items: center; gap: 6px; margin: 2px 4px 12px; font-size: 13px; color: var(--pds-text-secondary); }
+  .st__crumb strong { display: inline-flex; align-items: center; gap: 5px; color: var(--pds-text-primary); font-weight: 600; }
+  .st__crumb :global(svg) { width: 10px; height: 10px; }
+  .st__group { border-radius: 12px !important; }
+  .st__group :global(.aui-row) { padding: 9px 12px 9px 10px; }
+  .st__label { margin-top: 16px !important; }
+  .st__switch {
+    position: relative;
+    width: 40px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--pds-bg-track);
+    transition: background-color 200ms ease;
+  }
+  .st__switch span {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: var(--pds-shadow-track-knob);
+    transition: transform 200ms var(--nx-ease);
+  }
+  .st__switch[aria-checked="true"] { background: var(--pds-accent); }
+  .st__switch[aria-checked="true"] span { transform: translateX(16px); }
+  .st__logo { font-size: 15px; background: var(--pds-bg-main) !important; box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium); transition: opacity 200ms ease; }
+  .st__act {
+    padding: 4px 10px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 12px !important;
+    font-weight: 500;
+    color: var(--pds-destructive);
+    background: var(--pds-destructive-bg);
+  }
+  .st__app.is-off .st__logo { opacity: 0.35; filter: grayscale(1); }
+  .st__app.is-off :global(.aui-title) { color: var(--pds-text-secondary); }
+  .st__app.is-off .st__act { color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+
+  @keyframes cs-in { from { opacity: 0; transform: translateY(4px); } }
+  @keyframes cs-blink { 50% { opacity: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pick__answer { animation: none; }
+    .sn__caret span { animation: none; }
+    .sn__chat, .sn__note, .sn__origin { transition: none; }
+  }
+</style>

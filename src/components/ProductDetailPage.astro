@@ -8,6 +8,7 @@
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
+import ConnectorScenes from "./next/ConnectorScenes.astro";
 import ComparePreview from "./next/ComparePreview.astro";
 import BlogNextCard from "./next/BlogNextCard.astro";
 import { Icon } from "astro-icon/components";
@@ -81,7 +82,9 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
       <p class="nx-lead pd-lead">{page.heroLead}</p>
     </header>
 
-    {page.sections.length > 0 && (
+    {page.sections.some((section) => section.visual) ? (
+      <ConnectorScenes sections={page.sections} />
+    ) : page.sections.length > 0 && (
       <section class="nx-wrap pd-story" aria-label="The story">
         {page.sections.map((section) => (
           <div class="pd-story__part" data-reveal>
