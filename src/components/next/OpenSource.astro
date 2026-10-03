@@ -1,9 +1,9 @@
 ---
 /**
- * OpenSource — the home page's "the code is public." One card laid out like a
- * blueprint sheet on the release notes' square grid: ruler ticks along the top
- * and left, crop marks two squares in from each corner, and a dimension line
- * down the right that measures the whole sheet as "the whole app".
+ * OpenSource — "the code is public," on the home page and About. One short card
+ * laid out like a blueprint sheet on the release notes' square grid: ruler ticks
+ * along the top and left and crop marks two squares in from each corner, with
+ * one line of copy and the button beside it.
  *
  * Every mark sits on a grid line. The grid's square is the card's width divided
  * into a whole number of ~24px columns (the formula in .release-notes-frame__grid);
@@ -17,7 +17,17 @@
  * The licence is O'Saasy (MIT plus a no-hosted-competitor clause), so the copy
  * says what it allows rather than leaning on "open source" alone.
  */
-import { fathomHome } from "../../lib/fathom-events.ts";
+import { fathomAbout, fathomHome } from "../../lib/fathom-events.ts";
+import { formatStars, getRepoStars } from "../../lib/github-stars.ts";
+
+interface Props {
+  /** Which page it's on, so the clicks are counted there. */
+  page?: "home" | "about";
+}
+const { page = "home" } = Astro.props;
+const track = page === "about" ? fathomAbout : fathomHome;
+/* Read at build time; null (no network, rate limit) just leaves the count off. */
+const stars = await getRepoStars();
 
 const repo = "https://github.com/harvouscom/harvous";
 const license = `${repo}/blob/main/LICENSE`;
@@ -42,33 +52,31 @@ const license = `${repo}/blob/main/LICENSE`;
         <span class="oss__crop oss__crop--h oss__crop--br"></span>
         <span class="oss__crop oss__crop--v oss__crop--br"></span>
 
-        {/* Trim corner to trim corner, on the same line as the right-hand crop marks. */}
-        <div class="oss__dim">
-          <svg class="oss__dim-head" viewBox="0 0 15 9"><path d="M2 8 L7.5 1 L13 8" /></svg>
-          <span class="oss__dim-line oss__dim-line--up"></span>
-          <span class="oss__dim-label nx-hand">the whole app</span>
-          <span class="oss__dim-line oss__dim-line--down"></span>
-          <svg class="oss__dim-head" viewBox="0 0 15 9"><path d="M2 1 L7.5 8 L13 1" /></svg>
-        </div>
       </div>
 
       <div class="oss__body">
-        <p class="nx-kicker">Open source</p>
-        <h2 id="oss-title" class="nx-title oss__title">Harvous is open source.<br /> Read every line.</h2>
-        <p class="nx-lead oss__lead">
-          The whole app is on GitHub: every screen, every sync, and exactly how your notes are
-          stored. Look under the hood, open an issue, or send a fix. It's under the O'Saasy
-          License, so you can read it, learn from it, and run it yourself; just don't resell it
-          as a hosted Harvous.
-        </p>
+        <div class="oss__words">
+          <p class="nx-kicker">Open source</p>
+          <h2 id="oss-title" class="nx-title oss__title">Harvous is open source.</h2>
+          <p class="nx-lead oss__lead">
+            The whole app is public on GitHub under the O'Saasy License: read it, learn from it,
+            run it yourself.
+          </p>
+        </div>
         <div class="oss__ctas">
-          <a class="nx-btn nx-btn--accent" href={repo} data-fathom-track={fathomHome.github}>
+          <a class="nx-btn nx-btn--accent" href={repo} data-fathom-track={track.github}>
             <svg class="oss__gh-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
               <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
             </svg>
             View on GitHub
+            {stars !== null && (
+              <span class="oss__stars" aria-label={`${stars} stars on GitHub`}>
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" /></svg>
+                {formatStars(stars)}
+              </span>
+            )}
           </a>
-          <a class="nx-link" href={license} data-fathom-track={fathomHome.license}>Read the license →</a>
+          <a class="nx-link" href={license} data-fathom-track={track.license}>Read the license →</a>
         </div>
       </div>
     </div>
@@ -98,8 +106,8 @@ const license = `${repo}/blob/main/LICENSE`;
 
 <style>
   .oss__frame {
-    /* At least three squares, so the content starts clear of the crop marks two squares in. */
-    --oss-pad: clamp(4.5rem, 7vw, 5.5rem);
+    /* Three squares, so the content starts clear of the crop marks two squares in. */
+    --oss-pad: 4.5rem;
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -126,6 +134,14 @@ const license = `${repo}/blob/main/LICENSE`;
   }
 
   .oss__body { position: relative; max-width: 46rem; }
+
+  /* A short sheet: the words and the button side by side. */
+  .oss .oss__title { font-size: clamp(1.6rem, 3vw, 2.25rem); }
+  .oss .oss__lead { margin-top: 0.75rem; max-width: 32rem; font-size: 1.0625rem; }
+  @media (min-width: 48rem) {
+    .oss .oss__body { display: flex; align-items: flex-end; justify-content: space-between; gap: 2.5rem; max-width: none; }
+    .oss .oss__ctas { flex-direction: column; align-items: flex-end; gap: 0.75rem; margin-top: 0; flex-shrink: 0; }
+  }
   .oss__title { margin: 0.75rem 0 0; }
   .oss__lead { margin: 1.25rem 0 0; }
 
@@ -137,6 +153,20 @@ const license = `${repo}/blob/main/LICENSE`;
     margin-top: 2rem;
   }
   .oss__gh-icon { width: 1.1rem; height: 1.1rem; }
+  /* The star count, as a quiet pill inside the button (GitHub's own pairing). */
+  .oss__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: 0.35rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .oss__stars svg { width: 0.8rem; height: 0.8rem; }
 
   /* ── Blueprint sheet ───────────────────────────────────────────────────── */
 
@@ -188,59 +218,13 @@ const license = `${repo}/blob/main/LICENSE`;
   .oss__crop--h.oss__crop--br { top: calc(100% - var(--g) * 2); left: calc(100% - var(--g) * 1.5); transform-origin: left; }
   .oss__crop--v.oss__crop--br { left: calc(100% - var(--g) * 2); top: calc(100% - var(--g) * 1.5); transform-origin: top; }
 
-  /* The dimension line: a 15px column whose middle pixel sits on the grid line two squares in from the right. */
-  .oss__dim {
-    top: calc(var(--g) * 2 + 1px);
-    bottom: calc(var(--g) * 2 - 1px);
-    left: calc(100% - var(--g) * 2 - 7px);
-    width: 15px;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-  }
-  .oss__dim-head {
-    flex: none;
-    width: 15px;
-    height: 9px;
-    overflow: visible;
-    fill: none;
-    stroke: var(--ink);
-    stroke-width: 1.25;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .oss__dim-line {
-    flex: 1;
-    width: 1px;
-    background: var(--ink);
-  }
-  .oss__dim-line--up { transform-origin: bottom; }
-  .oss__dim-line--down { transform-origin: top; }
-  .oss__dim-label {
-    flex: none;
-    padding-block: 0.6rem;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    font-size: 1.3rem;
-    line-height: 1;
-    white-space: nowrap;
-    color: var(--ink);
-  }
-  @media (min-width: 48rem) {
-    .oss__frame { padding-right: max(clamp(1.5rem, 6vw, 5rem), 5rem); }
-    .oss__dim { display: flex; }
-  }
-
   /* ── Motion: the sheet draws itself in, rulers first, then the marks ───── */
 
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .oss__grid { opacity: 0; }
     :global(html.js) .oss__ruler--top { clip-path: inset(0 100% 0 0); }
     :global(html.js) .oss__ruler--left { clip-path: inset(0 0 100% 0); }
-    :global(html.js) .oss__crop,
-    :global(html.js) .oss__dim-line { transform: scale(0); }
-    :global(html.js) .oss__dim-head,
-    :global(html.js) .oss__dim-label { opacity: 0; }
+    :global(html.js) .oss__crop { transform: scale(0); }
 
     :global(html.js) .oss__frame:global(.revealed) .oss__grid {
       animation:
@@ -255,15 +239,6 @@ const license = `${repo}/blob/main/LICENSE`;
     }
     :global(html.js) .oss__frame:global(.revealed) .oss__crop--v {
       animation: oss-draw-y 600ms cubic-bezier(0.65, 0, 0.35, 1) 1000ms both;
-    }
-    :global(html.js) .oss__frame:global(.revealed) .oss__dim-label {
-      animation: oss-fade 500ms ease-out 1300ms both;
-    }
-    :global(html.js) .oss__frame:global(.revealed) .oss__dim-line {
-      animation: oss-draw-y 900ms cubic-bezier(0.65, 0, 0.35, 1) 1450ms both;
-    }
-    :global(html.js) .oss__frame:global(.revealed) .oss__dim-head {
-      animation: oss-fade 300ms ease-out 2250ms both;
     }
   }
 

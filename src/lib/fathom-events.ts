@@ -115,6 +115,12 @@ export const fathomHome = {
   license: "home_license",
 } as const;
 
+/** The About page's compact open source card: the app repo, and its licence. */
+export const fathomAbout = {
+  github: "about_github",
+  license: "about_license",
+} as const;
+
 /**
  * Fallbacks applied by BaseLayout to any link that carries no event of its own,
  * so a new CTA is counted from day one. A link's own `data-fathom-track` always
