@@ -87,7 +87,7 @@ let pyramidStagger = 0;
               <span
                 class:list={["blog-topic-icon", topic.current && "blog-topic-icon--current"]}
                 data-pyramid-row={rowIndex}
-                style={`background: color-mix(in oklab, ${topic.color.bg} 72%, white); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: 0px; --stagger-index: ${stagger};`}
+                style={`background: color-mix(in oklab, ${topic.color.bg} 72%, var(--color-card)); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: 0px; --stagger-index: ${stagger};`}
                 aria-hidden="true"
               >
                 <Icon name={topic.icon} class="h-5 w-5" />
@@ -113,7 +113,7 @@ let pyramidStagger = 0;
           return (
             <span
               class:list={["blog-topic-icon", topic.current && "blog-topic-icon--current"]}
-              style={`background: color-mix(in oklab, ${topic.color.bg} 55%, white); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: ${rise}px; --stagger-index: ${index};`}
+              style={`background: color-mix(in oklab, ${topic.color.bg} 55%, var(--color-card)); color: ${topic.color.ink}; --topic-rotate: ${rotate}deg; --topic-rise: ${rise}px; --stagger-index: ${index};`}
               aria-hidden="true"
             >
               <Icon name={topic.icon} class="h-5 w-5" />
