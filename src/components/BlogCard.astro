@@ -50,7 +50,7 @@ const href = `/blog/${slug}`;
   variant === "featured" ? (
     <a
       href={href}
-      class="blog-featured group block overflow-hidden rounded-[1.75rem] bg-white transition hover:bg-[color-mix(in_oklab,white_88%,var(--blog-cat))]"
+      class="blog-featured group block overflow-hidden rounded-[1.75rem] bg-[var(--color-card)] transition hover:bg-[color-mix(in_oklab,var(--color-card)_88%,var(--blog-cat))]"
       style={`--blog-cat: ${color.bg};`}
       data-blog-category={category}
     >
@@ -79,7 +79,7 @@ const href = `/blog/${slug}`;
               {label}
             </span>
             {draft && (
-              <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
+              <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
                 Draft
               </span>
             )}
@@ -96,7 +96,7 @@ const href = `/blog/${slug}`;
   ) : variant === "spotlight" ? (
     <a
       href={href}
-      class="blog-spotlight group flex items-start gap-4 rounded-2xl bg-white p-3 shadow-[var(--shadow-card)] transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[var(--shadow-float)]"
+      class="blog-spotlight group flex items-start gap-4 rounded-2xl bg-[var(--color-card)] p-3 shadow-[var(--shadow-card)] transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[var(--shadow-float)]"
       data-blog-category={category}
     >
       <div
@@ -121,7 +121,7 @@ const href = `/blog/${slug}`;
             {label}
           </span>
           {draft && (
-            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
+            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
               Draft
             </span>
           )}
@@ -155,7 +155,7 @@ const href = `/blog/${slug}`;
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-center gap-2 text-xs text-[var(--color-ink-faint)]">
           {draft && (
-            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">
+            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
               Draft
             </span>
           )}
@@ -173,7 +173,7 @@ const href = `/blog/${slug}`;
   ) : (
     <a
       href={href}
-      class="group flex flex-col gap-4 rounded-2xl border border-[var(--color-rule)] bg-white p-6 shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-float)] hover:-translate-y-0.5"
+      class="group flex flex-col gap-4 rounded-2xl border border-[var(--color-rule)] bg-[var(--color-card)] p-6 shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-float)] hover:-translate-y-0.5"
       data-blog-category={category}
     >
       <div class="flex flex-wrap items-center gap-3">
@@ -182,7 +182,7 @@ const href = `/blog/${slug}`;
           {label}
         </span>
         {draft && (
-          <span class="rounded-full bg-[var(--color-ink)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
+          <span class="rounded-full bg-[var(--color-ink)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
             Draft
           </span>
         )}

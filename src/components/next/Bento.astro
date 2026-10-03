@@ -340,13 +340,13 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     border-radius: var(--pds-radius-pill);
     font-size: 12.5px;
     font-weight: 500;
-    background: color-mix(in srgb, #fff 70%, transparent);
+    background: color-mix(in srgb, var(--pds-bg-main) 70%, transparent);
     box-shadow: inset 0 0 0 0.5px var(--pds-border-control);
     color: var(--pds-text-secondary);
   }
   /* Selected states are ink, like the app's own selected chips — not the
      accent blue, which reads as a default rather than as Harvous. */
-  .tpl__chip.is-on { color: #fff; background: var(--pds-text-primary); box-shadow: none; }
+  .tpl__chip.is-on { color: var(--pds-bg-main); background: var(--pds-text-primary); box-shadow: none; }
   .tpl__paper { padding: 16px 18px 40px; font-size: 13px; line-height: 1.4; }
   .tpl__paper :global(.aui-h) { font-size: 16px; margin-bottom: 10px; }
   .tpl__sec + .tpl__sec { margin-top: 10px; }
@@ -414,7 +414,7 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     background: var(--pds-bg-main);
     box-shadow: inset 0 0 0 0.5px var(--pds-border-control-medium), var(--pds-shadow-card);
   }
-  .rev__tiles .is-picked { color: #fff; background: var(--pds-text-primary); box-shadow: none; }
+  .rev__tiles .is-picked { color: var(--pds-bg-main); background: var(--pds-text-primary); box-shadow: none; }
 
   /* Connector — a chat in someone's AI app: the question, Harvous read
      (read only), and an answer that starts from their own note. */

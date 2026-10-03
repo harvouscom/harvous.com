@@ -474,8 +474,8 @@ details > summary::-webkit-details-marker {
 
 /* ──────────────────────────────────────────────────────────────────────────
    Day / Night theme — "the light shines in the darkness" (John 1:5)
-   TEMP: dark mode disabled in BaseLayout.astro (forced data-color-scheme=light).
-   Dark overrides below remain for when night theme is re-enabled.
+   Follows prefers-color-scheme; data-color-scheme="light" | "dark" on <html>
+   (set from a saved choice by the head script in BaseLayout) overrides it.
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -612,6 +612,16 @@ details > summary::-webkit-details-marker {
 
     --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -10px rgba(0, 0, 0, 0.6);
     --shadow-float: 0 20px 60px -20px rgba(0, 0, 0, 0.7);
+
+    /* Tints over the lifted card tone with more of the accent, so a stage reads
+       as a colour at night rather than a muddy near-black. */
+    --tint-amber: color-mix(in oklab, var(--study-dock-accent-warmAmber) 26%, oklch(22% 0.01 285));
+    --tint-sky: color-mix(in oklab, var(--study-dock-accent-skyBlue) 26%, oklch(22% 0.01 285));
+    --tint-mint: color-mix(in oklab, var(--study-dock-accent-mintGreen) 24%, oklch(22% 0.01 285));
+    --tint-violet: color-mix(in oklab, var(--study-dock-accent-violet) 26%, oklch(22% 0.01 285));
+    --tint-coral: color-mix(in oklab, var(--study-dock-accent-coralRose) 26%, oklch(22% 0.01 285));
+    --tint-teal: color-mix(in oklab, var(--study-dock-accent-teal) 24%, oklch(22% 0.01 285));
+    --tint-blue: color-mix(in oklab, var(--color-accent) 24%, oklch(22% 0.01 285));
   }
 }
 
@@ -649,6 +659,16 @@ details > summary::-webkit-details-marker {
 
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -10px rgba(0, 0, 0, 0.6);
   --shadow-float: 0 20px 60px -20px rgba(0, 0, 0, 0.7);
+
+  /* Tints over the lifted card tone with more of the accent, so a stage reads
+     as a colour at night rather than a muddy near-black. */
+  --tint-amber: color-mix(in oklab, var(--study-dock-accent-warmAmber) 26%, oklch(22% 0.01 285));
+  --tint-sky: color-mix(in oklab, var(--study-dock-accent-skyBlue) 26%, oklch(22% 0.01 285));
+  --tint-mint: color-mix(in oklab, var(--study-dock-accent-mintGreen) 24%, oklch(22% 0.01 285));
+  --tint-violet: color-mix(in oklab, var(--study-dock-accent-violet) 26%, oklch(22% 0.01 285));
+  --tint-coral: color-mix(in oklab, var(--study-dock-accent-coralRose) 26%, oklch(22% 0.01 285));
+  --tint-teal: color-mix(in oklab, var(--study-dock-accent-teal) 24%, oklch(22% 0.01 285));
+  --tint-blue: color-mix(in oklab, var(--color-accent) 24%, oklch(22% 0.01 285));
 }
 
 /* Dark marker — prototype warm-amber underline (gradient + glow read harsh on ink).
@@ -709,6 +729,28 @@ details > summary::-webkit-details-marker {
   :root:not([data-color-scheme="light"]) .mark-peach {
     text-decoration-color: var(--study-dock-accent-coralRose);
   }
+}
+
+/* Surfaces that sit on fixed light imagery (sky / watercolour backdrops, paper
+   stickies, white cards) keep day ink in both themes — the image doesn't
+   change at night, so the theme ink would vanish into it. Re-declares the
+   tokens on the element so everything inside resolves to light values. */
+.on-light {
+  color-scheme: light;
+  --color-paper: #ffffff;
+  --color-card: #ffffff;
+  --color-ink: #0d0e12;
+  --color-ink-soft: #585c66;
+  --color-ink-faint: #8c8f99;
+  --color-rule: #e8e9ed;
+  --color-warm: #f4f5f7;
+  --color-accent: #2563eb;
+  --color-accent-soft: #eaf1ff;
+  --pds-text-primary: oklch(24% 0.01 285);
+  --pds-text-secondary: oklch(24% 0.01 285 / 0.5);
+  --pds-text-tertiary: oklch(24% 0.01 285 / 0.32);
+  --pds-bg-main: #ffffff;
+  color: var(--color-ink);
 }
 
 /* Dawn / dusk crossfade — for if/when a manual theme toggle returns (View

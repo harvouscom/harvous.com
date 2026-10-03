@@ -35,7 +35,7 @@ const horizontal = side === "start" ? "right" : side === "end" ? "left" : arrow.
 ---
 
 <div
-  class:list={["mnote", `mnote--${vertical}`, `mnote--${horizontal}`, className]}
+  class:list={["mnote", "on-light", `mnote--${vertical}`, `mnote--${horizontal}`, className]}
   style={`${pos};--tilt:${tilt}deg;`}
   data-reveal
   data-mnote-target={Array.isArray(target) ? target.join(",") : undefined}

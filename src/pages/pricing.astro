@@ -32,7 +32,7 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
 
   <section class="nx-wrap price-plans" aria-label="Plans">
     {plans.map((plan) => (
-      <article class:list={["plan", plan.id === "plus" && "plan--plus"]} data-reveal>
+      <article class:list={["plan", plan.id === "plus" && "plan--plus on-light"]} data-reveal>
         {plan.sky && <img class="plan__sky" src={plan.sky} alt="" loading="lazy" />}
         <header class="plan__head">
           <p class="plan__name">
@@ -145,7 +145,7 @@ const plans: (PricingPlan & { sky?: string })[] = [FREE_PLAN, { ...PLUS_PLAN, sk
     display: inline-flex;
     padding: 0.45rem;
     border-radius: 0.6rem;
-    color: #fff;
+    color: var(--color-paper);
     background: var(--color-ink);
   }
   .plan--plus .plan__icon { background: var(--accent-btn-bg); }

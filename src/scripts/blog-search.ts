@@ -46,7 +46,7 @@ function thumbUrl(slug: string): string {
 function renderStoryCard(post: BlogSearchRecord): string {
   const bg = CATEGORY_BG[post.category] ?? "var(--color-warm)";
   const draft = post.draft
-    ? `<span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white">Draft</span>`
+    ? `<span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">Draft</span>`
     : "";
   const reading = post.readingTime ? `<span>· ${post.readingTime} min</span>` : "";
 

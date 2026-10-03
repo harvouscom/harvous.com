@@ -55,7 +55,7 @@ const decisionRows = [
     <section class="nx-wrap cg-picks" aria-label="The picks">
       <ol class="cg-list" role="list">
         {picks.map((pick, i) => (
-          <li class:list={["cg-pick", pick.isHarvous && "cg-pick--harvous"]}>
+          <li class:list={["cg-pick", pick.isHarvous && "cg-pick--harvous on-light"]}>
             {pick.isHarvous && <img class="cg-pick__sky" src="/images/auth-hero/ai_bg_077.webp" alt="" loading="lazy" />}
             <span class="cg-pick__rank">{String(i + 1).padStart(2, "0")}</span>
             <img class="cg-pick__icon" src={pick.competitorImage} alt="" width="56" height="56" loading={i < 3 ? "eager" : "lazy"} />
@@ -251,7 +251,7 @@ const decisionRows = [
     background: var(--color-warm);
   }
   .cg-note summary::-webkit-details-marker { display: none; }
-  .cg-note[open] summary { color: #fff; background: var(--color-ink); }
+  .cg-note[open] summary { color: var(--color-paper); background: var(--color-ink); }
   .cg-note p {
     position: absolute;
     z-index: 5;
