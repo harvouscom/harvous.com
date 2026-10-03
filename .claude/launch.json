@@ -14,6 +14,13 @@
       "runtimeArgs": ["run", "dev", "--", "--port", "4329"],
       "port": 4329,
       "autoPort": false
+    },
+    {
+      "name": "preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "--", "--port", "4322"],
+      "port": 4322,
+      "autoPort": false
     }
   ]
 }

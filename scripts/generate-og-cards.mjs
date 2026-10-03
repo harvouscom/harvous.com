@@ -3,18 +3,32 @@
  * Page OG cards — one 1200×630 card per page that doesn't have a more specific
  * image of its own (a feature, a compare detail, a Discover listing already do).
  *
- * Each card is the closing card's look: an auth-hero sky with a soft white glow,
- * a small label and the page's own title centred in Google Sans Flex at the
- * site's heading weight, and the Harvous mark with harvous.com underneath. A
- * compare detail leads with Harvous's icon beside the other app's. The sky is
- * chosen from the page name, so neighbouring pages don't share one.
+ * Two looks, both set in Google Sans Flex by headless Chrome (scripts/lib/
+ * chrome.mjs) at 2× — so the type has the site's axes, tracking and balanced
+ * line breaks, which sharp/pango drawing it never did:
  *
- * Needs Google Sans Flex installed locally (the text is drawn by sharp/pango),
- * so this runs on a machine, and the output is committed — like blog:thumbs.
+ *  - Pages with UI to show (a `path` below) are photographed from the running
+ *    site. Home is its hero as it stands; the rest get their own kicker and
+ *    heading with their first UI visual (scene, plans, tiles, sky frame…)
+ *    rising beneath, the homepage hero's shape. Copy comes off the live page,
+ *    so it can't drift from it.
+ *  - Everything else is the closing card's look: an auth-hero sky with a soft
+ *    white glow, a small label and the title centred, and the Harvous mark with
+ *    harvous.com underneath. A compare detail leads with Harvous's icon beside
+ *    the other app's. The sky is chosen from the page name.
+ *
+ * Captures want a production build (no Astro dev toolbar, final CSS):
+ *
+ *   npm run build && npm run preview -- --port 4322
+ *   npm run og:cards -- --force --base=http://localhost:4322
+ *
+ * With no site answering at --base (default http://localhost:4321), the UI
+ * pages fall back to sky cards. The output is committed, like blog:thumbs.
  *
  * Usage:
  *   npm run og:cards
  *   npm run og:cards -- --force
+ *   npm run og:cards -- --force --only=home,pricing
  *
  * Output: public/og/<name>.jpg, plus public/og.png (the site-wide default).
  * Pages pick theirs up with ogCard("<name>") from src/lib/og-card.ts.
@@ -25,11 +39,12 @@
  */
 
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import { readFileSync } from "node:fs";
 import "./_register-env-hook.mjs";
+import { launchChrome, publicUrl } from "./lib/chrome.mjs";
 
 const { getCompareSeoPagesForBuild } = await import("../src/lib/compare-seo-pages.ts");
 const { getCompareEntries } = await import("../src/lib/compare-data.ts");
@@ -52,20 +67,20 @@ const FONT = "Google Sans Flex";
 
 /** Static pages. `icon` is an fa7-solid name. */
 const PAGES = [
-  { name: "home", kicker: "Bible study notes", title: "A study Bible that remembers.", icon: "book-open", asDefault: true },
+  { name: "home", kicker: "Bible study notes", title: "A study Bible that remembers.", icon: "book-open", asDefault: true, path: "/", hero: true, hide: [".hero__watch"] },
   { name: "about", kicker: "About", title: "Made by one person with a Bible and too many notes.", icon: "user" },
-  { name: "tour", kicker: "Tour", title: "How Harvous works.", icon: "compass" },
+  { name: "tour", kicker: "Tour", title: "How Harvous works.", icon: "compass", path: "/tour/" },
   { name: "now", kicker: "Now", title: "What I'm working on right now.", icon: "pen-nib" },
   { name: "support", kicker: "Support", title: "Help, from the person who built it.", icon: "life-ring" },
   { name: "privacy", kicker: "Legal", title: "Privacy Policy", icon: "shield-halved" },
   { name: "terms", kicker: "Legal", title: "Terms of Service", icon: "file-contract" },
-  { name: "use-cases", kicker: "Use cases", title: "However you study.", icon: "layer-group" },
+  { name: "use-cases", kicker: "Use cases", title: "However you study.", icon: "layer-group", path: "/use-cases/" },
   { name: "for", kicker: "Who it's for", title: "Who Harvous is for.", icon: "users" },
-  { name: "compare", kicker: "Compare", title: "Harvous next to the apps you already use.", icon: "scale-balanced" },
+  { name: "compare", kicker: "Compare", title: "Harvous next to the apps you already use.", icon: "scale-balanced", path: "/compare/" },
   { name: "release-notes", kicker: "Release notes", title: "What's new in Harvous.", icon: "clock-rotate-left" },
-  { name: "pricing", kicker: "Pricing", title: "Free to start. Plus when you want more.", icon: "tag" },
-  { name: "v3", kicker: "Harvous 3", title: "Study you can follow and return to.", icon: "star" },
-  { name: "discover", kicker: "Discover", title: "Bible study templates and resources.", icon: "compass" },
+  { name: "pricing", kicker: "Pricing", title: "Free to study. Plus to keep going.", icon: "tag", path: "/pricing/" },
+  { name: "v3", kicker: "Harvous 3", title: "Study you can follow and return to.", icon: "star", path: "/3/" },
+  { name: "discover", kicker: "Discover", title: "Bible study templates and resources.", icon: "compass", path: "/discover/" },
   { name: "blog", kicker: "Bright Enough", title: "Notes, habits, and teaching that show up after Sunday.", icon: "feather-pointed" },
 ];
 
@@ -101,6 +116,7 @@ const features = [
     kicker: "Features",
     title: c.title,
     icon: c.icon,
+    path: `/features/${c.slug}/`,
   })),
   ...readdirSync(join(ROOT, "src/content/features"))
     .filter((f) => f.endsWith(".mdx"))
@@ -109,23 +125,25 @@ const features = [
       if (/^draft:\s*true/m.test(fm)) return null;
       const tagline = fm.match(/^tagline:\s*"([^"]+)"/m)?.[1];
       const icon = fm.match(/^icon:\s*"([^"]+)"/m)?.[1];
-      return tagline && icon ? { name: `feature-${f.replace(/\.mdx$/, "")}`, kicker: "Feature", title: tagline, icon } : null;
+      const slug = f.replace(/\.mdx$/, "");
+      return tagline && icon ? { name: `feature-${slug}`, kicker: "Feature", title: tagline, icon, path: `/features/${slug}/` } : null;
     })
     .filter(Boolean),
 ];
 
 const addons = getAddonPages()
   .filter((a) => !a.draft)
-  .map((a) => ({ name: `addon-${a.slug}`, kicker: "Harvous Plus", title: a.title, icon: a.icon }));
+  .map((a) => ({ name: `addon-${a.slug}`, kicker: "Harvous Plus", title: a.title, icon: a.icon, path: `/add-ons/${a.slug}/` }));
 
 const useCases = getUseCases().map((u) => ({
   name: `use-case-${u.slug}`,
   kicker: "Use case",
   title: getUseCaseDisplayTitle(u),
   icon: u.icon,
+  path: `/use-cases/${u.slug}/`,
 }));
 
-const audiences = getAudiences().map((a) => ({ name: `for-${a.slug}`, kicker: "Harvous for", title: a.title, icon: a.icon }));
+const audiences = getAudiences().map((a) => ({ name: `for-${a.slug}`, kicker: "Harvous for", title: a.title, icon: a.icon, path: `/for/${a.slug}/` }));
 
 const discover = getDiscoverListings().map((l) => ({
   name: `discover-${l.slug}`,
@@ -152,6 +170,9 @@ const posts = readdirSync(join(ROOT, "src/content/blog"))
   })
   .filter(Boolean);
 
+/* --only=home,pricing renders just those (by name); handy while adjusting a template. */
+const ONLY = process.argv.find((a) => a.startsWith("--only="))?.slice(7).split(",");
+
 const TARGETS = [
   ...PAGES,
   ...blogTopics,
@@ -163,7 +184,7 @@ const TARGETS = [
   ...audiences,
   ...discover,
   ...posts,
-];
+].filter((t) => !ONLY || ONLY.includes(t.name));
 
 /* ── Skies ───────────────────────────────────────────────────────────────── */
 
@@ -181,109 +202,229 @@ async function lightSkies() {
 
 const pick = (list, key) => list[createHash("sha1").update(key).digest().readUInt32BE(0) % list.length];
 
-/* ── Pieces ──────────────────────────────────────────────────────────────── */
+/* ── Templates ───────────────────────────────────────────────────────────── */
 
-const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const dataUrl = (buf, type = "image/png") => `data:${type};base64,${buf.toString("base64")}`;
 
-async function text(markup, font, width) {
-  const { data, info } = await sharp({
-    text: { text: markup, font, width, rgba: true, dpi: 72, wrap: "word", align: "centre" },
-  })
-    .png()
-    .toBuffer({ resolveWithObject: true });
-  return { input: data, width: info.width, height: info.height };
-}
-
-/* The closing card's light: a soft white glow in the middle of the sky. */
-const glow = Buffer.from(
-  `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg"><defs>
-  <radialGradient id="g" cx="50%" cy="48%" r="62%"><stop offset="0" stop-color="#fff" stop-opacity="0.86"/><stop offset="1" stop-color="#fff" stop-opacity="0.12"/></radialGradient>
-  </defs><rect width="${W}" height="${H}" fill="url(#g)"/></svg>`,
-);
-
-/** An app icon with rounded corners and a hairline, for the "Harvous vs X" pair. */
-async function roundIcon(path, size) {
-  const r = Math.round(size * 0.24);
-  return sharp(path)
-    .resize(size, size, { fit: "cover" })
-    .composite([
-      { input: Buffer.from(`<svg width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${r}" fill="#fff"/></svg>`), blend: "dest-in" },
-      { input: Buffer.from(`<svg width="${size}" height="${size}"><rect x="0.5" y="0.5" width="${size - 1}" height="${size - 1}" rx="${r}" fill="none" stroke="#0f172a" stroke-opacity="0.08"/></svg>`) },
-    ])
-    .png()
-    .toBuffer();
-}
-
-const titleSize = (t) => (t.length <= 24 ? 92 : t.length <= 44 ? 76 : t.length <= 64 ? 64 : 56);
-
-async function render(target, skies, assets) {
-  const dest = target.asDefault ? join(ROOT, "public/og.png") : join(ROOT, "public/og", `${target.name}.jpg`);
-  const extra = target.asDefault ? [join(ROOT, "public/og", `${target.name}.jpg`)] : [];
-  if (!FORCE && [dest, ...extra].every((p) => existsSync(p))) return "skip";
-
-  const sky = pick(skies, target.name);
-  /* About -0.022em, like the site's headings: pango counts in 1/1024 pt. */
-  const size = titleSize(target.title);
-  const title = await text(
-    `<span foreground="${INK}" letter_spacing="${Math.round(-size * 0.022 * 1024)}">${esc(target.title)}</span>`,
-    `${FONT} SemiBold ${size}`,
-    920,
-  );
-  const kicker = await text(
-    `<span foreground="${SOFT}" letter_spacing="4000">${esc(target.kicker.toUpperCase())}</span>`,
-    `${FONT} SemiBold 22`,
-    920,
-  );
-
-  /* Compare details lead with the two apps side by side. */
-  const pair = target.logo ? [assets.pairMark, await roundIcon(target.logo, 76)] : null;
-  const pairH = pair ? 76 + 28 : 0;
-
-  const block = pairH + kicker.height + 22 + title.height;
-  let y = Math.round((H - block) / 2) - 24;
-  const layers = [{ input: glow }];
-  if (pair) {
-    const gap = 18;
-    const x0 = Math.round((W - (76 * 2 + gap)) / 2);
-    layers.push({ input: pair[0], left: x0, top: y }, { input: pair[1], left: x0 + 76 + gap, top: y });
-    y += pairH;
+/* The site's own type: Google Sans Flex from public/fonts, with the axes the
+   pages set. This is the whole reason the cards go through Chrome. */
+const BASE_CSS = `
+  @font-face {
+    font-family: "${FONT}";
+    src: url("${publicUrl("/fonts/google-sans-flex/GoogleSansFlex-Variable.woff2")}") format("woff2-variations");
+    font-weight: 100 1000;
+    font-stretch: 25% 151%;
   }
-  layers.push({ input: kicker.input, left: Math.round((W - kicker.width) / 2), top: y });
-  y += kicker.height + 22;
-  layers.push({ input: title.input, left: Math.round((W - title.width) / 2), top: y });
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: ${W}px; height: ${H}px; overflow: hidden; }
+  body {
+    position: relative;
+    font-family: "${FONT}", sans-serif;
+    font-variation-settings: "wdth" 100, "ROND" 0;
+    color: ${INK};
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
+  .kicker {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: ${SOFT};
+  }
+  h1 {
+    font-weight: 560;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+`;
 
-  /* Footer: the mark and the address, centred. */
-  const footW = 44 + 12 + assets.domain.width;
-  const fx = Math.round((W - footW) / 2);
-  const fy = H - 44 - 48;
-  layers.push(
-    { input: assets.mark, left: fx, top: fy },
-    { input: assets.domain.input, left: fx + 56, top: fy + Math.round((44 - assets.domain.height) / 2) },
+const titleSize = (t) => (t.length <= 24 ? 96 : t.length <= 44 ? 80 : t.length <= 64 ? 66 : 58);
+
+/** The closing card's look: a sky, a soft white glow, the title, and the mark with harvous.com. */
+function skyCard(target, sky, mark) {
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_CSS}
+  .sky { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .glow { position: absolute; inset: 0; background: radial-gradient(62% 62% at 50% 48%, rgba(255,255,255,0.86), rgba(255,255,255,0.12)); }
+  .body {
+    position: absolute; inset: 0 0 92px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 ${PAD}px; text-align: center; gap: 22px;
+  }
+  h1 { max-width: 980px; font-size: ${titleSize(target.title)}px; }
+  .pair { display: flex; gap: 18px; margin-bottom: 6px; }
+  .pair img, .foot img { display: block; border-radius: 24%; box-shadow: 0 0 0 1px rgba(15,23,42,0.08); }
+  .pair img { width: 76px; height: 76px; }
+  .foot {
+    position: absolute; left: 0; right: 0; bottom: 48px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-size: 26px; font-weight: 500; letter-spacing: -0.01em;
+  }
+  .foot img { width: 44px; height: 44px; }
+</style></head><body>
+  <img class="sky" src="${publicUrl(`/images/auth-hero/${sky}`)}" alt="">
+  <div class="glow"></div>
+  <div class="body">
+    ${target.logo ? `<div class="pair"><img src="${mark}" alt=""><img src="${dataUrl(readFileSync(target.logo))}" alt=""></div>` : ""}
+    <p class="kicker">${esc(target.kicker)}</p>
+    <h1>${esc(target.title)}</h1>
+  </div>
+  <div class="foot"><img src="${mark}" alt="">harvous.com</div>
+</body></html>`;
+}
+
+/**
+ * A page's own heading with its own UI rising beneath it — the homepage hero's
+ * shape, for pages that have something to show. `title` keeps the page's line
+ * breaks; `visual` is a 2× capture of the element, `vw` its CSS width.
+ */
+function stageCard({ kicker, title, visual, vw, bg }) {
+  const width = Math.min(vw, 1040);
+  const size = titleSize(title.replace(/\n/g, " ")) - 8;
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_CSS}
+  body { background: ${bg}; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .kicker { margin-top: 60px; }
+  h1 { margin-top: 16px; max-width: 1040px; font-size: ${size}px; }
+  .visual { margin-top: 44px; width: ${width}px; flex: none; }
+  .visual img { display: block; width: 100%; height: auto; }
+</style></head><body>
+  ${kicker ? `<p class="kicker">${esc(kicker)}</p>` : `<div style="height:${60 - 16}px"></div>`}
+  <h1>${title.split("\n").map(esc).join("<br>")}</h1>
+  <div class="visual"><img src="${visual}" alt=""></div>
+</body></html>`;
+}
+
+/* ── Live pages ──────────────────────────────────────────────────────────── */
+
+/** What a capture never shows: the nav, the sticky Try pill, Astro's dev toolbar, entrance animations. */
+const PAGE_CLEANUP = `
+  astro-dev-toolbar, .nxh, [data-sticky-try] { display: none !important; }
+  [data-reveal], [data-reveal] > * { opacity: 1 !important; transform: none !important; transition: none !important; }
+`;
+
+/** First element on a page that is the page's UI picture, in priority order. */
+const VISUALS = [
+  ".price-plans", ".chs__stage", ".cs__stage", ".sv", ".sapp", ".dx-grid", ".cmp-grid", ".uc-grid",
+  /* Use-case and audience pages: the sky frame with its icon, under the title. */
+  ".ud-sky__frame", ".fa-sky__frame",
+];
+/** The small label over a heading — a kicker, or the badge the detail pages use instead. */
+const KICKERS = ".nx-kicker, .ud-badge, .fa-badge";
+
+async function openPage(page, path) {
+  const res = await fetch(BASE + path).catch(() => null);
+  if (!res?.ok) return false;
+  await page.viewport(1200, H, 2);
+  await page.goto(BASE + path);
+  if (await page.eval(`!!document.querySelector("vite-error-overlay")`)) return false;
+  await page.css(PAGE_CLEANUP);
+  return true;
+}
+
+/** Home: the hero itself, as it stands — headline, then the app rising beneath it. */
+async function heroShot(page, path, hide = []) {
+  if (!(await openPage(page, path))) return null;
+  if (hide.length) await page.css(`${hide.join(", ")} { display: none !important; }`);
+  /* A 920px-wide slice, scaled up to 1200: the type reads a size larger than
+     at desktop width, still above the hero's 56rem breakpoint. */
+  const cw = 920;
+  await page.viewport(cw, Math.round((cw * H) / W), (W * 2) / cw);
+  const top = await page.eval(`(() => { const h = document.querySelector("h1"); return h.getBoundingClientRect().top + scrollY; })()`);
+  const png = await page.screenshot({ x: 0, y: Math.max(0, top - 56), width: cw, height: Math.round((cw * H) / W) });
+  return sharp(png).resize(W, H, { kernel: "lanczos3" });
+}
+
+/** Any other page: its kicker and heading, plus a capture of its first UI visual. */
+async function stageShot(page, target, chrome) {
+  if (!(await openPage(page, target.path))) return null;
+  const found = await page.eval(`(() => {
+    const h1 = document.querySelector("main h1, h1");
+    const el = ${JSON.stringify(target.visual ? [target.visual] : VISUALS)}
+      .map((s) => document.querySelector(s)).find((e) => e && e.getBoundingClientRect().height > 80);
+    if (!h1 || !el) return null;
+    const scope = h1.closest("header, section") ?? h1.parentElement;
+    const k = scope.querySelector(${JSON.stringify(KICKERS)});
+    const r = el.getBoundingClientRect();
+    return {
+      kicker: k && k.compareDocumentPosition(h1) & Node.DOCUMENT_POSITION_FOLLOWING ? k.innerText.trim() : null,
+      title: h1.innerText.trim(),
+      bg: getComputedStyle(document.body).backgroundColor,
+      rect: { x: r.left, y: r.top + scrollY, width: r.width, height: Math.min(r.height, 900) },
+    };
+  })()`);
+  if (!found) return null;
+  /* Narrow visuals (the 4:5 scenes) would sit small under the title: shoot
+     them at a higher scale so they can be shown larger and stay sharp. */
+  const zoom = Math.max(1, Math.min(2, 720 / found.rect.width));
+  const visual = await page.screenshot(found.rect, zoom);
+  await chrome.page.setContent(
+    stageCard({ ...found, kicker: found.kicker ?? target.kicker, visual: dataUrl(visual), vw: found.rect.width * zoom }),
   );
+  return sharp(await chrome.page.screenshot()).resize(W, H, { kernel: "lanczos3" });
+}
 
-  const card = sharp(join(ROOT, "public/images/auth-hero", sky)).resize(W, H, { fit: "cover", position: "centre" }).composite(layers);
+/* ── Render ──────────────────────────────────────────────────────────────── */
 
+const BASE = (process.argv.find((a) => a.startsWith("--base="))?.slice(7) ?? "http://localhost:4321").replace(/\/$/, "");
+
+async function siteUp() {
+  try {
+    const res = await fetch(BASE + "/", { signal: AbortSignal.timeout(5000) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function write(target, img) {
   mkdirSync(join(ROOT, "public/og"), { recursive: true });
-  const jpg = await card.clone().jpeg({ quality: 86, mozjpeg: true }).toBuffer();
-  await sharp(jpg).toFile(join(ROOT, "public/og", `${target.name}.jpg`));
-  if (target.asDefault) await sharp(jpg).png({ compressionLevel: 9 }).toFile(dest);
-  return `${sky}`;
+  /* 4:4:4 keeps colour edges on type sharp; the default 4:2:0 smears them. */
+  const jpg = await img.clone().jpeg({ quality: 90, mozjpeg: true, chromaSubsampling: "4:4:4" }).toBuffer();
+  writeFileSync(join(ROOT, "public/og", `${target.name}.jpg`), jpg);
+  if (target.asDefault) await img.clone().png({ compressionLevel: 9 }).toFile(join(ROOT, "public/og.png"));
 }
 
 const skies = await lightSkies();
-const appIcon = join(ROOT, "public/images/app-icon.webp");
-const assets = {
-  mark: await roundIcon(appIcon, 44),
-  pairMark: await roundIcon(appIcon, 76),
-  domain: await text(`<span foreground="${INK}" letter_spacing="-300">harvous.com</span>`, `${FONT} Medium 26`, 400),
-};
+const mark = dataUrl(await sharp(join(ROOT, "public/images/app-icon.webp")).resize(152, 152).png().toBuffer());
+const live = await siteUp();
+if (!live) {
+  console.warn(
+    `! ${BASE} isn't answering — pages with UI get sky cards this run.\n` +
+      `  For the real thing: npm run build && npm run preview, then npm run og:cards -- --force`,
+  );
+}
+
+const chrome = await launchChrome();
+await chrome.page.viewport(W, H, 2);
+const site = live ? await launchChrome() : null;
+if (site) await site.page.reducedMotion();
 
 let made = 0;
-for (const t of TARGETS) {
-  const r = await render(t, skies, assets);
-  if (r !== "skip") {
+try {
+  for (const t of TARGETS) {
+    const dest = join(ROOT, "public/og", `${t.name}.jpg`);
+    if (!FORCE && existsSync(dest) && (!t.asDefault || existsSync(join(ROOT, "public/og.png")))) continue;
+
+    let img = null;
+    let how = "";
+    if (site && t.path) {
+      img = t.hero ? await heroShot(site.page, t.path, t.hide) : await stageShot(site.page, t, chrome);
+      how = img ? (t.hero ? `hero ${t.path}` : `stage ${t.path}`) : "";
+    }
+    if (!img) {
+      const sky = pick(skies, t.name);
+      await chrome.page.setContent(skyCard(t, sky, mark));
+      img = sharp(await chrome.page.screenshot()).resize(W, H, { kernel: "lanczos3" });
+      how = sky;
+    }
+    await write(t, img);
     made++;
-    console.log(`· ${t.name} ← ${r}`);
+    console.log(`· ${t.name} ← ${how}`);
   }
+} finally {
+  await chrome.close();
+  await site?.close();
 }
 console.log(`${made} card(s) written, ${TARGETS.length - made} up to date (${skies.length} light skies).`);
