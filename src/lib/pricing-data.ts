@@ -107,6 +107,13 @@ export const PRICING_ROADMAP: PricingRoadmapItem[] = [
     tagline: "Time-boxed study to build the habit, solo or with others. Included with Plus when it ships.",
     soonLabel: "Coming later",
   },
+  {
+    id: "apple-apps",
+    icon: "fa7-solid:mobile-screen",
+    name: "Mac, iPad & iPhone",
+    tagline: "Native apps are coming later. Harvous is on the web today.",
+    soonLabel: "Coming later",
+  },
 ];
 
 /** @deprecated Use PRICING_ROADMAP */

@@ -210,19 +210,19 @@ export const PRIVACY_TOGGLES: ToggleSpec[] = [
  * true, and bump NOW_UPDATED whenever it changes. "Just shipped" and "Next up"
  * below it come from release notes and the roadmap, so only this needs tending.
  */
-export const NOW_UPDATED = "2026-09-26";
+export const NOW_UPDATED = "2026-10-03";
 
 export const NOW_WORKING_ON: { title: string; body: string }[] = [
   {
-    title: "Harvous for churches",
-    body: "Channels, ministries, and curriculum a pastor can hand to a group. Church plans are invite-only for now.",
+    title: "Harvous for churches, taking shape",
+    body: "Join links, ministries, scheduled posts, and a leader kit a pastor can hand to a group. Church plans are invite-only for now.",
   },
   {
     title: "Review exercises that teach",
     body: "Word tiles, drag-to-order, and learning steps, so remembering a passage feels less like a quiz and more like practice.",
   },
   {
-    title: "New screenshots for this site",
-    body: "Some of what you see around here still shows older versions. Harvous 3 deserves better pictures.",
+    title: "A better Connector",
+    body: "Improving the MCP server behind Connector, so Claude and ChatGPT can search what your group shares, not just what you wrote.",
   },
 ];
