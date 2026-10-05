@@ -23,11 +23,10 @@ import { backdropSrc } from "../../lib/next/content.ts";
     <h1 class="hero__title">
       <span class="hero__line">Make a study Bible</span>
       <span class="hero__line">
-        that
-        <span class="hero__insert">
+        that<span class="hero__insert">
           <span class="hero__insert-word nx-hand">actually</span>
           <svg class="hero__caret" viewBox="0 0 24 16" aria-hidden="true">
-            <path d="M3 3 L12 13 L21 3" />
+            <path d="M3 13 L12 3 L21 13" />
           </svg>
         </span>
         remembers
@@ -115,7 +114,8 @@ import { backdropSrc } from "../../lib/next/content.ts";
 
   .hero__head {
     position: relative;
-    z-index: 0;
+    /* Above the stage, so the walkthrough pill can straddle the window's top edge. */
+    z-index: 2;
     text-align: center;
   }
   .hero__title {
@@ -132,29 +132,35 @@ import { backdropSrc } from "../../lib/next/content.ts";
   .hero__line { display: block; }
   /* A pocket between the lines, so the inserted word has somewhere to sit
      without colliding with "Bible". */
-  .hero__line + .hero__line { margin-top: 0.42em; }
+  .hero__line + .hero__line { margin-top: 0.1em; }
+  /* Zero-width anchor on the space between "that" and "remembers": the
+     annotation floats above the line and never takes part in line layout. */
   .hero__insert {
     position: relative;
     display: inline-block;
-    width: 0.62em;
-    margin-inline: 0.06em;
+    width: 0;
+    height: 0;
     vertical-align: baseline;
+    pointer-events: none;
   }
   .hero__insert-word {
     position: absolute;
-    left: 50%;
-    bottom: 0.55em;
-    transform: translateX(-46%) rotate(-8deg);
-    font-size: 0.34em;
+    left: 0.28em;
+    top: 0.58em;
+    transform: translateX(-50%) rotate(-4deg);
+    transform-origin: 50% 0;
+    font-size: 0.5em;
     line-height: 1;
     white-space: nowrap;
     color: var(--color-ink);
   }
   .hero__caret {
-    display: block;
-    width: 0.48em;
-    height: 0.32em;
-    margin-inline: auto;
+    position: absolute;
+    left: 0.28em;
+    top: 0.2em;
+    width: 0.3em;
+    height: 0.2em;
+    transform: translateX(-50%);
     overflow: visible;
   }
   .hero__caret path {
@@ -173,7 +179,7 @@ import { backdropSrc } from "../../lib/next/content.ts";
   @media (prefers-reduced-motion: reduce) {
     .hero__caret path { animation: none; stroke-dashoffset: 0; }
   }
-  .hero__watch { margin-top:.5rem}
+  .hero__watch { margin-top: 1.9rem }
   .hero__watch :global(.hero-video-inline) {
     padding: 0.45rem 1rem 0.45rem 0.55rem;
     font-size: 0.9375rem;
@@ -190,8 +196,11 @@ import { backdropSrc } from "../../lib/next/content.ts";
   .hero__stage {
     position: relative;
     z-index: 1;
-    margin-top: clamp(0.75rem, 1.6vw, 1.5rem);
+    margin-top: -1.26rem;
   }
+  /* The walkthrough pill sits where the window's Search pill would, so hide the latter
+     rather than let it peek out from behind. */
+  .hero__window :global(.aw__search) { visibility: hidden; }
   .hero__window {
     position: relative;
     max-width: 64rem;
