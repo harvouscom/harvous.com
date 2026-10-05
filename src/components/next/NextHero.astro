@@ -1,27 +1,18 @@
 ---
 /**
- * NextHero — Dia's hero shape in Harvous colours: one plain sentence set
- * large — what it is (Bible study notes) and why it's different (they stay) —
- * and the app window rising just beneath it. "notes" is the site's cycling
- * pill, in ink rather than colour so the headline stays one quiet voice.
- *
- * The picture is the app itself, rebuilt from Derek's account in the app's
- * own components: the reader with its notes rail, the note that rail points
- * to, and a Suggestion — see the comment on the stage below.
+ * NextHero — one plain sentence set large, with the missing word written back
+ * in. "actually" sits in a proofreader's caret between "that" and "remembers",
+ * in the same hand as the margin notes. The picture is the app itself, rebuilt
+ * from Derek's account in the app's own components: the reader with its notes
+ * rail, the note that rail points to, and a Suggestion — see the comment on
+ * the stage below.
  */
 import AppIcon from "./app/AppIcon.astro";
 import AppWindow from "./app/AppWindow.astro";
 import AppReader from "./app/AppReader.astro";
 import AppNote from "./app/AppNote.astro";
-import HeroPillCycle from "../HeroPillCycle.astro";
 import HeroVideoLightbox from "../HeroVideoLightbox.astro";
 import { backdropSrc } from "../../lib/next/content.ts";
-
-/* Plurals, so the sentence reads for every pill; "verses" because "scripture
-   that stay" doesn't. The icons stay the app's own. */
-const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", folder: "folders", thread: "threads" };
-
-
 ---
 
 <section class="hero">
@@ -31,7 +22,16 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
   <div class="nx-wrap hero__head on-light">
     <h1 class="hero__title">
       <span class="hero__line">Make a study Bible</span>
-      <span class="hero__line">with <HeroPillCycle mono words={NOUNS} /></span>
+      <span class="hero__line">
+        that
+        <span class="hero__insert">
+          <span class="hero__insert-word nx-hand">actually</span>
+          <svg class="hero__caret" viewBox="0 0 24 16" aria-hidden="true">
+            <path d="M3 3 L12 13 L21 3" />
+          </svg>
+        </span>
+        remembers
+      </span>
     </h1>
     {/* The Harvous 3 walkthrough (R2, via the Worker — see wrangler.jsonc). */}
     <div class="hero__watch">
@@ -118,22 +118,61 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
     z-index: 0;
     text-align: center;
   }
-  /* Two fixed lines, broken after the pill, so the pill changing width never
-     re-wraps the sentence. */
-  /* The pill's word is set at the headline's weight, not the pill's own. */
-  .hero__title :global(.cpill) { font-weight: inherit; }
   .hero__title {
     margin: 0;
     font-family: var(--font-display);
     /* The site's own heading voice (600, gently tightened), just larger — not
        a heavier cut that only this page would use. */
-    font-size: clamp(2.6rem,4.2vw, 5.5rem);
+    font-size: clamp(2.6rem, 4.2vw, 5.5rem);
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.035em;
     color: var(--color-ink);
   }
   .hero__line { display: block; }
+  /* A pocket between the lines, so the inserted word has somewhere to sit
+     without colliding with "Bible". */
+  .hero__line + .hero__line { margin-top: 0.42em; }
+  .hero__insert {
+    position: relative;
+    display: inline-block;
+    width: 0.62em;
+    margin-inline: 0.06em;
+    vertical-align: baseline;
+  }
+  .hero__insert-word {
+    position: absolute;
+    left: 50%;
+    bottom: 0.55em;
+    transform: translateX(-46%) rotate(-8deg);
+    font-size: 0.34em;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--color-ink);
+  }
+  .hero__caret {
+    display: block;
+    width: 0.48em;
+    height: 0.32em;
+    margin-inline: auto;
+    overflow: visible;
+  }
+  .hero__caret path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+    animation: hero-caret 0.7s 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes hero-caret {
+    to { stroke-dashoffset: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__caret path { animation: none; stroke-dashoffset: 0; }
+  }
   .hero__watch { margin-top:.5rem}
   .hero__watch :global(.hero-video-inline) {
     padding: 0.45rem 1rem 0.45rem 0.55rem;
@@ -227,4 +266,3 @@ const NOUNS = { note: "notes", scripture: "verses", highlight: "highlights", fol
     .hero__note { top: 46%; width: 62%; zoom: 0.56; }
   }
 </style>
-
