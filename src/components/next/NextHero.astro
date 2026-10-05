@@ -152,6 +152,7 @@ import { backdropSrc } from "../../lib/next/content.ts";
   }
 
   .hero__head {
+    --hero-fs: clamp(1.5rem, calc((100vw - 2rem) / 8.4), 2.6rem);
     position: relative;
     /* Above the stage, so the walkthrough pill can straddle the window's top edge. */
     z-index: 2;
@@ -164,7 +165,7 @@ import { backdropSrc } from "../../lib/next/content.ts";
        a heavier cut that only this page would use. */
     /* Small screens: sized so each line (the longest is ~8.1em) fits the
        container, keeping the headline at exactly two lines. */
-    font-size: clamp(1.5rem, calc((100vw - 2rem) / 8.4), 2.6rem);
+    font-size: var(--hero-fs);
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.035em;
@@ -243,7 +244,8 @@ import { backdropSrc } from "../../lib/next/content.ts";
     .hero__caret path { animation: none; stroke-dashoffset: 0; }
     .hero__insert-word :global(.hero__pen) { animation: none; stroke-dashoffset: 0; }
   }
-  .hero__watch { margin-top: 1.9rem }
+  /* Clears the hand-written insert, which hangs below the title in title-em. */
+  .hero__watch { margin-top: calc(var(--hero-fs) * 0.78); }
   .hero__watch :global(.hero-video-inline) {
     padding: 0.45rem 1rem 0.45rem 0.55rem;
     /* Shrinks with the viewport so the label stays on one line (~15.8em wide). */
@@ -261,7 +263,7 @@ import { backdropSrc } from "../../lib/next/content.ts";
     margin-top: 0.75rem;
   }
   @media (min-width: 40rem) {
-    .hero__title { font-size: clamp(2.6rem, 4.2vw, 5.5rem); }
+    .hero__head { --hero-fs: clamp(2.6rem, 4.2vw, 5.5rem); }
     /* Wide enough that the pill clears the window's toolbar icons, so it can
        straddle the window's top edge (centre on the edge); it takes the place of
        the window's Search pill, which is hidden rather than left peeking out. */
