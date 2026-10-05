@@ -123,13 +123,15 @@ import { backdropSrc } from "../../lib/next/content.ts";
     font-family: var(--font-display);
     /* The site's own heading voice (600, gently tightened), just larger — not
        a heavier cut that only this page would use. */
-    font-size: clamp(2.6rem, 4.2vw, 5.5rem);
+    /* Small screens: sized so each line (the longest is ~8.1em) fits the
+       container, keeping the headline at exactly two lines. */
+    font-size: clamp(1.5rem, calc((100vw - 2rem) / 8.4), 2.6rem);
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.035em;
     color: var(--color-ink);
   }
-  .hero__line { display: block; }
+  .hero__line { display: block; white-space: nowrap; }
   /* A pocket between the lines, so the inserted word has somewhere to sit
      without colliding with "Bible". */
   .hero__line + .hero__line { margin-top: 0.1em; }
@@ -189,18 +191,20 @@ import { backdropSrc } from "../../lib/next/content.ts";
     border-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
     box-shadow: 0 8px 24px -14px rgba(15, 23, 42, 0.35);
   }
-  @media (min-width: 40rem) {
-    .hero__line { white-space: nowrap; }
-  }
-
   .hero__stage {
     position: relative;
     z-index: 1;
-    margin-top: -1.26rem;
+    margin-top: 0.75rem;
   }
-  /* The walkthrough pill sits where the window's Search pill would, so hide the latter
-     rather than let it peek out from behind. */
-  .hero__window :global(.aw__search) { visibility: hidden; }
+  @media (min-width: 40rem) {
+    .hero__title { font-size: clamp(2.6rem, 4.2vw, 5.5rem); }
+    /* Wide enough that the pill clears the window's toolbar icons, so it can
+       straddle the window's top edge (centre on the edge); it takes the place of
+       the window's Search pill, which is hidden rather than left peeking out. */
+    .hero__stage { margin-top: -1.26rem; }
+    .hero__window :global(.aw__search) { visibility: hidden; }
+  }
+
   .hero__window {
     position: relative;
     max-width: 64rem;
