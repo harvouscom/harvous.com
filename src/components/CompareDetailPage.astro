@@ -52,7 +52,7 @@ const theirHalf = (e: CompareEntry) => {
       <span class="cd-face__frame on-light">
         <img class="cd-face__sky" src={backdropSrc(sky)} alt="" loading="eager" />
         <span class="cd-face__pair">
-          <img class="cd-face__icon" src="/images/app-icon.webp" alt="" width="128" height="128" />
+          <img class="cd-face__icon" src="/images/harvous-2-icon.webp" alt="" width="128" height="128" />
           <span class="cd-face__vs">vs</span>
           <img class="cd-face__icon" src={icon(entry.slug)} alt="" width="128" height="128" />
         </span>
@@ -68,7 +68,7 @@ const theirHalf = (e: CompareEntry) => {
         )}
       </div>
       <div class="cd-card cd-card--harvous">
-        <p class="cd-card__head"><img src="/images/app-icon.webp" alt="" width="40" height="40" /> Choose Harvous if…</p>
+        <p class="cd-card__head"><img src="/images/harvous-2-icon.webp" alt="" width="40" height="40" /> Choose Harvous if…</p>
         <p>{position.chooseIf}</p>
         {position.featureIds.length > 0 && (
           <ul class="cd-chips" role="list">
@@ -94,7 +94,7 @@ const theirHalf = (e: CompareEntry) => {
           <thead>
             <tr>
               <th scope="col"></th>
-              <th scope="col"><span class="cd-th"><img src="/images/app-icon.webp" alt="" width="24" height="24" />Harvous</span></th>
+              <th scope="col"><span class="cd-th"><img src="/images/harvous-2-icon.webp" alt="" width="24" height="24" />Harvous</span></th>
               <th scope="col"><span class="cd-th"><img src={icon(entry.slug)} alt="" width="24" height="24" />{entry.name}</span></th>
             </tr>
           </thead>
@@ -115,7 +115,7 @@ const theirHalf = (e: CompareEntry) => {
           {guides.map((g) => (
             <li>
               <a class="cd-row" href={`/compare/${g.slug}/`} data-fathom-track={fathomCompare.detailRelated}>
-                <span class="cd-row__mark"><img src="/images/app-icon.webp" alt="" width="40" height="40" /></span>
+                <span class="cd-row__mark"><img src="/images/harvous-2-icon.webp" alt="" width="40" height="40" /></span>
                 <span class="cd-row__text">
                   <span class="cd-row__title">{g.label}</span>
                   <span class="cd-row__desc">{g.description}</span>
