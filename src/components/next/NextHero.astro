@@ -246,7 +246,9 @@ import { backdropSrc } from "../../lib/next/content.ts";
   .hero__watch { margin-top: 1.9rem }
   .hero__watch :global(.hero-video-inline) {
     padding: 0.45rem 1rem 0.45rem 0.55rem;
-    font-size: 0.9375rem;
+    /* Shrinks with the viewport so the label stays on one line (~15.8em wide). */
+    font-size: clamp(0.7rem, calc((100vw - 6rem) / 16), 0.9375rem);
+    white-space: nowrap;
     background: color-mix(in srgb, var(--color-card) 72%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
