@@ -16,6 +16,16 @@ export type ProductSection = {
   visual?: string;
 };
 
+export type ProductStep = {
+  title: string;
+  body: string;
+  /** Which stylized app moment to draw (ShowcaseVisual.astro). */
+  visual: string;
+  /** What it shows, for screen readers. */
+  label: string;
+  color?: FeatureShowcaseColor;
+};
+
 export type ProductMoment = {
   icon: string;
   heading: string;
@@ -53,6 +63,8 @@ export type ProductPage = {
   heroLead: string;
   sections: ProductSection[];
   showcases: ProductShowcase[];
+  /** A step-by-step walkthrough; replaces `sections` and `showcases` on the page when present. */
+  steps?: ProductStep[];
   moments: ProductMoment[];
   relatedIds: string[];
   compareSlugs?: string[];
@@ -79,6 +91,7 @@ export type FeatureDetailData = {
   comingSoonLine?: string;
   sections?: ProductSection[];
   showcases?: ProductShowcase[];
+  steps?: ProductStep[];
   moments?: ProductMoment[];
   relatedFeatureIds?: string[];
   compareSlugs?: string[];
@@ -123,6 +136,7 @@ export function featureToProductPage(slug: string, data: FeatureDetailData): Pro
     heroLead: data.heroLead ?? data.title,
     sections: data.sections ?? [],
     showcases: data.showcases ?? [],
+    steps: data.steps ?? [],
     moments: data.moments ?? [],
     relatedIds: data.relatedFeatureIds ?? [],
     compareSlugs: data.compareSlugs,

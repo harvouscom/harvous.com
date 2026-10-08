@@ -25,6 +25,16 @@ const productShowcase = z.object({
   label: z.string(),
 });
 
+/** One step of a feature page's walkthrough: what you do, and the app at that moment. */
+const productStep = z.object({
+  title: z.string(),
+  body: z.string(),
+  /** Which stylized app moment to draw (ShowcaseVisual.astro), and its alt text. */
+  visual: z.string(),
+  label: z.string(),
+  color: showcaseColor.optional(),
+});
+
 const features = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/features" }),
   schema: z.object({
@@ -42,6 +52,8 @@ const features = defineCollection({
     comingSoonLine: z.string().optional(),
     sections: z.array(productSection).optional(),
     showcases: z.array(productShowcase).optional(),
+    /** The walkthrough (FeatureWalkthrough.astro). When present it replaces the prose sections and showcases. */
+    steps: z.array(productStep).optional(),
     moments: z.array(productMoment).optional(),
     relatedFeatureIds: z.array(z.string()).optional(),
     compareSlugs: z.array(z.string()).optional(),

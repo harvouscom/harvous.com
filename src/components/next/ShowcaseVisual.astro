@@ -230,6 +230,245 @@ const { name, label } = Astro.props;
     </div>
   )}
 
+  {/* ── Walkthrough states (feature pages): one moment each. ── */}
+
+  {name === "pill-typing" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">No condemnation</p>
+        <p>Paul doesn't say less condemnation. He says none. <span class="sv__typing">Romans 8:1<i></i></span></p>
+      </div>
+      <div class="aui-card sv__card sv__pop">
+        <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="book-bible" /></span><span><span class="aui-title">Romans 8:1</span><span class="aui-sub">Scripture<i>·</i>NLT</span></span><span class="sv__kbd">↵</span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="book-bible" /></span><span><span class="aui-title">Romans 8:1–4</span><span class="aui-sub">Scripture<i>·</i>NLT</span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  {name === "translations" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">God is faithful, even here</p>
+        <p>God's timing then, and now. <span class="aui-pill sv__pill-on">Romans 8:28 <span class="aui-tr">NLT</span></span></p>
+      </div>
+      <div class="aui-card sv__card sv__pop sv__menu">
+        <p class="sv__label sv__label--in">Translation</p>
+        {["NLT", "ESV", "NIV", "CSB", "KJV", "NASB 1995"].map((t, i) => (
+          <div class:list={["aui-row sv__row-plain", i === 0 && "is-on"]}><span class="aui-title">{t}</span>{i === 0 ? <span class="aui-acts sv__ok"><AppIcon name="check" /></span> : <span></span>}</div>
+        ))}
+        <p class="sv__row sv__row--menu"><AppIcon name="file-lines" /> Use for the whole note<span class="sv__switch"><i></i></span></p>
+      </div>
+    </div>
+  )}
+
+  {name === "reader-canon" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">New Testament</p>
+      <div class="sv__books">
+        {["Matt", "Mark", "Luke", "John", "Acts", "Rom", "1 Cor", "2 Cor", "Gal", "Eph", "Phil", "Col"].map((b) => (
+          <span class:list={["sv__book", b === "Rom" && "is-on"]}>{b}</span>
+        ))}
+      </div>
+      <p class="sv__label sv__label--gap">Romans</p>
+      <div class="sv__chapters">
+        {Array.from({ length: 16 }, (_, i) => (
+          <span class:list={["sv__ch", i === 7 && "is-on", i === 4 && "is-last"]}>{i + 1}</span>
+        ))}
+      </div>
+      <p class="sv__foot"><AppIcon name="bookmark" /> Picks up at Romans 5, where you left off.</p>
+    </div>
+  )}
+
+  {name === "reader-select" && (
+    <div class="aui-card sv__card sv__reader">
+      <p class="sv__rhead"><b>Romans 8</b><span class="sv__tr">NLT <AppIcon name="caret-down" /></span></p>
+      <div class="sv__selbar">
+        <span class="sv__swatches sv__swatches--flat"><i class="is-neutral"></i><i class="is-amber"></i><i class="is-sky is-on"></i><i class="is-violet"></i><i class="is-mint"></i><i class="is-coral"></i></span>
+        <span class="sv__selacts"><AppIcon name="comment" /><AppIcon name="pen-to-square" /><AppIcon name="copy" /></span>
+      </div>
+      <div class="sv__rline">
+        <span class="sv__rail"></span>
+        <p><sup>38</sup>And I am convinced that <span class="sv__sel">nothing can ever separate us from God's love.</span> Neither death nor life, neither angels nor demons, neither our fears for today nor our worries about tomorrow.</p>
+      </div>
+      <p class="sv__foot"><AppIcon name="pen-to-square" /> Start a note from the selection, or just mark it.</p>
+    </div>
+  )}
+
+  {name === "compare-add" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__rhead sv__rhead--flat"><b>Acts 8</b><span class="sv__trpair"><span class="sv__tr">NLT <AppIcon name="caret-down" /></span><span class="sv__plus is-hint"><AppIcon name="plus" /></span></span></p>
+      <p class="sv__verse"><sup>36</sup>As they rode along, they came to some water, and the eunuch said, “Look! There's some water! Why can't I be baptized?”</p>
+      <p class="sv__verse"><sup>38</sup>He ordered the carriage to stop, and they went down into the water, and Philip baptized him.</p>
+      <p class="sv__foot"><AppIcon name="plus" /> Add a second translation beside this one.</p>
+    </div>
+  )}
+
+  {name === "compare" && (
+    <div class="aui-card sv__card sv__pad sv__cmp">
+      <p class="sv__cmp-head"><span class="sv__tr">NLT</span><span class="sv__tr">KJV <span class="sv__x"><AppIcon name="xmark" /></span></span></p>
+      <div class="sv__cmp-row">
+        <p><sup>1</sup>So now there is no condemnation for those who belong to Christ Jesus.</p>
+        <p><sup>1</sup>There is therefore now <span class="sv__hl">no condemnation</span> to them which are in Christ Jesus, who walk not after the flesh, but after the Spirit.</p>
+      </div>
+      <div class="sv__cmp-row">
+        <p><sup>2</sup>And because you belong to him, the power of the life-giving Spirit has freed you from the power of sin that leads to death.</p>
+        <p><sup>2</sup>For the law of the Spirit of life in Christ Jesus hath made me free from the law of sin and death.</p>
+      </div>
+    </div>
+  )}
+
+  {name === "compare-gap" && (
+    <div class="aui-card sv__card sv__pad sv__cmp">
+      <p class="sv__cmp-head"><span class="sv__tr">NLT</span><span class="sv__tr">KJV</span></p>
+      <div class="sv__cmp-row">
+        <p><sup>36</sup>…the eunuch said, “Look! There's some water! Why can't I be baptized?”</p>
+        <p><sup>36</sup>…the eunuch said, See, here is water; what doth hinder me to be baptized?</p>
+      </div>
+      <div class="sv__cmp-row is-gap">
+        <p class="sv__gap"><sup>37</sup>Not in the NLT</p>
+        <p><sup>37</sup>And Philip said, If thou believest with all thine heart, thou mayest.</p>
+      </div>
+      <div class="sv__cmp-row">
+        <p><sup>38</sup>He ordered the carriage to stop, and they went down into the water…</p>
+        <p><sup>38</sup>And he commanded the chariot to stand still: and they went down both into the water…</p>
+      </div>
+    </div>
+  )}
+
+  {name === "passage-kept" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">Trust, when I'm afraid</p>
+        <p><span class="aui-pill sv__pill-on">Psalms 56:3–4 <span class="aui-tr">NLT</span></span></p>
+        <p class="sv__write">Not “if I'm afraid.” When.<i></i></p>
+      </div>
+      <p class="sv__status is-ok"><AppIcon name="circle-check" /> Kept<i>·</i>the verse is a live pill in a new note</p>
+    </div>
+  )}
+
+  {name === "highlights-list" && (
+    <div class="aui-card sv__card">
+      <p class="sv__label sv__label--in">Highlights</p>
+      <p class="sv__chips"><span class="is-on">All</span><span>Notes</span><span>Scripture</span><span>Connected</span></p>
+      <div class="aui-row"><span class="sv__dotc is-amber"></span><span><span class="aui-title">keeps showing up</span><span class="aui-sub">Let my people go<i>·</i>Exodus 5</span></span><span class="aui-acts"><AppIcon name="thumbtack" /></span></div>
+      <div class="aui-row"><span class="sv__dotc is-sky"></span><span><span class="aui-title">nothing can ever separate us</span><span class="aui-sub">Romans 8:38<i>·</i>Scripture</span></span><span></span></div>
+      <div class="aui-row"><span class="sv__dotc is-violet"></span><span><span class="aui-title">obedience before confidence</span><span class="aui-sub">Gideon<i>·</i>Judges 6</span></span><span></span></div>
+    </div>
+  )}
+
+  {name === "template-save" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">My lesson prep</p>
+        <p class="sv__sec"><b>1</b> The passage</p>
+        <p class="sv__sec"><b>2</b> One sentence: the aim</p>
+        <p class="sv__sec"><b>3</b> Questions to ask</p>
+      </div>
+      <div class="aui-card sv__card sv__pop">
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="thumbtack" /></span><span class="aui-title">Pin</span><span></span></div>
+        <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="list-check" /></span><span><span class="aui-title">Save as template</span><span class="aui-sub">Shows up under Saved</span></span><span></span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="compass" /></span><span><span class="aui-title">Offer on Discover</span><span class="aui-sub">Reviewed first, your name on it</span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  {name === "reminder-settings" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Reminders</p>
+      <p class="sv__seg"><span class="is-on">Twice a week</span><span>Every day</span></p>
+      <p class="sv__row"><AppIcon name="church" /> Sunday morning<span class="sv__chip">7:30 AM</span></p>
+      <p class="sv__row"><AppIcon name="calendar-day" /> Midweek<span class="sv__days"><span>Tue</span><span class="is-on">Wed</span><span>Thu</span></span></p>
+      <p class="sv__row sv__row--soft"><AppIcon name="clock" /> Your timezone, read from this browser</p>
+    </div>
+  )}
+
+  {name === "reminder-quiet" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Reminders</p>
+      <p class="sv__notice"><AppIcon name="bell-slash" /><span><b>Paused for now</b>The last few went unopened, so they stopped. Open Harvous on three different days and they'll pick back up.</span></p>
+      <p class="sv__row sv__row--soft"><AppIcon name="circle-check" /> Skipped whenever you've been in Harvous recently</p>
+    </div>
+  )}
+
+  {name === "library" && (
+    <div class="aui-card sv__card">
+      <p class="sv__label sv__label--in">Resources</p>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="link" /></span><span><span class="aui-title">Romans 8 and the Spirit</span><span class="aui-sub">bibleproject.com<i>·</i>Link</span></span><span></span></div>
+      <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="file-pdf" /></span><span><span class="aui-title">Class handout, week 3</span><span class="aui-sub">PDF<i>·</i>2.1 MB</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="file-powerpoint" /></span><span><span class="aui-title">Lesson slides</span><span class="aui-sub">Slides<i>·</i>8.4 MB</span></span><span></span></div>
+      <div class="aui-row sv__add"><span class="aui-tile"><AppIcon name="plus" /></span><span><span class="aui-title">Save a link or upload a file</span></span><span></span></div>
+    </div>
+  )}
+
+  {name === "library-cite" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">Week 3 prep</p>
+        <p>The point from class, see <span class="sv__typing">@hand<i></i></span></p>
+      </div>
+      <div class="aui-card sv__card sv__pop">
+        <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="file-pdf" /></span><span><span class="aui-title">Class handout, week 3</span><span class="aui-sub">Resource<i>·</i>PDF</span></span><span class="sv__kbd">↵</span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="note-sticky" /></span><span><span class="aui-title">Handout questions</span><span class="aui-sub">Note</span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  {name === "library-private" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="aui-tile"><AppIcon name="file-pdf" /></span><span><b>Class handout, week 3</b><small>PDF · 2.1 MB · private storage</small></span></p>
+      <p class="sv__link"><AppIcon name="lock" /><span>Opening with a link that expires in minutes</span></p>
+      <p class="sv__row sv__row--soft"><AppIcon name="box-archive" /> Archive it later, and notes that cite it still work</p>
+    </div>
+  )}
+
+  {name === "search-tabs" && (
+    <div class="aui-card sv__card">
+      <p class="sv__search"><AppIcon name="magnifying-glass" /> faith before<i></i></p>
+      <p class="sv__chips sv__chips--scroll"><span class="is-on">Everything</span><span>Notes</span><span>Folders</span><span>Threads</span><span>Highlights</span><span>Scripture</span></p>
+      <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="note-sticky" /></span><span><span class="aui-title">Faith before it made sense</span><span class="aui-sub">Note<i>·</i>July</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="highlighter" /></span><span><span class="aui-title">“went without knowing where”</span><span class="aui-sub">Highlight<i>·</i>Hebrews 11:8</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span><span><span class="aui-title">Faith in Hebrews 11</span><span class="aui-sub">Thread<i>·</i>6 notes</span></span><span></span></div>
+    </div>
+  )}
+
+  {name === "suggestion-snooze" && (
+    <div class="sv__stack">
+      <div class="aui-card sv__card">
+        <p class="sv__label sv__label--in">Suggested</p>
+        <div class="aui-row is-on"><span class="aui-tile sv__tile--violet"><AppIcon name="highlighter" /></span><span><span class="aui-title">“keeps showing up”</span><span class="aui-sub">A highlight from Exodus 5<i>·</i>March</span></span><span class="aui-acts"><AppIcon name="ellipsis-vertical" /></span></div>
+      </div>
+      <div class="aui-card sv__card sv__pop">
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="arrow-up-right-from-square" /></span><span class="aui-title">Open</span><span></span></div>
+        <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="clock" /></span><span><span class="aui-title">Snooze</span><span class="aui-sub">Not now, ask again later</span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  {name === "thread-connect" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">Peace with God</p>
+        <p>Justified, and so at peace. Not trying to be. <span class="aui-pill">Romans 5:1 <span class="aui-tr">NLT</span></span></p>
+      </div>
+      <div class="aui-card sv__card sv__pop">
+        <p class="sv__label sv__label--in">Connect note</p>
+        <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span><span><span class="aui-title">Going through Romans</span><span class="aui-sub">Thread<i>·</i>3 notes</span></span><span class="aui-acts sv__ok"><AppIcon name="check" /></span></div>
+        <div class="aui-row"><span class="aui-tile"><AppIcon name="arrow-right-arrow-left" /></span><span><span class="aui-title">Grace, across books</span><span class="aui-sub">Thread<i>·</i>9 notes</span></span><span></span></div>
+        <div class="aui-row sv__add"><span class="aui-tile"><AppIcon name="plus" /></span><span><span class="aui-title">New thread</span></span><span></span></div>
+      </div>
+    </div>
+  )}
+
+  {name === "folders-auto" && (
+    <div class="aui-card sv__card">
+      <p class="sv__label sv__label--in">Folders</p>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="folder" /></span><span><span class="aui-title">Romans</span><span class="aui-sub">12 notes<i>·</i>#grace #law</span></span><span></span></div>
+      <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="folder" /></span><span><span class="aui-title">Prayer</span><span class="aui-sub">8 notes<i>·</i>#waiting</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="folder" /></span><span><span class="aui-title">Sunday sermons</span><span class="aui-sub">21 notes<i>·</i>#genesis</span></span><span></span></div>
+      <p class="sv__foot sv__foot--in"><AppIcon name="wand-magic-sparkles" /> Sorted as you wrote. Add your own anytime.</p>
+    </div>
+  )}
+
   {name === "group-threads" && (
     <div class="aui-card sv__card sv__pad">
       <p class="sv__head"><span class="aui-tile sv__tile--violet"><AppIcon name="user-group" /></span><span><b>Thursday group · James</b><small>Week 4 · 6 notes from the group</small></span></p>
@@ -435,6 +674,64 @@ const { name, label } = Astro.props;
   .sv__dots i { width: 10px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--pds-text-tertiary); }
   .sv__dots .is-on { background: var(--pds-text-primary); box-shadow: none; }
   .sv__pin-sub { margin-top: 10px !important; font-size: 11.5px; line-height: 1.45; color: var(--pds-text-secondary); }
+
+  /* ── Walkthrough states ─────────────────────────────────────────────── */
+  .sv__menu { width: 64%; }
+  .sv :global(.aui-row.sv__row-plain) { grid-template-columns: minmax(0, 1fr) auto; padding-block: 7px; }
+  .sv__row--menu { padding: 8px 13px 10px; margin-top: 2px !important; box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .sv__label--gap { margin-top: 12px !important; }
+  .sv__books { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+  .sv__book { padding: 6px 0; border-radius: 8px; font-size: 12px; text-align: center; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .sv__chapters { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 5px; }
+  .sv__ch { display: grid; place-items: center; aspect-ratio: 1; border-radius: 8px; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .sv__book.is-on, .sv__ch.is-on { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__ch.is-last { box-shadow: inset 0 0 0 1.5px var(--pds-accent); }
+
+  .sv__selbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px 30px; padding: 5px 6px 5px 8px; border-radius: 999px; background: var(--pds-bg-main); box-shadow: var(--pds-shadow-popover); }
+  .sv__swatches--flat { padding: 0; box-shadow: none; gap: 5px; }
+  .sv__swatches--flat i { width: 14px; height: 14px; }
+  .sv__selacts { display: inline-flex; gap: 10px; padding-right: 4px; color: var(--pds-text-secondary); }
+  .sv__selacts :global(svg) { width: 12px; height: 12px; }
+  .sv__sel { padding: 0 2px; border-radius: 2px; background: color-mix(in srgb, var(--pds-highlight-sky-blue) 28%, transparent); }
+  .sv__reader .sv__foot { margin-left: 30px; }
+
+  .sv__rhead--flat { padding-left: 0; }
+  .sv__trpair { display: inline-flex; align-items: center; gap: 6px; }
+  .sv__plus { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; background: var(--pds-bg-chip); color: var(--pds-text-primary); }
+  .sv__plus :global(svg) { width: 10px; height: 10px; }
+  .sv__plus.is-hint { color: var(--pds-on-accent); background: var(--pds-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--pds-accent) 18%, transparent); }
+  .sv__cmp { font-size: 12.5px; }
+  .sv__cmp-head { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 6px !important; }
+  .sv__cmp-head .sv__tr { justify-self: start; }
+  .sv__x { display: inline-grid; place-items: center; margin-left: 4px; color: var(--pds-text-tertiary); }
+  .sv__x :global(svg) { width: 8px; height: 8px; }
+  .sv__cmp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 7px 0; box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .sv__cmp-row p { line-height: 1.5; color: var(--pds-text-primary); }
+  .sv__cmp-row sup { font-size: 0.7em; color: var(--pds-text-tertiary); margin-right: 2px; }
+  .sv__gap { align-self: start; padding: 2px 8px; border-radius: 6px; font-style: italic; color: var(--pds-text-secondary) !important; background: var(--pds-bg-chip); }
+
+  .sv__write { margin-top: 6px !important; color: var(--pds-text-primary); }
+  .sv__write i { display: inline-block; width: 1.5px; height: 1em; margin-left: 1px; vertical-align: -0.15em; background: var(--pds-accent); animation: sv-blink 1.1s steps(1) infinite; }
+
+  .sv__chips { display: flex; gap: 5px; padding: 0 13px 6px; }
+  .sv__chips span { padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 500; color: var(--pds-text-secondary); background: var(--pds-bg-chip); white-space: nowrap; }
+  .sv__chips .is-on { color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-chip-selected); }
+  .sv__chips--scroll { overflow: hidden; mask-image: linear-gradient(90deg, #000 85%, transparent); -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); }
+  .sv__dotc { width: 10px; height: 10px; margin: 0 4px; border-radius: 50%; justify-self: center; }
+
+  .sv__days { display: inline-flex; gap: 3px; margin-left: auto; }
+  .sv__days span { padding: 2px 7px; border-radius: 8px; font-size: 11.5px; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .sv__days .is-on { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__notice { display: flex; gap: 10px; padding: 10px 12px; border-radius: 12px; font-size: 12.5px; line-height: 1.45; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .sv__notice b { display: block; margin-bottom: 2px; font-weight: 600; color: var(--pds-text-primary); }
+  .sv__notice :global(svg) { flex: none; width: 13px; height: 13px; margin-top: 2px; color: var(--pds-text-primary); }
+
+  .sv__search { display: flex; align-items: center; gap: 8px; margin: 10px 12px 8px !important; padding: 8px 11px; border-radius: 10px; font-size: 13px; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .sv__search :global(svg) { width: 12px; height: 12px; color: var(--pds-text-secondary); }
+  .sv__search i { display: inline-block; width: 1.5px; height: 1em; margin-left: -6px; background: var(--pds-accent); animation: sv-blink 1.1s steps(1) infinite; }
+  .sv__foot--in { margin: 4px 13px 12px !important; }
+
+  @media (prefers-reduced-motion: reduce) { .sv__write i, .sv__search i { animation: none; } }
 
   @keyframes sv-blink { 50% { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .sv__typing i { animation: none; } }
