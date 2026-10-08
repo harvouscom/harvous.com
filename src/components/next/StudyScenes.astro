@@ -14,6 +14,7 @@ import ShowcaseVisual from "./ShowcaseVisual.astro";
 import FeatureChip from "./FeatureChip.astro";
 import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
 import type { ForAudienceFeatureLink, ForAudienceSection } from "../../lib/for-audiences-data.ts";
+import { stageMesh } from "../../lib/next/content.ts";
 
 interface Props {
   sections: ForAudienceSection[];
@@ -42,7 +43,7 @@ const washes = ["sky", "amber", "mint", "violet", "coral", "blue"];
           )}
         </div>
 
-        <div class="sts__stage" style={`--wash: var(--tint-${washes[visuals % washes.length]}); --reveal-delay: 120ms;`} data-reveal>
+        <div class="sts__stage nx-mesh" style={`${stageMesh(washes[visuals % washes.length])} --reveal-delay: 120ms;`} data-reveal>
           <ShowcaseVisual name={section.visual} label={section.visualLabel ?? section.heading} />
         </div>
       </div>
@@ -105,7 +106,6 @@ const washes = ["sky", "amber", "mint", "violet", "coral", "blue"];
     place-items: center;
     padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.75rem);
     border-radius: var(--nx-radius-scene);
-    background: var(--wash);
     min-height: 22rem;
   }
   .sts__stage > :global(*) { width: 100%; max-width: 26rem; }

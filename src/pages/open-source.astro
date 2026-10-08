@@ -16,7 +16,6 @@ import { formatStars, getRepoStars } from "../lib/github-stars.ts";
 import { SUPPORT_EMAIL } from "../lib/faq";
 import HmcMap from "../components/next/HmcMap.astro";
 import AppNote from "../components/next/app/AppNote.astro";
-import { backdropSrc } from "../lib/next/content.ts";
 
 type Project = {
   id: string;
@@ -81,12 +80,11 @@ const description =
   <section class="nx-wrap os-list" aria-label="Projects">
     {PROJECTS.map((p) => (
       <article class:list={["os-proj", p.tone && `os-proj--${p.tone}`]} id={p.id} data-reveal>
-        <div class:list={["os-proj__visual", `os-proj__visual--${p.id}`]} aria-hidden="true">
+        <div class:list={["os-proj__visual", `os-proj__visual--${p.id}`, p.id === "harvous" && "nx-mesh nx-mesh--sky"]} aria-hidden="true">
           {p.id === "heresmychurch" ? (
             <div class="os-map"><HmcMap uid="os-hmc" /></div>
           ) : (
             <>
-              <img class="os-hv__sky" src={backdropSrc("053")} alt="" loading="lazy" decoding="async" />
               <div class="os-hv__note aui"><AppNote note="faithful" compact /></div>
             </>
           )}
@@ -158,12 +156,26 @@ const description =
   }
   .os-proj__body { display: flex; flex: 1; flex-direction: column; padding: clamp(1.5rem, 4vw, 2rem); }
 
-  /* The top visuals: Harvous on its blue grid, Here's My Church on its map. */
+  /* The top visuals: Harvous on a sky mesh, Here's My Church on its map. */
   .os-proj__visual { position: relative; display: grid; place-items: center; height: 15rem; overflow: hidden; }
-  /* Harvous: the app itself, a note rising off the bottom edge of a sky, the
-     way the homepage hero frames it. */
-  .os-proj__visual--harvous { background: #eef4fb; }
-  .os-hv__sky { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(2px) saturate(1.05); transform: scale(1.05); }
+  /* Harvous: the app itself, a note rising off the bottom edge of a sky mesh,
+     over grid lines at the same pitch as the Here's My Church map's tiles, so
+     the two cards rhyme. The map is min(80%, 22rem) wide and a tile step is
+     34 of its 378 viewBox units (HmcMap.astro), so the pitch scales with it. */
+  .os-proj__visual--harvous { container-type: inline-size; }
+  .os-proj__visual--harvous::before {
+    --pitch: calc(min(80cqw, 22rem) * 34 / 378);
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to right, color-mix(in srgb, var(--mesh-sky-a) 45%, transparent) 1px, transparent 1px) center / var(--pitch) var(--pitch),
+      linear-gradient(to bottom, color-mix(in srgb, var(--mesh-sky-a) 45%, transparent) 1px, transparent 1px) center / var(--pitch) var(--pitch);
+    -webkit-mask-image: radial-gradient(85% 90% at 50% 45%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(85% 90% at 50% 45%, #000 40%, transparent 100%);
+    pointer-events: none;
+  }
   .os-hv__note {
     position: absolute;
     left: 50%;

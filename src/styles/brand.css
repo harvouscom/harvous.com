@@ -1,0 +1,84 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Harvous brand tokens — the shared visual language beyond the base colours
+   in global.css. See /brand/ for them live and docs/BRAND_KIT.md for the
+   rules.
+
+   Mesh gradients are the ground behind app mocks and other illustrations.
+   They sit between the site's two other image families: the painted skies
+   (saturated colour at the edges) and the Bright Enough thumbnails (airy,
+   mostly white, soft colour pooling in the corners). A mesh is a near-white
+   centre with two to four soft pools of one colour family, plus fine grain,
+   so a white app card always reads on it. Colours were sampled from the skies
+   and thumbnails themselves.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Pools per family: a (deepest), b, c (lightest), and the base. */
+  --mesh-sky-a: #8ec2f1;   --mesh-sky-b: #b9d9f5;   --mesh-sky-c: #dceaf7;   --mesh-sky-base: #f3f7fb;
+  --mesh-amber-a: #f5cf7a; --mesh-amber-b: #fbe2a6; --mesh-amber-c: #fdf0cf; --mesh-amber-base: #fdf8ec;
+  --mesh-mint-a: #a9bf96;  --mesh-mint-b: #cfd8bf;  --mesh-mint-c: #e5ecd9;  --mesh-mint-base: #f5f7f0;
+  --mesh-violet-a: #d2aeea; --mesh-violet-b: #e4d0f4; --mesh-violet-c: #f1e7fa; --mesh-violet-base: #faf6fd;
+  --mesh-coral-a: #fbb89a; --mesh-coral-b: #ffd8c4; --mesh-coral-c: #d9dcea; --mesh-coral-base: #fdf5f1;
+  --mesh-blue-a: #8fd3d6;  --mesh-blue-b: #c4e6ea;  --mesh-blue-c: #e2f3f4;  --mesh-blue-base: #f5fbfb;
+
+  /* Fine grain, the thumbnails' texture, as a tiling SVG. */
+  --brand-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Dark: the same families, pulled toward the night ground so a panel glows
+   rather than glares. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-color-scheme="light"]) {
+    --mesh-sky-a: #2f5f8f;   --mesh-sky-b: #29486a;   --mesh-sky-c: #22324a;   --mesh-sky-base: #1a1d26;
+    --mesh-amber-a: #7a5a1f; --mesh-amber-b: #5a4520; --mesh-amber-c: #3a3022; --mesh-amber-base: #1f1c18;
+    --mesh-mint-a: #4b5f3e;  --mesh-mint-b: #3a4733;  --mesh-mint-c: #2c3329;  --mesh-mint-base: #1b1e1a;
+    --mesh-violet-a: #5e3f7a; --mesh-violet-b: #47335c; --mesh-violet-c: #322840; --mesh-violet-base: #1d1a24;
+    --mesh-coral-a: #7a4632; --mesh-coral-b: #5c3a2e; --mesh-coral-c: #33313f; --mesh-coral-base: #1f1a1a;
+    --mesh-blue-a: #2f6a6d;  --mesh-blue-b: #2a4f53;  --mesh-blue-c: #23383b;  --mesh-blue-base: #191e1f;
+  }
+}
+:root[data-color-scheme="dark"] {
+  --mesh-sky-a: #2f5f8f;   --mesh-sky-b: #29486a;   --mesh-sky-c: #22324a;   --mesh-sky-base: #1a1d26;
+  --mesh-amber-a: #7a5a1f; --mesh-amber-b: #5a4520; --mesh-amber-c: #3a3022; --mesh-amber-base: #1f1c18;
+  --mesh-mint-a: #4b5f3e;  --mesh-mint-b: #3a4733;  --mesh-mint-c: #2c3329;  --mesh-mint-base: #1b1e1a;
+  --mesh-violet-a: #5e3f7a; --mesh-violet-b: #47335c; --mesh-violet-c: #322840; --mesh-violet-base: #1d1a24;
+  --mesh-coral-a: #7a4632; --mesh-coral-b: #5c3a2e; --mesh-coral-c: #33313f; --mesh-coral-base: #1f1a1a;
+  --mesh-blue-a: #2f6a6d;  --mesh-blue-b: #2a4f53;  --mesh-blue-c: #23383b;  --mesh-blue-base: #191e1f;
+}
+
+/* ── Mesh stages ─────────────────────────────────────────────────────────────
+   <div class="nx-mesh nx-mesh--amber">, or class="nx-mesh" with
+   style={stageMesh("amber")} (lib/next/content.ts) when the family is data.
+   The pools sit at the corners and the centre stays light; grain on top. */
+.nx-mesh {
+  --m-a: var(--mesh-sky-a);
+  --m-b: var(--mesh-sky-b);
+  --m-c: var(--mesh-sky-c);
+  --m-base: var(--mesh-sky-base);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(55% 60% at 0% 0%, var(--m-a) 0%, transparent 70%),
+    radial-gradient(50% 55% at 100% 100%, var(--m-b) 0%, transparent 72%),
+    radial-gradient(45% 50% at 100% 0%, var(--m-c) 0%, transparent 70%),
+    radial-gradient(40% 45% at 0% 100%, var(--m-c) 0%, transparent 70%),
+    var(--m-base);
+}
+.nx-mesh::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--brand-grain);
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+.nx-mesh--sky    { --m-a: var(--mesh-sky-a);    --m-b: var(--mesh-sky-b);    --m-c: var(--mesh-sky-c);    --m-base: var(--mesh-sky-base); }
+.nx-mesh--amber  { --m-a: var(--mesh-amber-a);  --m-b: var(--mesh-amber-b);  --m-c: var(--mesh-amber-c);  --m-base: var(--mesh-amber-base); }
+.nx-mesh--mint   { --m-a: var(--mesh-mint-a);   --m-b: var(--mesh-mint-b);   --m-c: var(--mesh-mint-c);   --m-base: var(--mesh-mint-base); }
+.nx-mesh--violet { --m-a: var(--mesh-violet-a); --m-b: var(--mesh-violet-b); --m-c: var(--mesh-violet-c); --m-base: var(--mesh-violet-base); }
+.nx-mesh--coral  { --m-a: var(--mesh-coral-a);  --m-b: var(--mesh-coral-b);  --m-c: var(--mesh-coral-c);  --m-base: var(--mesh-coral-base); }
+.nx-mesh--blue,
+.nx-mesh--teal   { --m-a: var(--mesh-blue-a);   --m-b: var(--mesh-blue-b);   --m-c: var(--mesh-blue-c);   --m-base: var(--mesh-blue-base); }

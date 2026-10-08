@@ -10,6 +10,7 @@
  * replicas do.
  */
 import AppIcon from "./app/AppIcon.astro";
+import { backdropSrc } from "../../lib/next/content.ts";
 
 interface Props {
   name: string;
@@ -162,11 +163,16 @@ const { name, label } = Astro.props;
 
   {name === "reminders" && (
     <div class="sv__stack">
-      <div class="sv__lock">
-        <p class="sv__clock">7:30</p>
+      <div class="sv__lock" style={`--wall: url(${backdropSrc("074")});`}>
+        <p class="sv__lockbar">
+          <span></span>
+          <span class="sv__lockglyph"><AppIcon name="lock" /></span>
+          <span class="sv__signal"><i></i><i></i><i></i><i></i><b></b></span>
+        </p>
         <p class="sv__date">Sunday, October 12</p>
+        <p class="sv__clock">7:30</p>
         <div class="sv__notif">
-          <img class="sv__notif-icon" src="/images/harvous-2-icon.webp" alt="" width="34" height="34" loading="lazy" />
+          <img class="sv__notif-icon" src="/images/harvous-2-icon.webp" alt="" width="38" height="38" loading="lazy" />
           <span class="sv__notif-text">
             <span class="sv__notif-top"><b>Harvous</b><small>now</small></span>
             <span class="sv__notif-title">Before church: Psalm 46</span>
@@ -469,6 +475,28 @@ const { name, label } = Astro.props;
     </div>
   )}
 
+  {name === "review" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Review · Fill in the blank <span class="sv__dots sv__dots--inline"><i class="is-on"></i><i></i><i></i></span></p>
+      <p class="sv__verse">We know that they help us develop <b>endurance</b>. And endurance develops strength of <span class="sv__gapline"></span>…</p>
+      <p class="sv__refline"><span class="aui-pill">Romans 5:3–4 <span class="aui-tr">NLT</span></span></p>
+      <p class="sv__tiles"><span>hope</span><span class="is-on">character</span><span>faith</span></p>
+      <p class="sv__foot"><AppIcon name="clock-rotate-left" /> From a verse you kept. No score, no streak.</p>
+    </div>
+  )}
+
+  {name === "connector" && (
+    <div class="sv__stack sv__chat">
+      <p class="sv__bubble sv__bubble--me">What have I written about waiting on God?</p>
+      <div class="aui-card sv__card sv__pad sv__bubble--ai">
+        <p class="sv__label"><AppIcon name="puzzle-piece" /> From your Harvous notes</p>
+        <p class="sv__ai">You came back to it twice: <b>“Waiting, again”</b> on Psalm 27:14 last spring, and <b>“Faith before it made sense”</b> in July.</p>
+        <p class="sv__refline"><span class="aui-pill">Psalm 27:14</span><span class="aui-pill">Hebrews 11:8</span></p>
+      </div>
+      <p class="sv__status"><AppIcon name="lock" /> It can read your notes<i>·</i>never change them</p>
+    </div>
+  )}
+
   {name === "group-threads" && (
     <div class="aui-card sv__card sv__pad">
       <p class="sv__head"><span class="aui-tile sv__tile--violet"><AppIcon name="user-group" /></span><span><b>Thursday group · James</b><small>Week 4 · 6 notes from the group</small></span></p>
@@ -609,34 +637,67 @@ const { name, label } = Astro.props;
   .sv__face.is-a { background: #e07a5f; } .sv__face.is-b { background: #3d8bd9; } .sv__face.is-me { background: #6b7280; }
 
   /* Reminders: a lock-screen notification, and the rhythm it runs on. */
+  /* An iPhone lock screen, cropped: wallpaper, status bar, the date over a big
+     clock, and a frosted notification the way iOS stacks it. */
   .sv__lock {
-    padding: 16px 14px 14px;
-    border-radius: 22px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 10px 12px 44px;
+    border-radius: 30px 30px 22px 22px;
     text-align: center;
     color: #fff;
-    background: linear-gradient(160deg, #3b5bdb, #7048e8 55%, #c2255c);
-    box-shadow: 0 24px 48px -24px rgba(15, 23, 42, 0.45);
+    background: #2b1d3a;
+    box-shadow: 0 0 0 5px #0d0e12, 0 26px 50px -22px rgba(15, 23, 42, 0.6);
   }
-  .sv__clock { font-family: var(--pds-font-display); font-size: 40px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
-  .sv__date { margin-top: 4px !important; font-size: 12px; opacity: 0.85; }
+  .sv__lock::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0) 45%), var(--wall) center / cover;
+  }
+  .sv__lockbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 10px; font-size: 11px; font-weight: 600; }
+  .sv__lockbar > span:first-child { justify-self: start; }
+  .sv__lockglyph { display: grid; place-items: center; }
+  .sv__lockglyph :global(svg) { width: 10px; height: 10px; }
+  .sv__signal { justify-self: end; display: inline-flex; align-items: flex-end; gap: 1.5px; height: 9px; }
+  .sv__signal i { width: 2.5px; border-radius: 1px; background: #fff; }
+  .sv__signal i:nth-child(1) { height: 3px; } .sv__signal i:nth-child(2) { height: 5px; } .sv__signal i:nth-child(3) { height: 7px; } .sv__signal i:nth-child(4) { height: 9px; }
+  .sv__signal b { width: 17px; height: 8px; margin-left: 4px; border-radius: 2.5px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), inset 0 0 0 2px transparent; background: linear-gradient(90deg, #fff 70%, transparent 70%) 2px 2px / calc(100% - 4px) calc(100% - 4px) no-repeat; }
+  .sv__date { margin-top: 14px !important; font-size: 13px; font-weight: 600; letter-spacing: 0.01em; opacity: 0.9; }
+  .sv__clock { font-family: var(--pds-font-display); font-size: 62px; font-weight: 600; line-height: 1; letter-spacing: -0.03em; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.18); }
   .sv__notif {
     display: grid;
-    grid-template-columns: 34px minmax(0, 1fr);
+    grid-template-columns: 38px minmax(0, 1fr);
     gap: 10px;
-    margin-top: 16px;
-    padding: 10px 12px;
-    border-radius: 16px;
+    align-items: center;
+    margin-top: 18px;
+    padding: 11px 12px;
+    border-radius: 18px;
     text-align: left;
     color: #111;
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(12px);
+    background: rgba(250, 250, 252, 0.62);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    box-shadow: 0 6px 18px -10px rgba(0, 0, 0, 0.35);
   }
-  .sv__notif-icon { width: 34px; height: 34px; border-radius: 8px; }
-  .sv__notif-top { display: flex; justify-content: space-between; font-size: 11.5px; }
-  .sv__notif-top small { color: rgba(0, 0, 0, 0.5); }
-  .sv__notif-title { display: block; font-size: 13.5px; font-weight: 600; }
-  .sv__notif-body { display: block; font-size: 12.5px; line-height: 1.4; color: rgba(0, 0, 0, 0.7); }
-  .sv__rhythm { width: 88%; margin: -6px 0 0 auto; position: relative; }
+  .sv__notif-icon { width: 38px; height: 38px; border-radius: 9px; }
+  .sv__notif-top { display: flex; justify-content: space-between; font-size: 12.5px; }
+  .sv__notif-top b { font-weight: 600; }
+  .sv__notif-top small { font-size: 11.5px; color: rgba(0, 0, 0, 0.45); }
+  .sv__notif-title { display: block; font-size: 13px; font-weight: 600; }
+  .sv__notif-body { display: -webkit-box; font-size: 12.5px; line-height: 1.35; color: rgba(0, 0, 0, 0.72); -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  /* The settings card floats in front of the phone: up over the wallpaper strip
+     below the notification and out past the right edge, so it reads as a layer
+     on top rather than a panel butted against the bezel. */
+  .sv__rhythm {
+    position: relative;
+    z-index: 1;
+    width: 84%;
+    margin: -46px -18px 0 auto;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 22px 44px -18px rgba(15, 23, 42, 0.45);
+  }
   .sv__seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: 999px; background: var(--pds-bg-chip); }
   .sv__seg span { padding: 3px 10px; border-radius: 999px; font-size: 12px; color: var(--pds-text-secondary); }
   .sv__seg .is-on { color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-chip-selected); }
@@ -732,6 +793,23 @@ const { name, label } = Astro.props;
   .sv__foot--in { margin: 4px 13px 12px !important; }
 
   @media (prefers-reduced-motion: reduce) { .sv__write i, .sv__search i { animation: none; } }
+
+  /* Review and Connector */
+  .sv__dots--inline { display: inline-flex; gap: 4px; margin: 0 0 0 6px !important; vertical-align: middle; }
+  .sv__dots--inline i { width: 6px; height: 6px; }
+  .sv__gapline { display: inline-block; width: 4.5em; height: 1em; vertical-align: -0.2em; border-bottom: 2px solid var(--pds-accent); }
+  .sv__refline { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px !important; font-size: 12px; }
+  .sv__tiles { display: flex; gap: 6px; margin-top: 12px !important; }
+  .sv__tiles span { padding: 5px 11px; border-radius: 9px; font-size: 13px; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .sv__tiles .is-on { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__chat { gap: 8px; }
+  .sv__bubble { margin: 0; }
+  .sv__bubble--me { justify-self: end; max-width: 80%; padding: 9px 13px; border-radius: 16px 16px 4px 16px; font-size: 13.5px; color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__bubble--ai { width: 92%; }
+  .sv__bubble--ai .sv__label { display: flex; align-items: center; gap: 6px; }
+  .sv__bubble--ai .sv__label :global(svg) { width: 11px; height: 11px; }
+  .sv__ai { font-size: 13.5px; line-height: 1.5; color: var(--pds-text-primary); }
+  .sv__ai b { font-weight: 600; }
 
   @keyframes sv-blink { 50% { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .sv__typing i { animation: none; } }

@@ -30,6 +30,7 @@ import claudeLogo from "../../assets/ai-logos/claude.svg?raw";
 import chatgptLogo from "../../assets/ai-logos/chatgpt.svg?raw";
 import grokLogo from "../../assets/ai-logos/grok.svg?raw";
 import museIcon from "../../assets/ai-logos/muse.webp";
+import { stageMesh } from "../../lib/next/content.ts";
 const museLogo = `<img src="${museIcon.src}" alt="" width="128" height="128" loading="lazy" decoding="async" />`;
 
 interface Props {
@@ -64,7 +65,7 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
         {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
       </div>
 
-      <div class="cs__stage" style={`--wash: var(--tint-${washes[i % washes.length]}); --reveal-delay: 120ms;`} data-reveal>
+      <div class="cs__stage nx-mesh" style={`${stageMesh(washes[i % washes.length])} --reveal-delay: 120ms;`} data-reveal>
         {section.visual === "ask" && (
           <div class="aui aui-card aui-card--float chat" data-scene="ask" data-app="claude" role="group" aria-label="Example: asking an AI app about your notes">
             <div class="chat__bar">
@@ -469,7 +470,6 @@ const washes = ["sky", "violet", "amber", "mint", "blue"];
     place-items: center;
     padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.75rem);
     border-radius: var(--nx-radius-scene);
-    background: var(--wash);
     min-height: 22rem;
   }
   .cs__stage > * { width: 100%; max-width: 30rem; }
