@@ -23,10 +23,10 @@ import { aboutJsonLd } from "../lib/page-jsonld.ts";
 >
   <header class="nx-wrap about-intro">
     <p class="nx-kicker">About</p>
-    <h1 class="nx-display">Hey, I'm Derek.</h1>
+    <h1 class="nx-display about-intro__title">A study Bible, made by hand.</h1>
     <p class="nx-lead">
-      I make Harvous on my own, under Testament Made LLC. It's the place I wanted for my own Bible
-      study, built in public a release at a time.
+      Harvous is a quiet place for your Bible study: notes beside the verse, there when you come
+      back. It's made by one person, built in public a release at a time.
     </p>
   </header>
 
@@ -98,7 +98,8 @@ import { aboutJsonLd } from "../lib/page-jsonld.ts";
     padding-top: clamp(8rem, 16vw, 11rem);
     text-align: center;
   }
-  .about-intro .nx-display { margin: 0.75rem 0 0; }
+  .about-intro .nx-display { margin: 0.75rem auto 0; }
+  .about-intro__title { max-width: 14ch; text-wrap: balance; }
   .about-intro .nx-lead { margin: 1.5rem auto 0; }
 
   .about-letter {
