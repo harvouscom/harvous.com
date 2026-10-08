@@ -56,7 +56,7 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
   },
 ];
 
-/** Roadmap-only items for the homepage “Coming soon” strip. */
+/** Roadmap-only items (not yet live), e.g. /now's "Further off" list. */
 export const COMING_SOON_GRID_ITEMS: ComingSoonGridItem[] = PRODUCT_GRID_ITEMS.filter(
   (item) => item.comingSoon !== false
 );

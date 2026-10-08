@@ -27,7 +27,7 @@ export function aboutJsonLd() {
         "@type": "Organization",
         name: "Testament Made LLC",
         url: site,
-        logo: `${site}/images/harvous-2-icon.png`,
+        logo: `${site}/images/harvous-2-icon-512.png`,
         founder: { "@type": "Person", name: "Derek Castelli", email: "derek@harvous.com" },
       },
       {
@@ -209,7 +209,7 @@ export function blogPostJsonLd(
         "@type": "Organization",
         name: "Harvous",
         url: site,
-        logo: { "@type": "ImageObject", url: new URL("/images/harvous-2-icon.png", site).toString() },
+        logo: { "@type": "ImageObject", url: new URL("/images/harvous-2-icon-512.png", site).toString() },
       },
       isPartOf: { "@type": "Blog", name: "Bright Enough", url: new URL("/blog/", site).toString() },
     },

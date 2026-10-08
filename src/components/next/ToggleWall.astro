@@ -31,8 +31,8 @@ const rows = [0, 3, 6].map((shift) => [
     {rows.map((row, r) => (
       <div class:list={["tw__row", r % 2 === 1 && "tw__row--rev"]} style={`--dur:${56 + r * 9}s`}>
         <div class="tw__track">
-          {[...row, ...row].map((t) => (
-            <div class="tw__item">
+          {[...row, ...row].map((t, i) => (
+            <div class="tw__item" data-dup={i >= row.length ? "" : undefined}>
               <span class="tw__label">{t.label}</span>
               <span class="tw__value">{t.value}</span>
               <span class:list={["tw__switch", t.on && "is-on"]}><i></i></span>
@@ -115,7 +115,7 @@ const rows = [0, 3, 6].map((shift) => [
     .tw__track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
     .tw__row:not(:first-child) { display: none; }
     .tw__rows { mask-image: none; -webkit-mask-image: none; padding-inline: 1rem; }
-    /* One copy of the list: hide the duplicate half (PRIVACY_TOGGLES has 10). */
-    .tw__item:nth-child(n + 11) { display: none; }
+    /* One copy of the list: hide the duplicate half the marquee loops on. */
+    .tw__item[data-dup] { display: none; }
   }
 </style>

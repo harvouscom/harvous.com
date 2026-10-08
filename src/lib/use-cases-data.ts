@@ -67,7 +67,7 @@ const useCases: UseCase[] = [
         heading: "How people use it day to day",
         paragraphs: [
           "Open a thread for whatever you're in — a book, a theme, or just \"this month.\" Add a note next to the passage while the thought is still warm. Scripture pills keep verses one tap away across 11 translations.",
-          "The daily passage gives you a starting point when you're not sure where to begin. Everything syncs across web, iOS, iPad, and Mac so your journal follows you.",
+          "The daily passage gives you a starting point when you're not sure where to begin. It works offline and syncs when you reconnect, so the journal is there when you are.",
         ],
       },
     ],

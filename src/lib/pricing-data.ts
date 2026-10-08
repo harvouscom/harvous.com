@@ -60,7 +60,7 @@ export const FREE_PLAN: PricingPlan = {
     "Built-in dictionary and daily passage",
     "Built-in cross-references and themes",
     "Offline sync across devices",
-    "Sharable notes via link",
+    "Shareable notes via link",
     "Built-in Suggestions (resurfaces the past)",
     "Reminders — an optional nudge with the verse",
   ],

@@ -167,7 +167,7 @@ export const BENTO_CARDS: BentoCardSpec[] = [
 export const ALSO_INCLUDED: { label: string; icon: string; href?: string }[] = [
   { label: "Daily passage", icon: "fa7-solid:sun", href: "/features/daily-passage/" },
   { label: "Easton's dictionary", icon: "fa7-solid:book-atlas", href: "/features/dictionary/" },
-  { label: "Offline & sync", icon: "fa7-solid:cloud-arrow-down", href: "/features/offline-sync/" },
+  { label: "Offline & sync", icon: "fa7-solid:cloud-arrow-down", href: "/faq/#faq-offline" },
   { label: "Reminders", icon: "fa7-solid:bell", href: "/features/reminders/" },
   { label: "Light & dark", icon: "fa7-solid:circle-half-stroke" },
   { label: "Keyboard shortcuts", icon: "fa7-solid:keyboard" },

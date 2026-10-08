@@ -2,15 +2,6 @@
 
 Things noticed along the way that are worth doing, but not yet.
 
-## Outdated Harvous icon in OG cards
-
-`public/images/app-icon.webp` is the old square-glyph icon. The current icon is `public/images/harvous-2-icon.webp` (and `.png`), which is what the favicon, JSON-LD logo and compare OG cards use.
-
-The compare pages, compare hub and the page OG cards (`scripts/generate-og-cards.mjs`, regenerated) now use the current icon. Still on the old one:
-
-- `scripts/compress-images.sh` (line ~76) lists `icons/app-icon.png`. Check whether anything still needs it.
-- Once nothing references `app-icon.webp`, delete it.
-
 ## Manna compare page
 
 - The copy comes only from Manna's own homepage. Re-read it against the product before publishing. Study Tools & Notes overlaps with Harvous, so check that the "Best at" framing is fair.

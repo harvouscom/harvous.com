@@ -124,7 +124,7 @@ export function brightEnoughBlogJsonLd(
       url: origin,
       logo: {
         "@type": "ImageObject",
-        url: new URL("/images/harvous-2-icon.png", origin).toString(),
+        url: new URL("/images/harvous-2-icon-512.png", origin).toString(),
       },
     },
     ...extras,
@@ -338,7 +338,7 @@ export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
     name: "Bright Enough",
     kind: "house",
     role: "The Harvous blog",
-    avatar: "/images/harvous-2-icon.png",
+    avatar: "/images/harvous-2-icon-sm.webp",
   },
   derek: {
     id: "derek",
