@@ -80,7 +80,18 @@ To apply a mesh:
 <div class="nx-mesh" style={stageMesh(tint)}>…</div>
 ```
 
-Unknown families fall back to `sky`. Dark mode is handled by the tokens: each
+Unknown families fall back to `sky`.
+
+When a mesh sits **over a photo** (like the tour's close-ups over each
+chapter's sky), match the photo instead of picking a family:
+
+```astro
+<div class="nx-mesh nx-mesh--photo" style={photoMesh(backdropId)}>…</div>
+```
+
+`photoMesh` reads pools sampled from that sky (`BACKDROP_POOLS` in
+`lib/next/content.ts`). To add a sky, average it to 3×3 and take the deepest,
+middle and lightest colours. Skies that haven't been sampled fall back to `sky`. Dark mode is handled by the tokens: each
 family pulls toward the night ground, so a panel glows rather than glares.
 
 **2. Painted skies (`/images/auth-hero/ai_bg_*.webp`) are for moments.**

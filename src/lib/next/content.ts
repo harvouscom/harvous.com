@@ -25,6 +25,24 @@ export const stageMesh = (tint: string) => {
   return `--m-a: var(--mesh-${f}-a); --m-b: var(--mesh-${f}-b); --m-c: var(--mesh-${f}-c); --m-base: var(--mesh-${f}-base);`;
 };
 
+/**
+ * Pools sampled from a sky (a 3×3 average of the photo: deepest, middle,
+ * lightest), so a mesh laid over that sky's scene carries its colours. Pair
+ * with class="nx-mesh nx-mesh--photo"; brand.css lightens them for day and
+ * sinks them for night. Skies not sampled yet fall back to the sky family.
+ */
+const BACKDROP_POOLS: Partial<Record<Backdrop, [string, string, string]>> = {
+  "044": ["#869962", "#b2b684", "#dcd9bf"],
+  "045": ["#fd8c5e", "#fdb496", "#d2d8e7"],
+  "047": ["#fb9340", "#f1be7e", "#dcc9a4"],
+  "058": ["#8ca678", "#b5c1a2", "#d8d9cc"],
+  "076": ["#d190e1", "#d9bbee", "#eee8fa"],
+};
+export const photoMesh = (id: Backdrop) => {
+  const p = BACKDROP_POOLS[id];
+  return p ? `--p-a: ${p[0]}; --p-b: ${p[1]}; --p-c: ${p[2]};` : "";
+};
+
 /** The app views AppScene can draw live. */
 export type AppView = "activity" | "read" | "write" | "library" | "share";
 

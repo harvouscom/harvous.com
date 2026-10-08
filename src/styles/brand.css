@@ -82,3 +82,31 @@
 .nx-mesh--coral  { --m-a: var(--mesh-coral-a);  --m-b: var(--mesh-coral-b);  --m-c: var(--mesh-coral-c);  --m-base: var(--mesh-coral-base); }
 .nx-mesh--blue,
 .nx-mesh--teal   { --m-a: var(--mesh-blue-a);   --m-b: var(--mesh-blue-b);   --m-c: var(--mesh-blue-c);   --m-base: var(--mesh-blue-base); }
+
+/* A mesh in a photo's own colours: set --p-a/b/c (photoMesh(id) in
+   lib/next/content.ts) and add .nx-mesh--photo. Day lifts the pools toward
+   white; night sinks them toward the dark ground, the same way the families
+   above do. Without --p-* it stays the sky family. */
+.nx-mesh--photo {
+  --p-a: var(--mesh-sky-a);
+  --p-b: var(--mesh-sky-b);
+  --p-c: var(--mesh-sky-c);
+  --m-a: color-mix(in oklab, var(--p-a) 78%, #fff);
+  --m-b: color-mix(in oklab, var(--p-b) 75%, #fff);
+  --m-c: color-mix(in oklab, var(--p-c) 70%, #fff);
+  --m-base: color-mix(in oklab, var(--p-c) 18%, #fff);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-color-scheme="light"]) .nx-mesh--photo {
+    --m-a: color-mix(in oklab, var(--p-a) 42%, #16181f);
+    --m-b: color-mix(in oklab, var(--p-b) 30%, #16181f);
+    --m-c: color-mix(in oklab, var(--p-c) 18%, #16181f);
+    --m-base: color-mix(in oklab, var(--p-c) 6%, #16181f);
+  }
+}
+:root[data-color-scheme="dark"] .nx-mesh--photo {
+  --m-a: color-mix(in oklab, var(--p-a) 42%, #16181f);
+  --m-b: color-mix(in oklab, var(--p-b) 30%, #16181f);
+  --m-c: color-mix(in oklab, var(--p-c) 18%, #16181f);
+  --m-base: color-mix(in oklab, var(--p-c) 6%, #16181f);
+}
