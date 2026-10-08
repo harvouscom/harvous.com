@@ -25,6 +25,7 @@ import {
   getCompareBySlug,
   getCompareEntries,
   getCompareTypes,
+  sortByPopularity,
   type CompareEntry,
 } from "../../lib/compare-data.ts";
 import { getHarvousHubLane } from "../../lib/compare-harvous-positioning.ts";
@@ -218,7 +219,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
               </li>
             );
           }
-          const apps = getCompareByType(slot.type);
+          const apps = sortByPopularity(getCompareByType(slot.type));
           const tone = TONES[i % TONES.length];
           return (
             <li class:list={["cmp-slot", `cmp-slot--${slot.size}`]}>
