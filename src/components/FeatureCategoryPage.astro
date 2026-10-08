@@ -22,6 +22,7 @@ import type { FeatureCategory } from "../lib/feature-categories-data.ts";
 import { TOUR_STAGING } from "../lib/next/tour-staging.ts";
 import { getComingSoonGridItem, SOON_LABEL } from "../lib/coming-soon-grid.ts";
 import { FEATURE_ICONS } from "../lib/feature-icons.ts";
+import FeatureCarousel from "./next/FeatureCarousel.astro";
 import { getUseCaseBySlug, type UseCase } from "../lib/use-cases-data.ts";
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
 import { fathomTry, fathomCompare } from "../lib/fathom-events.ts";
@@ -33,16 +34,23 @@ interface Props {
 }
 const { category } = Astro.props;
 
-type FeatureRow = { icon: string; title: string; desc: string; href?: string; soon: boolean };
+type FeatureRow = { icon: string; title: string; desc: string; href?: string; soon: boolean; visual?: string; label?: string };
+/* Add-ons have no walkthrough of their own; these are the mocks that show them. */
+const ADDON_VISUALS: Record<string, string> = {
+  "review-exercises": "review",
+  connector: "connector",
+  "shared-spaces": "group-threads",
+};
 const allFeatures = await getCollection("features");
 const housed: FeatureRow[] = category.featureIds
   .map((id): FeatureRow | undefined => {
     const soon = getComingSoonGridItem(id);
-    if (soon) return { icon: soon.icon ?? soon.icons?.[0] ?? "fa7-solid:note-sticky", title: soon.title, desc: soon.desc, href: soon.href, soon: soon.comingSoon !== false };
+    if (soon) return { icon: soon.icon ?? soon.icons?.[0] ?? "fa7-solid:note-sticky", title: soon.title, desc: soon.desc, href: soon.href, soon: soon.comingSoon !== false, visual: ADDON_VISUALS[id] };
     const f = allFeatures.find((x) => x.id === id);
     if (!f) return undefined;
     const href = !f.data.draft && f.data.heroTitle && f.data.sections?.length ? `/features/${f.id}/` : undefined;
-    return { icon: FEATURE_ICONS[f.id] ?? "fa7-solid:note-sticky", title: f.data.tagline, desc: f.data.title, href, soon: false };
+    const first = f.data.steps?.[0] ?? f.data.showcases?.[0];
+    return { icon: FEATURE_ICONS[f.id] ?? "fa7-solid:note-sticky", title: f.data.tagline, desc: f.data.title, href, soon: false, visual: first?.visual, label: first?.label };
   })
   .filter((r): r is FeatureRow => r !== undefined);
 
@@ -120,30 +128,7 @@ const jsonLd = {
     </section>
 
     {housed.length > 0 && (
-      <section class="nx-wrap fc-sec" aria-labelledby="housed-title">
-        <h2 id="housed-title" class="fc-h2 fc-h2--sec">{category.featuresHeading}</h2>
-        <p class="fc-sec__lead">{category.featuresLead}</p>
-        <ul class="fc-rows" role="list">
-          {housed.map((f) => {
-            const Tag = f.href ? "a" : "div";
-            return (
-              <li>
-                <Tag class:list={["fc-row", f.href && "fc-row--link"]} href={f.href}>
-                  <span class="fc-row__icon"><Icon name={f.icon} /></span>
-                  <span class="fc-row__text">
-                    <span class="fc-row__title">
-                      {f.title}
-                      {f.soon && <span class="fc-row__soon">{SOON_LABEL}</span>}
-                    </span>
-                    <span class="fc-row__desc">{f.desc}</span>
-                  </span>
-                  {f.href && <svg class="fc-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>}
-                </Tag>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+      <FeatureCarousel heading={category.featuresHeading} lead={category.featuresLead} items={housed} />
     )}
 
     {useCases.length > 0 && (
@@ -275,60 +260,6 @@ const jsonLd = {
   .fc-moment__p { margin: 0.55rem 0 0 2.7rem; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
 
   /* Housed features: light rows, like the /for/ hub's list. */
-  .fc-rows {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    column-gap: 2.5rem;
-    margin: 1.25rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  @media (min-width: 44rem) { .fc-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  .fc-row {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    height: 100%;
-    padding: 0.85rem 0.25rem;
-    border-bottom: 1px solid var(--color-rule);
-    color: inherit;
-    text-decoration: none;
-  }
-  .fc-row:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; border-radius: 0.75rem; }
-  .fc-row__icon {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 0.75rem;
-    background: var(--color-warm);
-    color: var(--color-ink);
-  }
-  .fc-row__icon :global(svg) { width: 1rem; height: 1rem; }
-  .fc-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
-  .fc-row__title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; font-weight: 600; color: var(--color-ink); }
-  .fc-row__soon {
-    padding: 0.05rem 0.5rem;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--color-ink-soft);
-    background: var(--color-warm);
-  }
-  .fc-row__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
-  .fc-row__chev {
-    flex: none;
-    width: 0.8rem;
-    height: 0.8rem;
-    fill: none;
-    stroke: var(--color-ink-faint);
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: transform 200ms ease, stroke 200ms ease;
-  }
-  .fc-row--link:hover .fc-row__chev { transform: translateX(2px); stroke: var(--color-ink); }
 
   .fc-ucs {
     display: grid;

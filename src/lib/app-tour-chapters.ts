@@ -9,13 +9,16 @@
  */
 
 /**
- * An item is a caption for what the view shows, not a destination. The card
- * links to its category page, which is where these features actually live.
+ * An item is a caption for what the view shows. On /tour/ it can also be opened
+ * in place: `visual` names the ShowcaseVisual that shows it up close, and
+ * `href` is where the full story lives.
  */
 export type TourItem = {
   icons: string[];
   title: string;
   desc: string;
+  visual?: string;
+  href?: string;
 };
 
 export type TourChapter = {
@@ -50,21 +53,29 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:folder-tree", "fa7-solid:thumbtack"],
         title: "Sorts itself & Pin",
         desc: "Auto-folders and auto-tags organize every note. Pin a note, folder, or thread to keep it at the top.",
+        visual: "folders-auto",
+        href: "/features/threads/",
       },
       {
         icons: ["fa7-solid:arrow-right-arrow-left"],
         title: "Threads",
         desc: "Connect notes into one line of thinking you can follow later, even across folders and months.",
+        visual: "threads",
+        href: "/features/threads/",
       },
       {
         icons: ["fa7-solid:lightbulb"],
         title: "Suggestions",
         desc: "A fading note, a highlight, a passage — Suggestions resurface what's worth revisiting.",
+        visual: "suggestions",
+        href: "/features/suggestions/",
       },
       {
         icons: ["fa7-solid:clock-rotate-left"],
         title: "Review exercises",
         desc: "Write an answer from memory, then say how well you remembered it — from your own notes and verses, with Harvous Plus.",
+        visual: "review",
+        href: "/add-ons/review-exercises/",
       },
     ],
   },
@@ -81,11 +92,15 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:book-bible", "fa7-solid:book-open"],
         title: "Scripture pills & Bible reader",
         desc: "Type a reference — it becomes a pill in 11 translations. Open the chapter with your notes right there.",
+        visual: "pills",
+        href: "/features/scripture-pills/",
       },
       {
         icons: ["fa7-solid:table-columns"],
         title: "Compare translations",
         desc: "Put two versions side by side, lined up verse by verse. Highlight in either one.",
+        visual: "compare",
+        href: "/features/compare-translations/",
       },
     ],
   },
@@ -102,16 +117,22 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:highlighter"],
         title: "Highlight & annotations",
         desc: "Color-code phrases, leave annotations, and find them again in the highlights view.",
+        visual: "highlights",
+        href: "/features/highlights/",
       },
       {
         icons: ["fa7-solid:list-check"],
         title: "Note templates",
         desc: "Start from a template — lesson prep, study outline, or your own — then make it yours.",
+        visual: "templates",
+        href: "/features/note-templates/",
       },
       {
         icons: ["fa7-solid:lock"],
         title: "Locked notes",
         desc: "Lock a note with a PIN. It's encrypted on your device, so only you can open it — on the web for now.",
+        visual: "private",
+        href: "/faq/#faq-locked-notes",
       },
     ],
   },
@@ -128,16 +149,22 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:magnifying-glass"],
         title: "Search",
         desc: "Search everything you've saved, or browse it by kind, from one panel top middle.",
+        visual: "search-tabs",
+        href: "/features/sidebar-modes/",
       },
       {
         icons: ["fa7-solid:newspaper"],
         title: "Resource library",
         desc: "The links and files your study leans on, in one place and one @ away from any note.",
+        visual: "library",
+        href: "/features/resource-library/",
       },
       {
         icons: ["fa7-solid:puzzle-piece"],
         title: "Connector",
         desc: "Ask Claude or ChatGPT about what you've studied. They can read your notes, never change them — with Harvous Plus.",
+        visual: "connector",
+        href: "/add-ons/connector/",
       },
     ],
   },
@@ -157,11 +184,15 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         icons: ["fa7-solid:share-nodes"],
         title: "Shared notes",
         desc: "Send a note by link. No account needed to open it, and the scripture and highlights come with it.",
+        visual: "sharing",
+        href: "/features/share/",
       },
       {
         icons: ["fa7-solid:user-group"],
         title: "Shared spaces",
         desc: "Host a room for your group with Harvous Plus — its own cover, its own threads. Joining is always free.",
+        visual: "group-threads",
+        href: "/add-ons/shared-spaces/",
       },
     ],
   },

@@ -5,6 +5,10 @@
  * same source as the live home tour), so the two can't drift; this page only
  * decides how each chapter is shown. Every chapter still links to its deep
  * category page for search and for anyone who wants the long version.
+ *
+ * Each item opens in place: press it and that feature comes up close over the
+ * chapter's app scene (its ShowcaseVisual), with a link to its own page;
+ * close it, or press it again, to get the whole app back.
  */
 import { Icon } from "astro-icon/components";
 import { ogCard } from "../lib/og-card.ts";
@@ -13,6 +17,7 @@ import AppScene from "../components/next/AppScene.astro";
 import ClosingCall from "../components/next/ClosingCall.astro";
 import SectionNav from "../components/next/SectionNav.astro";
 import ComparePreview from "../components/next/ComparePreview.astro";
+import ShowcaseVisual from "../components/next/ShowcaseVisual.astro";
 import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
 import { TOUR_STAGING as STAGING } from "../lib/next/tour-staging.ts";
 
@@ -48,16 +53,33 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
             <p class="nx-kicker"><span class="tour-ch__num">{pad(i)}</span> {c.eyebrow}</p>
             <h2 id={`${c.key}-title`} class="nx-title">{c.title}</h2>
             <p class="nx-lead">{c.lead}</p>
-            <ul class="tour-ch__items">
-              {c.items.map((item) => (
+            <ul class="tour-ch__items" data-peek-list>
+              {c.items.map((item, j) => (
                 <li>
-                  <span class="tour-ch__icons" aria-hidden="true">
-                    {item.icons.map((icon) => <Icon name={icon} />)}
-                  </span>
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.desc}</p>
-                  </div>
+                  {item.visual ? (
+                    <button type="button" class="tour-ch__item" aria-pressed="false" aria-controls={`${c.key}-peek-${j}`} data-peek-btn={j}>
+                      <span class="tour-ch__icons" aria-hidden="true">
+                        {item.icons.map((icon) => <Icon name={icon} />)}
+                      </span>
+                      <span class="tour-ch__words">
+                        <span class="tour-ch__h">{item.title}</span>
+                        <span class="tour-ch__p">{item.desc}</span>
+                      </span>
+                      <span class="tour-ch__see" aria-hidden="true">
+                        <span class="tour-ch__see-open">See it</span><span class="tour-ch__see-close">Showing</span>
+                      </span>
+                    </button>
+                  ) : (
+                    <div class="tour-ch__item">
+                      <span class="tour-ch__icons" aria-hidden="true">
+                        {item.icons.map((icon) => <Icon name={icon} />)}
+                      </span>
+                      <span class="tour-ch__words">
+                        <span class="tour-ch__h">{item.title}</span>
+                        <span class="tour-ch__p">{item.desc}</span>
+                      </span>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -65,6 +87,20 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
           </div>
           <div class="tour-ch__visual" data-reveal="scale">
             <AppScene view={s.view} backdrop={s.backdrop} note={s.note} aspect="4 / 5" />
+            {c.items.map((item, j) => item.visual && (
+              <div class="tour-ch__peek" id={`${c.key}-peek-${j}`} data-peek={j} role="region" aria-label={item.title} hidden>
+                <div class="tour-ch__peek-card">
+                  <p class="tour-ch__peek-head">
+                    <span>{item.title}</span>
+                    <button type="button" class="tour-ch__close" aria-label="Back to the app" data-peek-close>
+                      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+                    </button>
+                  </p>
+                  <div class="tour-ch__peek-stage"><ShowcaseVisual name={item.visual} label={item.desc} /></div>
+                  {item.href && <a class="nx-link tour-ch__peek-link" href={item.href}>More on {item.title} →</a>}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -84,6 +120,25 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
 
   <ClosingCall title="See it with your own notes." />
 </NextLayout>
+
+<script>
+  /* One close-up open per chapter; the same item, the close button or Escape
+     puts the app back. */
+  document.querySelectorAll<HTMLElement>(".tour-ch").forEach((ch) => {
+    const btns = ch.querySelectorAll<HTMLButtonElement>("[data-peek-btn]");
+    const peeks = ch.querySelectorAll<HTMLElement>("[data-peek]");
+    const show = (i: string | null) => {
+      peeks.forEach((p) => (p.hidden = p.dataset.peek !== i));
+      btns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.peekBtn === i)));
+      ch.classList.toggle("is-peeking", i !== null);
+    };
+    btns.forEach((b) =>
+      b.addEventListener("click", () => show(b.getAttribute("aria-pressed") === "true" ? null : b.dataset.peekBtn!))
+    );
+    ch.querySelectorAll<HTMLButtonElement>("[data-peek-close]").forEach((c) => c.addEventListener("click", () => show(null)));
+    ch.addEventListener("keydown", (e) => { if (e.key === "Escape") show(null); });
+  });
+</script>
 
 <style>
   .tour-intro {
@@ -115,12 +170,34 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
 
   .tour-ch__items {
     display: grid;
-    gap: 1.25rem;
-    margin: 2rem 0;
+    gap: 0.35rem;
+    /* Rows pad themselves for their hover ground; pull out so the icons still
+       line up with the heading above. */
+    margin: 1.5rem -0.6rem;
     padding: 0;
     list-style: none;
   }
-  .tour-ch__items li { display: flex; gap: 0.9rem; align-items: flex-start; }
+  /* Items: each one a button that opens its close-up over the scene. */
+  .tour-ch__items li { margin: 0; }
+  .tour-ch__item {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0.6rem;
+    border: 0;
+    border-radius: 1rem;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    background: none;
+  }
+  button.tour-ch__item { cursor: pointer; transition: background-color 150ms ease; }
+  button.tour-ch__item:hover { background: var(--color-warm); }
+  button.tour-ch__item[aria-pressed="true"] { background: var(--color-accent-soft); }
+  button.tour-ch__item:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
   .tour-ch__icons {
     display: inline-flex;
     gap: 0.3rem;
@@ -130,7 +207,63 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
     color: var(--color-accent);
     background: var(--color-accent-soft);
   }
+  button.tour-ch__item[aria-pressed="true"] .tour-ch__icons { color: #fff; background: var(--color-accent); }
   .tour-ch__icons :global(svg) { width: 1rem; height: 1rem; }
-  .tour-ch__items h3 { margin: 0; font-size: 1.0625rem; }
-  .tour-ch__items p { margin: 0.25rem 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--color-ink-soft); }
+  .tour-ch__words { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+  .tour-ch__h { font-size: 1.0625rem; font-weight: 600; color: var(--color-ink); }
+  .tour-ch__p { margin-top: 0.25rem; font-size: 0.9375rem; line-height: 1.5; color: var(--color-ink-soft); }
+  .tour-ch__see {
+    flex-shrink: 0;
+    align-self: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+  .tour-ch__see-close { display: none; }
+  button.tour-ch__item:hover .tour-ch__see,
+  button.tour-ch__item:focus-visible .tour-ch__see,
+  button.tour-ch__item[aria-pressed="true"] .tour-ch__see { opacity: 1; }
+  button.tour-ch__item[aria-pressed="true"] .tour-ch__see-open { display: none; }
+  button.tour-ch__item[aria-pressed="true"] .tour-ch__see-close { display: inline; }
+  @media (hover: none) { .tour-ch__see { opacity: 1; } }
+
+  /* The close-up: over the scene, on a frosted veil, the feature drawn large. */
+  .tour-ch__visual { position: relative; }
+  .tour-ch__peek {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 4vw, 2rem);
+    border-radius: var(--nx-radius-scene, 1.5rem);
+    background: color-mix(in srgb, var(--color-paper) 72%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: tour-peek 220ms ease;
+  }
+  .tour-ch__peek[hidden] { display: none; }
+  .tour-ch__peek-card {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    max-width: 28rem;
+    padding: 1rem 1.1rem 1.25rem;
+    border-radius: 1.4rem;
+    background: var(--color-paper);
+    box-shadow: 0 30px 60px -30px rgba(15, 23, 42, 0.45), 0 0 0 1px var(--color-rule);
+  }
+  .tour-ch__peek-head { display: flex; align-items: center; justify-content: space-between; margin: 0; font-weight: 600; }
+  .tour-ch__close { display: grid; place-items: center; width: 2rem; height: 2rem; border: 0; border-radius: 999px; color: var(--color-ink-soft); background: var(--color-warm); cursor: pointer; }
+  .tour-ch__close:hover { color: var(--color-ink); }
+  .tour-ch__close svg { width: 0.8rem; height: 0.8rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .tour-ch__peek-stage { display: grid; place-items: center; padding: 1.25rem 0.75rem; border-radius: 1rem; background: var(--tint-blue); }
+  .tour-ch__peek-link { justify-self: start; font-size: 0.9375rem; }
+  @keyframes tour-peek { from { opacity: 0; transform: scale(0.98); } }
+  @media (prefers-reduced-motion: reduce) { .tour-ch__peek { animation: none; } }
 </style>

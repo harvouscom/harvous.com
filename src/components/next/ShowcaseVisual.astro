@@ -469,6 +469,28 @@ const { name, label } = Astro.props;
     </div>
   )}
 
+  {name === "review" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Review · Fill in the blank <span class="sv__dots sv__dots--inline"><i class="is-on"></i><i></i><i></i></span></p>
+      <p class="sv__verse">We know that they help us develop <b>endurance</b>. And endurance develops strength of <span class="sv__gapline"></span>…</p>
+      <p class="sv__refline"><span class="aui-pill">Romans 5:3–4 <span class="aui-tr">NLT</span></span></p>
+      <p class="sv__tiles"><span>hope</span><span class="is-on">character</span><span>faith</span></p>
+      <p class="sv__foot"><AppIcon name="clock-rotate-left" /> From a verse you kept. No score, no streak.</p>
+    </div>
+  )}
+
+  {name === "connector" && (
+    <div class="sv__stack sv__chat">
+      <p class="sv__bubble sv__bubble--me">What have I written about waiting on God?</p>
+      <div class="aui-card sv__card sv__pad sv__bubble--ai">
+        <p class="sv__label"><AppIcon name="puzzle-piece" /> From your Harvous notes</p>
+        <p class="sv__ai">You came back to it twice: <b>“Waiting, again”</b> on Psalm 27:14 last spring, and <b>“Faith before it made sense”</b> in July.</p>
+        <p class="sv__refline"><span class="aui-pill">Psalm 27:14</span><span class="aui-pill">Hebrews 11:8</span></p>
+      </div>
+      <p class="sv__status"><AppIcon name="lock" /> It can read your notes<i>·</i>never change them</p>
+    </div>
+  )}
+
   {name === "group-threads" && (
     <div class="aui-card sv__card sv__pad">
       <p class="sv__head"><span class="aui-tile sv__tile--violet"><AppIcon name="user-group" /></span><span><b>Thursday group · James</b><small>Week 4 · 6 notes from the group</small></span></p>
@@ -732,6 +754,23 @@ const { name, label } = Astro.props;
   .sv__foot--in { margin: 4px 13px 12px !important; }
 
   @media (prefers-reduced-motion: reduce) { .sv__write i, .sv__search i { animation: none; } }
+
+  /* Review and Connector */
+  .sv__dots--inline { display: inline-flex; gap: 4px; margin: 0 0 0 6px !important; vertical-align: middle; }
+  .sv__dots--inline i { width: 6px; height: 6px; }
+  .sv__gapline { display: inline-block; width: 4.5em; height: 1em; vertical-align: -0.2em; border-bottom: 2px solid var(--pds-accent); }
+  .sv__refline { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px !important; font-size: 12px; }
+  .sv__tiles { display: flex; gap: 6px; margin-top: 12px !important; }
+  .sv__tiles span { padding: 5px 11px; border-radius: 9px; font-size: 13px; color: var(--pds-text-primary); background: var(--pds-bg-chip); }
+  .sv__tiles .is-on { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__chat { gap: 8px; }
+  .sv__bubble { margin: 0; }
+  .sv__bubble--me { justify-self: end; max-width: 80%; padding: 9px 13px; border-radius: 16px 16px 4px 16px; font-size: 13.5px; color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__bubble--ai { width: 92%; }
+  .sv__bubble--ai .sv__label { display: flex; align-items: center; gap: 6px; }
+  .sv__bubble--ai .sv__label :global(svg) { width: 11px; height: 11px; }
+  .sv__ai { font-size: 13.5px; line-height: 1.5; color: var(--pds-text-primary); }
+  .sv__ai b { font-weight: 600; }
 
   @keyframes sv-blink { 50% { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .sv__typing i { animation: none; } }
