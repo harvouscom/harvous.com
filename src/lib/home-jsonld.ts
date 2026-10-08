@@ -1,8 +1,7 @@
-import { buildFaqPageJsonLd, getFaqEntries } from "./faq";
-
 const SITE = "https://harvous.com";
 
-export async function buildHomeJsonLd() {
+/* No FAQPage here: the questions live on /faq/, which carries that markup. */
+export function buildHomeJsonLd() {
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -27,8 +26,6 @@ export async function buildHomeJsonLd() {
           priceCurrency: "USD",
         },
       },
-      // Same entries FaqSection renders, so the FAQPage matches what's on the page.
-      buildFaqPageJsonLd(await getFaqEntries("home")),
     ],
   };
 }

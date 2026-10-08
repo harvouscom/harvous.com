@@ -1,7 +1,8 @@
 /**
- * Copy-to-clipboard button behavior shared by SupportContactCards (the support
- * email) and the homepage FAQ (per-question links): a transient `.is-copied`
- * state, a swapped label + aria-label, and a guard against binding twice.
+ * Copy-to-clipboard button behavior shared by the support page (the support
+ * email) and the FAQ (per-question links): a transient `.is-copied` (or
+ * `.is-failed`) state, a swapped label + aria-label, and a guard against
+ * binding twice.
  */
 type CopyButtonState = { label?: string; ariaLabel: string };
 
@@ -12,6 +13,8 @@ interface CopyButtonOptions {
   failed: CopyButtonState;
   /** Element inside the button whose text is the visible label. */
   labelSelector?: string;
+  /** Runs after the text is on the clipboard (e.g. to announce it). */
+  onDone?: (text: string) => void;
   /** Runs when the clipboard can't be written, before the failed state shows. */
   onFail?: (text: string) => void;
   resetMs?: number;
@@ -40,18 +43,21 @@ export function bindCopyButton(
     const text = getText();
     if (!text) return;
     window.clearTimeout(resetTimer);
+    button.classList.remove("is-copied", "is-failed");
 
     try {
       await navigator.clipboard.writeText(text);
       button.classList.add("is-copied");
       show(options.done);
+      options.onDone?.(text);
     } catch {
       options.onFail?.(text);
+      button.classList.add("is-failed");
       show(options.failed);
     }
 
     resetTimer = window.setTimeout(() => {
-      button.classList.remove("is-copied");
+      button.classList.remove("is-copied", "is-failed");
       show(options.idle);
     }, options.resetMs ?? 2000);
   });

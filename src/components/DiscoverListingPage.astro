@@ -44,7 +44,7 @@ import {
   discoverCategoryLabel,
   discoverListingCta,
   discoverSourceSlug,
-  discoverTopicInk,
+  discoverListingInk,
   discoverListingIcon,
   type DiscoverListing,
 } from "../lib/discover-data.ts";
@@ -97,10 +97,6 @@ const credit = source
    so this repo renders it directly and takes no sanitizer dependency of its own.
    Absent on rows written before bodies were carried, and on links, which have
    none; those fall back to the outline. */
-/* The topic's ink, the same one its chip wears on the hub and its use-case page
-   wears elsewhere. */
-const ink = listing.category ? discoverTopicInk(listing.category) : null;
-
 /* Sanitized here, and only here — see `sanitize-listing-html.ts` for why the
    API cannot do it. Both `set:html` sites below read this variable. */
 const bodyHtml = sanitizeListingHtml(preview.bodyHtml ?? "");
@@ -243,8 +239,10 @@ const jsonLd = [
   ),
 ];
 
-/* The stage's ground: the publisher's own colour, else the topic's. */
-const stageTone = listing.plateTone ?? ink ?? "var(--color-sky)";
+/* The stage's ground, decided exactly as the grid card decides its tone
+   (`toDiscoverCard`): the publisher's colour, else the author's thread colour,
+   else the topic's — so a listing keeps its colour when you click through. */
+const stageTone = listing.plateTone ?? discoverListingInk(listing);
 const leaves = (href: string) => /^https?:/.test(href);
 
 ---
@@ -486,7 +484,7 @@ const leaves = (href: string) => /^https?:/.test(href);
 
   .dl-thread { width: 100%; max-width: 30rem; font-size: 14px; }
   .dl-thread__label { display: flex; align-items: center; gap: 6px; }
-  .dl-thread__label :global(svg) { width: 11px; height: 11px; color: var(--pill-thread); }
+  .dl-thread__label :global(svg) { width: 11px; height: 11px; color: var(--pds-text-secondary); }
   .dl-thread__card {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;

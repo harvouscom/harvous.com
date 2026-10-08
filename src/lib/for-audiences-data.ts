@@ -10,14 +10,27 @@ export type ForAudienceSection = {
   heading: string;
   paragraphs: string[];
   /**
-   * A stylized app moment drawn beside the section, by name (ChurchScenes.astro).
-   * A page whose sections carry one renders as text-and-example rows instead of
-   * a single column of prose.
+   * A stylized app moment drawn beside the section, by name: a ShowcaseVisual
+   * name on personal pages (StudyScenes.astro), a church scene on /for/churches/
+   * (ChurchScenes.astro). A page whose sections carry one renders as numbered
+   * journey rows instead of a single column of prose, and drops the feature
+   * list at the end, because each step already names its feature.
    */
   visual?: string;
+  /** Accessible label for the visual; the heading when absent. */
+  visualLabel?: string;
+  /** The feature this step leans on (a features-collection or product-grid id), shown as a chip. */
+  feature?: string;
   /** Optional gradient CTA under the section body (e.g. link to #interest). */
   ctaHref?: string;
   ctaLabel?: string;
+};
+
+/** A section's `feature`, resolved for display (see /for/[slug].astro). */
+export type ForAudienceFeatureLink = {
+  title: string;
+  href?: string;
+  soon: boolean;
 };
 
 export type ForAudience = {
@@ -71,47 +84,54 @@ const audiences: ForAudience[] = [
       "Mornings, evenings, lunch breaks — whenever you can find a quiet stretch. You read a passage, something sticks, and then life moves on. By Thursday you're not sure what stood out on Monday.",
     sections: [
       {
-        heading: "The habit is there. The record isn't.",
+        heading: "Open to today, even when you don't know where to start",
+        visual: "passage",
+        feature: "daily-passage",
         paragraphs: [
-          "Daily reading works when you can look back — see what you noticed last week, follow a thought across a few days, remember what a passage meant before the week got loud.",
-          "Harvous is a notes app for that rhythm. Not a reading plan that tells you what to read. Not a devotion that writes the reflection for you. A place for your notes, linked to scripture, organized by what they're actually about.",
+          "Most days the hardest part is the first minute. The daily passage gives you somewhere to begin: a few verses, ready to read, with room to write what stays with you. It's not a reading plan that decides what's next. It's just a place to start when you don't have one.",
         ],
       },
       {
-        heading: "How it fits a regular day",
+        heading: "Write it down while it's still warm",
+        visual: "pills",
+        feature: "scripture-pills",
         paragraphs: [
-          "Open a thread for whatever you're in — a book, a theme, or just \"this month.\" Add a note while the thought is still warm. Scripture pills keep verses one tap away.",
-          "The daily passage is there when you're not sure where to begin. Your journal follows you on web (and apps are on the way).",
+          "Put a note next to the passage before the moment passes. Type a reference and it becomes a scripture pill. Tap it and the verse is right there, in the translation you like. There's no filing ritual and no app-switching.",
         ],
       },
-    ],
-    moments: [
       {
-        icon: "fa7-solid:pen",
-        heading: "Capture the thought, right then",
-        body: "A note next to the passage before the moment passes. No filing ritual — just the thought and where it belongs.",
+        heading: "Read the chapter, with your notes in the margin",
+        visual: "reader",
+        feature: "bible-reader",
+        paragraphs: [
+          "When a verse pulls you further in, open the whole chapter in the built-in reader. Anything you've already written about those verses shows up in the margin, so Monday's thought is waiting when you come back on Thursday.",
+        ],
       },
       {
-        icon: "fa7-solid:book-bible",
-        heading: "Scripture stays connected",
-        body: 'Type a reference and it becomes a tap-able pill. The verse is there whenever you need it — no app-switching.',
+        heading: "Monday's thought, back before Thursday",
+        visual: "suggestions",
+        feature: "suggestions",
+        paragraphs: [
+          "Daily reading works when you can look back. When the week gets loud, Suggestions can resurface a fading note or passage from your own study, so what you noticed builds on itself instead of quietly disappearing.",
+        ],
       },
       {
-        icon: "fa7-solid:layer-group",
-        heading: "A thread for the stretch you're in",
-        body: "Whether it's a chapter a day or a theme for the month, a thread collects what you're noticing so it compounds.",
-      },
-      {
-        icon: "fa7-solid:lightbulb",
-        heading: "Suggestions bring a note back",
-        body: "When the week gets loud, Suggestions can resurface a fading note or passage — so Monday's thought isn't gone by Thursday.",
-      },
-      {
-        icon: "fa7-solid:bell",
         heading: "A nudge on the days it slips",
-        body: "Optional reminders carry the day's verse and open straight to it — twice a week, or every morning if that's closer to your rhythm. Set the hour, or leave them off — they quiet down on their own either way.",
+        visual: "reminders",
+        feature: "reminders",
+        paragraphs: [
+          "Optional reminders carry the day's verse and open straight to it, on Sunday and midweek or every morning if that's closer to your rhythm. You set the hour. Stop opening them and they quiet down on their own.",
+        ],
+      },
+      {
+        heading: "The habit is there. Now the record is too.",
+        paragraphs: [
+          "Harvous isn't a reading plan or a devotion that writes the reflection for you. It's a place for your notes, linked to Scripture and organized by what they're about, so a little most days adds up to something you can look back on.",
+        ],
       },
     ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "daily-passage", "bible-reader", "suggestions", "reminders"],
     featuresHeading: "What a daily rhythm asks of your notes",
     featuresLead:
@@ -136,42 +156,53 @@ const audiences: ForAudience[] = [
       "Sometimes you're studying. Sometimes you're talking to God on the page. Often it's both in the same stretch — a verse, a worry, a thank-you, a question you don't have words for yet.",
     sections: [
       {
-        heading: "Private space for honest writing",
+        heading: "Pray with the verse in front of you",
+        visual: "pills",
+        feature: "scripture-pills",
         paragraphs: [
-          "Prayer journaling needs a place that feels like yours. Harvous is built for personal study first — your notes stay in your space, linked to the scripture that sparked them. For the ones that are only between you and God, lock the note with a PIN.",
-          "You're not trying to produce content. You're trying to remember what you prayed, what you noticed, and what you want to bring back next time.",
+          "Add the verse you're sitting with and write what comes: a worry, a thank-you, a question you don't have words for yet. The scripture that sparked the prayer stays one tap away, so the note and the passage stay together.",
         ],
       },
       {
-        heading: "Scripture and prayer in one place",
-        paragraphs: [
-          "Add the verse you're sitting with. Write what comes. Tag themes when it helps — anxiety, gratitude, a person's name — so you can find the thread again without scrolling forever.",
-          "It's still a notes tool. It just happens to fit the way prayer and study overlap for a lot of people.",
-        ],
-      },
-    ],
-    moments: [
-      {
-        icon: "fa7-solid:lock",
         heading: "Yours alone",
-        body: "Personal spaces are private, and any note can be locked with a PIN — encrypted so even Harvous can't read it. Write freely.",
+        visual: "private",
+        paragraphs: [
+          "Prayer journaling needs a place that feels like yours. Personal spaces are private, and any note can be locked with a PIN, encrypted so even Harvous can't read it. Write the honest version.",
+        ],
       },
       {
-        icon: "fa7-solid:book-bible",
-        heading: "Verses next to the prayer",
-        body: "Keep the scripture that prompted the prayer one tap away, so the note and the passage stay together.",
+        heading: "Mark the line that spoke",
+        visual: "highlights",
+        feature: "highlights",
+        paragraphs: [
+          "Highlight the phrase that met you this morning and add a few words beside it. Weeks later, the line and what you were carrying when you read it are still together.",
+        ],
       },
       {
-        icon: "fa7-solid:tags",
-        heading: "Themes you can return to",
-        body: "When the same worry or hope shows up across weeks, tags and threads help you see the pattern.",
+        heading: "Find what you prayed last spring",
+        visual: "mentions",
+        feature: "sidebar-modes",
+        paragraphs: [
+          "When the same worry or hope shows up across weeks, search for a phrase you half-remember, or @-mention an earlier note to link today's prayer to it. Prayer notes shouldn't disappear into a phone gallery.",
+        ],
       },
       {
-        icon: "fa7-solid:magnifying-glass",
-        heading: "Find what you wrote",
-        body: "Search by a phrase half-remembered from last month. Prayer notes shouldn't disappear into a phone gallery.",
+        heading: "On a walk, in the pew, without a signal",
+        visual: "offline",
+        feature: "offline-sync",
+        paragraphs: [
+          "Harvous keeps writing offline and syncs the moment you reconnect, so a prayer never has to wait for Wi-Fi to be written down.",
+        ],
+      },
+      {
+        heading: "Not a productivity system",
+        paragraphs: [
+          "You're not trying to produce content. You're trying to remember what you prayed, what you noticed, and what you want to bring back next time. Harvous is still a notes tool. It just fits the way prayer and study overlap for a lot of people.",
+        ],
       },
     ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "sidebar-modes", "highlights", "offline-sync"],
     featuresHeading: "What prayer-shaped notes need",
     featuresLead:
@@ -195,42 +226,54 @@ const audiences: ForAudience[] = [
       "You don't need a seminary vocabulary to start. You need somewhere to put the questions, the verses that land, and the thoughts that show up when you're reading — without feeling like you're doing it wrong.",
     sections: [
       {
+        heading: "Start with one passage",
+        visual: "passage",
+        feature: "daily-passage",
+        paragraphs: [
+          "When you're not sure what to read, the daily passage gives you a few verses and room to jot down what stays with you. You don't need a plan or a seminary vocabulary to begin. You just need a place to start.",
+        ],
+      },
+      {
+        heading: "Look up the word without leaving",
+        visual: "dictionary",
+        feature: "dictionary",
+        paragraphs: [
+          "Covenant. Atonement. Pharisee. Easton's Bible Dictionary is built in, so an unfamiliar word gets explained right where you're reading instead of sending you down a rabbit hole of tabs.",
+        ],
+      },
+      {
+        heading: "See it in context",
+        visual: "reader",
+        feature: "bible-reader",
+        paragraphs: [
+          "Open the whole chapter right inside Harvous, or keep the app or paper Bible you already use. Either way, the notes go here, and the ones you've written show up beside the verses they're about.",
+        ],
+      },
+      {
+        heading: "Write like yourself",
+        visual: "pills",
+        feature: "scripture-pills",
+        paragraphs: [
+          "No templates required. A short note in your own words next to a verse is enough. Type the reference and it becomes a pill you can tap later. The point is remembering, not sounding polished, and search will find your notes in your own words.",
+        ],
+      },
+      {
+        heading: "A gentle nudge, if you want one",
+        visual: "reminders",
+        feature: "reminders",
+        paragraphs: [
+          "Turn on reminders and the day's verse arrives at the hour you choose, opening straight to it. Or leave them off, or let them quiet down on their own. Nobody is keeping score.",
+        ],
+      },
+      {
         heading: "There's space for you here",
         paragraphs: [
-          "Bible study looks different for different people. Some folks have decades of notes. Some are opening Scripture for the first time. Harvous is a memory tool either way — save what stood out, link it to the verse, find it again later.",
-          "We're not a course, and you don't need another app to start — open a chapter right inside Harvous, or keep whatever app or paper Bible you already use. Either way, the notes go here.",
-        ],
-      },
-      {
-        heading: "Start small. Stay oriented.",
-        paragraphs: [
-          "A daily passage can give you a place to begin. A thread can hold \"questions I have\" or \"things that surprised me.\" When a theme keeps coming up — hope, forgiveness, who Jesus is — a topical thread keeps those notes together across books.",
-          "You don't have to organize perfectly. Write in your own words. Search will meet you there.",
+          "Some people have decades of notes. Some are opening Scripture for the first time. Harvous is a memory tool either way: save what stood out, link it to the verse, and when a theme like hope or forgiveness keeps coming up, a thread can hold it together across books.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:pen",
-        heading: "Write like yourself",
-        body: "No templates required. A short note next to a verse is enough. The point is remembering, not sounding polished.",
-      },
-      {
-        icon: "fa7-solid:calendar-day",
-        heading: "A gentle place to start",
-        body: "When you're not sure what to read, the daily passage gives you a starting point and room to jot what stays with you.",
-      },
-      {
-        icon: "fa7-solid:book",
-        heading: "Look up words without leaving",
-        body: "Easton's dictionary is built in — so an unfamiliar word doesn't send you down a rabbit hole of tabs.",
-      },
-      {
-        icon: "fa7-solid:bookmark",
-        heading: "Follow a theme when curiosity pulls",
-        body: "Noticing \"grace\" everywhere? A thread can hold notes from wherever they show up, at your pace.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["daily-passage", "scripture-pills", "bible-reader", "dictionary", "reminders"],
     featuresHeading: "What helps when you're getting started",
     featuresLead:
@@ -254,47 +297,54 @@ const audiences: ForAudience[] = [
       "Phone, bulletin, journal — whatever's in your lap. The notes exist somewhere. But they don't connect to each other, and two months later you couldn't find that one line if you tried.",
     sections: [
       {
-        heading: "Your notes. Not a transcript.",
+        heading: "Catch the verses as they're read",
+        visual: "pills",
+        feature: "scripture-pills",
         paragraphs: [
-          "Some apps try to capture the whole sermon for you. Harvous does something simpler: it gives your own notes a home — linked to scripture, grouped by series, searchable when half a phrase is all you remember.",
-          "If you want to write what stood out and find it again in October, that's what we're for.",
+          "Phone, bulletin, journal: whatever's in your lap. In Harvous, type the reference the pastor reads and it becomes a pill. Tap it later and the whole passage is there. These are your notes, not a transcript.",
+        ],
+      },
+      {
+        heading: "Save the line that landed",
+        visual: "highlights",
+        feature: "highlights",
+        paragraphs: [
+          "Highlight the phrase you'd have underlined, and it stays linked to the note it came from. The sentence that hit you on Sunday is still attached to the passage in October.",
         ],
       },
       {
         heading: "One thread per series",
+        visual: "threads",
+        feature: "threads",
         paragraphs: [
-          'A thread called "Romans — Sunday series" collects every week. Scroll back and see the arc. Week one lives next to week eight — not scattered across photos and apps.',
-          "Keep your Bible app for reading. Expand paper notes into Harvous later if that's your rhythm. The point is that Sunday compounds instead of fading.",
+          "A thread called \"Romans: Sunday series\" collects every week. Week one lives next to week eight, so you can scroll back and see the arc instead of hunting through photos and apps.",
+        ],
+      },
+      {
+        heading: "Find it with half a phrase",
+        visual: "mentions",
+        feature: "sidebar-modes",
+        paragraphs: [
+          "Two months later, half a sentence is all you remember. Search finds it. An @-mention links this week's notes to last week's, so the series reads like one conversation.",
+        ],
+      },
+      {
+        heading: "Monday doesn't get to erase Sunday",
+        visual: "suggestions",
+        feature: "suggestions",
+        paragraphs: [
+          "During the week, Suggestions can resurface a fading sermon note. Add an optional Sunday-morning reminder that carries the day's passage, and you'll arrive with somewhere to write.",
+        ],
+      },
+      {
+        heading: "Your notes. Not a transcript.",
+        paragraphs: [
+          "Some apps try to capture the whole sermon for you. Harvous gives your own notes a home: linked to Scripture, grouped by series, and searchable. Keep your Bible app for reading. The point is that Sunday builds up over the weeks instead of fading.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:arrow-right-arrow-left",
-        heading: "Series stay together",
-        body: "One thread per sermon series. The whole run in one place when you want to look back.",
-      },
-      {
-        icon: "fa7-solid:highlighter",
-        heading: "Save the line that landed",
-        body: "Highlights keep the phrases you underlined, linked to the note they came from.",
-      },
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "Scripture from the sermon",
-        body: "Drop the passages that were read or referenced as pills — tapable later when you want the text again.",
-      },
-      {
-        icon: "fa7-solid:lightbulb",
-        heading: "Suggestions find what Monday buried",
-        body: "When half a phrase is all you have, Suggestions can resurface a fading sermon note — so October still has Sunday in it.",
-      },
-      {
-        icon: "fa7-solid:bell",
-        heading: "A reminder before church",
-        body: "An optional Sunday-morning nudge, at the hour you set, carrying the day's passage — so you arrive with somewhere to write.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "highlights", "sidebar-modes", "suggestions", "reminders"],
     featuresHeading: "What Sunday notes need to survive the week",
     featuresLead:
@@ -319,42 +369,46 @@ const audiences: ForAudience[] = [
       "Sunday school, small group, a class at church — you dig into a passage, sketch questions, teach it out loud, then somehow start from scratch next week. The prep and the teaching deserve a home that lasts.",
     sections: [
       {
-        heading: "Prep that compounds",
+        heading: "Start each lesson from a shape you trust",
+        visual: "templates",
+        feature: "note-templates",
         paragraphs: [
-          "Harvous is where your personal prep lives — passages as scripture pills, notes per lesson, threads for a series you're walking people through. You're not looking for a research suite. You're looking for a place that remembers what you already studied.",
-          "Write the questions you might ask. Save the cross-references. Highlight the line you want to land. When you come back next week, it's still there.",
+          "Pick a note template, like SOAP, inductive, or one you made, and the lesson starts with structure instead of a blank page. Write the questions you might ask and the line you want to land.",
         ],
       },
       {
-        heading: "Personal prep. Shared when the class needs it.",
+        heading: "Every passage at hand, in prep and in class",
+        visual: "pills",
+        feature: "scripture-pills",
         paragraphs: [
-          "Harvous shines for your private prep and the notes you take while you teach. When the room needs a shared trail, [Shared Spaces](/add-ons/shared-spaces/) let the whole group add to the same threads — hosting is [Harvous Plus](/pricing/); joining is free.",
-          "Your prep stays private until you choose what to share into the space.",
+          "Cross-references become scripture pills, one tap from the full text in the translation your class uses. No flipping, and no second app open beside the first.",
+        ],
+      },
+      {
+        heading: "Week four builds on week one",
+        visual: "threads",
+        feature: "threads",
+        paragraphs: [
+          "Give the series a thread. Prep, questions, and follow-ups stay together, so when you're back next week (or next year), what you already studied is still there.",
+        ],
+      },
+      {
+        heading: "Shared when the class needs it",
+        visual: "group-threads",
+        feature: "shared-spaces",
+        paragraphs: [
+          "Your prep stays private until you choose what to share. When the room needs a shared trail, [Shared Spaces](/add-ons/shared-spaces/) let the whole class add to the same threads after you leave. Hosting is [Harvous Plus](/pricing/); joining is free.",
+        ],
+      },
+      {
+        heading: "Prep that adds up",
+        paragraphs: [
+          "You're not looking for a research suite. You're looking for a place that remembers what you already studied, so next week doesn't start from scratch.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:list",
-        heading: "A thread per lesson or series",
-        body: "Keep prep, questions, and follow-ups together so week four builds on week one.",
-      },
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "Passages at hand",
-        body: "Scripture pills keep every reference one tap away while you prepare and while you teach.",
-      },
-      {
-        icon: "fa7-solid:lock",
-        heading: "Prep stays private",
-        body: "Your working notes are yours. Share what you choose into a Shared Space — not everything by default.",
-      },
-      {
-        icon: "fa7-solid:user-group",
-        heading: "Shared Spaces when you're ready",
-        body: "Host a room for your class with Harvous Plus. Everyone can add to the same threads after you leave.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "threads", "note-templates", "shared-spaces"],
     featuresHeading: "What teaching asks of your notes",
     featuresLead:
@@ -378,56 +432,54 @@ const audiences: ForAudience[] = [
       "Sunday keeps coming. You’re digging into a text, shaping an outline, landing a line — then somehow next week starts from a blank page. The prep for a preaching calendar deserves a home that lasts years, not a folder of untitled docs.",
     sections: [
       {
-        heading: "Prep that leaves a trail across the year",
+        heading: "Shape the message from a template",
+        visual: "templates",
+        feature: "note-templates",
         paragraphs: [
-          "Harvous is where your personal sermon prep lives — passages as scripture pills, notes per message, threads for a series you’re walking the church through. You’re not looking for podium mode or an illustration marketplace. You’re looking for a place that remembers what you already studied when week 40 needs week 3.",
-          "Sketch the moves of the message. Save the cross-references. Highlight the sentence that has to land. When you’re back on a familiar text next year, the trail is still there.",
+          "Start from a sermon outline template, or your own, and sketch the moves of the message. You're not looking for podium mode or an illustration marketplace. You want a starting shape that doesn't fight you.",
+        ],
+      },
+      {
+        heading: "Pull the passages in as you outline",
+        visual: "pills",
+        feature: "scripture-pills",
+        paragraphs: [
+          "Every reference becomes a scripture pill, so the text is one tap away while you outline and while you revise. Highlight the sentence that has to land.",
+        ],
+      },
+      {
+        heading: "A thread for every series",
+        visual: "threads",
+        feature: "threads",
+        paragraphs: [
+          "Romans, Advent, a topical run: each series gets a thread that keeps every week's prep together, so the arc stays visible from the first week to the last.",
+        ],
+      },
+      {
+        heading: "Week 40 can find week 3",
+        visual: "suggestions",
+        feature: "suggestions",
+        paragraphs: [
+          "When you're back on a familiar text, Suggestions can bring last year's prep forward, still linked to the passage. The thinking behind the sermon doesn't disappear between Sundays.",
+        ],
+      },
+      {
+        heading: "Shared when the room needs the trail",
+        visual: "group-threads",
+        feature: "shared-spaces",
+        paragraphs: [
+          "Personal prep stays private by default. When a staff huddle, elder study, or class needs the same threads, [Shared Spaces](/add-ons/shared-spaces/) let the whole group contribute. Hosting is included with [Harvous Plus](/pricing/); joining is always free.",
         ],
       },
       {
         heading: "Depth without the heavy suite (unless you want one)",
         paragraphs: [
-          "Logos and library stacks have their place for commentaries and languages. Dedicated sermon apps own templates, blocks, and preaching views. Harvous sits in the middle for the notes you write while you prepare — scripture-linked, threaded by series, searchable when half a phrase is all you remember.",
-          "Keep the tools that already work for manuscript polish and research. Use Harvous so the thinking behind the sermon doesn’t disappear between Sundays.",
-        ],
-      },
-      {
-        heading: "Shared Spaces when the room needs the trail",
-        paragraphs: [
-          "Personal prep stays private by default. When a staff huddle, elder study, or class needs the same threads, [Shared Spaces](/add-ons/shared-spaces/) let the whole group contribute — hosting is included with [Harvous Plus](/pricing/); joining is always free.",
-          "If your church runs on Harvous, the plan behind Sunday lives there too — a teaching plan per ministry, a series that holds its weeks, and roles that tell a pastor's job from a teacher's. [See how it works for churches](/for/churches/).",
-        ],
-      },
-      {
-        heading: "Plan the run, not one week at a time",
-        paragraphs: [
-          "A series in a church plan is a real thing you can open, not a title you retype each week. Name it once and every week carries it. Rename it in week five and weeks one through four agree with you — which the retyped version never did.",
-          "When you already know the shape of a run, plan the whole quarter in a pass. Harvous stops at the first week that is already spoken for and tells you which one, so a short plan is a plan you can see rather than one with a hole in it.",
+          "Logos and library stacks have their place for commentaries and languages. Harvous sits in the middle, for the notes you write while you prepare. If your church runs on Harvous, the plan behind Sunday lives there too: a teaching plan per ministry, a series you name once that every week carries, and a whole quarter planned in one pass. [See how it works for churches](/for/churches/).",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:arrow-right-arrow-left",
-        heading: "A thread per series",
-        body: "Romans, Advent, a topical run — keep every week’s prep together so the arc stays visible.",
-      },
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "Passages at hand",
-        body: "Scripture pills keep every reference one tap away while you outline and while you revise.",
-      },
-      {
-        icon: "fa7-solid:lightbulb",
-        heading: "Suggestions find last year’s work",
-        body: "When you’ve preached something like this before, Suggestions can bring that prep forward — still linked to the passage.",
-      },
-      {
-        icon: "fa7-solid:lock",
-        heading: "Prep stays private",
-        body: "Your working notes are yours. Share into a Shared Space when a staff huddle or class needs the trail — hosting is Harvous Plus; joining is free. A church on Harvous sees how many people it reaches, never who wrote what.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "threads", "note-templates", "suggestions", "shared-spaces"],
     featuresHeading: "What preaching asks of your notes",
     featuresLead:
@@ -451,41 +503,46 @@ const audiences: ForAudience[] = [
       "Romans. Genesis. John. You're in it for real — chapter by chapter — and you need somewhere to keep what you find so month three still remembers month one.",
     sections: [
       {
+        heading: "Read it chapter by chapter",
+        visual: "reader",
+        feature: "bible-reader",
+        paragraphs: [
+          "Open Romans in the built-in reader and pick up where you left off, in the translation you prefer. The notes you've already written show up in the margin beside the verses they're about.",
+        ],
+      },
+      {
+        heading: "A note for every \"wait, that connects to…\"",
+        visual: "pills",
+        feature: "scripture-pills",
+        paragraphs: [
+          "Book study isn't one note. It's dozens of questions and cross-references. Type a reference and it becomes a pill you can open right there, so the link back to Genesis is one tap away instead of a lookup.",
+        ],
+      },
+      {
+        heading: "Highlights that build across the book",
+        visual: "highlights",
+        feature: "highlights",
+        paragraphs: [
+          "Highlight in the reader or in a note; it's the same layer either way. By chapter twelve, you can see which lines kept stopping you.",
+        ],
+      },
+      {
+        heading: "The book becomes a thread",
+        visual: "threads",
+        feature: "threads",
+        paragraphs: [
+          "Connect the notes in order and the study has a spine, chapter one through the last, in one thread. A thought on justification can sit in your Romans thread and a theology thread at the same time.",
+        ],
+      },
+      {
         heading: "A study deserves its own space",
         paragraphs: [
-          "Book study isn't one note. It's dozens — questions, cross-references, \"wait, that connects to…\" moments. Harvous gives that study a dedicated home so Romans doesn't bleed into your Sunday notes unless you want it to.",
-        ],
-      },
-      {
-        heading: "Depth without the heavy suite",
-        paragraphs: [
-          "Serious academic tools exist. Harvous sits in the middle: scripture across translations, a built-in dictionary, threads per chapter, notes that can live in more than one place when a theme spans books.",
-          "You write. Harvous keeps the references, the organization, and the search.",
+          "Month three should still remember month one. Harvous gives the book its own home, with a built-in dictionary when a word needs explaining, so Romans doesn't bleed into your Sunday notes unless you want it to.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:lines-leaning",
-        heading: "One space for this book",
-        body: "Notes, chapter threads, highlights, and references — all for this study, in one place.",
-      },
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "Cross-references that stay open",
-        body: "Link out to another passage and read it right there, in the translation you prefer.",
-      },
-      {
-        icon: "fa7-solid:diagram-project",
-        heading: "Notes in more than one thread",
-        body: "A thought on justification can sit in your Romans thread and a theology thread at the same time.",
-      },
-      {
-        icon: "fa7-solid:book",
-        heading: "Dictionary in reach",
-        body: "Look up a word without leaving the note. The definition comes to you.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "bible-reader", "threads", "highlights"],
     featuresHeading: "What book study asks of your notes",
     featuresLead:
@@ -510,41 +567,46 @@ const audiences: ForAudience[] = [
       "You're not collecting inspirational snippets. You're sitting with texts for class, tracing themes for a paper, working a book for weeks — and you need notes that still make sense when midterms show up.",
     sections: [
       {
-        heading: "Depth without the heavy suite (unless you want one)",
+        heading: "Word study without twelve tabs",
+        visual: "dictionary",
+        feature: "dictionary",
         paragraphs: [
-          "Logos and library stacks have their place. Harvous sits in the middle for the notes you write while you study — scripture pills across translations, a built-in dictionary, spaces and threads per class or book, highlights that stay attached to the line that mattered.",
-          "A deep sit with one passage can live next to a semester-long book thread. You're not forced into one study mode.",
+          "Select a term for its Easton's entry without leaving the page. Keep the passage open beside your writing and stay in the note while you work.",
         ],
       },
       {
-        heading: "Week 10 should still find week 3",
+        heading: "Cross-references that open where you are",
+        visual: "pills",
+        feature: "scripture-pills",
         paragraphs: [
-          "Search and threads help you dig on purpose. Suggestions help when you weren't looking — a fading note from early in the term can resurface when you're writing later. The point is that your own work compounds instead of living in a graveyard of untitled docs.",
+          "Every reference becomes a scripture pill you can open across translations: compare, tap through, and keep writing. Logos and library stacks still have their place. This is where your own notes live.",
+        ],
+      },
+      {
+        heading: "Annotate the line that matters",
+        visual: "highlights",
+        feature: "highlights",
+        paragraphs: [
+          "Highlights stay attached to the line that mattered, with your comment beside them, whether you made them while reading for class or while drafting a paper.",
+        ],
+      },
+      {
+        heading: "Week 10 still finds week 3",
+        visual: "suggestions",
+        feature: "suggestions",
+        paragraphs: [
+          "Search and threads help you dig on purpose. Suggestions help when you weren't looking: a note from early in the term can resurface right when you're writing later.",
+        ],
+      },
+      {
+        heading: "Notes that last a term",
+        paragraphs: [
+          "A deep sit with one passage can live next to a semester-long book thread or a topical thread on covenant. Your own work builds up instead of living in a graveyard of untitled docs.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:glasses",
-        heading: "Room for a long sit",
-        body: "Keep scripture open beside your writing, look up a word, stack cross-references — a deep study session without losing the note.",
-      },
-      {
-        icon: "fa7-solid:lines-leaning",
-        heading: "Threads per book or class",
-        body: "Give Romans, a systematics class, or a paper theme its own thread so notes compound instead of scattering across files.",
-      },
-      {
-        icon: "fa7-solid:tags",
-        heading: "Themes across assignments",
-        body: "A topical thread can hold grace, covenant, or prayer notes from wherever they showed up — not only the syllabus order.",
-      },
-      {
-        icon: "fa7-solid:lightbulb",
-        heading: "Suggestions mid-term",
-        body: "When you're drafting week 10, Suggestions can bring back a note from week 3 you meant to use — still linked to the passage.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "dictionary", "suggestions", "highlights"],
     featuresHeading: "What a term of study asks of your notes",
     featuresLead:
@@ -568,40 +630,46 @@ const audiences: ForAudience[] = [
       "You start noticing something. Grace in Genesis, in Paul, in the Psalms. Or you're tracing prayer, or what Scripture says about hope. You need a place that can hold a thread that runs across the whole Bible.",
     sections: [
       {
+        heading: "Start from a word",
+        visual: "dictionary",
+        feature: "dictionary",
+        paragraphs: [
+          "Noticing grace everywhere? Start with what the word means. Easton's dictionary is built in, with the passages it points to as pills you can open.",
+        ],
+      },
+      {
+        heading: "Collect it from wherever it shows up",
+        visual: "pills",
+        feature: "scripture-pills",
+        paragraphs: [
+          "Genesis on Monday, Ephesians on Thursday, a Psalm on Sunday. Each note carries its references as pills, so the passages travel with the thought.",
+        ],
+      },
+      {
+        heading: "Mark the pattern as it appears",
+        visual: "highlights",
+        feature: "highlights",
+        paragraphs: [
+          "Highlight the line in each passage and add a few words. Shared language across notes helps the pattern surface, even when you weren't looking for it.",
+        ],
+      },
+      {
+        heading: "Tie it together with a thread",
+        visual: "threads",
+        feature: "threads",
+        paragraphs: [
+          "A thread called \"Grace\" connects notes from different books and seasons in the order you choose. Harvous organizes by what the notes are about, not where you happened to be reading that day.",
+        ],
+      },
+      {
         heading: "Themes don't stay in one book",
         paragraphs: [
-          "Topical study means notes from everywhere — different books, seasons, and moments. Harvous organizes by what the notes are about, not where you happened to be reading that day.",
-        ],
-      },
-      {
-        heading: "Let connections show up",
-        paragraphs: [
-          'A thread called "Grace" can collect Ephesians, Psalms, and Genesis in one place. Tags and search use your words — because you will not tag perfectly, and you should not have to.',
+          "Search uses your own words, because you won't tag perfectly and you shouldn't have to. Half-remember a phrase from months ago and it's still there.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:bookmark",
-        heading: "One thread for the chase",
-        body: "Add notes from wherever you are in Scripture. They all live under the theme.",
-      },
-      {
-        icon: "fa7-solid:tags",
-        heading: "Connections you didn't plan",
-        body: "Shared language across notes helps patterns surface — even when you weren't looking for them.",
-      },
-      {
-        icon: "fa7-solid:layer-group",
-        heading: "Many books, one record",
-        body: "Different weeks and different passages, pulled together by what they're actually about.",
-      },
-      {
-        icon: "fa7-solid:magnifying-glass",
-        heading: "Search in your own words",
-        body: "Half-remember a phrase from months ago. Search finds it without a perfect filing system.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "threads", "highlights", "dictionary"],
     featuresHeading: "What a theme needs to stay together",
     featuresLead:
@@ -630,6 +698,7 @@ const audiences: ForAudience[] = [
       {
         heading: "From your church, on Sunday",
         visual: "feed",
+        feature: "note-templates",
         paragraphs: [
           "People connect to their church in Settings and pick the ministries they want. What the church publishes lands on their Home as \"From your church\", and This Sunday opens with the church's note template, ready for their own words. The note stays theirs.",
         ],
@@ -711,41 +780,46 @@ const audiences: ForAudience[] = [
       "You prep questions, you facilitate, you watch people realize things out loud. And then next week it feels like starting over. What the group found together lives in someone's memory — maybe — but not somewhere you can all return to.",
     sections: [
       {
+        heading: "Prep with a shape",
+        visual: "templates",
+        feature: "note-templates",
+        paragraphs: [
+          "Start your prep from a note template: the passage, what you noticed, the questions you want to ask. It stays in your own space, private until you choose to share it.",
+        ],
+      },
+      {
+        heading: "Every passage, ready for the discussion",
+        visual: "pills",
+        feature: "scripture-pills",
+        paragraphs: [
+          "References become scripture pills, so when someone asks about the verse, it's one tap away instead of a scramble for the right page.",
+        ],
+      },
+      {
+        heading: "One thread per week, or per topic",
+        visual: "threads",
+        feature: "threads",
+        paragraphs: [
+          "Week four of James gets its own thread. What you prepped and what came up in the room stay together, so you can look back without relying on memory alone.",
+        ],
+      },
+      {
         heading: "A shared space for the whole group",
+        visual: "group-threads",
+        feature: "shared-spaces",
         paragraphs: [
-          "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, notes, and scripture that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
-          "If your whole church teaches on Harvous — a plan per ministry, a series that holds its weeks, a room a volunteer can lead — [see how it works for churches](/for/churches/).",
+          "[Shared Spaces](/add-ons/shared-spaces/) let everyone study in the same threads: questions, notes, and scripture that live beyond the hour you meet. You set up the space and invite who belongs. Hosting is included with [Harvous Plus](/pricing/); joining is always free.",
         ],
       },
       {
-        heading: "Lead with your own notes first",
+        heading: "What the group finds, kept",
         paragraphs: [
-          "Use Harvous for private prep — passages, questions, the things you almost said. That habit carries into the group space. Your prep stays private; the group sees what you choose to share.",
+          "Next week shouldn't feel like starting over. What people realized out loud gets written down somewhere you can all return to.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:user-group",
-        heading: "A shared space for the group",
-        body: "Everyone adds to the same threads. What you discover together has a home after you leave the room.",
-      },
-      {
-        icon: "fa7-solid:list",
-        heading: "Threads per week or topic",
-        body: "Week four of James gets its own thread. Look back without relying on memory alone.",
-      },
-      {
-        icon: "fa7-solid:lock",
-        heading: "You stay in control",
-        body: "You set up the space and invite who belongs. Others are guests in a space you lead.",
-      },
-      {
-        icon: "fa7-solid:user",
-        heading: "Prep stays personal",
-        body: "The notes you need to lead stay in your space. Share into the group thread when you're ready.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["shared-spaces", "threads", "scripture-pills", "note-templates"],
     featuresHeading: "What group leadership needs from Harvous",
     featuresLead:
@@ -770,41 +844,54 @@ const audiences: ForAudience[] = [
       "You're not looking for another place to read Scripture. You already open YouVersion, Dwell, Logos, or your church's app. What you need is somewhere the thoughts stick — linked to the verse, findable later, not trapped in a reading plan streak.",
     sections: [
       {
+        heading: "Keep reading where you read",
+        visual: "reader",
+        feature: "bible-reader",
+        paragraphs: [
+          "Harvous isn't trying to replace YouVersion, Dwell, or your church's app. Keep your plan, your audio, your streak. And if you ever want to read here, the built-in reader shows your notes in the margin.",
+        ],
+      },
+      {
+        heading: "Notes that know which verse they're about",
+        visual: "pills",
+        feature: "scripture-pills",
+        paragraphs: [
+          "After a plan day, drop the verse into Harvous and write what stuck. Type a reference and it becomes a pill across translations, so the passage stays one tap from the thought.",
+        ],
+      },
+      {
+        heading: "When the plan moves on, your notes don't",
+        visual: "suggestions",
+        feature: "suggestions",
+        paragraphs: [
+          "Plans keep going. Suggestions can bring back a fading note, highlight, or passage from your own study, so last week's thought isn't gone just because the plan moved on.",
+        ],
+      },
+      {
+        heading: "In the pew or on a plane",
+        visual: "offline",
+        feature: "offline-sync",
+        paragraphs: [
+          "Harvous keeps writing without a connection and syncs the moment you're back, so capture doesn't wait on a signal.",
+        ],
+      },
+      {
+        heading: "A reminder that carries the passage",
+        visual: "reminders",
+        feature: "reminders",
+        paragraphs: [
+          "Optional reminders arrive with the day's verse or the chapter you left off in, and open straight to it. Your Bible app's reminders can keep doing their job. This one is for your notes.",
+        ],
+      },
+      {
         heading: "Keep your Bible app. Add a notes hub.",
         paragraphs: [
-          "Harvous isn't trying to replace the app you already trust for reading plans, audio, or a church feed. It's built for the part in between — read a passage, capture what stood out right there, and find it again when half a phrase is all you remember.",
-          "Type a reference and it becomes a scripture pill across translations. Your notes stay yours. Your reading habit can stay exactly where it is.",
-        ],
-      },
-      {
-        heading: "What you saved shouldn't disappear",
-        paragraphs: [
-          "A short note after a plan day. A longer sit with one passage. A line from Sunday. Harvous holds those across days — and Suggestions can bring a fading note back so last week's thought isn't gone just because the plan moved on.",
+          "Your reading habit can stay exactly where it is. Harvous is for the part in between: read a passage, capture what stood out, and find it again when half a phrase is all you remember.",
         ],
       },
     ],
-    moments: [
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "Read there. Note here.",
-        body: "Keep your Bible app for reading. Drop the verse into Harvous as a pill and write what stuck — without switching your whole study life.",
-      },
-      {
-        icon: "fa7-solid:pen",
-        heading: "Capture while it's warm",
-        body: "A note next to the passage before the moment passes. No filing ritual — just the thought and where it belongs.",
-      },
-      {
-        icon: "fa7-solid:layer-group",
-        heading: "Threads for what you're actually in",
-        body: "A plan, a book, a theme — a thread collects the notes so they compound instead of living as one-off plan checkmarks.",
-      },
-      {
-        icon: "fa7-solid:lightbulb",
-        heading: "Suggestions when the plan has moved on",
-        body: "Plans keep going. Your notes shouldn't vanish with them. Suggestions resurface a fading note, highlight, or passage from your own study.",
-      },
-    ],
+    /* Folded into the journey above: each step is one of these moments, drawn. */
+    moments: [],
     featureIds: ["scripture-pills", "bible-reader", "suggestions", "offline-sync", "reminders"],
     featuresHeading: "What dual-app study asks of your notes",
     featuresLead:

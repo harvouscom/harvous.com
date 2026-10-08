@@ -41,12 +41,13 @@ const NOTES = [
 
 <style>
   .thv {
-    --thread: var(--pill-thread);
+    /* Neutral, like threads in the app — no thread colour there. */
+    --thread: var(--pds-text-tertiary);
     --gutter: 30px;
     width: 100%;
   }
   .thv__label { display: flex; align-items: center; gap: 6px; }
-  .thv__label :global(svg) { width: 11px; height: 11px; color: var(--thread); }
+  .thv__label :global(svg) { width: 11px; height: 11px; color: var(--pds-text-secondary); }
 
   .thv__card { position: relative; }
   .thv .thv__row {
@@ -68,7 +69,7 @@ const NOTES = [
     box-shadow: inset 0 0 0 2px var(--thread);
   }
   /* The note you're on: filled. */
-  .thv__row:first-of-type .thv__node { background: var(--thread); }
+  .thv__row:first-of-type .thv__node { background: var(--pds-text-primary); box-shadow: inset 0 0 0 2px var(--pds-text-primary); }
 
   /* The line runs node to node: from the first row's middle to the last's. */
   .thv__line {

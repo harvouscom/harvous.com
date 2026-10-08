@@ -1,11 +1,14 @@
 ---
 /**
- * /for/<slug>/ — one audience in the /next chrome. Same content as the
- * live page (ForAudienceDetailPage), laid out the /next way: a centred intro
- * over the audience's own sky, the story as a single readable column, the
- * "what that looks like" moments as tinted cards, the use cases as sky cards,
- * the features, a Compare preview, the quote, and the closing call. The
- * churches page keeps its interest form.
+ * /for/<slug>/ — one audience in the /next chrome: a centred intro over the
+ * audience's own sky, then the story as a journey — numbered steps, each one a
+ * feature doing its part for this person, drawn beside the words (StudyScenes;
+ * ChurchScenes on /for/churches/). Then the use cases as sky cards, a Compare
+ * preview, the quote, and the closing call. The churches page keeps its
+ * interest form and gets the Here's My Church card.
+ *
+ * A page with no `visual` sections falls back to a column of prose, the
+ * moments grid, and the feature list at the end.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
 import { ogCard } from "../../lib/og-card.ts";
@@ -16,6 +19,8 @@ import BlogNextCard from "../../components/next/BlogNextCard.astro";
 import AppIcon from "../../components/next/app/AppIcon.astro";
 import ChurchInterestForm from "../../components/ChurchInterestForm.astro";
 import ChurchScenes from "../../components/next/ChurchScenes.astro";
+import StudyScenes from "../../components/next/StudyScenes.astro";
+import HeresMyChurchCard from "../../components/next/HeresMyChurchCard.astro";
 import { fathomCta } from "../../lib/fathom-events.ts";
 import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
@@ -23,6 +28,7 @@ import {
   getAudiences,
   getUseCasesForAudience,
   type ForAudience,
+  type ForAudienceFeatureLink,
 } from "../../lib/for-audiences-data.ts";
 import { getComingSoonGridItem } from "../../lib/coming-soon-grid.ts";
 import { FEATURE_ICONS } from "../../lib/feature-icons.ts";
@@ -74,6 +80,26 @@ const features: FeatureCard[] = audience.featureIds
     };
   })
   .filter((c): c is FeatureCard => c !== undefined);
+
+/* Each journey step's feature, by id, for the chip under its words. */
+const featureLinks: Record<string, ForAudienceFeatureLink> = {};
+for (const id of new Set(audience.sections.flatMap((s) => (s.feature ? [s.feature] : [])))) {
+  const soon = getComingSoonGridItem(id);
+  if (soon) {
+    featureLinks[id] = { title: soon.title, href: soon.href, soon: soon.comingSoon !== false };
+    continue;
+  }
+  const f = allFeatures.find((x) => x.id === id);
+  if (!f || !draftPageIsReachable(`features/${f.id}`)) continue;
+  featureLinks[id] = { title: f.data.tagline, href: liveFeature.has(f.id) ? `/features/${f.id}/` : undefined, soon: false };
+}
+
+const isChurch = audience.slug === "churches";
+const hasScenes = audience.sections.some((section) => section.visual);
+/* The journey names every feature it leans on, so the end-of-page list is only
+   for pages told as prose — and the churches page, whose scenes are church
+   features and whose list says what they build on. */
+const showFeatureList = features.length > 0 && (!hasScenes || isChurch);
 
 const useCases = getUseCasesForAudience(audience);
 
@@ -128,8 +154,24 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
       </span>
     </figure>
 
-    {audience.sections.some((section) => section.visual) ? (
-      <ChurchScenes sections={audience.sections} />
+    {isChurch && hasScenes ? (
+      <ChurchScenes sections={audience.sections} features={featureLinks} />
+    ) : hasScenes ? (
+      <>
+        <StudyScenes sections={audience.sections} features={featureLinks} label={`Harvous for ${audience.title.toLowerCase()}, step by step`} />
+        {showChurchBridge && (
+          <div class="nx-wrap">
+            <aside class="fa-bridge fa-bridge--after" data-reveal>
+              <p class="nx-kicker">For churches</p>
+              <p>
+                Churches keep a teaching plan for each ministry and share it with the people connected
+                to them. If that fits your church, tell me about it.
+              </p>
+              <a class="nx-link" href="/for/churches/#interest">Share church interest →</a>
+            </aside>
+          </div>
+        )}
+      </>
     ) : (
     <section class="nx-wrap fa-story" aria-label="The story">
       {audience.sections.map((section) => (
@@ -187,7 +229,13 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
       </section>
     )}
 
-    {features.length > 0 && (
+    {isChurch && (
+      <section class="nx-wrap fa-hmc">
+        <HeresMyChurchCard />
+      </section>
+    )}
+
+    {showFeatureList && (
       <section class="nx-wrap fa-sec" aria-labelledby="features-title">
         <h2 id="features-title" class="fa-h2 fa-h2--sec">{audience.featuresHeading}</h2>
         <p class="fa-sec__lead">{audience.featuresLead}</p>
@@ -339,6 +387,8 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
     background: var(--color-warm);
   }
   .fa-bridge p:not(.nx-kicker) { margin: 0.6rem 0 0.9rem; }
+  .fa-bridge--after { max-width: 40rem; margin: clamp(3.5rem, 8vw, 5rem) auto 0; color: var(--color-ink-soft); }
+  .fa-hmc { padding-top: clamp(4rem, 9vw, 6rem); }
 
   .fa-sec { padding-top: clamp(4rem, 9vw, 6rem); }
   .fa-h2--sec { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; }

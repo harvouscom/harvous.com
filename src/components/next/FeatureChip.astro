@@ -1,0 +1,55 @@
+---
+/**
+ * FeatureChip — "FEATURE Scripture pills →", the small link under a journey
+ * step (StudyScenes, ChurchScenes) to the feature that step leans on. Wears the
+ * audience's ink (`--aud-ink`) when there is one.
+ */
+import type { ForAudienceFeatureLink } from "../../lib/for-audiences-data.ts";
+
+interface Props {
+  feature: ForAudienceFeatureLink;
+}
+const { feature } = Astro.props;
+const Tag = feature.href ? "a" : "span";
+---
+
+<p class="fchip">
+  <Tag class="fchip__in" href={feature.href}>
+    <span class="fchip__k">Feature</span>
+    {feature.title}
+    {feature.soon && <span class="fchip__soon">Coming soon</span>}
+    {feature.href && <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>}
+  </Tag>
+</p>
+
+<style>
+  .fchip { margin: 1.25rem 0 0; }
+  .fchip__in {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem 0.4rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--aud-ink, var(--color-ink)) 10%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aud-ink, var(--color-ink)) 22%, transparent);
+    text-decoration: none;
+    transition: background-color 200ms ease;
+  }
+  a.fchip__in:hover { background: color-mix(in srgb, var(--aud-ink, var(--color-ink)) 18%, var(--color-paper)); }
+  .fchip__k {
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    background: color-mix(in srgb, var(--aud-ink, var(--color-ink)) 70%, var(--color-ink));
+  }
+  .fchip__soon { font-size: 0.75rem; color: var(--color-ink-faint); }
+  .fchip svg { width: 0.7rem; height: 0.7rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms ease; }
+  a.fchip__in:hover svg { transform: translateX(2px); }
+</style>

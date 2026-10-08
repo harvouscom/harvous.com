@@ -11,6 +11,10 @@
  * view (the shared data-reveal observer adds `.revealed`) the grid fades in and
  * a short blue light runs once around the border, then goes out.
  *
+ * On About (`withHmc`) the same card holds both things we make: Harvous and
+ * Here's My Church, each as a small panel on the grid with what it is and
+ * where its code lives.
+ *
  * The licence is O'Saasy (MIT plus a no-hosted-competitor clause), so the copy
  * says what it allows rather than leaning on "open source" alone.
  */
@@ -20,17 +24,20 @@ import { formatStars, getRepoStars } from "../../lib/github-stars.ts";
 interface Props {
   /** Which page it's on, so the clicks are counted there. */
   page?: "home" | "about";
+  /** Show Here's My Church alongside Harvous, as our two open projects. */
+  withHmc?: boolean;
 }
-const { page = "home" } = Astro.props;
+const { page = "home", withHmc = false } = Astro.props;
 const track = page === "about" ? fathomAbout : fathomHome;
 /* Read at build time; null (no network, rate limit) just leaves the count off. */
 const stars = await getRepoStars();
 
 const repo = "https://github.com/harvouscom/harvous";
 const license = `${repo}/blob/main/LICENSE`;
+const hmcUrl = "https://heresmychurch.com";
 ---
 
-<section class:list={["oss nx-section", page === "home" && "oss--flush"]} id="open-source" aria-labelledby="oss-title">
+<section class:list={["oss nx-section", page === "home" && "oss--flush", withHmc && "oss--two"]} id="open-source" aria-labelledby="oss-title">
   <div class="nx-wrap">
     <div class="oss__frame" data-reveal>
       <div class="release-notes-frame__grid oss__grid" aria-hidden="true"></div>
@@ -40,6 +47,56 @@ const license = `${repo}/blob/main/LICENSE`;
         <rect class="oss__trail-line" pathLength="1" />
       </svg>
 
+      {withHmc ? (
+        <div class="oss__body oss__body--two">
+          <div class="oss__words">
+            <h2 id="oss-title" class="nx-title oss__title">Made in the open.</h2>
+            <p class="nx-lead oss__lead">Both things we make are open source. Read the code, learn from it, run your own copy.</p>
+          </div>
+          <div class="oss__projects">
+            <article class="oss__proj">
+              <p class="oss__proj-brand">
+                <img src="/images/harvous-2-icon.webp" alt="" width="32" height="32" loading="lazy" />
+                <b>Harvous</b>
+              </p>
+              <p class="oss__proj-line">The Bible study notes app: what you write stays with the verse and comes back before it fades.</p>
+              <p class="oss__proj-ctas">
+                <a class="nx-btn nx-btn--accent oss__proj-btn" href={repo} data-fathom-track={track.github}>
+                  <svg class="oss__gh-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+                  View on GitHub
+                  {stars !== null && (
+              <span class="oss__stars" aria-label={`${stars} stars on GitHub`}>
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" /></svg>
+                {formatStars(stars)}
+              </span>
+            )}
+                </a>
+              </p>
+            </article>
+            <article class="oss__proj oss__proj--hmc">
+              <p class="oss__proj-brand">
+                <img src="/images/heresmychurch-icon.webp" alt="" width="32" height="32" loading="lazy" />
+                <b>Here's My Church</b>
+              </p>
+              <p class="oss__proj-line">A crowd-sourced map of Christian churches. Anyone can add or correct a church, and browsing is free, no account needed.</p>
+              <p class="oss__proj-ctas">
+                <a class="nx-btn oss__proj-btn oss__hmc-btn" href={hmcUrl} target="_blank" rel="noopener">
+                  {/* A folded map with a pin on it. */}
+                  <svg class="oss__map-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                    <path class="oss__map-sheet" d="M2.5 5.2 7 3.5l6 2 4.5-1.7v11L13 16.5l-6-2-4.5 1.7z" />
+                    <path class="oss__map-fold" d="M7 3.5v11M13 5.5v11" />
+                    <path class="oss__map-pin" d="M10 3.2c-2 0-3.5 1.5-3.5 3.4 0 2.6 3.5 5.9 3.5 5.9s3.5-3.3 3.5-5.9c0-1.9-1.5-3.4-3.5-3.4z" />
+                    <circle class="oss__map-dot" cx="10" cy="6.6" r="1.2" />
+                  </svg>
+                  Explore the map
+                </a>
+              </p>
+            </article>
+          </div>
+        </div>
+      ) : (
       <div class="oss__body">
         <div class="oss__words">
           <h2 id="oss-title" class="nx-title oss__title">Harvous is open source.</h2>
@@ -63,6 +120,7 @@ const license = `${repo}/blob/main/LICENSE`;
           <a class="nx-link" href={license} data-fathom-track={track.license}>Read the license →</a>
         </div>
       </div>
+      )}
     </div>
   </div>
 </section>
@@ -133,6 +191,38 @@ const license = `${repo}/blob/main/LICENSE`;
     .oss .oss__body { display: flex; align-items: center; justify-content: space-between; gap: 2.5rem; max-width: none; }
     .oss .oss__ctas { flex-direction: column; align-items: flex-end; gap: 0.75rem; margin-top: 0; flex-shrink: 0; }
   }
+  /* Two projects on one sheet: a shared heading, then a panel each. */
+  .oss.oss--two .oss__body { display: block; max-width: none; }
+  .oss--two .oss__lead { max-width: 30rem; }
+  .oss__projects { display: grid; gap: 1rem; margin-top: 1.75rem; }
+  @media (min-width: 48rem) { .oss__projects { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .oss__proj {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--color-rule);
+    border-radius: 1.1rem;
+    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+    backdrop-filter: blur(2px);
+  }
+  .oss__proj-brand { display: flex; align-items: center; gap: 0.6rem; margin: 0; font-family: var(--font-display); font-size: 1.0625rem; }
+  .oss__proj-brand b { font-weight: 600; }
+  .oss__proj-brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .oss__proj-line { flex: 1; margin: 0.65rem 0 0; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
+  .oss__proj-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.1rem; margin: 1.1rem 0 0; }
+  .oss__proj-btn { padding-block: 0.55rem; font-size: 0.9375rem; white-space: nowrap; }
+  /* Here's My Church's button: the GitHub button's size, in HMC purple. */
+  .oss__hmc-btn {
+    color: #fff;
+    background: linear-gradient(135deg, #b46cf8 0%, #8b3fd9 55%, #6b21a8 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 20px -10px rgba(139, 63, 217, 0.8);
+  }
+  .oss__hmc-btn:hover { color: #fff; filter: brightness(1.08); }
+  .oss__map-icon { width: 1.3rem; height: 1.3rem; margin-left: -0.15rem; overflow: visible; }
+  .oss__map-sheet { fill: rgba(255, 255, 255, 0.22); stroke: rgba(255, 255, 255, 0.85); stroke-width: 1.3; stroke-linejoin: round; }
+  .oss__map-fold { fill: none; stroke: rgba(255, 255, 255, 0.55); stroke-width: 1.1; }
+  .oss__map-pin { fill: #fff; stroke: #7e22ce; stroke-width: 1; }
+  .oss__map-dot { fill: #7e22ce; }
   .oss__title { margin: 0; }
   .oss__lead { margin: 1.25rem 0 0; }
 
