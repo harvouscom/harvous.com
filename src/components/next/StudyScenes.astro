@@ -14,7 +14,7 @@ import ShowcaseVisual from "./ShowcaseVisual.astro";
 import FeatureChip from "./FeatureChip.astro";
 import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
 import type { ForAudienceFeatureLink, ForAudienceSection } from "../../lib/for-audiences-data.ts";
-import { stageSky } from "../../lib/next/content.ts";
+import { stageMesh } from "../../lib/next/content.ts";
 
 interface Props {
   sections: ForAudienceSection[];
@@ -43,7 +43,7 @@ const washes = ["sky", "amber", "mint", "violet", "coral", "blue"];
           )}
         </div>
 
-        <div class="sts__stage nx-sky" style={`${stageSky(washes[visuals % washes.length])} --reveal-delay: 120ms;`} data-reveal>
+        <div class="sts__stage nx-mesh" style={`${stageMesh(washes[visuals % washes.length])} --reveal-delay: 120ms;`} data-reveal>
           <ShowcaseVisual name={section.visual} label={section.visualLabel ?? section.heading} />
         </div>
       </div>

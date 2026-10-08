@@ -8,7 +8,7 @@
  */
 import ShowcaseVisual from "./ShowcaseVisual.astro";
 import { SOON_LABEL } from "../../lib/coming-soon-grid.ts";
-import { stageSky } from "../../lib/next/content.ts";
+import { stageMesh } from "../../lib/next/content.ts";
 
 export type FeatureCarouselItem = {
   title: string;
@@ -52,7 +52,7 @@ const id = `fcar-${Math.random().toString(36).slice(2, 8)}`;
       return (
         <li class="fcar__item">
           <Tag class:list={["fcar__card", f.href && "fcar__card--link"]} href={f.href}>
-            <span class="fcar__stage nx-sky" style={`${stageSky(washes[i % washes.length])}`} aria-hidden="true">
+            <span class="fcar__stage nx-mesh" style={`${stageMesh(washes[i % washes.length])}`} aria-hidden="true">
               {f.visual && <span class="fcar__visual"><ShowcaseVisual name={f.visual} label={f.label ?? f.title} /></span>}
             </span>
             <span class="fcar__words">

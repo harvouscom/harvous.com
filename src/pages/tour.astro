@@ -20,7 +20,7 @@ import ComparePreview from "../components/next/ComparePreview.astro";
 import ShowcaseVisual from "../components/next/ShowcaseVisual.astro";
 import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
 import { TOUR_STAGING as STAGING } from "../lib/next/tour-staging.ts";
-import { stageSky } from "../lib/next/content.ts";
+import { stageMesh } from "../lib/next/content.ts";
 
 const chapters = APP_TOUR_CHAPTERS.filter((c) => STAGING[c.key]);
 const pad = (n: number) => String(n + 1).padStart(2, "0");
@@ -97,7 +97,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
                       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
                     </button>
                   </p>
-                  <div class="tour-ch__peek-stage nx-sky" style={stageSky("sky")}><ShowcaseVisual name={item.visual} label={item.desc} /></div>
+                  <div class="tour-ch__peek-stage nx-mesh" style={stageMesh("sky")}><ShowcaseVisual name={item.visual} label={item.desc} /></div>
                   {item.href && <a class="nx-link tour-ch__peek-link" href={item.href}>More on {item.title} →</a>}
                 </div>
               </div>

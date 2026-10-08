@@ -168,17 +168,3 @@
 }
 .nx-skip:focus-visible { transform: none; outline: 2px solid var(--color-accent); outline-offset: 2px; }
 .nx-main:focus { outline: none; }
-
-/* ── Sky stages: the painted skies behind app mocks ─────────────────────────
-   A stage sets --sky (stageSky() in lib/next/content.ts); the photo sits
-   under the content, softly blurred and bled past the edges so the blur has
-   no rim. Same skies as the hero and closing call, in both themes. */
-.nx-sky { position: relative; isolation: isolate; overflow: hidden; background: #e9eef5; }
-.nx-sky::before {
-  content: "";
-  position: absolute;
-  inset: -6%;
-  z-index: -1;
-  background: var(--sky) center / cover no-repeat;
-  filter: blur(4px) saturate(1.05);
-}

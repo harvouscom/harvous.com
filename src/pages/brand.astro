@@ -1,0 +1,323 @@
+---
+/**
+ * /brand/ — the brand kit, live. Every swatch, type sample and mesh here is
+ * drawn from the same tokens the site uses (global.css, brand.css, fonts.css),
+ * so this page can't drift from the real thing. The rules for when to use what
+ * are in docs/BRAND_KIT.md; the voice is docs/BRAND_VOICE.md.
+ *
+ * Not linked from the nav and not indexed: it's a reference, not a pitch.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import ShowcaseVisual from "../components/next/ShowcaseVisual.astro";
+import { backdropSrc, stageMesh, type Backdrop } from "../lib/next/content.ts";
+
+const MARKS = [
+  { src: "/images/harvous-2-icon.webp", name: "Harvous", note: "App icon. Anywhere the product is named." },
+  { src: "/images/heresmychurch-icon.webp", name: "Here's My Church", note: "Its own colours; never re-tinted to match." },
+];
+
+const CORE = [
+  { token: "--color-ink", note: "Text, icons" },
+  { token: "--color-ink-soft", note: "Body copy, leads" },
+  { token: "--color-ink-faint", note: "Meta, captions (AA)" },
+  { token: "--color-rule", note: "Hairlines, card borders" },
+  { token: "--color-warm", note: "Quiet fills, chips" },
+  { token: "--color-paper", note: "Ground" },
+  { token: "--color-accent", note: "Links, the one CTA" },
+  { token: "--color-accent-soft", note: "Accent wash" },
+];
+
+const PILLS = [
+  { token: "--pill-note", note: "Notes" },
+  { token: "--pill-scripture", note: "Scripture" },
+  { token: "--pill-highlight", note: "Highlights" },
+  { token: "--pill-folder", note: "Folders" },
+  { token: "--pill-thread", note: "Threads (site taxonomy only)" },
+];
+
+const MESHES = [
+  { id: "sky", note: "Default. Reading, notes, anything calm." },
+  { id: "amber", note: "Daily passage, reminders, warmth." },
+  { id: "mint", note: "Growth: suggestions, review." },
+  { id: "violet", note: "Scripture, the reader." },
+  { id: "coral", note: "People: groups, churches." },
+  { id: "blue", note: "Tools: search, library, Connector." },
+];
+
+const SKIES: Backdrop[] = ["077", "050", "058", "076", "045", "075"];
+const THUMBS = [
+  "highlights-you-can-find",
+  "look-it-up-without-leaving-the-note",
+  "one-place-for-the-trail",
+  "keep-what-the-group-finds",
+];
+
+const VOICE = [
+  { say: "I made this", not: "Our team is excited to announce" },
+  { say: "Your notes, beside the verse", not: "Revolutionize your spiritual journey" },
+  { say: "Coming later", not: "Coming soon!!" },
+  { say: "Humans help humans. Tools only help.", not: "AI-powered Bible insights" },
+];
+---
+
+<NextLayout title="Brand — Harvous" description="The Harvous brand kit: marks, colour, type, mesh grounds, imagery and voice." noindex>
+  <header class="nx-wrap bk-intro">
+    <p class="nx-kicker">Brand kit</p>
+    <h1 class="nx-display bk-title">How Harvous looks and sounds.</h1>
+    <p class="nx-lead bk-lead">
+      Quiet, bright, hand-made. Everything below is drawn live from the site's own tokens, so what you
+      see here is what ships.
+    </p>
+  </header>
+
+  <!-- Marks -->
+  <section class="nx-wrap bk-sec" aria-labelledby="bk-marks">
+    <div class="bk-head">
+      <p class="bk-n">01</p>
+      <h2 id="bk-marks" class="bk-h2">Marks</h2>
+      <p class="bk-p">The icon is the logo. Give it room, keep its corners, and set the name beside it in Google Sans Flex 600 when it needs one.</p>
+    </div>
+    <div class="bk-marks">
+      {MARKS.map((m) => (
+        <figure class="bk-mark">
+          <div class="bk-mark__stage nx-mesh" style={stageMesh(m.name === "Harvous" ? "sky" : "violet")}>
+            <img src={m.src} alt="" width="96" height="96" />
+          </div>
+          <figcaption><strong>{m.name}</strong><span>{m.note}</span></figcaption>
+        </figure>
+      ))}
+      <figure class="bk-mark">
+        <div class="bk-mark__stage bk-mark__stage--lockup">
+          <img src="/images/harvous-2-icon.webp" alt="" width="44" height="44" />
+          <span class="bk-lockup">Harvous</span>
+        </div>
+        <figcaption><strong>Lockup</strong><span>Icon and name, 1 : 0.8 height, gap of a third.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Colour -->
+  <section class="nx-wrap bk-sec" aria-labelledby="bk-colour">
+    <div class="bk-head">
+      <p class="bk-n">02</p>
+      <h2 id="bk-colour" class="bk-h2">Colour</h2>
+      <p class="bk-p">Near-white and cool grey, with one blue that means "go". The five pill colours name kinds of content; they're highlighter fills, so mix toward ink before setting text in them.</p>
+    </div>
+    <h3 class="bk-h3">Core</h3>
+    <ul class="bk-swatches" role="list">
+      {CORE.map((c) => (
+        <li class="bk-sw">
+          <span class="bk-sw__chip" style={`background: var(${c.token})`}></span>
+          <code>{c.token}</code>
+          <span>{c.note}</span>
+        </li>
+      ))}
+    </ul>
+    <h3 class="bk-h3">Content pills</h3>
+    <ul class="bk-swatches bk-swatches--pills" role="list">
+      {PILLS.map((c) => (
+        <li class="bk-sw">
+          <span class="bk-sw__chip" style={`background: var(${c.token})`}></span>
+          <code>{c.token}</code>
+          <span>{c.note}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- Type -->
+  <section class="nx-wrap bk-sec" aria-labelledby="bk-type">
+    <div class="bk-head">
+      <p class="bk-n">03</p>
+      <h2 id="bk-type" class="bk-h2">Type</h2>
+      <p class="bk-p">One family does nearly everything: Google Sans Flex, self-hosted, variable. Caveat is the margin hand, used a line at a time.</p>
+    </div>
+    <div class="bk-type">
+      <div class="bk-type__row">
+        <span class="bk-type__meta">Display · 600 · −0.03em</span>
+        <p class="bk-type__display">Remember what you studied.</p>
+      </div>
+      <div class="bk-type__row">
+        <span class="bk-type__meta">Title · 600 · −0.025em</span>
+        <p class="bk-type__title">Write it down while it's still warm</p>
+      </div>
+      <div class="bk-type__row">
+        <span class="bk-type__meta">Body · 400 · 1.6</span>
+        <p class="bk-type__body">Put a note next to the passage before the moment passes. Type a reference and it becomes a scripture pill. Tap it and the verse is right there, in the translation you like.</p>
+      </div>
+      <div class="bk-type__row">
+        <span class="bk-type__meta">Kicker · 600 · caps</span>
+        <p class="nx-kicker">Daily passage</p>
+      </div>
+      <div class="bk-type__row">
+        <span class="bk-type__meta">Hand · Caveat 500</span>
+        <p class="bk-type__hand">this is the one I keep coming back to</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Meshes -->
+  <section class="nx-wrap bk-sec" aria-labelledby="bk-mesh">
+    <div class="bk-head">
+      <p class="bk-n">04</p>
+      <h2 id="bk-mesh" class="bk-h2">Mesh grounds</h2>
+      <p class="bk-p">
+        The ground behind every app mock. A mesh sits between the painted skies and the Bright Enough
+        thumbnails: a light centre so a white card always reads, soft pools of one colour in the corners,
+        and fine grain. One family per panel. <code>stageMesh(family)</code> writes the style;
+        <code>.nx-mesh--family</code> works too.
+      </p>
+    </div>
+    <ul class="bk-meshes" role="list">
+      {MESHES.map((m) => (
+        <li class="bk-meshcard">
+          <div class:list={["bk-meshcard__swatch nx-mesh", `nx-mesh--${m.id}`]}></div>
+          <p><strong>{m.id}</strong><span>{m.note}</span></p>
+        </li>
+      ))}
+    </ul>
+    <div class="bk-meshdemo">
+      <div class="bk-meshdemo__stage nx-mesh nx-mesh--sky">
+        <div class="bk-meshdemo__visual"><ShowcaseVisual name="passage" label="Daily passage" /></div>
+      </div>
+      <div class="bk-meshdemo__stage nx-mesh nx-mesh--amber">
+        <div class="bk-meshdemo__visual"><ShowcaseVisual name="suggestions" label="Suggestions" /></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Imagery -->
+  <section class="nx-wrap bk-sec" aria-labelledby="bk-imagery">
+    <div class="bk-head">
+      <p class="bk-n">05</p>
+      <h2 id="bk-imagery" class="bk-h2">Imagery</h2>
+      <p class="bk-p">
+        Two photographic families, each with a job. Painted skies are for moments: a hero, a quote, a
+        lock-screen wallpaper. Never behind a mock that has to be read. Bright Enough thumbnails are the
+        blog's: airy, mostly white, colour pooled at the edges, generated from the skies.
+      </p>
+    </div>
+    <h3 class="bk-h3">Skies</h3>
+    <ul class="bk-skies" role="list">
+      {SKIES.map((id) => (
+        <li><img src={backdropSrc(id)} alt="" loading="lazy" decoding="async" /><code>ai_bg_{id}</code></li>
+      ))}
+    </ul>
+    <h3 class="bk-h3">Bright Enough thumbnails</h3>
+    <ul class="bk-thumbs" role="list">
+      {THUMBS.map((t) => (
+        <li><img src={`/blog-thumbs/${t}-feat.webp`} alt="" loading="lazy" decoding="async" /></li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- UI -->
+  <section class="nx-wrap bk-sec" aria-labelledby="bk-ui">
+    <div class="bk-head">
+      <p class="bk-n">06</p>
+      <h2 id="bk-ui" class="bk-h2">App UI in pictures</h2>
+      <p class="bk-p">
+        Show the app, never a stock photo of someone holding a phone. Mocks are drawn from the real
+        app's pieces, show only shipped behaviour, and quote only NLT text the app actually displays.
+      </p>
+    </div>
+    <div class="bk-ui">
+      {[["pills", "violet"], ["threads", "mint"], ["reminders", "amber"]].map(([v, f]) => (
+        <div class="bk-ui__stage nx-mesh" style={stageMesh(f)}>
+          <div class="bk-ui__visual"><ShowcaseVisual name={v} label={v} /></div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Voice -->
+  <section class="nx-wrap bk-sec bk-sec--last" aria-labelledby="bk-voice">
+    <div class="bk-head">
+      <p class="bk-n">07</p>
+      <h2 id="bk-voice" class="bk-h2">Voice</h2>
+      <p class="bk-p">
+        The friend who gets it, not the expert. One person speaks as "I". Plain words, honest about what
+        isn't built yet. The full guide is <code>docs/BRAND_VOICE.md</code>.
+      </p>
+    </div>
+    <ul class="bk-voice" role="list">
+      {VOICE.map((v) => (
+        <li><span class="bk-voice__say">{v.say}</span><span class="bk-voice__not">{v.not}</span></li>
+      ))}
+    </ul>
+  </section>
+</NextLayout>
+
+<style>
+  .bk-intro { padding-top: clamp(7.5rem, 15vw, 10rem); }
+  .bk-title { margin: 0.75rem 0 0; max-width: 16ch; }
+  .bk-lead { max-width: 36rem; margin: 1.25rem 0 0; }
+
+  .bk-sec { padding-top: clamp(4rem, 9vw, 6rem); }
+  .bk-sec--last { padding-bottom: clamp(5rem, 10vw, 8rem); }
+  .bk-head { max-width: 42rem; margin-bottom: 2rem; }
+  .bk-n { margin: 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+  .bk-h2 { margin: 0.4rem 0 0; font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 600; letter-spacing: -0.03em; }
+  .bk-h3 { margin: 2rem 0 0.9rem; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ink-faint); }
+  .bk-p { margin: 0.75rem 0 0; color: var(--color-ink-soft); line-height: 1.6; text-wrap: pretty; }
+  .bk-p code, .bk-sw code, .bk-skies code { font-size: 0.85em; padding: 0.05rem 0.35rem; border-radius: 6px; background: var(--color-warm); }
+
+  /* Marks */
+  .bk-marks { display: grid; gap: 1rem; }
+  @media (min-width: 48rem) { .bk-marks { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .bk-mark { margin: 0; }
+  .bk-mark__stage { display: grid; place-items: center; height: 12rem; border-radius: 1.25rem; }
+  .bk-mark__stage img { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 16px 32px -16px rgba(15, 23, 42, 0.35); }
+  .bk-mark__stage--lockup { display: flex; justify-content: center; align-items: center; gap: 0.85rem; border: 1px solid var(--color-rule); }
+  .bk-mark__stage--lockup img { width: 44px; height: 44px; border-radius: 11px; box-shadow: none; }
+  .bk-lockup { font-family: var(--font-display); font-size: 2.1rem; font-weight: 600; letter-spacing: -0.03em; }
+  .bk-mark figcaption { display: grid; gap: 0.15rem; margin-top: 0.75rem; font-size: 0.9375rem; }
+  .bk-mark figcaption span { color: var(--color-ink-soft); }
+
+  /* Colour */
+  .bk-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  .bk-sw { display: grid; gap: 0.3rem; font-size: 0.8125rem; color: var(--color-ink-soft); }
+  .bk-sw code { justify-self: start; color: var(--color-ink); }
+  .bk-sw__chip { height: 4.5rem; margin-bottom: 0.35rem; border: 1px solid var(--color-rule); border-radius: 0.9rem; }
+
+  /* Type */
+  .bk-type { display: grid; border-top: 1px solid var(--color-rule); }
+  .bk-type__row { display: grid; gap: 0.4rem 2rem; align-items: baseline; padding: 1.4rem 0; border-bottom: 1px solid var(--color-rule); }
+  @media (min-width: 48rem) { .bk-type__row { grid-template-columns: 11rem minmax(0, 1fr); } }
+  .bk-type__row p { margin: 0; }
+  .bk-type__meta { font-size: 0.8125rem; color: var(--color-ink-faint); }
+  .bk-type__display { font-family: var(--font-display); font-size: clamp(2.25rem, 5vw, 3.75rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.03em; }
+  .bk-type__title { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.025em; }
+  .bk-type__body { max-width: 38rem; font-size: 1.0625rem; line-height: 1.6; color: var(--color-ink-soft); }
+  .bk-type__hand { font-family: var(--nx-hand); font-size: 2rem; font-weight: 500; color: var(--color-accent); }
+
+  /* Meshes */
+  .bk-meshes { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  .bk-meshcard__swatch { height: 9rem; border-radius: 1.1rem; }
+  .bk-meshcard p { display: grid; gap: 0.1rem; margin: 0.6rem 0 0; font-size: 0.875rem; }
+  .bk-meshcard strong { text-transform: capitalize; }
+  .bk-meshcard span { color: var(--color-ink-soft); }
+  .bk-meshdemo, .bk-ui { display: grid; gap: 1rem; margin-top: 1.5rem; }
+  @media (min-width: 48rem) { .bk-meshdemo { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bk-ui { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .bk-meshdemo__stage, .bk-ui__stage { position: relative; height: 20rem; border-radius: var(--nx-radius-scene, 1.5rem); }
+  .bk-ui__stage { height: 16rem; }
+  .bk-meshdemo__visual, .bk-ui__visual { position: absolute; left: 50%; top: 2rem; width: 26rem; transform: translateX(-50%); zoom: 0.85; }
+  .bk-ui__visual { zoom: 0.7; top: 1.5rem; }
+
+  /* Imagery */
+  .bk-skies, .bk-thumbs { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  .bk-skies { grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); }
+  .bk-skies li { display: grid; gap: 0.4rem; font-size: 0.75rem; }
+  .bk-skies code { justify-self: start; color: var(--color-ink-soft); }
+  .bk-skies img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.9rem; }
+  .bk-thumbs { grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
+  .bk-thumbs img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border: 1px solid var(--color-rule); border-radius: 0.9rem; }
+
+  /* Voice */
+  .bk-voice { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+  @media (min-width: 48rem) { .bk-voice { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .bk-voice li { display: grid; gap: 0.35rem; padding: 1.1rem 1.25rem; border: 1px solid var(--color-rule); border-radius: 1rem; }
+  .bk-voice__say { font-weight: 600; }
+  .bk-voice__say::before { content: "Say  "; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent); }
+  .bk-voice__not { color: var(--color-ink-faint); text-decoration: line-through; text-decoration-color: color-mix(in srgb, currentColor 50%, transparent); }
+</style>

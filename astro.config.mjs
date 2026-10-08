@@ -108,6 +108,8 @@ export default defineConfig({
         // Individual changelog pages are noindex — keep crawl budget on compare/use-cases.
         if (/\/release-notes\/[^/]+\//.test(page) && !page.endsWith("/release-notes/")) return false;
         if (page.includes("/release-notes/page/")) return false;
+        // The brand kit is a noindex reference page.
+        if (page.endsWith("/brand/")) return false;
         return true;
       },
     }),
