@@ -643,7 +643,7 @@ const { name, label } = Astro.props;
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    padding: 10px 12px 14px;
+    padding: 10px 12px 44px;
     border-radius: 30px 30px 22px 22px;
     text-align: center;
     color: #fff;
@@ -688,7 +688,16 @@ const { name, label } = Astro.props;
   .sv__notif-top small { font-size: 11.5px; color: rgba(0, 0, 0, 0.45); }
   .sv__notif-title { display: block; font-size: 13px; font-weight: 600; }
   .sv__notif-body { display: -webkit-box; font-size: 12.5px; line-height: 1.35; color: rgba(0, 0, 0, 0.72); -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .sv__rhythm { width: 88%; margin: -6px 0 0 auto; position: relative; }
+  /* The settings card floats in front of the phone: up over the wallpaper strip
+     below the notification and out past the right edge, so it reads as a layer
+     on top rather than a panel butted against the bezel. */
+  .sv__rhythm {
+    position: relative;
+    z-index: 1;
+    width: 84%;
+    margin: -46px -18px 0 auto;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 22px 44px -18px rgba(15, 23, 42, 0.45);
+  }
   .sv__seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: 999px; background: var(--pds-bg-chip); }
   .sv__seg span { padding: 3px 10px; border-radius: 999px; font-size: 12px; color: var(--pds-text-secondary); }
   .sv__seg .is-on { color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-chip-selected); }
