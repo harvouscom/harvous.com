@@ -6,9 +6,8 @@ Things noticed along the way that are worth doing, but not yet.
 
 `public/images/app-icon.webp` is the old square-glyph icon. The current icon is `public/images/harvous-2-icon.webp` (and `.png`), which is what the favicon, JSON-LD logo and compare OG cards use.
 
-The compare pages and compare hub now use the current icon. Still on the old one:
+The compare pages, compare hub and the page OG cards (`scripts/generate-og-cards.mjs`, regenerated) now use the current icon. Still on the old one:
 
-- `scripts/generate-og-cards.mjs` (line ~390) builds the site's other OG cards from `app-icon.webp`. Switch it to `harvous-2-icon.png`, then regenerate the cards.
 - `scripts/compress-images.sh` (line ~76) lists `icons/app-icon.png`. Check whether anything still needs it.
 - Once nothing references `app-icon.webp`, delete it.
 
