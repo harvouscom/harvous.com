@@ -14,6 +14,7 @@ import ClosingCall from "../components/next/ClosingCall.astro";
 import { ogCard } from "../lib/og-card.ts";
 import { formatStars, getRepoStars } from "../lib/github-stars.ts";
 import { SUPPORT_EMAIL } from "../lib/faq";
+import HmcMap from "../components/next/HmcMap.astro";
 
 type Project = {
   id: string;
@@ -78,7 +79,18 @@ const description =
   <section class="nx-wrap os-list" aria-label="Projects">
     {PROJECTS.map((p) => (
       <article class:list={["os-proj", p.tone && `os-proj--${p.tone}`]} id={p.id} data-reveal>
-        <div class="os-proj__main">
+        <div class:list={["os-proj__visual", `os-proj__visual--${p.id}`]} aria-hidden="true">
+          {p.id === "heresmychurch" ? (
+            <div class="os-map"><HmcMap uid="os-hmc" /></div>
+          ) : (
+            <div class="os-hv">
+              <span class="os-hv__chip os-hv__chip--a"><b>Romans 8:28</b> NLT</span>
+              <img class="os-hv__icon" src={p.icon} alt="" width="88" height="88" loading="lazy" />
+              <span class="os-hv__chip os-hv__chip--b">Thread · Going through Romans</span>
+            </div>
+          )}
+        </div>
+        <div class="os-proj__body">
           <p class="os-proj__brand">
             <img src={p.icon} alt="" width="44" height="44" loading="lazy" />
             <span>
@@ -98,21 +110,21 @@ const description =
               </div>
             ))}
           </dl>
-        </div>
-        <p class="os-proj__ctas">
-          {p.primary && (
-            <a class="nx-btn os-proj__go" href={p.primary.href} target="_blank" rel="noopener">{p.primary.label} ↗</a>
-          )}
-          <a class:list={["nx-btn", p.primary ? "nx-btn--ghost" : "nx-btn--accent"]} href={`https://github.com/${p.repo}`}>
-            <svg class="os-gh" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-              <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-            </svg>
-            View on GitHub
-            {(stars[p.id] ?? 0) > 0 && (
-              <span class="os-stars" aria-label={`${stars[p.id]} stars on GitHub`}>★ {formatStars(stars[p.id]!)}</span>
+          <p class="os-proj__ctas">
+            {p.primary && (
+              <a class="nx-btn os-proj__go" href={p.primary.href} target="_blank" rel="noopener">{p.primary.label} ↗</a>
             )}
-          </a>
-        </p>
+            <a class:list={["nx-btn", p.primary ? "nx-btn--ghost" : "nx-btn--accent"]} href={`https://github.com/${p.repo}`}>
+              <svg class="os-gh" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+              </svg>
+              View on GitHub
+              {(stars[p.id] ?? 0) > 0 && (
+                <span class="os-stars" aria-label={`${stars[p.id]} stars on GitHub`}>★ {formatStars(stars[p.id]!)}</span>
+              )}
+            </a>
+          </p>
+        </div>
       </article>
     ))}
   </section>
@@ -133,18 +145,44 @@ const description =
   .os-title { margin: 0.75rem 0 0; }
   .os-lead { max-width: 32rem; margin: 1.25rem auto 0; }
 
-  .os-list { display: grid; gap: 1rem; max-width: calc(56rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .os-list { display: grid; gap: 1.25rem; max-width: calc(68rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  @media (min-width: 56rem) { .os-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .os-proj {
-    display: grid;
-    gap: 1.5rem;
-    padding: clamp(1.5rem, 4vw, 2.25rem);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     border: 1px solid var(--color-rule);
     border-radius: var(--nx-radius-scene);
     background: var(--color-paper);
   }
-  @media (min-width: 48rem) {
-    .os-proj { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 2.5rem; }
+  .os-proj__body { display: flex; flex: 1; flex-direction: column; padding: clamp(1.5rem, 4vw, 2rem); }
+
+  /* The top visuals: Harvous on its blue grid, Here's My Church on its map. */
+  .os-proj__visual { position: relative; display: grid; place-items: center; height: 15rem; overflow: hidden; }
+  .os-proj__visual--harvous {
+    background:
+      linear-gradient(to right, rgba(37, 99, 235, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+      linear-gradient(to bottom, rgba(37, 99, 235, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
+      radial-gradient(60% 80% at 50% 45%, #dbeafe, #eff6ff 70%);
   }
+  .os-hv { position: relative; display: grid; place-items: center; }
+  .os-hv__icon { width: 88px; height: 88px; border-radius: 22px; box-shadow: 0 18px 40px -16px rgba(37, 99, 235, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.6); }
+  .os-hv__chip {
+    position: absolute;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    color: #1e3a8a;
+    background: #fff;
+    box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(37, 99, 235, 0.12);
+  }
+  .os-hv__chip b { font-weight: 600; }
+  .os-hv__chip--a { top: -1.75rem; left: 4.5rem; }
+  .os-hv__chip--b { bottom: -1.5rem; right: 4.25rem; color: #334155; }
+  .os-proj__visual--heresmychurch { background: radial-gradient(70% 90% at 50% 50%, #2c1660, transparent 70%), #1e1040; }
+  .os-map { width: min(80%, 22rem); }
+
   .os-proj__brand { display: flex; align-items: center; gap: 0.85rem; margin: 0; }
   .os-proj__brand img { width: 44px; height: 44px; border-radius: 11px; }
   .os-proj__name { display: block; font-family: var(--font-display); font-size: 1.375rem; font-weight: 600; letter-spacing: -0.02em; }
@@ -158,14 +196,13 @@ const description =
   .os-proj__facts a { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-rule); text-underline-offset: 3px; }
   .os-proj__facts a:hover { text-decoration-color: currentColor; }
 
-  .os-proj__ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0; }
-  @media (min-width: 48rem) { .os-proj__ctas { flex-direction: column; align-items: stretch; } }
+  .os-proj__ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: auto 0 0; padding-top: 1.75rem; }
   .os-proj__ctas .nx-btn { white-space: nowrap; }
   .os-gh { width: 1.1rem; height: 1.1rem; }
   .os-stars { margin-left: 0.25rem; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; font-variant-numeric: tabular-nums; background: color-mix(in srgb, currentColor 14%, transparent); }
 
   /* Here's My Church in its own colours. */
-  .os-proj--hmc { border-color: color-mix(in srgb, #a855f7 22%, var(--color-rule)); background: color-mix(in srgb, #a855f7 4%, var(--color-paper)); }
+  .os-proj--hmc { border-color: color-mix(in srgb, #a855f7 22%, var(--color-rule)); }
   .os-proj__go { color: #fff; background: linear-gradient(135deg, #b46cf8 0%, #8b3fd9 55%, #6b21a8 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 20px -10px rgba(139, 63, 217, 0.8); }
   .os-proj__go:hover { color: #fff; filter: brightness(1.08); }
 
