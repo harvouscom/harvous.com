@@ -205,6 +205,14 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
         </ul>
       </section>
     )}
+    {page.kind === "feature" && posts.length > 0 && (
+      <section class="nx-wrap pd-sec" aria-labelledby="posts-title">
+        <h2 id="posts-title" class="pd-h2 pd-h2--sec">From the blog</h2>
+        <ul class="pd-posts" role="list">
+          {posts.map((p) => <li><BlogNextCard post={p} /></li>)}
+        </ul>
+      </section>
+    )}
   </article>
 
   <ClosingCall
@@ -218,14 +226,6 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
     secondaryLabel={page.kind === "addon" ? "See all pricing" : undefined}
   />
 
-  {page.kind === "feature" && posts.length > 0 && (
-    <section class="nx-wrap pd-sec" aria-labelledby="posts-title">
-      <h2 id="posts-title" class="pd-h2 pd-h2--sec">From the blog</h2>
-      <ul class="pd-posts" role="list">
-        {posts.map((p) => <li><BlogNextCard post={p} /></li>)}
-      </ul>
-    </section>
-  )}
 </NextLayout>
 
 <style>
