@@ -327,7 +327,10 @@ async function openPage(page, path) {
 /** Home: the hero itself, as it stands — headline, then the app rising beneath it. */
 async function heroShot(page, path, hide = []) {
   if (!(await openPage(page, path))) return null;
-  if (hide.length) await page.css(`${hide.join(", ")} { display: none !important; }`);
+  /* Hidden but its top margin kept: the headline keeps its room, so the app
+     doesn't ride up into the "actually" note, without pushing the app (and the
+     Suggestion card) off the bottom of the card. */
+  if (hide.length) await page.css(`${hide.join(", ")} { visibility: hidden !important; height: 1.75rem !important; overflow: hidden !important; }`);
   /* A 920px-wide slice, scaled up to 1200: the type reads a size larger than
      at desktop width, still above the hero's 56rem breakpoint. */
   const cw = 920;
