@@ -15,6 +15,8 @@ import { ogCard } from "../lib/og-card.ts";
 import { formatStars, getRepoStars } from "../lib/github-stars.ts";
 import { SUPPORT_EMAIL } from "../lib/faq";
 import HmcMap from "../components/next/HmcMap.astro";
+import AppNote from "../components/next/app/AppNote.astro";
+import { backdropSrc } from "../lib/next/content.ts";
 
 type Project = {
   id: string;
@@ -83,11 +85,10 @@ const description =
           {p.id === "heresmychurch" ? (
             <div class="os-map"><HmcMap uid="os-hmc" /></div>
           ) : (
-            <div class="os-hv">
-              <span class="os-hv__chip os-hv__chip--a"><b>Romans 8:28</b> NLT</span>
-              <img class="os-hv__icon" src={p.icon} alt="" width="88" height="88" loading="lazy" />
-              <span class="os-hv__chip os-hv__chip--b">Thread · Going through Romans</span>
-            </div>
+            <>
+              <img class="os-hv__sky" src={backdropSrc("053")} alt="" loading="lazy" decoding="async" />
+              <div class="os-hv__note aui"><AppNote note="faithful" compact /></div>
+            </>
           )}
         </div>
         <div class="os-proj__body">
@@ -159,27 +160,21 @@ const description =
 
   /* The top visuals: Harvous on its blue grid, Here's My Church on its map. */
   .os-proj__visual { position: relative; display: grid; place-items: center; height: 15rem; overflow: hidden; }
-  .os-proj__visual--harvous {
-    background:
-      linear-gradient(to right, rgba(37, 99, 235, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
-      linear-gradient(to bottom, rgba(37, 99, 235, 0.09) 1px, transparent 1px) 0 0 / 24px 24px,
-      radial-gradient(60% 80% at 50% 45%, #dbeafe, #eff6ff 70%);
-  }
-  .os-hv { position: relative; display: grid; place-items: center; }
-  .os-hv__icon { width: 88px; height: 88px; border-radius: 22px; box-shadow: 0 18px 40px -16px rgba(37, 99, 235, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.6); }
-  .os-hv__chip {
+  /* Harvous: the app itself, a note rising off the bottom edge of a sky, the
+     way the homepage hero frames it. */
+  .os-proj__visual--harvous { background: #eef4fb; }
+  .os-hv__sky { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(2px) saturate(1.05); transform: scale(1.05); }
+  .os-hv__note {
     position: absolute;
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.8125rem;
-    white-space: nowrap;
-    color: #1e3a8a;
-    background: #fff;
-    box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(37, 99, 235, 0.12);
+    left: 50%;
+    top: 2.25rem;
+    width: 30rem;
+    transform: translateX(-50%);
+    zoom: 0.78;
+    border-radius: 16px;
+    box-shadow: 0 24px 48px -20px rgba(15, 23, 42, 0.45);
   }
-  .os-hv__chip b { font-weight: 600; }
-  .os-hv__chip--a { top: -1.75rem; left: 4.5rem; }
-  .os-hv__chip--b { bottom: -1.5rem; right: 4.25rem; color: #334155; }
+  @media (max-width: 40rem) { .os-hv__note { zoom: 0.6; top: 2rem; } }
   .os-proj__visual--heresmychurch { background: radial-gradient(70% 90% at 50% 50%, #2c1660, transparent 70%), #1e1040; }
   .os-map { width: min(80%, 22rem); }
 
