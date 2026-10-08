@@ -14,6 +14,23 @@ export type Backdrop =
 
 export const backdropSrc = (id: Backdrop) => `/images/auth-hero/ai_bg_${id}.webp`;
 
+/**
+ * The light skies that stand behind app mocks (StudyScenes, ChurchScenes,
+ * FeatureWalkthrough, FeatureCarousel…), one per old tint colour so a stage
+ * keeps its hue. Light enough that a white app card reads on any of them.
+ */
+const STAGE_SKIES: Record<string, Backdrop> = {
+  sky: "077",
+  amber: "050",
+  mint: "058",
+  violet: "076",
+  coral: "045",
+  blue: "075",
+  teal: "075",
+};
+/** `--sky` for an `.nx-sky` stage, from a tint name ("sky", "amber"…). */
+export const stageSky = (tint: string) => `--sky: url(${backdropSrc(STAGE_SKIES[tint] ?? "077")});`;
+
 /** The app views AppScene can draw live. */
 export type AppView = "activity" | "read" | "write" | "library" | "share";
 

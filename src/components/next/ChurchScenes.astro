@@ -20,6 +20,7 @@ import AppIcon from "./app/AppIcon.astro";
 import FeatureChip from "./FeatureChip.astro";
 import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
 import type { ForAudienceFeatureLink, ForAudienceSection } from "../../lib/for-audiences-data.ts";
+import { stageSky } from "../../lib/next/content.ts";
 
 interface Props {
   sections: ForAudienceSection[];
@@ -95,7 +96,7 @@ const plans = {
           )}
         </div>
 
-        <div class="chs__stage" style={`--wash: var(--tint-${washes[i % washes.length]}); --reveal-delay: 120ms;`} data-reveal>
+        <div class="chs__stage nx-sky" style={`${stageSky(washes[i % washes.length])} --reveal-delay: 120ms;`} data-reveal>
           {section.visual === "feed" && (
             <div class="aui feed" data-scene="feed" data-state="push" role="group" aria-label="Example: a congregant's Home after their church publishes">
               <button type="button" class="feed__push" data-go="feed">
@@ -426,7 +427,6 @@ const plans = {
     place-items: center;
     padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.75rem);
     border-radius: var(--nx-radius-scene);
-    background: var(--wash);
     min-height: 22rem;
   }
   .chs__stage > * { width: 100%; max-width: 30rem; }

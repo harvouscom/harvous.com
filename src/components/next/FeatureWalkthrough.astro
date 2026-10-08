@@ -10,6 +10,7 @@
  */
 import ShowcaseVisual from "./ShowcaseVisual.astro";
 import type { ProductStep } from "../../lib/product-page-data.ts";
+import { stageSky } from "../../lib/next/content.ts";
 
 interface Props {
   steps: ProductStep[];
@@ -48,7 +49,7 @@ const id = (i: number) => `step-${i + 1}`;
             <h3 class="fw__title">{step.title}</h3>
             <p>{step.body}</p>
           </div>
-          <div class="fw__stage" style={`--wash: var(--tint-${step.color ?? washes[i % washes.length]});`}>
+          <div class="fw__stage nx-sky" style={`${stageSky(step.color ?? washes[i % washes.length])}`}>
             <ShowcaseVisual name={step.visual} label={step.label} />
           </div>
         </div>
@@ -103,7 +104,6 @@ const id = (i: number) => `step-${i + 1}`;
     min-height: 22rem;
     padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
     border-radius: var(--nx-radius-scene);
-    background: var(--wash);
   }
   .fw__stage > :global(*) { width: 100%; max-width: 26rem; }
 

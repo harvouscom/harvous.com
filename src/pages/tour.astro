@@ -20,6 +20,7 @@ import ComparePreview from "../components/next/ComparePreview.astro";
 import ShowcaseVisual from "../components/next/ShowcaseVisual.astro";
 import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
 import { TOUR_STAGING as STAGING } from "../lib/next/tour-staging.ts";
+import { stageSky } from "../lib/next/content.ts";
 
 const chapters = APP_TOUR_CHAPTERS.filter((c) => STAGING[c.key]);
 const pad = (n: number) => String(n + 1).padStart(2, "0");
@@ -96,7 +97,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
                       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
                     </button>
                   </p>
-                  <div class="tour-ch__peek-stage"><ShowcaseVisual name={item.visual} label={item.desc} /></div>
+                  <div class="tour-ch__peek-stage nx-sky" style={stageSky("sky")}><ShowcaseVisual name={item.visual} label={item.desc} /></div>
                   {item.href && <a class="nx-link tour-ch__peek-link" href={item.href}>More on {item.title} →</a>}
                 </div>
               </div>
@@ -262,7 +263,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   .tour-ch__close { display: grid; place-items: center; width: 2rem; height: 2rem; border: 0; border-radius: 999px; color: var(--color-ink-soft); background: var(--color-warm); cursor: pointer; }
   .tour-ch__close:hover { color: var(--color-ink); }
   .tour-ch__close svg { width: 0.8rem; height: 0.8rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
-  .tour-ch__peek-stage { display: grid; place-items: center; padding: 1.25rem 0.75rem; border-radius: 1rem; background: var(--tint-blue); }
+  .tour-ch__peek-stage { display: grid; place-items: center; padding: 1.25rem 0.75rem; border-radius: 1rem; }
   .tour-ch__peek-link { justify-self: start; font-size: 0.9375rem; }
   @keyframes tour-peek { from { opacity: 0; transform: scale(0.98); } }
   @media (prefers-reduced-motion: reduce) { .tour-ch__peek { animation: none; } }

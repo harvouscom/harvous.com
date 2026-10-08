@@ -25,6 +25,7 @@ import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib
 import { fathomSignup, fathomTry, fathomCompare } from "../lib/fathom-events.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 import { SOON_LABEL } from "../lib/coming-soon-grid.ts";
+import { stageSky } from "../lib/next/content.ts";
 
 interface Props {
   page: ProductPage;
@@ -111,7 +112,7 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
       <section class="nx-wrap pd-showcases" aria-label="A closer look">
         {page.showcases.map((s, i) => (
           <div class:list={["pd-showcase", (s.reverse ? i % 2 === 0 : i % 2 === 1) && "is-flip"]}>
-            <div class="pd-showcase__stage" style={`--wash: var(--tint-${s.color});`}>
+            <div class="pd-showcase__stage nx-sky" style={`${stageSky(s.color)}`}>
               <ShowcaseVisual name={s.visual} label={s.label} />
             </div>
             <div class="pd-showcase__text">
@@ -297,7 +298,6 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
     place-items: center;
     padding: clamp(1.25rem, 3vw, 2rem);
     border-radius: 1.5rem;
-    background: var(--wash);
     min-height: 19rem;
   }
   .pd-showcase__title { margin-top: 0.5rem; }

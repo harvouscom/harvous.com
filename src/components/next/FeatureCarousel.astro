@@ -8,6 +8,7 @@
  */
 import ShowcaseVisual from "./ShowcaseVisual.astro";
 import { SOON_LABEL } from "../../lib/coming-soon-grid.ts";
+import { stageSky } from "../../lib/next/content.ts";
 
 export type FeatureCarouselItem = {
   title: string;
@@ -51,7 +52,7 @@ const id = `fcar-${Math.random().toString(36).slice(2, 8)}`;
       return (
         <li class="fcar__item">
           <Tag class:list={["fcar__card", f.href && "fcar__card--link"]} href={f.href}>
-            <span class="fcar__stage" style={`--wash: var(--tint-${washes[i % washes.length]});`} aria-hidden="true">
+            <span class="fcar__stage nx-sky" style={`${stageSky(washes[i % washes.length])}`} aria-hidden="true">
               {f.visual && <span class="fcar__visual"><ShowcaseVisual name={f.visual} label={f.label ?? f.title} /></span>}
             </span>
             <span class="fcar__words">
@@ -140,7 +141,7 @@ const id = `fcar-${Math.random().toString(36).slice(2, 8)}`;
   .fcar__card:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
   /* The feature at work, scaled to fit a 13rem stage and cropped at the bottom. */
-  .fcar__stage { position: relative; display: block; height: 13rem; overflow: hidden; background: var(--wash); }
+  .fcar__stage { position: relative; display: block; height: 13rem; overflow: hidden; }
   .fcar__visual { position: absolute; left: 50%; top: 1.25rem; width: 26rem; transform: translateX(-50%); zoom: 0.72; pointer-events: none; }
 
   .fcar__words { display: flex; flex: 1; flex-direction: column; gap: 0.35rem; padding: 1.1rem 1.25rem 1.25rem; }
