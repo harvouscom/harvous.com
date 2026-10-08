@@ -12,6 +12,7 @@
 import { Icon } from "astro-icon/components";
 import type { UseCase } from "../../lib/use-cases-data.ts";
 import { getUseCaseDisplayTitle } from "../../lib/use-cases-data.ts";
+import { SOON_LABEL } from "../../lib/coming-soon-grid.ts";
 
 type CardData = Pick<UseCase, "href" | "image" | "icon" | "ink" | "tagline" | "comingSoon"> &
   Partial<UseCase>;
@@ -41,7 +42,7 @@ const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
   <span class="ucard__text">
     <span class="ucard__title">
       {title}
-      {useCase.comingSoon && <span class="ucard__soon">Coming soon</span>}
+      {useCase.comingSoon && <span class="ucard__soon">{SOON_LABEL}</span>}
     </span>
     <span class="ucard__tagline">{useCase.tagline}</span>
     <span class="ucard__more">See how <span aria-hidden="true">→</span></span>

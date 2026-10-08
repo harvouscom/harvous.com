@@ -1,6 +1,7 @@
 ---
 /**
- * FaqSection — the homepage FAQ as quick answers. Every card shows its question
+ * FaqSection — the FAQ as quick answers, on /faq/ (as the whole page) and at
+ * the end of /pricing/. Every card shows its question
  * and a one-line answer, so skimming takes no clicks; opening a card turns it
  * into a full-row panel with the whole answer and a next step. Search, "See
  * all", and copy-link live in src/scripts/faq-section.ts. With no JS it's a
@@ -11,7 +12,6 @@
  * otherwise push into :global().
  */
 import { render } from "astro:content";
-import Container from "./layout/Container.astro";
 import { SUPPORT_EMAIL, faqAnchorId, getFaqEntries, liveFaqNext } from "../lib/faq";
 
 interface Props {
@@ -19,6 +19,8 @@ interface Props {
   page?: boolean;
 }
 const { page = false } = Astro.props;
+/* Under the page's h1 the questions are the next level down; under a section's h2, one more. */
+const QHeading = page ? "h2" : "h3";
 
 const entries = await getFaqEntries("home");
 const items = await Promise.all(
@@ -32,16 +34,16 @@ const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A que
 
 {items.length > 0 && (
   <section class:list={["faq-section", { "frame-divider": !page, "faq-section--page": page }]} id="faq" data-faq>
-    <Container size="xl">
+    <div class="nx-wrap">
       <div class="faq-head" data-reveal>
         <div class="faq-head__intro">
-          <span class="eyebrow-pill">FAQ</span>
+          <p class="nx-kicker">FAQ</p>
           {page ? (
-            <h1 class="section-title">Guaranteed questions</h1>
+            <h1 class="nx-display faq-head__title">Guaranteed questions</h1>
           ) : (
-            <h2 class="section-title">Guaranteed questions</h2>
+            <h2 class="nx-title faq-head__title">Guaranteed questions</h2>
           )}
-          <p class="lead">The short answers, up front. Open any card for the whole story.</p>
+          <p class="nx-lead">The short answers, up front. Open any card for the whole story.</p>
         </div>
 
         <div class="faq-search" role="search">
@@ -76,7 +78,7 @@ const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A que
           <li class="faq-grid__item" data-keywords={entry.data.keywords.join(" ")}>
             <details class="faq-card" id={faqAnchorId(entry)} name="faq-home">
               <summary class="faq-card__summary">
-                <h3 class="faq-card__question" data-faq-text>{entry.data.question}</h3>
+                <QHeading class="faq-card__question" data-faq-text>{entry.data.question}</QHeading>
                 <span class="faq-card__short" data-faq-text>{entry.data.short}</span>
                 <span class="faq-card__toggle" aria-hidden="true">
                   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -96,7 +98,7 @@ const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A que
                   )}
                   <button
                     type="button"
-                    class="btn-pill faq-card__copy"
+                    class="faq-card__copy"
                     data-copy-link={`#${faqAnchorId(entry)}`}
                     aria-label="Copy a link to this question"
                   >
@@ -122,14 +124,14 @@ const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A que
       <p class="sr-only" role="status" data-faq-status></p>
 
       <div class="faq-foot" data-faq-foot>
-        <button type="button" class="btn-pill faq-more" aria-controls="faq-grid" data-faq-more hidden={page}>
+        <button type="button" class="nx-btn nx-btn--ghost faq-more" aria-controls="faq-grid" data-faq-more hidden={page}>
           See all {items.length} questions
         </button>
         <p class="faq-closing">
           Still wondering? <a href={closingHref}>Email me</a> — I read everything.
         </p>
       </div>
-    </Container>
+    </div>
   </section>
 )}
 
@@ -160,6 +162,8 @@ const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A que
   .faq-head__intro > * + * {
     margin-top: 0.85rem;
   }
+  .faq-head__title { margin-bottom: 0; }
+  .faq-section--page .faq-head__intro { max-width: 46rem; }
 
   /* Search pill — BlogSearchBar's `page` variant, sized for this row. */
   .faq-search {
@@ -439,10 +443,22 @@ const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A que
     text-underline-offset: 3px;
   }
   .faq-card__copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     margin-left: auto;
     padding: 0.35rem 0.8rem;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
     font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
   }
+  .faq-card__copy:hover { background: color-mix(in srgb, var(--color-ink) 9%, transparent); }
   .faq-card__copy-icon {
     flex: none;
     width: 0.85rem;
@@ -504,9 +520,7 @@ const closingHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A que
     margin-top: clamp(1.5rem, 3.5vw, 2rem);
     text-align: center;
   }
-  .faq-more {
-    padding: 0.5rem 1.1rem;
-  }
+  .faq-more { font: inherit; font-weight: 500; border: 0; cursor: pointer; }
   .faq-closing {
     font-size: 0.95rem;
     line-height: 1.5;

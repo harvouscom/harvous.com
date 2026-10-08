@@ -2,13 +2,6 @@
 
 Things noticed along the way that are worth doing, but not yet.
 
-## Leftover old Harvous icon
-
-`public/images/app-icon.webp` is the old square-glyph icon. Everything now uses `public/images/harvous-2-icon.webp` (and `.png`), including the page OG cards.
-
-- `scripts/compress-images.sh` (line ~76) still lists `icons/app-icon.png`. Check whether anything needs it.
-- Once nothing references `app-icon.webp`, delete it.
-
 ## Compare popularity
 
 The hub's icon strips are ordered by App Store rating count, which doesn't refresh on its own. Rerun `npm run compare:popularity` now and then, and add an App Store id to `scripts/fetch-compare-popularity.mjs` for each new compare entry that has an app.

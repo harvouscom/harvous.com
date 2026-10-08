@@ -124,7 +124,7 @@ export function brightEnoughBlogJsonLd(
       url: origin,
       logo: {
         "@type": "ImageObject",
-        url: new URL("/images/harvous-2-icon.png", origin).toString(),
+        url: new URL("/images/harvous-2-icon-512.png", origin).toString(),
       },
     },
     ...extras,
@@ -240,17 +240,6 @@ export const BLOG_CATEGORY_PRODUCT_BRIDGE: Record<BlogCategory, BlogProductBridg
   },
 };
 
-export function blogFeatureIds(
-  category: BlogCategory,
-  override?: string[],
-): string[] {
-  const ids =
-    override && override.length > 0
-      ? override
-      : (BLOG_CATEGORY_FEATURE_IDS[category] ?? BLOG_CATEGORY_FEATURE_IDS["using-harvous"]);
-  return ids.slice(0, 3);
-}
-
 export function blogProductBridgeCopy(category: BlogCategory): BlogProductBridgeCopy {
   return BLOG_CATEGORY_PRODUCT_BRIDGE[category] ?? BLOG_CATEGORY_PRODUCT_BRIDGE["using-harvous"];
 }
@@ -338,7 +327,7 @@ export const BLOG_AUTHORS: Record<string, BlogAuthor> = {
     name: "Bright Enough",
     kind: "house",
     role: "The Harvous blog",
-    avatar: "/images/harvous-2-icon.png",
+    avatar: "/images/harvous-2-icon-sm.webp",
   },
   derek: {
     id: "derek",

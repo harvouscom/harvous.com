@@ -1,7 +1,11 @@
 ---
+/**
+ * /blog/<topic>/ — one Bright Enough topic: the new-style intro with its
+ * icon and a search scoped to the topic, then its posts as cards, paged.
+ */
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
-import BlogCard from "./BlogCard.astro";
+import BlogNextCard from "./next/BlogNextCard.astro";
 import BlogCategoryPagination from "./BlogCategoryPagination.astro";
 import BlogSearchBar from "./BlogSearchBar.astro";
 import BlogTopicBlocks from "./BlogTopicBlocks.astro";
@@ -15,7 +19,6 @@ import {
   blogCategoryIcon,
   blogCategoryLabel,
   blogCategoryLead,
-  blogReadingMinutes,
   getBlogCategoryPage,
   includeBlogDrafts,
   isBlogPostListed,
@@ -75,96 +78,89 @@ const jsonLd = [
 
 <NextLayout
   ogImage={ogCard(`blog-${category}`)}
-  frame
   title={title}
   description={description}
   jsonLd={jsonLd}
   noindex={page.currentPage > 1}
 >
-  <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-10 text-center md:py-14" data-reveal>
-      <p class="eyebrow">Bright Enough</p>
-      <h1 class="mt-3 flex flex-wrap items-center justify-center gap-3 font-display text-4xl tracking-tight md:text-5xl">
-        <span
-          class="inline-flex size-10 items-center justify-center rounded-xl md:size-11"
-          style={`background: color-mix(in oklab, ${color.bg} 55%, var(--color-card)); color: ${color.ink};`}
-          aria-hidden="true"
-        >
-          <Icon name={icon} class="h-5 w-5" />
-        </span>
-        {label}
-      </h1>
-      <p class="mx-auto mt-4 max-w-sm text-lg leading-relaxed text-pretty text-[var(--color-ink-soft)] md:max-w-md">
-        {leadSentence}
-      </p>
-      <div class="mx-auto mt-8 max-w-md">
-        <BlogSearchBar
-          variant="page"
-          category={category}
-          inputId={`blog-search-${category}`}
-          placeholder={`Search ${label}…`}
-        />
-      </div>
+  <header class="nx-wrap bc-intro">
+    <a class="bc-back" href="/blog/">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+      Bright Enough
+    </a>
+    <span
+      class="bc-tile"
+      style={`background: color-mix(in oklab, ${color.bg} 55%, var(--color-paper)); color: ${color.ink};`}
+      aria-hidden="true"
+    >
+      <Icon name={icon} />
+    </span>
+    <h1 class="nx-display bc-title">{label}</h1>
+    <p class="nx-lead bc-lead">{leadSentence}</p>
+    <div class="bc-search">
+      <BlogSearchBar
+        variant="page"
+        category={category}
+        inputId={`blog-search-${category}`}
+        placeholder={`Search ${label}…`}
+      />
     </div>
+  </header>
+
+  <section class="nx-wrap bc-sec" aria-label={label}>
+    {page.posts.length > 0 ? (
+      <>
+        <ul class="bc-grid" role="list" data-reveal="stagger">
+          {page.posts.map((post) => (
+            <li><BlogNextCard post={post} headingLevel="h2" /></li>
+          ))}
+        </ul>
+        <BlogCategoryPagination page={page} />
+      </>
+    ) : (
+      <p class="bc-empty">Nothing in this topic yet.</p>
+    )}
   </section>
 
-  <section class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-12 md:py-16" aria-label={label}>
-    {
-      page.posts.length > 0 ? (
-        <>
-          <div data-reveal>
-            {page.posts.map((post) => (
-              <BlogCard
-                title={post.data.title}
-                description={post.data.description}
-                publishDate={post.data.publishDate}
-                category={post.data.category}
-                slug={post.id}
-                readingTime={blogReadingMinutes(post.body)}
-                draft={post.data.draft}
-                variant="story"
-              />
-            ))}
-          </div>
-          <BlogCategoryPagination page={page} />
-        </>
-      ) : (
-        <p class="text-center text-[var(--color-ink-soft)]">Nothing in this topic yet.</p>
-      )
-    }
-  </section>
-
-  <section class="frame-divider" aria-labelledby="blog-category-hub-title">
-    <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-14 text-center md:py-16">
-      <BlogTopicBlocks current={category} />
-
-      <h2
-        id="blog-category-hub-title"
-        class="mt-8 font-display text-2xl tracking-tight text-[var(--color-ink)] md:text-3xl"
-      >
-        Bright Enough
-      </h2>
-      <p class="mx-auto mt-3 max-w-md text-[var(--color-ink-soft)]">
-        Bright Enough is the Harvous blog — notes, habits, and teaching that show up after Sunday.
-      </p>
-      <div class="mt-8 flex justify-center">
-        <a
-          href="/blog/"
-          class="btn-pill inline-flex items-center gap-1.5"
-          data-blog-topic-blocks-trigger
-        >
-          <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path
-              fill-rule="evenodd"
-              d="M14 8a.75.75 0 0 1-.75.75H3.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L3.56 7.25H13.25A.75.75 0 0 1 14 8Z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          Back to Bright Enough
-        </a>
-      </div>
-    </div>
+  <section class="nx-wrap bc-more" aria-labelledby="bc-more-title">
+    <BlogTopicBlocks current={category} />
+    <h2 id="bc-more-title" class="bc-more__h">More from Bright Enough</h2>
+    <p class="bc-more__p">Notes, habits, and teaching that show up after Sunday.</p>
+    <a class="nx-btn nx-btn--ghost" href="/blog/" data-blog-topic-blocks-trigger>Back to Bright Enough</a>
   </section>
 
   <ClosingCall />
 </NextLayout>
+
+<style>
+  .bc-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .bc-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.8rem 0.35rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+    text-decoration: none;
+  }
+  .bc-back:hover { background: color-mix(in srgb, var(--color-ink) 9%, transparent); }
+  .bc-back svg { width: 0.85rem; height: 0.85rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .bc-tile { display: grid; place-items: center; width: 3rem; height: 3rem; margin: 1.5rem auto 0; border-radius: 0.9rem; }
+  .bc-tile :global(svg) { width: 1.35rem; height: 1.35rem; }
+  .bc-title { margin: 1rem 0 0; }
+  .bc-lead { max-width: 32rem; margin: 1rem auto 0; }
+  .bc-search { max-width: 28rem; margin: 2rem auto 0; }
+
+  .bc-sec { padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .bc-grid { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  @media (min-width: 40rem) { .bc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .bc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .bc-empty { text-align: center; color: var(--color-ink-soft); }
+
+  .bc-more { padding-block: clamp(4rem, 9vw, 6rem) 0; text-align: center; }
+  .bc-more__h { margin: 2rem 0 0; font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 600; letter-spacing: -0.025em; }
+  .bc-more__p { max-width: 28rem; margin: 0.6rem auto 1.5rem; color: var(--color-ink-soft); }
+</style>

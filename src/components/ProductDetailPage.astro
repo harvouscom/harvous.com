@@ -9,6 +9,7 @@ import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import ConnectorScenes from "./next/ConnectorScenes.astro";
+import FeatureWalkthrough from "./next/FeatureWalkthrough.astro";
 import ShowcaseVisual from "./next/ShowcaseVisual.astro";
 import ComparePreview from "./next/ComparePreview.astro";
 import BlogNextCard from "./next/BlogNextCard.astro";
@@ -23,6 +24,7 @@ import { buildAddonJsonLd, buildFeatureJsonLd, hasDetailContent } from "../lib/p
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
 import { fathomSignup, fathomTry, fathomCompare } from "../lib/fathom-events.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
+import { SOON_LABEL } from "../lib/coming-soon-grid.ts";
 
 interface Props {
   page: ProductPage;
@@ -65,26 +67,34 @@ const fathomTrack = page.kind === "feature" ? fathomTry.featureDetail(page.slug)
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
 const draftSlug = page.href.replace(/^\/|\/$/g, "");
 const isDraft = isDraftPageSlug(draftSlug);
+/* A walkthrough replaces the prose sections and the single showcase row. */
+const steps = page.steps ?? [];
+const hasSteps = steps.length > 0;
 const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon-${page.slug}`);
 ---
 
 <NextLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} noindex={isDraft} jsonLd={jsonLd}>
   <article style={`--pd-ink: ${page.ink}; --pd-ink-fg: ${page.inkFg ?? page.ink};`}>
     <header class="nx-wrap pd-intro">
-      <a class="pd-back" href={backHref}>
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
-        {backLabel}
-      </a>
-      <span class="pd-tile" aria-hidden="true"><Icon name={page.icon} /></span>
-      <p class="pd-badges">
-        <span class="pd-badge">{page.title}</span>
-        {page.comingSoon && <span class="pd-badge pd-badge--soon">{page.comingSoonLine ?? "Coming soon"}</span>}
-      </p>
+      {/* One row: where it lives (a back link) and what it is (icon + name). */}
+      <nav class="pd-crumb" aria-label="Breadcrumb">
+        <a class="pd-crumb__back" href={backHref}>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+          {backLabel}
+        </a>
+        <span class="pd-crumb__here" aria-current="page">
+          <span class="pd-crumb__icon" aria-hidden="true"><Icon name={page.icon} /></span>
+          {page.title}
+        </span>
+        {page.comingSoon && <span class="pd-crumb__soon">{page.comingSoonLine ?? SOON_LABEL}</span>}
+      </nav>
       <h1 class="nx-display pd-title">{page.heroTitle}</h1>
       <p class="nx-lead pd-lead">{page.heroLead}</p>
     </header>
 
-    {page.sections.some((section) => section.visual) ? (
+    {hasSteps ? (
+      <FeatureWalkthrough steps={steps} name={page.title} />
+    ) : page.sections.some((section) => section.visual) ? (
       <ConnectorScenes sections={page.sections} />
     ) : page.sections.length > 0 && (
       <section class="nx-wrap pd-story" aria-label="The story">
@@ -97,7 +107,7 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
       </section>
     )}
 
-    {page.showcases.length > 0 && (
+    {!hasSteps && page.showcases.length > 0 && (
       <section class="nx-wrap pd-showcases" aria-label="A closer look">
         {page.showcases.map((s, i) => (
           <div class:list={["pd-showcase", (s.reverse ? i % 2 === 0 : i % 2 === 1) && "is-flip"]}>
@@ -127,7 +137,7 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
 
     {page.moments.length > 0 && (
       <section class="nx-wrap pd-sec" aria-labelledby="moments-title">
-        <h2 id="moments-title" class="pd-h2 pd-h2--sec">What that looks like in Harvous</h2>
+        <h2 id="moments-title" class="pd-h2 pd-h2--sec">{hasSteps ? "The details" : "What that looks like in Harvous"}</h2>
         <ul class="pd-moments" role="list" data-reveal="stagger">
           {page.moments.map((m) => (
             <li class="pd-moment">
@@ -195,6 +205,14 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
         </ul>
       </section>
     )}
+    {page.kind === "feature" && posts.length > 0 && (
+      <section class="nx-wrap pd-sec" aria-labelledby="posts-title">
+        <h2 id="posts-title" class="pd-h2 pd-h2--sec">From the blog</h2>
+        <ul class="pd-posts" role="list">
+          {posts.map((p) => <li><BlogNextCard post={p} /></li>)}
+        </ul>
+      </section>
+    )}
   </article>
 
   <ClosingCall
@@ -208,50 +226,50 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
     secondaryLabel={page.kind === "addon" ? "See all pricing" : undefined}
   />
 
-  {page.kind === "feature" && posts.length > 0 && (
-    <section class="nx-wrap pd-sec" aria-labelledby="posts-title">
-      <h2 id="posts-title" class="pd-h2 pd-h2--sec">From the blog</h2>
-      <ul class="pd-posts" role="list">
-        {posts.map((p) => <li><BlogNextCard post={p} /></li>)}
-      </ul>
-    </section>
-  )}
 </NextLayout>
 
 <style>
   .pd-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
-  .pd-back {
+  .pd-crumb {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.25rem;
     border-radius: 999px;
     background: var(--color-warm);
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-ink);
-    text-decoration: none;
   }
-  .pd-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
-  .pd-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-
-  .pd-tile {
-    display: grid;
-    place-items: center;
-    width: 4rem;
-    height: 4rem;
-    margin: 1.75rem auto 0;
-    border-radius: 28%;
+  .pd-crumb__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.55rem;
+    border-radius: 999px;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .pd-crumb__back:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-ink) 7%, transparent); }
+  .pd-crumb__back svg { width: 0.85rem; height: 0.85rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .pd-crumb__here {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 600;
     color: var(--pd-ink-fg);
     background: color-mix(in oklab, var(--pd-ink) 16%, var(--color-paper));
   }
-  .pd-tile :global(svg) { width: 1.6rem; height: 1.6rem; }
-
-  .pd-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.25rem 0 0; }
-  .pd-badge { padding: 0.3rem 0.8rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; color: var(--pd-ink-fg); background: color-mix(in oklab, var(--pd-ink) 14%, var(--color-paper)); }
-  .pd-badge--soon { color: var(--color-ink-soft); background: var(--color-warm); }
-  .pd-title { margin: 1rem auto 0; max-width: 20ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
-  .pd-lead { margin: 1.5rem auto 0; }
+  .pd-crumb__icon { display: inline-grid; place-items: center; }
+  .pd-crumb__icon :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .pd-crumb__soon { padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.8125rem; color: var(--color-ink-soft); }
+  /* Full display size; titles are written to fit two lines (about 44 characters). */
+  .pd-title { margin: 1.5rem auto 0; max-width: 22ch; font-size: clamp(2.5rem, 6vw, 4.5rem); text-wrap: balance; }
+  .pd-lead { max-width: 32rem; margin: 1.25rem auto 0; }
 
   .pd-story { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
   .pd-story__part + .pd-story__part { margin-top: 2.5rem; }
@@ -295,7 +313,7 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
   .pd-bridge p:not(.nx-kicker) { margin: 0.6rem 0 0.9rem; }
 
   .pd-sec { padding-top: clamp(4rem, 9vw, 6rem); }
-  .pd-h2--sec { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; }
+  .pd-h2--sec { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 600; letter-spacing: -0.03em; }
   .pd-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
 
   .pd-moments {

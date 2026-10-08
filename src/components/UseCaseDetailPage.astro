@@ -18,7 +18,7 @@ import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import { getUseCaseBySlug, getUseCaseDisplayTitle, type UseCase } from "../lib/use-cases-data.ts";
-import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
+import { getComingSoonGridItem, SOON_LABEL } from "../lib/coming-soon-grid.ts";
 import { getAudiencesForUseCase } from "../lib/for-audiences-data.ts";
 import { FEATURE_ICONS } from "../lib/feature-icons.ts";
 import { hasDetailContent } from "../lib/product-page-data.ts";
@@ -92,7 +92,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
       </a>
       <p class="ud-badges">
         <span class="ud-badge">{title}</span>
-        {useCase.comingSoon && <span class="ud-badge ud-badge--soon">{useCase.comingSoonLine ?? "Coming soon"}</span>}
+        {useCase.comingSoon && <span class="ud-badge ud-badge--soon">{useCase.comingSoonLine ?? SOON_LABEL}</span>}
       </p>
       <h1 class="nx-display ud-title">{useCase.heroTitle}</h1>
       <p class="nx-lead ud-lead">{useCase.heroLead}</p>
@@ -171,7 +171,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
                   <span class="ud-row__text">
                     <span class="ud-row__title">
                       {f.title}
-                      {f.soon && <span class="ud-row__soon">Coming soon</span>}
+                      {f.soon && <span class="ud-row__soon">{SOON_LABEL}</span>}
                     </span>
                     <span class="ud-row__desc">{f.desc}</span>
                   </span>
@@ -237,7 +237,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
   </article>
 
   <ClosingCall
-    title={useCase.heroTitle.length > 60 ? "Start with the way you already study." : useCase.heroTitle}
+    title={useCase.closingTitle}
     lead={useCase.tagline}
     href={buildTryUrl({ useCase: useCase.slug })}
     fathomTrack={fathomTry.useCaseDetail(useCase.slug)}
@@ -313,7 +313,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
   .ud-story p :global(a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 
   .ud-sec { padding-top: clamp(4rem, 9vw, 6rem); }
-  .ud-h2--sec { font-size: clamp(1.5rem, 2.6vw, 2rem); letter-spacing: -0.025em; }
+  .ud-h2--sec { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 600; letter-spacing: -0.03em; }
   .ud-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
   .ud-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
   .ud-more { font-size: 0.9375rem; font-weight: 500; color: var(--color-ink); text-decoration: none; white-space: nowrap; }

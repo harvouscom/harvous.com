@@ -18,6 +18,8 @@ import ClosingCall from "../../components/next/ClosingCall.astro";
 import SectionNav from "../../components/next/SectionNav.astro";
 import ResourcePlate from "../../components/next/ResourcePlate.astro";
 import {
+  compareIconPng,
+  compareIconSrc,
   compareTypeToId,
   getCompareByType,
   getCompareBySlug,
@@ -45,10 +47,10 @@ const types = getCompareTypes();
 const FEATURED_SLUG = "apple-notes";
 const featured = getCompareBySlug(FEATURED_SLUG) ?? entries[0];
 
-const iconSrc = (e: CompareEntry) => `/images/compare/icons/${e.slug}.png`;
+const iconSrc = (e: CompareEntry) => compareIconSrc(e.slug);
 
 /* The featured card's sky takes the featured app's colour. */
-const featuredSky = await backdropForImage(iconSrc(featured));
+const featuredSky = await backdropForImage(compareIconPng(featured.slug));
 
 /** "Apple Notes is great at quick capture" — the competitor's half of the CSV intro. */
 const theirHalf = (e: CompareEntry) => {
@@ -149,7 +151,7 @@ const guides = guidePages
       tone: look.tone,
       cover: `/images/auth-hero/${look.cover}.webp`,
       picks: picks.length,
-      icons: others.slice(0, 3).map((p) => `/images/compare/icons/${p.slug}.png`),
+      icons: others.slice(0, 3).map((p) => compareIconSrc(p.slug)),
       more: Math.max(0, others.length - 3),
     };
   });

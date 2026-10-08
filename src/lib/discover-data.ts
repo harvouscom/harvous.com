@@ -470,10 +470,6 @@ export function getDiscoverCategories(): DiscoverCategory[] {
   return readCatalog().categories;
 }
 
-export function getDiscoverListingBySlug(slug: string): DiscoverListing | undefined {
-  return getDiscoverListings().find((listing) => listing.slug === slug);
-}
-
 /** Only categories with something in them — a heading over an empty list is a dead end. */
 /**
  * The glyph each kind wears — the app's, not ours. `list-check` is
@@ -714,10 +710,6 @@ export const DISCOVER_KIND_BLURB: Record<DiscoverKind, string> = {
 export function discoverCategoryLabel(id: string | null): string {
   if (!id) return "Uncategorized";
   return getDiscoverCategories().find((c) => c.id === id)?.label ?? id;
-}
-
-export function isCuratedListing(listing: DiscoverListing): boolean {
-  return listing.origin === "curated";
 }
 
 /** "BibleProject" → "bibleproject", which is what `/discover/?from=` carries. */

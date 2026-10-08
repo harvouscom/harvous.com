@@ -327,13 +327,27 @@ async function openPage(page, path) {
 /** Home: the hero itself, as it stands — headline, then the app rising beneath it. */
 async function heroShot(page, path, hide = []) {
   if (!(await openPage(page, path))) return null;
-  if (hide.length) await page.css(`${hide.join(", ")} { display: none !important; }`);
+  /* Hidden but its top margin kept: the headline keeps its room, so the app
+     doesn't ride up into the "actually" note, without pushing the app (and the
+     Suggestion card) off the bottom of the card. */
+  if (hide.length) await page.css(`${hide.join(", ")} { visibility: hidden !important; height: 1.75rem !important; overflow: hidden !important; }`);
   /* A 920px-wide slice, scaled up to 1200: the type reads a size larger than
      at desktop width, still above the hero's 56rem breakpoint. */
   const cw = 920;
   await page.viewport(cw, Math.round((cw * H) / W), (W * 2) / cw);
-  const top = await page.eval(`(() => { const h = document.querySelector("h1"); return h.getBoundingClientRect().top + scrollY; })()`);
-  const png = await page.screenshot({ x: 0, y: Math.max(0, top - 56), width: cw, height: Math.round((cw * H) / W) });
+  /* The nav is hidden (PAGE_CLEANUP); the Harvous app icon stands in for it,
+     centred above the headline. */
+  const top = await page.eval(`(async () => {
+    const h = document.querySelector("h1");
+    const mark = new Image();
+    mark.src = "/images/harvous-2-icon.webp";
+    mark.alt = "";
+    mark.style.cssText = "display:block;width:44px;height:44px;margin:0 auto 14px;border-radius:11px;box-shadow:0 6px 16px -8px rgba(15,23,42,.35)";
+    h.parentElement.insertBefore(mark, h);
+    await mark.decode().catch(() => {});
+    return mark.getBoundingClientRect().top + scrollY;
+  })()`);
+  const png = await page.screenshot({ x: 0, y: Math.max(0, top - 28), width: cw, height: Math.round((cw * H) / W) });
   return sharp(png).resize(W, H, { kernel: "lanczos3" });
 }
 

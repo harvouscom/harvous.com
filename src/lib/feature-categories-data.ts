@@ -36,6 +36,8 @@ export type FeatureCategory = {
   seoTitle: string;
   seoDescription: string;
   heroTitle: string;
+  /** The closing call's line — never the hero again. */
+  closingTitle: string;
   heroLead: string;
   /** Matching key in APP_TOUR_CHAPTERS — the page reuses that chapter's shot. */
   tourKey: string;
@@ -64,6 +66,7 @@ const categories: FeatureCategory[] = [
     seoDescription:
       "Harvous opens on the study you have already done. Each day is its own sheet, the days behind it are still there, and what is worth revisiting comes back to you.",
     heroTitle: "Your study is already there. Activity is where you see it.",
+    closingTitle: "Open Harvous to what you already know.",
     heroLead:
       "Most notes apps open on a blank page and leave the remembering to you. Harvous opens on what actually happened — the passages you read, the phrases you marked, the notes you wrote — one sheet per day, with the days behind it still there to flip back through.",
     tourKey: "activity",
@@ -135,6 +138,7 @@ const categories: FeatureCategory[] = [
     seoDescription:
       "Read a chapter in 11 translations, compare two side by side verse for verse, and keep your notes and highlights in the margin where you left them.",
     heroTitle: "Read the chapter with everything you have already said about it.",
+    closingTitle: "Read with your notes beside you.",
     heroLead:
       "Reading somewhere else and taking notes here means two apps and a lost place. In Harvous the chapter and your study are the same surface — margin marks show where you have written, and the chapters either side of the one you are on are right there as paper.",
     tourKey: "read",
@@ -190,6 +194,7 @@ const categories: FeatureCategory[] = [
     seoDescription:
       "Rich text that behaves like any good editor, with scripture references that become links, highlights you can annotate, and templates for the prep you do every week.",
     heroTitle: "Write the way you write anywhere else. Harvous does the connecting.",
+    closingTitle: "Write it once. Find it again.",
     heroLead:
       "Headings, bullets, dividers, links — the editor gets out of the way. What it adds is underneath: every reference you type becomes something you can open later, and every phrase you mark stays findable long after you have closed the note.",
     tourKey: "write",
@@ -246,6 +251,7 @@ const categories: FeatureCategory[] = [
     seoDescription:
       "Browse by kind or search across notes, highlights, scripture and resources in one panel — and act on what comes back without leaving the note underneath.",
     heroTitle: "Browsing and searching stopped being two different places.",
+    closingTitle: "Everything you saved, one panel away.",
     heroLead:
       "Searching is how you retrieve something you can already name. Browsing is how you rediscover the thing you had forgotten you wrote. Harvous needs both, so Search does both: pick a kind, or type what you half-remember, in one panel over the note you are already in.",
     tourKey: "find",
@@ -303,6 +309,7 @@ const categories: FeatureCategory[] = [
     seoDescription:
       "Share a single note by link, or host a space where a group studies together. Your own study stays private; joining a space is always free.",
     heroTitle: "Share one note, or open a room for the whole group.",
+    closingTitle: "Bring your group into the same notes.",
     heroLead:
       "Most of what you write is for you. Some of it is worth handing to one person, and some of it belongs to a group that meets every week. Harvous keeps those three separate on purpose, so sharing something never means exposing everything.",
     tourKey: "share",
@@ -396,6 +403,3 @@ export function getFeatureInk(featureId: string): string {
   return `color-mix(in oklab, ${category.ink} ${tier}%, var(--color-ink))`;
 }
 
-export function getFeatureIdsForCategory(slug: string): string[] {
-  return getFeatureCategoryBySlug(slug)?.featureIds ?? [];
-}

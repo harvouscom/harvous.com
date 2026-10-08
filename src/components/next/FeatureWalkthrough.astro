@@ -1,0 +1,184 @@
+---
+/**
+ * FeatureWalkthrough — a feature page's "how it works": three or four steps,
+ * each the feature at that moment, drawn with the app's own pieces
+ * (ShowcaseVisual). The homepage StoryScroller's mechanic rather than the /for/
+ * zig-zag: on wide screens the numbered steps stay pinned on the left while
+ * the stages scroll past on the right, and the step whose stage is mid-screen
+ * opens up and takes the bar. On narrow screens there's nothing to pin
+ * against, so each stage carries its own caption.
+ */
+import ShowcaseVisual from "./ShowcaseVisual.astro";
+import type { ProductStep } from "../../lib/product-page-data.ts";
+
+interface Props {
+  steps: ProductStep[];
+  /** The feature's name, for the section's label. */
+  name: string;
+}
+const { steps, name } = Astro.props;
+
+const washes = ["sky", "amber", "mint", "violet", "coral"] as const;
+const pad = (n: number) => String(n + 1).padStart(2, "0");
+const id = (i: number) => `step-${i + 1}`;
+---
+
+<section class="nx-wrap fw" aria-labelledby="fw-title" data-fw>
+  <div class="fw__head">
+    <p class="nx-kicker">How it works</p>
+    <h2 id="fw-title" class="fw__h2">{name}, step by step</h2>
+  </div>
+
+  <div class="fw__grid">
+    <ol class="fw__list" aria-label={`${name} steps`}>
+      {steps.map((step, i) => (
+        <li class:list={["fw__item", i === 0 && "is-active"]} data-fw-item>
+          <a href={`#${id(i)}`} class="fw__num">{pad(i)}</a>
+          <h3 class="fw__title"><a href={`#${id(i)}`}>{step.title}</a></h3>
+          <div class="fw__body"><p>{step.body}</p></div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="fw__stages">
+      {steps.map((step, i) => (
+        <div class="fw__scene" id={id(i)} data-fw-scene data-index={i}>
+          <div class="fw__caption">
+            <span class="fw__num">{pad(i)}</span>
+            <h3 class="fw__title">{step.title}</h3>
+            <p>{step.body}</p>
+          </div>
+          <div class="fw__stage" style={`--wash: var(--tint-${step.color ?? washes[i % washes.length]});`}>
+            <ShowcaseVisual name={step.visual} label={step.label} />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-fw]").forEach((root) => {
+    const items = root.querySelectorAll<HTMLElement>("[data-fw-item]");
+    const scenes = root.querySelectorAll<HTMLElement>("[data-fw-scene]");
+    if (!("IntersectionObserver" in window) || !items.length) return;
+
+    const setActive = (index: number) =>
+      items.forEach((item, i) => item.classList.toggle("is-active", i === index));
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.index));
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px" }
+    );
+    scenes.forEach((s) => io.observe(s));
+  });
+</script>
+
+<style>
+  .fw { padding-top: clamp(3.5rem, 8vw, 5.5rem); }
+  .fw__head { max-width: 40rem; margin-bottom: clamp(2rem, 5vw, 3rem); }
+  .fw__h2 {
+    margin: 0.6rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .fw__grid { display: grid; gap: 2rem; }
+  .fw__list { display: none; }
+
+  .fw__stages { display: grid; gap: clamp(3rem, 8vw, 4.5rem); }
+  .fw__scene { scroll-margin-top: 6rem; }
+
+  .fw__stage {
+    display: grid;
+    place-items: center;
+    min-height: 22rem;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
+    border-radius: var(--nx-radius-scene);
+    background: var(--wash);
+  }
+  .fw__stage > :global(*) { width: 100%; max-width: 26rem; }
+
+  .fw__num {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    color: var(--pd-ink-fg, var(--color-ink-faint));
+    text-decoration: none;
+  }
+  .fw__title {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .fw__title a { color: inherit; text-decoration: none; }
+
+  .fw__caption { max-width: 34rem; margin-bottom: 1.25rem; }
+  .fw__caption p { margin: 0.5rem 0 0; font-size: 1.0625rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  @media (min-width: 60rem) {
+    .fw__grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(3rem, 6vw, 5rem);
+      align-items: start;
+    }
+    .fw__caption { display: none; }
+    .fw__stage { min-height: min(34rem, 72vh); }
+
+    .fw__list {
+      position: sticky;
+      top: calc(50vh - 12rem);
+      display: grid;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .fw__item {
+      position: relative;
+      padding-left: 1.5rem;
+      color: var(--color-ink-faint);
+      transition: color 300ms ease;
+    }
+    .fw__item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.1rem;
+      bottom: 0.1rem;
+      width: 3px;
+      border-radius: 3px;
+      background: var(--pd-ink-fg, var(--accent-btn-bg));
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 450ms var(--nx-ease);
+    }
+    .fw__item .fw__num { color: inherit; }
+    .fw__item.is-active { color: var(--color-ink); }
+    .fw__item.is-active .fw__num { color: var(--pd-ink-fg, var(--color-ink-faint)); }
+    .fw__item.is-active::before { transform: scaleY(1); }
+
+    .fw__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 450ms var(--nx-ease); }
+    .fw__body > p { overflow: hidden; margin: 0; font-size: 1.0625rem; line-height: 1.55; color: var(--color-ink-soft); }
+    .fw__item.is-active .fw__body { grid-template-rows: 1fr; }
+    .fw__item.is-active .fw__body > p { padding-top: 0.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fw__item, .fw__item::before, .fw__body { transition: none; }
+  }
+</style>

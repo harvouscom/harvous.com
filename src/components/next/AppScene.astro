@@ -24,9 +24,17 @@ interface Props {
   class?: string;
 }
 const { view, backdrop, note, aspect = "4 / 5", class: className } = Astro.props;
+
+const LABELS: Record<AppView, string> = {
+  activity: "Harvous Activity: suggestions and review from your own notes",
+  read: "The Harvous Bible reader, with your notes in the margin",
+  write: "A Harvous note with its passage beside it",
+  library: "Harvous search across notes, highlights and threads",
+  share: "A Harvous shared space for a group",
+};
 ---
 
-<SceneApp backdrop={backdrop} aspect={aspect} class={className}>
+<SceneApp backdrop={backdrop} aspect={aspect} class={className} label={LABELS[view]}>
   {view === "activity" && <AppWindow view="activity"><AppActivity review /></AppWindow>}
   {view === "read" && <AppWindow view="bible"><AppReader lit /></AppWindow>}
   {view === "write" && <AppWindow view="write" noteTools><AppNote /></AppWindow>}

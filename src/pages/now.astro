@@ -9,6 +9,7 @@
 import { Icon } from "astro-icon/components";
 import { ogCard } from "../lib/og-card.ts";
 import NextLayout from "../layouts/NextLayout.astro";
+import ClosingCall from "../components/next/ClosingCall.astro";
 import ReleaseNotesIndexCard from "../components/ReleaseNotesIndexCard.astro";
 import { NOW_UPDATED, NOW_WORKING_ON } from "../lib/next/content.ts";
 import { recentReleases } from "../lib/next/releases.ts";
@@ -87,6 +88,7 @@ const updated = new Date(`${NOW_UPDATED}T12:00:00Z`).toLocaleDateString("en-US",
       </p>
     </aside>
   </div>
+  <ClosingCall title="Try what's already shipped." />
 </NextLayout>
 
 <style>

@@ -167,36 +167,38 @@ export const BENTO_CARDS: BentoCardSpec[] = [
 export const ALSO_INCLUDED: { label: string; icon: string; href?: string }[] = [
   { label: "Daily passage", icon: "fa7-solid:sun", href: "/features/daily-passage/" },
   { label: "Easton's dictionary", icon: "fa7-solid:book-atlas", href: "/features/dictionary/" },
-  { label: "Offline & sync", icon: "fa7-solid:cloud-arrow-down", href: "/features/offline-sync/" },
+  { label: "Offline & sync", icon: "fa7-solid:cloud-arrow-down", href: "/faq/#faq-offline" },
   { label: "Reminders", icon: "fa7-solid:bell", href: "/features/reminders/" },
   { label: "Light & dark", icon: "fa7-solid:circle-half-stroke" },
   { label: "Keyboard shortcuts", icon: "fa7-solid:keyboard" },
 ];
 
 /* ────────────────────────────────────────────────────────────────────────── */
-/* Home — "Yours, quietly" toggle wall                                        */
+/* Home — "Your notes, your call" toggle wall                                 */
 /* ────────────────────────────────────────────────────────────────────────── */
 
 /**
  * Every row here is a claim. Sources: faq/privacy.mdx (private unless shared),
  * faq/ai.mdx (no AI in note-taking; Connector lets an AI app you choose read,
- * never change, your notes), addons-data.ts (no score, streak, or
- * leaderboard in Review), privacy.astro (does not sell personal information),
+ * never change, your notes), privacy.astro (does not sell personal information),
  * faq/offline.mdx, faq/export.mdx, faq/try-without-account.mdx,
  * faq/locked-notes.mdx (lock a note with a PIN, encrypted on your device).
+ *
+ * "Never" is for the things that are principles rather than settings: Harvous
+ * doesn't offer them at all, so "Off" would undersell it. (No leaderboards or
+ * streaks-and-scores rows: churches and challenges may rank or score things one
+ * day, so neither is a "never".)
  */
 export type ToggleSpec = { label: string; value: string; on: boolean };
 
 export const PRIVACY_TOGGLES: ToggleSpec[] = [
   { label: "Notes private by default", value: "On", on: true },
   { label: "Lock notes with a PIN", value: "On", on: true },
-  { label: "AI in note-taking", value: "Off", on: false },
+  { label: "AI writing your notes", value: "Never", on: false },
   { label: "AI apps reading your notes", value: "Your call", on: false },
-  { label: "Streaks and scores", value: "Off", on: false },
   { label: "Selling your information", value: "Never", on: false },
   { label: "Works offline", value: "On", on: true },
   { label: "Share by link", value: "Your call", on: false },
-  { label: "Leaderboards", value: "Off", on: false },
   { label: "Export anytime", value: "On", on: true },
   { label: "Account needed to try", value: "No", on: false },
 ];

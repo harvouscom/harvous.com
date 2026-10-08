@@ -71,9 +71,7 @@ compress "$PUB/derek-avatar.jpeg" -w 512
 
 echo "→ Icons"
 compress \
-  "$PUB/images/harvous-icon-sm.png" \
   "$PUB/images/harvous-2-icon.png" \
-  "$PUB/icons/app-icon.png" \
   -w 256 --content-hint graphic
 
 echo "→ Use-case hero backgrounds"

@@ -38,7 +38,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
         </div>
         {/* Each scene is the live app, rebuilt from Derek's account: the note with
             its passage docked, the reader with the notes rail lit, Activity. */}
-        <SceneApp backdrop={step.backdrop} aspect="1 / 1">
+        <SceneApp backdrop={step.backdrop} aspect="1 / 1" label={step.title}>
           {step.key === "write" && (
             <AppWindow view="write" noteTools><AppNote dock /></AppWindow>
           )}

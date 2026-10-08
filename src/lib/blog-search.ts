@@ -41,11 +41,3 @@ export function buildBlogSearchIndex(
   );
 }
 
-export function blogSearchHref(q = "", category?: string): string {
-  const params = new URLSearchParams();
-  const trimmed = q.trim();
-  if (trimmed) params.set("q", trimmed);
-  if (category) params.set("category", category);
-  const qs = params.toString();
-  return qs ? `/blog/search/?${qs}` : "/blog/search/";
-}

@@ -1225,7 +1225,7 @@ function harvousPick(competitorType = "Bible Notes"): ComparePick {
     name: "Harvous",
     intro: position.pickIntro,
     competitorType,
-    competitorImage: "/images/harvous-2-icon.png",
+    competitorImage: "/images/harvous-2-icon.webp",
     competitorLink: "https://app.harvous.com/sign-up",
     idealFor: position.idealFor,
     bestAt: position.bestAt,
@@ -1317,10 +1317,6 @@ export function isCompareSeoPageDraft(page: CompareSeoPage): boolean {
 /** Pages included in static builds — drafts only in dev. */
 export function getCompareSeoPagesForBuild(): CompareSeoPage[] {
   return SEO_PAGES.filter((page) => !isCompareSeoPageDraft(page) || import.meta.env.DEV);
-}
-
-export function getCompareSeoPages(): CompareSeoPage[] {
-  return SEO_PAGES;
 }
 
 export function getCompareSeoPageBySlug(slug: string): CompareSeoPage | undefined {
@@ -1440,35 +1436,6 @@ export function buildAlternativeJsonLd(
           url: pick.isHarvous ? SITE : `${SITE}${pick.compareHref}`,
           description: pick.intro,
         })),
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: `Is Harvous a good alternative to ${target.name}?`,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: page.lead,
-            },
-          },
-          {
-            "@type": "Question",
-            name: `What is ${target.name} best at?`,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: target.bestAt,
-            },
-          },
-          {
-            "@type": "Question",
-            name: `Can I use Harvous alongside ${target.name}?`,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: target.worksBestAlongside,
-            },
-          },
-        ],
       },
       {
         "@type": "WebPage",

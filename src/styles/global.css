@@ -18,7 +18,8 @@
   --color-paper: #ffffff;
   --color-ink: #0d0e12;
   --color-ink-soft: #585c66;
-  --color-ink-faint: #8c8f99;
+  /* 4.6:1 on --color-warm, 5:1 on paper: small faint text still reads (AA). */
+  --color-ink-faint: #6b6f78;
   --color-rule: #e8e9ed;
   --color-card: #ffffff;
   --color-accent: #2563eb;
@@ -110,100 +111,8 @@ h3, h4, h5, h6 {
   font-weight: 600;
 }
 
-/* ──────────────────────────────────────────────────────────────────────────
-   Shared type recipes — reused across the homepage and future pages so there's
-   one source of truth for the eyebrow / section title / lead / hero scale.
-   ────────────────────────────────────────────────────────────────────────── */
-.eyebrow {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--color-ink-faint);
-}
-.section-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  font-weight: 600;
-  color: var(--color-ink);
-}
-/* Centered measure — pair with .section-title on hub/CTA titles. */
-.display-lg {
-  max-width: 580px;
-  margin-inline: auto;
-}
-/* Hero-scale modifier — pair with .section-title. */
-.display-xl {
-  font-size: clamp(2.75rem, 6vw, 4.5rem);
-  line-height: 1;
-}
-.lead {
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  color: var(--color-ink-soft);
-}
-@media (min-width: 768px) {
-  .lead { font-size: 1.125rem; }
-}
-
-/* ──────────────────────────────────────────────────────────────────────────
-   Mintlify-style page frame — two continuous vertical hairlines that run the
-   full height of the content shell (the `.page-frame` wrapper around
-   `<main>` + footer in BaseLayout) plus a horizontal divider utility that
-   marks each section boundary. No background mesh/texture — just the outer
-   edge + the row lines, per mintlify.com.
-
-   The frame wrapper sits below the sticky header in normal document flow so
-   the verticals never draw through the nav band (body-level hairlines at
-   z-index: -1 still painted over the header despite opaque header chrome).
-
-   --frame-gutter scales smoothly from 0.75rem (narrow) to 2rem (wide) via
-   clamp. --frame-inset is the outer gutter (viewport edge → hairline).
-   --frame-content-pad doubles that so the inner gap (hairline → content)
-   matches the outer inset symmetrically on contained sections.
-
-   z-index: -1 + isolation: isolate keep these verticals strictly a
-   background-layer hairline: painted behind every normal section's own
-   content within the frame's (isolated) stacking context, so any section
-   with an opaque background — or the use-cases carousel's colorful card
-   tiles bleeding to the viewport edge — cleanly covers the line instead of
-   the line drawing on top of foreground content. They stay visible in the
-   gutters/margins anywhere a section doesn't paint over that x-position.
-   ────────────────────────────────────────────────────────────────────────── */
-.page-frame {
-  position: relative;
-  isolation: isolate;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-}
-.page-frame > footer {
-  margin-top: auto;
-}
-.page-frame > main:has(> .release-notes-detail) {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100svh - 3.5625rem - 5.25rem);
-}
-.page-frame::before,
-.page-frame::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  z-index: -1;
-  background: var(--color-rule);
-  pointer-events: none;
-}
-.page-frame::before { left: var(--frame-inset); }
-.page-frame::after { right: var(--frame-inset); }
-
-/* Horizontal row divider — a hairline spanning exactly between the two
-   .page-frame verticals, for marking the top of each homepage section. */
+/* Horizontal row divider — a hairline between the frame insets, marking the
+   top of a section (FaqSection, ChurchInterestForm). */
 .frame-divider {
   position: relative;
 }
@@ -266,38 +175,6 @@ article:has(> .color-band:last-child) + .frame-divider::before {
   z-index: 1;
 }
 
-/* Subpages: first band sits flush under the header hairline — pull up 1px so
-   the section top rule overlaps .site-header__inner::after (no double rule). */
-main > :first-child.frame-divider,
-main > section:first-child.border-b {
-  margin-top: -1px;
-}
-
-/* Shared chrome pill — matches header "Sign up free" CTA. */
-.btn-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  border-radius: 999px;
-  padding: 0.4rem 0.9rem;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.2;
-  color: var(--color-ink);
-  text-decoration: none;
-  background: var(--color-card);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-  border: 1px solid var(--color-rule);
-  transition: background-color 150ms ease;
-  cursor: pointer;
-}
-.btn-pill:hover {
-  background: var(--color-warm);
-  color: var(--color-ink);
-}
-
 /* Shared primary button — blue gradient pill (sm = nav chips, default = CTAs). */
 .btn-accent {
   display: inline-flex;
@@ -333,32 +210,6 @@ main > section:first-child.border-b {
   --tint-teal: color-mix(in oklab, var(--study-dock-accent-teal) 16%, var(--color-paper));
   --tint-blue: color-mix(in oklab, var(--color-accent) 14%, var(--color-paper));
 }
-
-/* Shared centered section header — eyebrow pill + title + lead, used by every
-   homepage section band (bento, stats, use-cases, testimonials, FAQ, CTA) so
-   the rhythm reads as one consistent system. */
-.section-head {
-  max-width: 38rem;
-  margin-inline: auto;
-  text-align: center;
-}
-.section-head > * + * { margin-top: 0.85rem; }
-
-/* Eyebrow as a small rounded pill (Lattice's section chips). */
-.eyebrow-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.32rem 0.72rem;
-  border-radius: 999px;
-  color: var(--color-accent);
-  background: var(--color-accent-soft);
-}
-
 
 /* Text selection matches the marker highlight */
 ::selection {
@@ -587,7 +438,7 @@ details > summary::-webkit-details-marker {
     --color-card: oklch(18.5% 0.01 285);
     --color-ink: oklch(96% 0 0);
     --color-ink-soft: oklch(96% 0 0 / 0.62);
-    --color-ink-faint: oklch(96% 0 0 / 0.42);
+    --color-ink-faint: oklch(96% 0 0 / 0.56);
     --color-rule: oklch(100% 0 0 / 0.1);
     --color-warm: oklch(20% 0.01 285);
     --color-accent: oklch(70% 0.17 250);
@@ -634,7 +485,7 @@ details > summary::-webkit-details-marker {
   --color-card: oklch(18.5% 0.01 285);
   --color-ink: oklch(96% 0 0);
   --color-ink-soft: oklch(96% 0 0 / 0.62);
-  --color-ink-faint: oklch(96% 0 0 / 0.42);
+  --color-ink-faint: oklch(96% 0 0 / 0.56);
   --color-rule: oklch(100% 0 0 / 0.1);
   --color-warm: oklch(20% 0.01 285);
   --color-accent: oklch(70% 0.17 250);
@@ -743,7 +594,7 @@ details > summary::-webkit-details-marker {
   --color-card: #ffffff;
   --color-ink: #0d0e12;
   --color-ink-soft: #585c66;
-  --color-ink-faint: #8c8f99;
+  --color-ink-faint: #6b6f78;
   --color-rule: #e8e9ed;
   --color-warm: #f4f5f7;
   --color-accent: #2563eb;

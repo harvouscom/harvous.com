@@ -1,7 +1,5 @@
 ---
 import "../styles/global.css";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 
 interface Props {
   title?: string;
@@ -20,12 +18,6 @@ interface Props {
   noindex?: boolean;
   /** Full content for meta robots (e.g. "noindex, nofollow"). Overrides noindex when set. */
   robots?: string;
-  /**
-   * Skip the site Header, Footer, and `.page-frame` rails and render the slot
-   * alone. For layouts that bring their own chrome (NextLayout) but still want
-   * this head, analytics, and the reveal / hash / try-CTA scripts.
-   */
-  bare?: boolean;
 }
 
 const {
@@ -40,7 +32,6 @@ const {
   preloadImage,
   noindex = false,
   robots,
-  bare = false,
 } = Astro.props;
 
 const robotsContent = robots ?? (noindex ? "noindex" : undefined);
@@ -102,7 +93,7 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <title>{title}</title>
     <meta name="description" content={description} />
     {robotsContent && <meta name="robots" content={robotsContent} />}
-    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="canonical" href={canonical} />}
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -112,8 +103,8 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     {preloadImage && (
       <link rel="preload" as="image" href={preloadImage} type="image/webp" fetchpriority="high" />
     )}
-    <link rel="icon" type="image/png" href="/images/harvous-2-icon.png" />
-    <link rel="apple-touch-icon" href="/images/harvous-2-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -143,19 +134,8 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <slot name="head" />
   </head>
   <body>
-    {bare ? (
-      <slot />
-    ) : (
-      <>
-        <Header />
-        <div class="page-frame">
-          <main>
-            <slot />
-          </main>
-          <Footer />
-        </div>
-      </>
-    )}
+    {/* The page brings its own chrome (NextLayout: NextHeader, main, NextFooter). */}
+    <slot />
 
     <script>
       const stacks = document.querySelectorAll(".paper-stack");

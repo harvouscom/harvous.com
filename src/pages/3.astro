@@ -1,9 +1,7 @@
 ---
 /**
- * /next/3/ — the Harvous 3 release page in the /next/ design system.
- *
- * Same substance as the live /3/ (src/pages/3.astro), in the order people who
- * already use Harvous 2 want it: what's new, what changed, and why. The three
+ * /3/ — the Harvous 3 release page, in the order people who already use
+ * Harvous 2 want it: what's new, what changed, and why. The three
  * big views get a live AppScene each (the tour's rhythm); the six
  * smaller things sit on one even grid; the renames are a plain before → after
  * list; the letter is Derek's, word for word where it was already good.
@@ -244,7 +242,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
                     <span class="mini__space-row">
                       <span class="mini__space-icon"><AppIcon name="user-group" /></span>
                       <span class="mini__grow"><span class="aui-title">Family</span><span class="aui-sub">4 members<i>·</i>Invite</span></span>
-                      <span class="mini__faces"><img src="/derek-avatar.jpeg" alt="" loading="lazy" /><b class="is-a">K</b><b class="is-b">J</b><b class="is-c">+1</b></span>
+                      <span class="mini__faces"><img src="/derek-avatar.webp" alt="" loading="lazy" /><b class="is-a">K</b><b class="is-b">J</b><b class="is-c">+1</b></span>
                     </span>
                     <span class="mini__label">Current thread</span>
                     <span class="aui-row mini__inset">
@@ -305,7 +303,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
                 {s.visual === "reminders" && (
                   <span class="mini__stack mini__stack--col">
                     <span class="mini mini--notif">
-                      <img class="mini__app" src="/images/harvous-icon-sm.png" alt="" loading="lazy" />
+                      <img class="mini__app" src="/images/harvous-2-icon-sm.png" alt="" loading="lazy" />
                       <span class="mini__grow">
                         <span class="mini__notif-top"><b>Harvous</b><span>now</span></span>
                         <span class="aui-title">Psalm 46</span>
@@ -454,7 +452,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
     </div>
   </section>
 
-  <ClosingCall title="See it with your own notes." />
+  <ClosingCall title="Open your notes in Harvous 3." />
 </NextLayout>
 
 <style>

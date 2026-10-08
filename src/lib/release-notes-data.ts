@@ -528,43 +528,5 @@ export function getReleaseNoteSlugRedirects(): ReadonlyMap<string, string> {
   return slugRedirectCache ?? new Map();
 }
 
-export function getReleaseNoteBySlug(slug: string): ChangelogRelease | undefined {
-  getReleaseNotes();
-  const canonical = slugRedirectCache?.get(slug) ?? slug;
-  return getReleaseNotes().find((release) => release.slug === canonical);
-}
-
-export const RELEASE_NOTES_PAGE_SIZE = 24;
-
-export type ReleaseNotesPage = {
-  releases: ChangelogRelease[];
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-};
-
-export function getReleaseNotesPageCount(): number {
-  return Math.max(1, Math.ceil(getReleaseNotes().length / RELEASE_NOTES_PAGE_SIZE));
-}
-
-export function getReleaseNotesPage(page: number): ReleaseNotesPage {
-  const all = getReleaseNotes();
-  const totalPages = getReleaseNotesPageCount();
-  const currentPage = Math.min(Math.max(1, Math.floor(page) || 1), totalPages);
-  const start = (currentPage - 1) * RELEASE_NOTES_PAGE_SIZE;
-
-  return {
-    releases: all.slice(start, start + RELEASE_NOTES_PAGE_SIZE),
-    currentPage,
-    totalPages,
-    totalCount: all.length,
-  };
-}
-
-export function releaseNotesPageHref(page: number): string {
-  if (page <= 1) return "/release-notes/";
-  return `/release-notes/page/${page}/`;
-}
-
 /** @deprecated Use ChangelogRelease — kept for any lingering imports. */
 export type ReleaseNoteEntry = ChangelogRelease;

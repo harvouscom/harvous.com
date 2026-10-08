@@ -1,3 +1,6 @@
+/** The one label for anything announced but not live yet, everywhere on the site. */
+export const SOON_LABEL = "Coming later";
+
 export type ComingSoonGridItem = {
   id: string;
   icon?: string;
@@ -8,10 +11,6 @@ export type ComingSoonGridItem = {
   /** When false, the product is live — no “Coming soon” chip. Defaults to true. */
   comingSoon?: boolean;
 };
-
-export type RelatedFeatureCard =
-  | { kind: "feature"; feature: import("astro:content").CollectionEntry<"features"> }
-  | { kind: "comingSoon"; item: ComingSoonGridItem };
 
 /** Product cards referenced from use-case / audience / blog bridges + homepage. */
 export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
@@ -56,7 +55,7 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
   },
 ];
 
-/** Roadmap-only items for the homepage “Coming soon” strip. */
+/** Roadmap-only items (not yet live), e.g. /now's "Further off" list. */
 export const COMING_SOON_GRID_ITEMS: ComingSoonGridItem[] = PRODUCT_GRID_ITEMS.filter(
   (item) => item.comingSoon !== false
 );
@@ -65,11 +64,3 @@ export function getComingSoonGridItem(id: string): ComingSoonGridItem | undefine
   return PRODUCT_GRID_ITEMS.find((item) => item.id === id);
 }
 
-export function getComingSoonGridItems(ids?: string[]): ComingSoonGridItem[] {
-  if (!ids) return COMING_SOON_GRID_ITEMS;
-  return COMING_SOON_GRID_ITEMS.filter((item) => ids.includes(item.id));
-}
-
-export function isComingSoonGridItem(item: ComingSoonGridItem): boolean {
-  return item.comingSoon !== false;
-}

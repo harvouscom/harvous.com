@@ -21,9 +21,9 @@ const ADDON_PAGES: AddonPage[] = [
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
     comingSoon: false,
-    heroTitle: "A shared space where your whole group can study together.",
+    heroTitle: "One space where your group studies together.",
     heroLead:
-      "You lead the discussion. Your group has realizations out loud. Shared Spaces keep what you build together — in threads that live beyond the hour you meet.",
+      "Your group studies in the same threads, and what you find together stays.",
     sections: [
       {
         heading: "What the group discovers shouldn't disappear.",
@@ -110,9 +110,9 @@ const ADDON_PAGES: AddonPage[] = [
     ink: "var(--study-dock-accent-violet)",
     image: "/images/auth-hero/ai_bg_075.webp",
     comingSoon: false,
-    heroTitle: "A deliberate way to hold onto what you've studied.",
+    heroTitle: "A deliberate way to keep what you studied.",
     heroLead:
-      "Suggestions brings things back when they happen to be worth another look. Review exercises are the version you ask for — a short question drawn from what you actually wrote, kept, or read, with an answer Harvous can check.",
+      "Short questions from what you wrote, kept or read, with answers Harvous can check.",
     sections: [
       {
         heading: "Your own material, and a real answer",
@@ -199,9 +199,9 @@ const ADDON_PAGES: AddonPage[] = [
     ink: "var(--study-dock-accent-neutral)",
     image: "/images/auth-hero/ai_bg_053.webp",
     comingSoon: false,
-    heroTitle: "Ask your AI app about what you've actually studied.",
+    heroTitle: "Ask your AI app about what you've studied.",
     heroLead:
-      "Claude, ChatGPT, and other AI apps can read your Harvous notes, so they answer from what you wrote, not a guess. They can start a new note when you ask, and never change what's already there.",
+      "Claude, ChatGPT and other AI apps can read your notes and answer from what you wrote.",
     sections: [
       {
         heading: "Start from what you wrote",
@@ -285,21 +285,12 @@ const ADDON_PAGES: AddonPage[] = [
   },
 ];
 
-/** Card fields from pricing-data for pages that share the same ids. */
-export function getPricingAddonCard(slug: string) {
-  return PRICING_ROADMAP.find((a) => a.id === slug);
-}
-
 export function getAddonPages(): AddonPage[] {
   return ADDON_PAGES;
 }
 
 export function getAddonBySlug(slug: string): AddonPage | undefined {
   return ADDON_PAGES.find((a) => a.slug === slug);
-}
-
-export function getPublishedAddonSlugs(): Set<string> {
-  return new Set(ADDON_PAGES.filter((a) => !a.draft).map((a) => a.slug));
 }
 
 export function getAddonDetailHref(slug: string): string | undefined {
