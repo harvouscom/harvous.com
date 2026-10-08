@@ -138,6 +138,24 @@ export function getCompareByType(type: string): CompareEntry[] {
   return getCompareEntries().filter((e) => e.competitorType === type);
 }
 
+/** App Store rating counts by slug — refresh with `npm run compare:popularity`. */
+const POPULARITY_PATH = join(process.cwd(), "data/compare-popularity.json");
+let popularity: Record<string, number> | null = null;
+
+function getPopularity(): Record<string, number> {
+  popularity ??= existsSync(POPULARITY_PATH) ? JSON.parse(readFileSync(POPULARITY_PATH, "utf-8")) : {};
+  return popularity!;
+}
+
+/** Most popular first; apps with no App Store count go last, A–Z. */
+export function sortByPopularity(list: CompareEntry[]): CompareEntry[] {
+  const counts = getPopularity();
+  const count = (e: CompareEntry) => counts[e.slug] ?? -1;
+  return [...list].sort(
+    (a, b) => count(b) - count(a) || a.name.localeCompare(b.name, "en", { sensitivity: "base" }),
+  );
+}
+
 /** Stable anchor id for compare hub section nav (e.g. "Bible Notes" → "bible-notes"). */
 export function compareTypeToId(type: string): string {
   return type
