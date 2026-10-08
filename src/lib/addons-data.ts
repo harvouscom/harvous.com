@@ -23,7 +23,7 @@ const ADDON_PAGES: AddonPage[] = [
     comingSoon: false,
     heroTitle: "One space where your group studies together.",
     heroLead:
-      "You lead the discussion. Your group has realizations out loud. Shared Spaces keep what you build together — in threads that live beyond the hour you meet.",
+      "Your group studies in the same threads, and what you find together stays.",
     sections: [
       {
         heading: "What the group discovers shouldn't disappear.",
@@ -112,7 +112,7 @@ const ADDON_PAGES: AddonPage[] = [
     comingSoon: false,
     heroTitle: "A deliberate way to keep what you studied.",
     heroLead:
-      "Suggestions brings things back when they happen to be worth another look. Review exercises are the version you ask for — a short question drawn from what you actually wrote, kept, or read, with an answer Harvous can check.",
+      "Short questions from what you wrote, kept or read, with answers Harvous can check.",
     sections: [
       {
         heading: "Your own material, and a real answer",
@@ -201,7 +201,7 @@ const ADDON_PAGES: AddonPage[] = [
     comingSoon: false,
     heroTitle: "Ask your AI app about what you've studied.",
     heroLead:
-      "Claude, ChatGPT, and other AI apps can read your Harvous notes, so they answer from what you wrote, not a guess. They can start a new note when you ask, and never change what's already there.",
+      "Claude, ChatGPT and other AI apps can read your notes and answer from what you wrote.",
     sections: [
       {
         heading: "Start from what you wrote",
