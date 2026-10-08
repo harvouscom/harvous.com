@@ -158,7 +158,24 @@ const description =
 
   /* The top visuals: Harvous on a sky mesh, Here's My Church on its map. */
   .os-proj__visual { position: relative; display: grid; place-items: center; height: 15rem; overflow: hidden; }
-  /* Harvous: the app itself, a note rising off the bottom edge of a sky mesh. */
+  /* Harvous: the app itself, a note rising off the bottom edge of a sky mesh,
+     over grid lines at the same pitch as the Here's My Church map's tiles, so
+     the two cards rhyme. The map is min(80%, 22rem) wide and a tile step is
+     34 of its 378 viewBox units (HmcMap.astro), so the pitch scales with it. */
+  .os-proj__visual--harvous { container-type: inline-size; }
+  .os-proj__visual--harvous::before {
+    --pitch: calc(min(80cqw, 22rem) * 34 / 378);
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to right, color-mix(in srgb, var(--mesh-sky-a) 45%, transparent) 1px, transparent 1px) center / var(--pitch) var(--pitch),
+      linear-gradient(to bottom, color-mix(in srgb, var(--mesh-sky-a) 45%, transparent) 1px, transparent 1px) center / var(--pitch) var(--pitch);
+    -webkit-mask-image: radial-gradient(85% 90% at 50% 45%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(85% 90% at 50% 45%, #000 40%, transparent 100%);
+    pointer-events: none;
+  }
   .os-hv__note {
     position: absolute;
     left: 50%;
