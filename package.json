@@ -19,6 +19,7 @@
     "og:cards": "node scripts/generate-og-cards.mjs",
     "og:compare": "node scripts/generate-compare-og-images.mjs",
     "compare:popularity": "node scripts/fetch-compare-popularity.mjs",
+    "compare:icons": "node scripts/generate-compare-icon-webp.mjs",
     "discover:sources": "node scripts/mirror-discover-sources.mjs",
     "tour:studio": "npm --prefix video run dev",
     "tour:render": "npm --prefix video run render:site"

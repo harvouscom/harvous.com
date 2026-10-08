@@ -166,11 +166,13 @@ export function compareTypeToId(type: string): string {
 }
 
 /**
- * A competitor's icon for display: a 224px WebP cut (scripts make these from
- * the 400px PNGs, which stay for colour sampling and OG generation).
+ * A competitor's icon for display: the 224px WebP cut (`npm run compare:icons`
+ * makes them from the 400px PNGs, which stay for colour sampling and OG
+ * generation). Falls back to the PNG for an app added without running it.
  */
 export function compareIconSrc(slug: string): string {
-  return `/images/compare/icons/${slug}.webp`;
+  const webp = `/images/compare/icons/${slug}.webp`;
+  return existsSync(join(process.cwd(), "public", webp)) ? webp : compareIconPng(slug);
 }
 
 /** The full-size PNG, for reading the icon's colour at build time. */
