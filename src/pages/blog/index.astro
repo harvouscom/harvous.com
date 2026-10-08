@@ -1,11 +1,12 @@
 ---
 /**
  * /blog/ — Bright Enough. The new-style intro, the library bar (topics +
- * search), the latest posts as cards (the newest one wide), then a short row
- * per topic with a way into its archive.
+ * search), the newest post featured with four more in a spotlight list, then
+ * a short row per topic with a way into its archive.
  */
 import NextLayout from "../../layouts/NextLayout.astro";
 import { ogCard } from "../../lib/og-card.ts";
+import BlogCard from "../../components/BlogCard.astro";
 import BlogNextCard from "../../components/next/BlogNextCard.astro";
 import BlogLibraryNav from "../../components/BlogLibraryNav.astro";
 import BlogTopicBlocks from "../../components/BlogTopicBlocks.astro";
@@ -20,6 +21,7 @@ import {
   blogCategoryColor,
   blogCategoryHref,
   blogCategoryIcon,
+  blogReadingMinutes,
   brightEnoughBlogJsonLd,
   includeBlogDrafts,
   isBlogPostListed,
@@ -32,7 +34,8 @@ const posts = allPosts
   .filter((p) => isBlogPostListed(p, showDrafts))
   .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
 
-const latest = posts.slice(0, 5);
+const featured = posts[0];
+const spotlight = posts.slice(1, 5);
 
 const topicSections = blogCategoriesInUse(posts).map((cat) => {
   const categoryPosts = postsInBlogCategory(posts, cat);
@@ -102,14 +105,45 @@ const hubJsonLd = [
       <BlogLibraryNav topics={libraryTopics} />
 
       <section id="library-featured" class="nx-wrap bl-sec" aria-labelledby="library-featured-title">
-        <h2 id="library-featured-title" class="bl-h2">Latest</h2>
-        <ul class="bl-grid" role="list" data-reveal="stagger">
-          {latest.map((post, i) => (
-            <li class:list={[i === 0 && "is-wide"]}>
-              <BlogNextCard post={post} />
-            </li>
-          ))}
-        </ul>
+        <h2 id="library-featured-title" class="sr-only">Featured</h2>
+        <div class="bl-feature" data-reveal>
+          {featured && (
+            <div>
+              <p class="bl-label">Featured</p>
+              <div class="bl-well">
+                <BlogCard
+                  title={featured.data.title}
+                  description={featured.data.description}
+                  publishDate={featured.data.publishDate}
+                  category={featured.data.category}
+                  slug={featured.id}
+                  readingTime={blogReadingMinutes(featured.body)}
+                  draft={featured.data.draft}
+                  variant="featured"
+                />
+              </div>
+            </div>
+          )}
+          {spotlight.length > 0 && (
+            <div>
+              <p class="bl-label">Spotlight</p>
+              <div class="bl-well bl-well--list">
+                {spotlight.map((post) => (
+                  <BlogCard
+                    title={post.data.title}
+                    description={post.data.description}
+                    publishDate={post.data.publishDate}
+                    category={post.data.category}
+                    slug={post.id}
+                    readingTime={blogReadingMinutes(post.body)}
+                    draft={post.data.draft}
+                    variant="spotlight"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </section>
 
       {topicSections.map((section) => (
@@ -166,6 +200,14 @@ const hubJsonLd = [
   }
   .bl-tile { display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; }
   .bl-tile :global(svg) { width: 1.15rem; height: 1.15rem; }
+
+  /* The top: one featured post, four more in a spotlight list beside it. */
+  .bl-feature { display: grid; gap: 2rem; }
+  @media (min-width: 64rem) { .bl-feature { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; } }
+  .bl-label { margin: 0 0 0.75rem; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-ink-faint); }
+  .bl-well { padding: 0.5rem; border-radius: 2rem; background: var(--color-warm); }
+  @media (min-width: 48rem) { .bl-well { padding: 0.75rem; } }
+  .bl-well--list { display: flex; flex-direction: column; gap: 0.5rem; }
 
   .bl-grid {
     display: grid;
