@@ -1,3 +1,6 @@
+/** The one label for anything announced but not live yet, everywhere on the site. */
+export const SOON_LABEL = "Coming later";
+
 export type ComingSoonGridItem = {
   id: string;
   icon?: string;

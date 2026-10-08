@@ -23,6 +23,7 @@ import { buildAddonJsonLd, buildFeatureJsonLd, hasDetailContent } from "../lib/p
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
 import { fathomSignup, fathomTry, fathomCompare } from "../lib/fathom-events.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
+import { SOON_LABEL } from "../lib/coming-soon-grid.ts";
 
 interface Props {
   page: ProductPage;
@@ -78,7 +79,7 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
       <span class="pd-tile" aria-hidden="true"><Icon name={page.icon} /></span>
       <p class="pd-badges">
         <span class="pd-badge">{page.title}</span>
-        {page.comingSoon && <span class="pd-badge pd-badge--soon">{page.comingSoonLine ?? "Coming soon"}</span>}
+        {page.comingSoon && <span class="pd-badge pd-badge--soon">{page.comingSoonLine ?? SOON_LABEL}</span>}
       </p>
       <h1 class="nx-display pd-title">{page.heroTitle}</h1>
       <p class="nx-lead pd-lead">{page.heroLead}</p>

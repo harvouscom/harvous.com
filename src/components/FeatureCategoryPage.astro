@@ -20,7 +20,8 @@ import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import type { FeatureCategory } from "../lib/feature-categories-data.ts";
 import { TOUR_STAGING } from "../lib/next/tour-staging.ts";
-import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
+import { getComingSoonGridItem, SOON_LABEL } from "../lib/coming-soon-grid.ts";
+import { FEATURE_ICONS } from "../lib/feature-icons.ts";
 import { getUseCaseBySlug, type UseCase } from "../lib/use-cases-data.ts";
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
 import { fathomTry, fathomCompare } from "../lib/fathom-events.ts";
@@ -41,7 +42,7 @@ const housed: FeatureRow[] = category.featureIds
     const f = allFeatures.find((x) => x.id === id);
     if (!f) return undefined;
     const href = !f.data.draft && f.data.heroTitle && f.data.sections?.length ? `/features/${f.id}/` : undefined;
-    return { icon: "fa7-solid:note-sticky", title: f.data.tagline, desc: f.data.title, href, soon: false };
+    return { icon: FEATURE_ICONS[f.id] ?? "fa7-solid:note-sticky", title: f.data.tagline, desc: f.data.title, href, soon: false };
   })
   .filter((r): r is FeatureRow => r !== undefined);
 
@@ -132,7 +133,7 @@ const jsonLd = {
                   <span class="fc-row__text">
                     <span class="fc-row__title">
                       {f.title}
-                      {f.soon && <span class="fc-row__soon">Coming soon</span>}
+                      {f.soon && <span class="fc-row__soon">{SOON_LABEL}</span>}
                     </span>
                     <span class="fc-row__desc">{f.desc}</span>
                   </span>
@@ -185,7 +186,7 @@ const jsonLd = {
   </article>
 
   <ClosingCall
-    title={category.heroTitle}
+    title={category.closingTitle}
     lead={category.tagline}
     href={buildTryUrl({ useCase: category.useCaseSlugs[0], source: `feature_${category.slug}` })}
     fathomTrack={fathomTry.featureDetail(category.slug)}

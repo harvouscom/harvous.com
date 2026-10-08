@@ -5,6 +5,7 @@
  * audience's ink (`--aud-ink`) when there is one.
  */
 import type { ForAudienceFeatureLink } from "../../lib/for-audiences-data.ts";
+import { SOON_LABEL } from "../../lib/coming-soon-grid.ts";
 
 interface Props {
   feature: ForAudienceFeatureLink;
@@ -17,7 +18,7 @@ const Tag = feature.href ? "a" : "span";
   <Tag class="fchip__in" href={feature.href}>
     <span class="fchip__k">Feature</span>
     {feature.title}
-    {feature.soon && <span class="fchip__soon">Coming soon</span>}
+    {feature.soon && <span class="fchip__soon">{SOON_LABEL}</span>}
     {feature.href && <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>}
   </Tag>
 </p>

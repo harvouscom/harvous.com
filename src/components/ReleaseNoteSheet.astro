@@ -40,7 +40,7 @@ const categoryTone = (category: string) => {
     ></div>
 
     <header class="release-notes-detail__head">
-      <a href={backHref} class="btn-pill release-notes-detail__back">
+      <a href={backHref} class="nx-btn nx-btn--ghost release-notes-detail__back">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M10 3L5 8l5 5"/>
         </svg>
@@ -136,9 +136,10 @@ const categoryTone = (category: string) => {
   }
 
   .release-notes-detail__back {
+    min-height: 2.25rem;
     margin-bottom: 1.1rem;
-    padding-inline: 0.85rem 0.9rem;
-    padding-left: 0.68rem;
+    padding: 0 0.95rem 0 0.75rem;
+    font-size: 0.875rem;
   }
   .release-notes-detail__back svg {
     width: 0.8rem;

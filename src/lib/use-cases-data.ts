@@ -25,6 +25,8 @@ export type UseCase = {
   seoTitle: string;
   seoDescription: string;
   heroTitle: string;
+  /** The closing call's line — never the hero again. */
+  closingTitle: string;
   heroLead: string;
   sections: UseCaseSection[];
   moments: UseCaseMoment[];
@@ -53,6 +55,7 @@ const useCases: UseCase[] = [
     seoDescription:
       "You study most mornings. Harvous is where the thoughts go — notes linked to scripture, organized by what they're about, findable when you need them.",
     heroTitle: "For the person who studies every day and wants to hold onto what they find.",
+    closingTitle: "Keep a little of every day.",
     heroLead:
       "You study most mornings. Or evenings, or whenever you can find time. You add a verse you're sitting with, write what comes to mind, connect it to something else you've been thinking about. But by Thursday, most of it is gone. Not lost exactly. Just... nowhere.",
     sections: [
@@ -112,6 +115,7 @@ const useCases: UseCase[] = [
     seoDescription:
       "Sunday thoughts fade by Monday. Harvous keeps sermon notes organized in series threads, searchable and scripture-linked — a notes app, not sermon transcription.",
     heroTitle: "Sunday thoughts have a habit of disappearing by Monday.",
+    closingTitle: "Let Sunday last past Monday.",
     heroLead:
       "You take notes at church. Maybe in your phone, maybe on the bulletin, maybe in a journal you bring. The notes exist — somewhere. But they don't connect to each other, and two months later you couldn't find them if you tried.",
     sections: [
@@ -178,6 +182,7 @@ const useCases: UseCase[] = [
     seoDescription:
       "Sermon prep that leaves a trail across the preaching year — series threads, scripture-linked outline notes, and Suggestions when last year’s work needs to show up again. Notes-first, not a sermon-writing suite.",
     heroTitle: "Sunday keeps coming. Prep should leave a trail.",
+    closingTitle: "Prep that's still there next year.",
     heroLead:
       "You’re not taking notes on someone else’s sermon. You’re preparing the one you’ll preach — outlines, exegesis, cross-references, the line you want to land — and next week’s blank page shouldn’t erase what you already built.",
     sections: [
@@ -250,6 +255,7 @@ const useCases: UseCase[] = [
     seoDescription:
       "Going deep on one book of the Bible? Harvous gives your study a home — notes, threads, scripture links, and a dictionary, all in one place.",
     heroTitle: "Going deep. One book, start to finish.",
+    closingTitle: "Give the whole book one home.",
     heroLead:
       "You're doing a real study of a book of the Bible — Romans, Genesis, John. Weeks or months of it. You're building understanding chapter by chapter, and you need somewhere to keep what you find so it compounds instead of disappears.",
     sections: [
@@ -308,6 +314,7 @@ const useCases: UseCase[] = [
     seoDescription:
       "Following a theme wherever it goes in Scripture? Harvous keeps notes on grace, prayer, or any topic together — no matter where in the Bible they came from.",
     heroTitle: "Following a theme wherever it goes in Scripture.",
+    closingTitle: "Keep the theme together.",
     heroLead:
       "You start noticing something. Grace shows up in Genesis, in Paul's letters, in the Psalms. Or you're tracing names of God, or following what Scripture says about prayer. You need somewhere that can hold a thread that runs across the whole Bible.",
     sections: [
@@ -365,6 +372,7 @@ const useCases: UseCase[] = [
     seoDescription:
       "When one passage deserves more than a skim — Harvous keeps scripture open beside your notes, with a dictionary and threads so a long sit compounds instead of disappearing.",
     heroTitle: "When one passage deserves more than a skim.",
+    closingTitle: "Stay with the passage a while.",
     heroLead:
       "You're not racing a reading plan. You're sitting with a short stretch of Scripture — maybe for an hour, maybe for a morning — writing questions, checking cross-references, looking up a word, and wanting all of that to stay in one place.",
     sections: [
@@ -424,6 +432,7 @@ const useCases: UseCase[] = [
     seoDescription:
       "Lead your group. Harvous Shared Spaces let your whole group add notes to the same threads — so what you discover together doesn't disappear. Hosting is Harvous Plus; joining is free.",
     heroTitle: "Keep what the group builds.",
+    closingTitle: "Give the group somewhere to keep it.",
     heroLead:
       "You prep questions, you facilitate, you watch people have realizations out loud. And then next week you start from scratch. The things your group discovered together — they're in someone's head, maybe, but not anywhere you can all come back to.",
     sections: [

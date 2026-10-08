@@ -30,7 +30,7 @@ import {
   type ForAudience,
   type ForAudienceFeatureLink,
 } from "../../lib/for-audiences-data.ts";
-import { getComingSoonGridItem } from "../../lib/coming-soon-grid.ts";
+import { getComingSoonGridItem, SOON_LABEL } from "../../lib/coming-soon-grid.ts";
 import { FEATURE_ICONS } from "../../lib/feature-icons.ts";
 import { hasDetailContent } from "../../lib/product-page-data.ts";
 import { draftPageIsReachable } from "../../lib/draft-pages.ts";
@@ -120,7 +120,7 @@ const wideTail = (n: number, i: number) => {
   return false;
 };
 
-const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoonLine ?? "Coming soon" : null);
+const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoonLine ?? SOON_LABEL : null);
 ---
 
 <NextLayout
@@ -249,7 +249,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
                   <span class="fa-feature__text">
                     <span class="fa-feature__title">
                       {f.title}
-                      {f.soon && <span class="fa-feature__soon">Coming soon</span>}
+                      {f.soon && <span class="fa-feature__soon">{SOON_LABEL}</span>}
                     </span>
                     <span class="fa-feature__desc">{f.desc}</span>
                   </span>
@@ -300,7 +300,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
   )}
 
   <ClosingCall
-    title={audience.interestForm ? "Give your study somewhere to live." : undefined}
+    title={audience.interestForm ? "Start with your own study." : undefined}
     lead={audience.interestForm
       ? "Try it free for personal Bible study. Church features build on the same foundation."
       : undefined}

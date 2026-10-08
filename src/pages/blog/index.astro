@@ -1,7 +1,12 @@
 ---
+/**
+ * /blog/ — Bright Enough. The new-style intro, the library bar (topics +
+ * search), the latest posts as cards (the newest one wide), then a short row
+ * per topic with a way into its archive.
+ */
 import NextLayout from "../../layouts/NextLayout.astro";
 import { ogCard } from "../../lib/og-card.ts";
-import BlogCard from "../../components/BlogCard.astro";
+import BlogNextCard from "../../components/next/BlogNextCard.astro";
 import BlogLibraryNav from "../../components/BlogLibraryNav.astro";
 import BlogTopicBlocks from "../../components/BlogTopicBlocks.astro";
 import ClosingCall from "../../components/next/ClosingCall.astro";
@@ -15,7 +20,6 @@ import {
   blogCategoryColor,
   blogCategoryHref,
   blogCategoryIcon,
-  blogReadingMinutes,
   brightEnoughBlogJsonLd,
   includeBlogDrafts,
   isBlogPostListed,
@@ -28,8 +32,7 @@ const posts = allPosts
   .filter((p) => isBlogPostListed(p, showDrafts))
   .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime());
 
-const featured = posts[0];
-const spotlight = posts.slice(1, 5);
+const latest = posts.slice(0, 5);
 
 const topicSections = blogCategoriesInUse(posts).map((cat) => {
   const categoryPosts = postsInBlogCategory(posts, cat);
@@ -79,148 +82,58 @@ const hubJsonLd = [
 
 <NextLayout
   ogImage={ogCard("blog")}
-  frame
   title="Bright Enough — Harvous Blog"
   description={hubDescription}
   jsonLd={hubJsonLd}
 >
-  <section class="border-b border-[var(--color-rule)]">
-    <div class="mx-auto max-w-3xl px-5 py-10 text-center md:py-12">
-      <BlogTopicBlocks />
-      <p class="eyebrow mt-6" data-reveal>The Harvous Blog</p>
-      <h1
-        class="mt-4 font-display text-5xl leading-[1.0] tracking-tight md:text-7xl"
-        data-reveal
-        style="--reveal-delay: 40ms;"
-      >
-        Bright Enough
-      </h1>
-      <p
-        class="mx-auto mt-5 max-w-xl text-lg text-[var(--color-ink-soft)]"
-        data-reveal
-        style="--reveal-delay: 80ms;"
-      >
-        Notes, habits, and teaching that show up after Sunday.
-      </p>
-    </div>
-  </section>
+  <header class="nx-wrap bl-intro">
+    <BlogTopicBlocks />
+    <p class="nx-kicker">The Harvous blog</p>
+    <h1 class="nx-display">Bright Enough</h1>
+    <p class="nx-lead">Notes, habits, and teaching that show up after Sunday.</p>
+  </header>
 
   {posts.length === 0 ? (
-    <section class="mx-auto max-w-5xl px-5 py-16 md:py-20">
-      <p class="text-center text-[var(--color-ink-soft)]">Nothing here yet. Check back soon.</p>
+    <section class="nx-wrap bl-empty">
+      <p>Nothing here yet. Check back soon.</p>
     </section>
   ) : (
     <div class="blog-library-main" data-blog-library-main>
       <BlogLibraryNav topics={libraryTopics} />
 
-      <section
-        id="library-featured"
-        class="mx-auto max-w-6xl py-10 md:py-14 px-[var(--frame-content-pad)]"
-        data-reveal
-        style="--reveal-delay: 80ms;"
-        aria-labelledby="library-featured-title"
-      >
-        <h2 id="library-featured-title" class="sr-only">Featured</h2>
-        <div class="grid gap-8 px-2 sm:px-3 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:gap-10 lg:items-start lg:px-4">
-          {featured && (
-            <div>
-              <p class="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-faint)]">
-                Featured
-              </p>
-              <div class="rounded-[2rem] bg-[var(--color-warm)] p-2 md:p-3">
-                <BlogCard
-                  title={featured.data.title}
-                  description={featured.data.description}
-                  publishDate={featured.data.publishDate}
-                  category={featured.data.category}
-                  slug={featured.id}
-                  readingTime={blogReadingMinutes(featured.body)}
-                  draft={featured.data.draft}
-                  variant="featured"
-                />
-              </div>
-            </div>
-          )}
-
-          {spotlight.length > 0 && (
-            <div>
-              <p class="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-faint)]">
-                Spotlight
-              </p>
-              <div class="rounded-[2rem] bg-[var(--color-warm)] p-2 md:p-3">
-                <div class="flex flex-col gap-2">
-                  {spotlight.map((post) => (
-                    <BlogCard
-                      title={post.data.title}
-                      description={post.data.description}
-                      publishDate={post.data.publishDate}
-                      category={post.data.category}
-                      slug={post.id}
-                      readingTime={blogReadingMinutes(post.body)}
-                      draft={post.data.draft}
-                      variant="spotlight"
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+      <section id="library-featured" class="nx-wrap bl-sec" aria-labelledby="library-featured-title">
+        <h2 id="library-featured-title" class="bl-h2">Latest</h2>
+        <ul class="bl-grid" role="list" data-reveal="stagger">
+          {latest.map((post, i) => (
+            <li class:list={[i === 0 && "is-wide"]}>
+              <BlogNextCard post={post} />
+            </li>
+          ))}
+        </ul>
       </section>
 
-      {topicSections.map((section, index) => (
-        <section
-          id={section.id}
-          class:list={[index === 0 ? "frame-divider" : "border-t border-[var(--color-rule)]"]}
-          aria-labelledby={`${section.id}-title`}
-        >
-          <div class="mx-auto max-w-3xl px-[var(--frame-content-pad)] py-14 md:py-16">
-            <h2
-              id={`${section.id}-title`}
-              class="flex flex-wrap items-center gap-3 font-display text-3xl tracking-tight md:text-4xl"
-              data-reveal
-            >
+      {topicSections.map((section) => (
+        <section id={section.id} class="nx-wrap bl-sec" aria-labelledby={`${section.id}-title`}>
+          <div class="bl-head">
+            <h2 id={`${section.id}-title`} class="bl-h2">
               <span
-                class="inline-flex size-10 shrink-0 items-center justify-center rounded-xl md:size-11"
-                style={`background: color-mix(in oklab, ${section.color.bg} 55%, var(--color-card)); color: ${section.color.ink};`}
+                class="bl-tile"
+                style={`background: color-mix(in oklab, ${section.color.bg} 55%, var(--color-paper)); color: ${section.color.ink};`}
                 aria-hidden="true"
               >
-                <Icon name={section.icon} class="h-5 w-5" />
+                <Icon name={section.icon} />
               </span>
               {section.label}
             </h2>
-            <div class="mt-8" data-reveal style="--reveal-delay: 40ms;">
-              {section.previewPosts.map((post) => (
-                <BlogCard
-                  title={post.data.title}
-                  description={post.data.description}
-                  publishDate={post.data.publishDate}
-                  category={post.data.category}
-                  slug={post.id}
-                  readingTime={blogReadingMinutes(post.body)}
-                  draft={post.data.draft}
-                  variant="story"
-                />
-              ))}
-            </div>
             {section.posts.length > BLOG_CATEGORY_HUB_PREVIEW && (
-              <div class="mt-8" data-reveal style="--reveal-delay: 80ms;">
-                <a
-                  href={section.href}
-                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--color-accent)] no-underline transition-colors duration-150 hover:text-[var(--color-ink)]"
-                >
-                  View all {section.posts.length} in {section.label}
-                  <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                    <path
-                      fill-rule="evenodd"
-                      d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
-                </a>
-              </div>
+              <a class="nx-link" href={section.href}>All {section.posts.length} in {section.label} →</a>
             )}
           </div>
+          <ul class="bl-grid" role="list" data-reveal="stagger">
+            {section.previewPosts.map((post) => (
+              <li><BlogNextCard post={post} /></li>
+            ))}
+          </ul>
         </section>
       ))}
     </div>
@@ -233,15 +146,35 @@ const hubJsonLd = [
 </NextLayout>
 
 <style>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  .bl-intro { padding-top: clamp(7.5rem, 15vw, 10rem); padding-bottom: 4.5rem; text-align: center; }
+  .bl-intro .nx-kicker { margin-top: 1.5rem; }
+  .bl-intro .nx-display { margin: 0.75rem 0 0; }
+  .bl-intro .nx-lead { max-width: 32rem; margin: 1.25rem auto 0; }
+  .bl-empty { padding-block: 4rem; text-align: center; color: var(--color-ink-soft); }
+
+  .bl-sec { padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .bl-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
+  .bl-h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
   }
+  .bl-tile { display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; }
+  .bl-tile :global(svg) { width: 1.15rem; height: 1.15rem; }
+
+  .bl-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 40rem) { .bl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .bl-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) { .bl-grid > .is-wide { grid-column: span 2; } }
 </style>

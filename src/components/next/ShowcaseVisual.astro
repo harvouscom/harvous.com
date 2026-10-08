@@ -154,7 +154,7 @@ const { name, label } = Astro.props;
         <p>Pharaoh asks, “Who is the LORD?” and Moses doesn't argue. He just <span class="sv__hl">keeps showing up</span>. <span class="aui-pill">Exodus 5:1–5</span></p>
       </div>
       <div class="sv__note">
-        <span class="sv__swatches"><i class="is-amber is-on"></i><i class="is-sky"></i><i class="is-mint"></i><i class="is-violet"></i><i class="is-coral"></i></span>
+        <span class="sv__swatches"><i class="is-neutral"></i><i class="is-amber is-on"></i><i class="is-sky"></i><i class="is-violet"></i><i class="is-mint"></i><i class="is-coral"></i></span>
         <span class="sv__annot"><AppIcon name="comment" /> Same as Gideon: obedience before confidence.</span>
       </div>
     </div>
@@ -352,14 +352,15 @@ const { name, label } = Astro.props;
   .sv__trs .is-on { color: var(--pds-on-accent); background: var(--pds-accent); }
 
   /* Highlights */
-  .sv__hl { padding: 0 2px; border-radius: 3px; color: var(--pds-text-primary); background: color-mix(in srgb, #f5b83d 38%, transparent); box-shadow: inset 0 -2px 0 #f5b83d; }
+  /* The app's highlight palette (AppReader's swatches), not a site approximation. */
+  .sv__hl { padding: 0 2px; border-radius: 3px; color: var(--pds-text-primary); background: color-mix(in srgb, var(--pds-highlight-warm-amber) 38%, transparent); box-shadow: inset 0 -2px 0 var(--pds-highlight-warm-amber); }
   .sv__note { display: grid; gap: 8px; justify-items: end; margin-top: -4px; }
   .sv__swatches { display: inline-flex; gap: 6px; padding: 6px 9px; border-radius: 999px; background: var(--pds-bg-main); box-shadow: var(--pds-shadow-popover); }
   .sv__swatches i { width: 16px; height: 16px; border-radius: 50%; }
   .sv__swatches .is-on { box-shadow: 0 0 0 2px var(--pds-bg-main), 0 0 0 3.5px var(--pds-text-primary); }
-  .is-amber { background: #f5b83d; } .is-sky { background: #5aaaf0; } .is-mint { background: #5cc99b; } .is-violet { background: #a98bf0; } .is-coral { background: #f07a7a; }
+  .is-neutral { background: var(--pds-highlight-neutral); } .is-amber { background: var(--pds-highlight-warm-amber); } .is-sky { background: var(--pds-highlight-sky-blue); } .is-violet { background: var(--pds-highlight-violet); } .is-mint { background: var(--pds-highlight-mint-green); } .is-coral { background: var(--pds-highlight-coral-rose); }
   .sv__annot { display: inline-flex; align-items: center; gap: 7px; max-width: 85%; padding: 9px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-popover); }
-  .sv__annot :global(svg) { flex: none; width: 12px; height: 12px; color: #d99a1c; }
+  .sv__annot :global(svg) { flex: none; width: 12px; height: 12px; color: color-mix(in srgb, var(--pds-highlight-warm-amber) 80%, var(--pds-text-primary)); }
 
   /* Group threads */
   .sv__post { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; margin-top: 12px; padding-top: 12px; box-shadow: inset 0 0.5px 0 var(--pds-border); font-size: 13px; line-height: 1.45; }
