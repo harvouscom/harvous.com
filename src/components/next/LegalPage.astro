@@ -1,7 +1,7 @@
 ---
 /**
- * LegalPage — /privacy/ and /terms/: a quiet centred head with a
- * Privacy · Terms switch, the date, a plain-language line in my voice, then
+ * LegalPage — /privacy/, /terms/ and /legal/changes/: a quiet centred head
+ * with a Privacy · Terms · What changed switch, the date, a plain-language line in my voice, then
  * the document in one readable column. The wording itself is the live page's
  * (components/legal/*), restyled here — never rewritten.
  */
@@ -9,7 +9,7 @@ import NextLayout from "../../layouts/NextLayout.astro";
 import { ogCard } from "../../lib/og-card.ts";
 
 interface Props {
-  doc: "privacy" | "terms";
+  doc: "privacy" | "terms" | "changes";
   title: string;
   description: string;
   heading: string;
@@ -21,10 +21,13 @@ const { doc, title, description, heading, updated, summary } = Astro.props;
 const DOCS = [
   { key: "privacy", label: "Privacy", href: "/privacy/" },
   { key: "terms", label: "Terms", href: "/terms/" },
+  { key: "changes", label: "What changed", href: "/legal/changes/" },
 ] as const;
+/* "What changed" has no OG card of its own; it borrows the privacy one. */
+const ogImage = ogCard(doc === "changes" ? "privacy" : doc);
 ---
 
-<NextLayout ogImage={ogCard(doc)} title={title} description={description}>
+<NextLayout ogImage={ogImage} title={title} description={description}>
   <header class="nx-wrap lg-intro">
     <nav class="lg-switch" aria-label="Legal">
       {DOCS.map((d) => (

@@ -2,89 +2,273 @@
 /**
  * The privacy policy text, shared by the live page and /next/. Edit
  * the wording here; the "last updated" date lives in lib/legal.ts.
+ *
+ * DRAFT (October 8, 2026 update) for Derek and counsel to review before it
+ * ships. Each statement about what the app does was checked against the app
+ * repo; `REVIEW:` comments mark commitments, and things the code could not
+ * confirm.
  */
+const ink = "text-[var(--color-ink)]";
+const soft = "mt-3 text-[var(--color-ink-soft)]";
+const list = "mt-3 list-disc space-y-1 pl-5 text-[var(--color-ink-soft)]";
+const link =
+  "underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]";
 ---
 
 <div class="prose-letter space-y-8">
   <div>
     <h2 class="text-xl font-semibold text-[var(--color-ink)]">Overview</h2>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
+    <p class={soft}>
       Harvous is a Bible study notes app operated by Testament Made LLC ("we," "us"). This policy
-      explains what information we collect, how we use it, and the choices you have. By using
-      Harvous, you agree to this policy.
+      explains what information we collect, how we use it, who else is involved, and the choices
+      you have. A plain-English list of what changed in this version is on the
+      <a class={link} href="/legal/changes/">What changed</a> page.
     </p>
   </div>
 
   <div>
     <h2 class="text-xl font-semibold text-[var(--color-ink)]">Information we collect</h2>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
-      <strong class="text-[var(--color-ink)]">Account information.</strong> When you sign up, we use
-      Clerk for authentication. Clerk may collect your email address, name, and sign-in details
-      needed to verify your identity.
+    <p class={soft}>
+      <strong class={ink}>Account information.</strong> When you sign up, we use Clerk for
+      authentication. Clerk may collect your email address, name, profile photo, and the sign-in
+      details needed to verify your identity. We keep a copy of your name, email, and profile
+      photo with your account so the app can show them.
     </p>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
-      <strong class="text-[var(--color-ink)]">Your content.</strong> We store the notes, threads,
-      spaces, highlights, and related study data you create in Harvous. This content is tied to
-      your account and is private by default.
+    <p class={soft}>
+      <strong class={ink}>Your content.</strong> We store the notes, threads, folders, spaces,
+      highlights, connections, and related study data you create in Harvous, along with earlier
+      versions of your notes. This content is tied to your account and is private by default.
     </p>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
-      <strong class="text-[var(--color-ink)]">Usage and device data.</strong> We collect technical
-      and product-usage information to keep Harvous reliable and to understand how the app is used
-      — for example browser or device type, app version, pages or screens viewed, feature usage,
-      and error reports. This may be associated with your account (such as your user id, and
-      limited profile details like email or name) so we can improve the product.
+    <p class={soft}>
+      <strong class={ink}>Your activity in the app.</strong> To make Harvous useful when you come
+      back to it, we keep a record of some of what you do in it:
     </p>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
-      <strong class="text-[var(--color-ink)]">Email and messaging.</strong> If you have an account
-      or subscribe to updates, we may store your email and related preferences so we can send
-      product or service communications (for example, onboarding or important account notices).
+    <ul class={list}>
+      <li>
+        Which Bible chapters you open, in which translation, and roughly how long you stayed (a
+        glance, a read, or a longer study).
+      </li>
+      <li>Which notes you open, and roughly how long you stayed.</li>
+      <li>
+        What you search for, how many results came back, and whether you opened one. The words you
+        search are stored on our servers so you can see recent searches and so Harvous can notice
+        a question you keep asking. They are never sent to our analytics provider; it only learns
+        how long a search was.
+      </li>
+      <li>How you respond to suggestions on Home, such as opening or snoozing one.</li>
+      <li>
+        If you use Review, what you've chosen to come back to, when it's next due, how you rated
+        each answer, and anything you typed before revealing the answer.
+      </li>
+      <li>When you were last active, and your time zone.</li>
+    </ul>
+    <p class={soft}>
+      We use this to run features for you: Home, where you left off, suggestions, Review, and
+      reminders at a sensible hour. It is not used for advertising, it is not sold, and it is
+      never shown to your church.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Usage and device data.</strong> We collect technical and product-usage
+      information to keep Harvous reliable and to understand how the app is used — for example
+      browser or device type, app version, pages or screens viewed, feature usage, and error
+      reports. This may be associated with your account (such as your user id, and limited
+      profile details like email or name) so we can improve the product.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Anonymous diagnostics.</strong> When something breaks, such as a script
+      error or a failed request, the app sends us a short report so we can fix it. The report
+      includes a cleaned-up error message, the kind of page you were on (with ids removed), your
+      platform, app version, and browser family, and a random id that changes every week. It does
+      not include your account id, name, email, or any note content, and it is not linked to your
+      account. You can also send one yourself from Settings › Support.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Reminders and notifications.</strong> If you turn on reminders on a
+      device, we store that device's push address, its browser type, and your reminder schedule.
+      For each reminder we send, we record when it went out and what happened next — whether it
+      was tapped or dismissed, or whether you opened Harvous within a few hours — so Harvous can
+      send fewer reminders when they aren't helping. A reminder may mention a Bible passage you
+      were reading.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Payments.</strong> If you buy Harvous Plus or another paid plan, Polar
+      processes the payment as the seller of record. Polar handles your card details; we don't
+      receive or store your full card number. We keep a record of your plan and whether it is
+      active.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Support requests.</strong> When you contact us through the app, we store
+      your message along with your name, email, app version, the page you were on, and basic
+      details about your browser or device, so we can help.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Email and messaging.</strong> If you have an account or subscribe to
+      updates, we may store your email and related preferences so we can send product or service
+      communications (for example, onboarding or important account notices).
     </p>
   </div>
 
   <div>
     <h2 class="text-xl font-semibold text-[var(--color-ink)]">How we use your information</h2>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
+    <p class={soft}>
       We use your information to provide and improve Harvous: syncing your notes across devices,
-      authenticating your account, analyzing product usage, responding to support requests,
-      sending relevant product or service emails, and protecting the service from abuse. We do
-      not sell your personal information.
+      authenticating your account, running features like Home, Review, and reminders, analyzing
+      product usage, responding to support requests, processing payments, sending relevant
+      product or service emails, and protecting the service from abuse. We do not sell your
+      personal information.
     </p>
   </div>
 
   <div>
-    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Sharing</h2>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Trying Harvous without an account</h2>
+    <p class={soft}>
+      You can try Harvous before signing up. What you make as a guest, such as highlights and
+      notes, is kept only in your browser on that device; it isn't sent to our servers. If you then
+      create an account, Harvous copies it into your new account and clears the copy on the
+      device. If you don't, it stays in your browser until you clear your browser's data.
+    </p>
+    {/* REVIEW: guest visits may still load product analytics (PostHog) before sign-up; that
+         code path was not traced for guests. Confirm before publishing. */}
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Sharing and other people</h2>
+    <p class={soft}>
       Your notes are private unless you choose to share them. When you create a share link, only
-      the content you explicitly share becomes accessible to people with that link. We use trusted
-      service providers who process data on our behalf under appropriate agreements, including
-      Clerk (authentication), Supabase (data storage), PostHog (product analytics), and Audienceful
-      (email). These providers only receive what they need to perform their services for us.
+      the content you explicitly share becomes accessible to people with that link.
     </p>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
+    <p class={soft}>
+      <strong class={ink}>Shared spaces.</strong> When you join or create a shared space, the
+      other people in it can see what is added to that space, and your name and profile photo. The
+      person who owns the space can also see your email address. Your notes outside the space stay
+      private.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Churches.</strong> If you connect Harvous to your church, the church's
+      staff see how many people are connected and how many follow each of its channels. They do
+      not see what you read, write, search, or review. Staff can see who follows a church channel,
+      so they can look after it and choose its leaders; other followers can't. If you send
+      something to your church, such as a note for one of its channels or a suggested resource,
+      the staff who review it see it and your name.
+    </p>
+    <p class={soft}>
+      To help you find your church, we search the Here's My Church directory. We send it what you
+      type in the search box, and if you add a church that isn't listed, the church's name and
+      address. We don't send it your name, email, or account details. To place a church you add on
+      the map, we look up its address with OpenStreetMap's Nominatim service.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>Discover.</strong> Discover is a public catalog of study starters people
+      give away. If you submit something, we review it before it is listed. Once listed, it is
+      public in the app and on harvous.com, with your first name and last initial, and anyone can
+      add a copy to their own Harvous account. You can withdraw it at any time; copies people
+      already added stay in their accounts.
+    </p>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Locked notes</h2>
+    <p class={soft}>
       You can lock a note with a PIN. A locked note is encrypted in your browser with a key made
-      from your PIN before it is saved, and your PIN is never sent to us. We store only the
+      from your PIN before it is saved, and the key never leaves your device. We store only the
       encrypted text, so we cannot read a locked note and cannot recover it if you forget your PIN.
-      Exports include a placeholder in place of each locked note's content.
+      To check your PIN when you set it, change it, or lock a note, the app sends it to us over an
+      encrypted connection; we keep only a salted hash of it, never the PIN itself. Exports
+      include a placeholder in place of each locked note's content.
     </p>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
+    {/* REVIEW: the previous policy said "your PIN is never sent to us". That was not accurate:
+         POST /api/user/set-lock-pin and /verify-lock-pin receive the PIN and store a salted hash
+         (src/utils/lock-pin-server.ts). docs/LOCKED_NOTES_ENCRYPTION.md makes the same claim. A
+         4-digit PIN can also be guessed offline by anyone holding the encrypted text; consider
+         saying so, or offering a longer passphrase. */}
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Connector and AI apps</h2>
+    <p class={soft}>
       If you use Connector, which is part of Harvous Plus, you can connect AI apps such as Claude or
-      ChatGPT to your account. A connected app can read your notes, highlights, and the spaces you
-      belong to when you ask it questions; it cannot change anything. Locked notes are not readable,
-      and Bible verse text is not sent, only references. What an app does with what it reads is
-      governed by that service's own terms and privacy policy, not this one. Harvous records which
-      apps you have connected, when each last used the connection, and how many requests were made
-      each day. You can see connected apps and disconnect any of them in Settings.
+      ChatGPT to your account. A connected app can read your notes, threads, highlights,
+      connections, the spaces you belong to, and the Bible chapters you've read recently, when you
+      ask it questions. It cannot change or delete anything. If you turn on "Let apps start notes"
+      (it's off until you do), an app can also start a new note for you, with its summary of your
+      conversation shown on a card in that note. Locked notes are not readable, and Bible verse text
+      is not sent, only references. What an app does with what it reads is governed by that
+      service's own terms and privacy policy, not this one. Harvous records which apps you have
+      connected, when each last used the connection, and how many requests were made and notes
+      started each day. You can see connected apps and disconnect any of them in Settings ›
+      Connector.
     </p>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
-      We configure analytics with privacy in mind: we do not enable session recording by default,
-      we do not turn on broad automatic click capture, and we respect browser Do Not Track
-      settings when they are enabled.
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Service providers</h2>
+    <p class={soft}>
+      We use trusted service providers who process data on our behalf under appropriate
+      agreements. Each only receives what it needs to do its job:
     </p>
+    <ul class={list}>
+      <li><strong class={ink}>Clerk</strong> — sign-in and accounts.</li>
+      <li>
+        <strong class={ink}>Supabase</strong> — our database and file storage, including daily
+        backups.
+      </li>
+      <li><strong class={ink}>Fly.io</strong> — runs the servers behind the app.</li>
+      <li>
+        <strong class={ink}>Cloudflare</strong> — delivers the app and this website, and helps
+        protect them from abuse.
+      </li>
+      <li>
+        <strong class={ink}>PostHog</strong> — product analytics: pages viewed and features used,
+        with your user id, name, and email.
+      </li>
+      <li>
+        <strong class={ink}>Audienceful</strong> — email. It receives your email, name, account
+        id, when you signed up, last signed in, and were last active, and simple yes-or-no flags
+        such as whether you've created a note or shared something. Never what you wrote.
+      </li>
+      <li><strong class={ink}>Polar</strong> — payments, as the seller of record.</li>
+      <li>
+        <strong class={ink}>Slack</strong> — alerts us to new support requests, with the request
+        number, topic, your name or email, and the first line of your message.
+      </li>
+      <li>
+        <strong class={ink}>Your browser's push service</strong> (for example Apple, Google, or
+        Mozilla) — delivers reminders to devices where you turned them on.
+      </li>
+      <li>
+        <strong class={ink}>Here's My Church</strong> and <strong class={ink}>OpenStreetMap
+        Nominatim</strong> — the church directory and address lookup described above. Neither
+        receives your account details.
+      </li>
+    </ul>
+    {/* REVIEW: netlify.toml is still in the app repo and Netlify is still a paid account.
+         Production was cut over to Cloudflare + Fly; confirm Netlify no longer handles any user
+         traffic before leaving it off this list. Also decide whether to say where data is
+         stored (the Fly region is iad, US; the Supabase region was not checked). */}
+    <p class={soft}>
+      We configure analytics with privacy in mind: we do not enable session recording, we do not
+      turn on broad automatic click capture, and we respect browser Do Not Track settings when
+      they are enabled.
+    </p>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Who at Harvous can see your data</h2>
+    <p class={soft}>
+      Harvous is run by a very small team. We read the support requests you send us. We have
+      technical access to the systems that store your account, which we need to keep Harvous
+      running, but we don't browse your notes. We look at your content only when you ask us to
+      help with something that needs it, or when we must to keep the service secure or to follow
+      the law. We can never read a locked note.
+    </p>
+    {/* REVIEW: this paragraph is a commitment about practice, not something the code enforces
+         (the app has no in-app admin view of a user's notes, but the database is reachable).
+         Confirm it describes how Derek actually works. */}
   </div>
 
   <div>
     <h2 class="text-xl font-semibold text-[var(--color-ink)]">Cookies</h2>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
+    <p class={soft}>
       Harvous uses cookies and similar technologies (including local storage) to keep you signed
       in, remember basic preferences, and support product analytics. You can control cookies
       through your browser settings, though some features may not work without them. Enabling Do
@@ -93,23 +277,66 @@
   </div>
 
   <div>
-    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Data retention and deletion</h2>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
-      We retain your account and content for as long as your account is active. You may request
-      deletion of your account and associated data by contacting us. Some information may be kept
-      briefly where required for legal or security purposes, or for a limited time in analytics or
-      email systems after deletion while those systems process the request.
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Your choices</h2>
+    <p class={soft}>
+      In Settings › My Notes you can download your notes at any time, as a full backup (.zip),
+      Markdown, or a spreadsheet (CSV); clear your search history; clear all your notes while
+      keeping your account; or delete your account. You can turn reminders off in Settings, and
+      disconnect AI apps in Settings › Connector.
     </p>
   </div>
 
   <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Data retention and deletion</h2>
+    <p class={soft}>
+      We retain your account and content for as long as your account is active. Search history
+      you haven't cleared is kept, but Harvous only uses the last 90 days of it.
+    </p>
+    <p class={soft}>
+      <strong class={ink}>When you delete your account,</strong> we remove your notes and
+      everything attached to them (highlights, connections, earlier versions, and Review items
+      about them), your threads, folders, and tags, the spaces you own and their members, your
+      place in other people's spaces, your profile and settings, your search history, and your
+      sign-in account with Clerk.
+    </p>
+    <p class={soft}>
+      Some records are not yet removed automatically. They include your reading history, Review practice on Bible passages, reminder
+      devices and reminder history, your plan and billing records, your church connection,
+      Connector records, Discover submissions, and support requests. Email us and we will remove
+      them. Listings you gave to Discover stay public until you withdraw them or ask us to.
+    </p>
+    {/* REVIEW: this paragraph is honest about today's code (DELETE /api/user/delete-account in
+         server/routes/user.ts). Derek may prefer to fix the deletion endpoint instead and then
+         shorten this. See the gap list in the PR notes. */}
+    <p class={soft}>
+      We keep a daily backup copy of each account's notes for up to 30 days, after which it is
+      deleted, so a deleted account's notes can remain in a backup for up to 30 days. Copies held
+      by our providers — your email subscription (Audienceful), analytics profile (PostHog), and
+      billing record (Polar) — remain until they are removed; ask us and we will remove them,
+      though Polar may have to keep payment records for tax and legal reasons. Anonymous
+      diagnostics are not linked to your account, so they are not affected. Some information may
+      also be kept where required for legal or security purposes.
+    </p>
+    {/* REVIEW: Supabase's own database backups (point-in-time recovery) were not checked; if the
+         plan keeps them, add their window here. */}
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Changes to this policy</h2>
+    <p class={soft}>
+      When we make a meaningful change to this policy, we'll tell you in the app and by email, and
+      summarize what changed on the <a class={link} href="/legal/changes/">What changed</a> page.
+      The update is effective on the date shown at the top. If you don't agree with it, you can
+      stop using Harvous and delete your account.
+    </p>
+    {/* REVIEW: the "by email" commitment needs an actual email send for each update. */}
+  </div>
+
+  <div>
     <h2 class="text-xl font-semibold text-[var(--color-ink)]">Contact</h2>
-    <p class="mt-3 text-[var(--color-ink-soft)]">
+    <p class={soft}>
       Questions about this policy or your data? Email
-      <a
-        class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
-        href="mailto:derek@harvous.com"
-      >
+      <a class={link} href="mailto:derek@harvous.com">
         derek@harvous.com
       </a>.
     </p>

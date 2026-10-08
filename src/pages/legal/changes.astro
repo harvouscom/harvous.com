@@ -1,0 +1,89 @@
+---
+/**
+ * /legal/changes/ — what changed in each update to the privacy policy and
+ * terms, in plain words. The app's update notice links here
+ * (src/utils/legal-versions.ts in the app repo, version '2026-10-08').
+ * Add the newest update at the top; keep the older ones below it.
+ */
+import LegalPage from "../../components/next/LegalPage.astro";
+import { PRIVACY_UPDATED, TERMS_UPDATED } from "../../lib/legal.ts";
+
+const link =
+  "underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]";
+const soft = "mt-3 text-[var(--color-ink-soft)]";
+const list = "mt-3 list-disc space-y-1 pl-5 text-[var(--color-ink-soft)]";
+---
+
+<LegalPage
+  doc="changes"
+  title="What Changed — Harvous"
+  description="A plain-English summary of each update to the Harvous privacy policy and terms."
+  heading="What changed"
+  updated={PRIVACY_UPDATED}
+  summary="The short version of each update to the privacy policy and terms. Nothing here replaces the full documents; it tells you where to look."
+>
+  <div class="prose-letter space-y-8">
+    <div>
+      <h2 class="text-xl font-semibold text-[var(--color-ink)]">October 8, 2026</h2>
+      <p class={soft}>
+        Harvous has grown since these documents were last written, and they now describe it
+        properly. Most of the changes say more plainly what was already true.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-[var(--color-ink)]">Privacy policy</h2>
+      <ul class={list}>
+        <li>
+          It now lists the activity Harvous keeps to run Home, Review, and reminders: chapters and
+          notes you open, your searches, your Review answers, when you were last active, and your
+          time zone. None of it is shown to your church, and search words never go to analytics.
+        </li>
+        <li>Reminders: what we store about your devices and how we notice reminders being ignored.</li>
+        <li>Anonymous diagnostics, which aren't linked to your account.</li>
+        <li>Trying Harvous as a guest keeps your work in your browser until you sign up.</li>
+        <li>
+          What other people can see: people in your shared spaces, your church's staff, and anyone
+          browsing Discover when you list something there.
+        </li>
+        <li>
+          Locked notes: a correction. Your PIN is sent to us to be checked, and we keep only a
+          salted hash of it. The key that encrypts your notes still never leaves your device.
+        </li>
+        <li>Connector: an app you connect can start a new note, if you turn that on.</li>
+        <li>The full list of companies that help us run Harvous, and what each receives.</li>
+        <li>
+          How to download or delete your data in Settings › My Notes, what deleting your account
+          removes and what it doesn't yet, and that backups are kept for up to 30 days.
+        </li>
+        <li>How we'll tell you about future changes.</li>
+      </ul>
+      <p class={soft}>
+        Read the full <a class={link} href="/privacy/">privacy policy</a>.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-[var(--color-ink)]">Terms of service</h2>
+      <ul class={list}>
+        <li>
+          Paid plans: Harvous Plus is sold through Polar as the merchant of record, renews until you
+          cancel, and keeps working until the end of the period you paid for.
+        </li>
+        <li>Shared spaces and churches: share only what you have the right to share.</li>
+        <li>
+          Discover: what you allow when you list something, and that you can withdraw it at any time.
+        </li>
+        <li>Connector: connected AI apps follow their own terms, and can be wrong.</li>
+        <li>
+          Changes: instead of "using Harvous means you accept," we'll tell you in the app and by
+          email, and you can delete your account if you don't agree.
+        </li>
+      </ul>
+      <p class={soft}>
+        Read the full <a class={link} href="/terms/">terms of service</a> (last updated
+        {TERMS_UPDATED}).
+      </p>
+    </div>
+  </div>
+</LegalPage>

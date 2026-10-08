@@ -2,6 +2,9 @@
 /**
  * The terms of service text, shared by the live page and /next/. Edit
  * the wording here; the "last updated" date lives in lib/legal.ts.
+ *
+ * DRAFT (October 8, 2026 update) for Derek and counsel to review before it
+ * ships. `REVIEW:` comments mark open questions.
  */
 ---
 
@@ -37,7 +40,69 @@
     <p class="mt-3 text-[var(--color-ink-soft)]">
       You retain ownership of the notes and other content you create. You grant us a limited
       license to host, store, and display your content solely to operate Harvous — including
-      syncing it across your devices and honoring share links you create.
+      syncing it across your devices, honoring share links you create, showing it to the people
+      in spaces you share it with, and passing it to AI apps you connect.
+    </p>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Paid plans</h2>
+    <p class="mt-3 text-[var(--color-ink-soft)]">
+      Harvous is free to use, and some features are part of a paid plan such as Harvous Plus. Current
+      prices and what each plan includes are on the
+      <a
+        class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+        href="/pricing/"
+      >
+        pricing page
+      </a>.
+    </p>
+    <p class="mt-3 text-[var(--color-ink-soft)]">
+      Paid plans are sold by Polar, our payment provider, as the merchant of record. That means
+      Polar is the seller for your purchase: it takes the payment, charges any sales tax or VAT,
+      and issues your receipts, and its own terms apply to the payment. A subscription renews
+      automatically each month or year until you cancel it. You can cancel any time in Settings ›
+      Plan; you keep your paid features until the end of the period you've paid for. If a
+      subscription ends, your notes stay yours, and features that need the plan stop working.
+    </p>
+    {/* REVIEW: refund policy is not stated anywhere in the app or docs. Decide on one (or defer
+         to Polar's) and add it here. Also decide whether to promise advance notice of price
+         changes for existing subscribers. Church plans are bought by a staff member for the
+         church; confirm they need no extra terms here. */}
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Shared spaces and churches</h2>
+    <p class="mt-3 text-[var(--color-ink-soft)]">
+      When you add something to a shared space, the people in that space can read it. Only share
+      what you have the right to share. The owner of a space decides who is in it and can remove
+      people. If you set up or run a church on Harvous, you are responsible for what your church
+      publishes and for inviting people into its spaces, and you agree to use what Harvous shows
+      you about your congregation only to serve them.
+    </p>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Discover</h2>
+    <p class="mt-3 text-[var(--color-ink-soft)]">
+      Discover is a free public catalog of study starters people give away. When you submit
+      something, you confirm it is yours to share, and you give us and everyone who uses Harvous a
+      free, worldwide, non-exclusive permission to show it publicly with your first name and last
+      initial, and to copy it into their own Harvous accounts and use it there. We review
+      submissions and may decline or remove a listing. You can withdraw your listing at any time;
+      it leaves the catalog, but copies people already added remain theirs.
+    </p>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold text-[var(--color-ink)]">Connector and AI apps</h2>
+    <p class="mt-3 text-[var(--color-ink-soft)]">
+      Connector lets you connect AI apps such as Claude or ChatGPT to your Harvous account. You
+      choose which apps to connect, and you can disconnect them in Settings › Connector. A connected
+      app reads your study when you ask it to, and can start a new note only if you allow it. What
+      it does with what it reads, and what it tells you, is governed by that app's own terms. AI
+      apps can be wrong, including about Scripture, so weigh what they say. Connector has daily
+      usage limits, and we may suspend a connection that is being misused.
     </p>
   </div>
 
@@ -80,8 +145,16 @@
   <div>
     <h2 class="text-xl font-semibold text-[var(--color-ink)]">Changes</h2>
     <p class="mt-3 text-[var(--color-ink-soft)]">
-      We may update these Terms from time to time. Continued use after changes take effect means
-      you accept the updated Terms.
+      We may update these Terms from time to time. When we do, we'll tell you in the app and by
+      email, and summarize what changed on the
+      <a
+        class="underline decoration-[var(--color-rule)] underline-offset-4 hover:decoration-[var(--color-ink)]"
+        href="/legal/changes/"
+      >
+        What changed
+      </a>
+      page. The updated Terms are effective on the date shown at the top. If you don't agree with
+      them, you can stop using Harvous and delete your account.
     </p>
   </div>
 
