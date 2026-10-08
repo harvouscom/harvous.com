@@ -51,9 +51,11 @@ import { aboutJsonLd } from "../lib/page-jsonld.ts";
     </figure>
   </section>
 
-  <section class="nx-section nx-wrap" aria-labelledby="cares-title">
-    <p class="nx-kicker">What it cares about</p>
-    <h2 id="cares-title" class="nx-title about-cares__title">Humans help humans. Tools only help.</h2>
+  <section class="nx-section nx-wrap about-values" aria-labelledby="cares-title">
+    <div class="about-values__head">
+      <p class="nx-kicker">What it cares about</p>
+      <h2 id="cares-title" class="nx-title about-cares__title">Humans help humans. Tools only help.</h2>
+    </div>
     <ol class="about-cares" data-reveal="stagger">
       {ABOUT_BELIEFS.map((b, i) => (
         <li>
@@ -154,24 +156,28 @@ import { aboutJsonLd } from "../lib/page-jsonld.ts";
   .about-name figcaption { margin-top: 1rem; font-weight: 500; opacity: 0.85; }
   .about-name__note { max-width: 30rem; margin: 1.75rem auto 0; font-size: 1.0625rem; line-height: 1.55; opacity: 0.9; }
 
-  .about-cares__title { margin: 0.75rem 0 0; max-width: 16ch; }
+  /* Heading on the left, held in view; the four values as a 2×2 on the right. */
+  .about-values { display: grid; gap: clamp(2rem, 5vw, 3rem); }
+  @media (min-width: 60rem) {
+    .about-values { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: clamp(3rem, 6vw, 5rem); align-items: start; }
+    .about-values__head { position: sticky; top: 7rem; }
+  }
+  .about-cares__title { margin: 0.75rem 0 0; max-width: 14ch; }
   .about-cares {
     display: grid;
-    gap: 2rem 3rem;
-    margin: clamp(2.5rem, 6vw, 3.5rem) 0 0;
+    gap: 2.25rem 2.5rem;
+    margin: 0;
     padding: 0;
     list-style: none;
+    counter-reset: none;
   }
-  @media (min-width: 48rem) {
-    .about-cares { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 64rem) {
-    .about-cares { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 40rem) {
+    .about-cares { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   .about-cares li { padding-top: 1.25rem; border-top: 1px solid var(--color-rule); }
-  .about-cares__n { font-size: 0.75rem; font-weight: 600; color: var(--color-accent); font-variant-numeric: tabular-nums; }
-  .about-cares h3 { margin: 0.5rem 0 0; font-size: 1.25rem; letter-spacing: -0.015em; }
-  .about-cares p { margin: 0.5rem 0 0; line-height: 1.55; color: var(--color-ink-soft); }
+  .about-cares__n { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+  .about-cares h3 { margin: 0.6rem 0 0; font-family: var(--font-display); font-size: 1.375rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+  .about-cares p { margin: 0.6rem 0 0; font-size: 1rem; line-height: 1.6; color: var(--color-ink-soft); text-wrap: pretty; }
 
   .about-who { text-align: center; padding-bottom: clamp(3rem, 8vw, 5rem); }
   .about-who .nx-lead { margin: 1.25rem auto 0; }
