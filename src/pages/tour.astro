@@ -20,7 +20,7 @@ import ComparePreview from "../components/next/ComparePreview.astro";
 import ShowcaseVisual from "../components/next/ShowcaseVisual.astro";
 import { APP_TOUR_CHAPTERS } from "../lib/app-tour-chapters.ts";
 import { TOUR_STAGING as STAGING } from "../lib/next/tour-staging.ts";
-import { stageMesh } from "../lib/next/content.ts";
+import { photoMesh } from "../lib/next/content.ts";
 
 const chapters = APP_TOUR_CHAPTERS.filter((c) => STAGING[c.key]);
 const pad = (n: number) => String(n + 1).padStart(2, "0");
@@ -91,7 +91,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
             <div class="tour-ch__veil" aria-hidden="true"></div>
             {c.items.map((item, j) => item.visual && (
               <div class="tour-ch__peek" id={`${c.key}-peek-${j}`} data-peek={j} role="region" aria-label={item.title}>
-                <div class="tour-ch__peek-card nx-mesh" style={stageMesh("sky")}>
+                <div class="tour-ch__peek-card nx-mesh nx-mesh--photo" style={photoMesh(s.backdrop)}>
                   <p class="tour-ch__peek-head">
                     <span>{item.title}</span>
                     <button type="button" class="tour-ch__close" aria-label="Back to the app" data-peek-close>
