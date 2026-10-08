@@ -1,0 +1,176 @@
+---
+/**
+ * /open-source/ — everything we make that's public: Harvous and Here's My
+ * Church. One panel each with what it is, what its licence lets you
+ * do (in plain words, with the licence one click away), and where the code is.
+ * The footer's "Open source" link lands here instead of going straight out to
+ * GitHub; the open-source card on the homepage and About points here too.
+ *
+ * Star counts are read at build time (lib/github-stars.ts) and left out when
+ * GitHub doesn't answer.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import ClosingCall from "../components/next/ClosingCall.astro";
+import { ogCard } from "../lib/og-card.ts";
+import { formatStars, getRepoStars } from "../lib/github-stars.ts";
+import { SUPPORT_EMAIL } from "../lib/faq";
+
+type Project = {
+  id: string;
+  name: string;
+  icon: string;
+  line: string;
+  repo: string;
+  facts: { label: string; value: string; href?: string }[];
+  primary?: { label: string; href: string };
+  tone?: "hmc";
+};
+
+const PROJECTS: Project[] = [
+  {
+    id: "harvous",
+    name: "Harvous",
+    icon: "/images/harvous-2-icon.webp",
+    line: "The Bible study notes app. Every line of the app is on GitHub, so you can see exactly how it works and how your notes are handled.",
+    repo: "harvouscom/harvous",
+    facts: [
+      {
+        label: "License",
+        value: "O'Saasy: MIT, plus one rule. Use it, change it, run your own copy; just don't sell it back as a competing hosted service.",
+        href: "https://github.com/harvouscom/harvous/blob/main/LICENSE",
+      },
+    ],
+  },
+  {
+    id: "heresmychurch",
+    name: "Here's My Church",
+    icon: "/images/heresmychurch-icon.webp",
+    line: "A crowd-sourced map of Christian churches. Anyone can add or correct a church, and browsing is free, no account needed.",
+    repo: "harvouscom/heresmychurch",
+    facts: [
+      {
+        label: "License",
+        value: "CC BY-NC 4.0: share and adapt it with credit, for anything that isn't commercial.",
+        href: "https://github.com/harvouscom/heresmychurch/blob/main/LICENSE",
+      },
+      { label: "Data", value: "OpenStreetMap, plus the corrections and new churches people add." },
+    ],
+    primary: { label: "Explore the map", href: "https://heresmychurch.com" },
+    tone: "hmc",
+  },
+];
+
+const stars = Object.fromEntries(
+  await Promise.all(PROJECTS.map(async (p) => [p.id, await getRepoStars(p.repo)] as const)),
+);
+const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Harvous open source")}`;
+const description =
+  "Harvous and Here's My Church are open source. Read the code, learn from it, or run your own copy, and see what each licence allows.";
+---
+
+<NextLayout ogImage={ogCard("open-source")} title="Open source — Harvous" description={description}>
+  <header class="nx-wrap os-intro">
+    <p class="nx-kicker">Open source</p>
+    <h1 class="nx-display os-title">Made in the open.</h1>
+    <p class="nx-lead os-lead">Everything we make is public on GitHub. Read it, learn from it, run your own copy.</p>
+  </header>
+
+  <section class="nx-wrap os-list" aria-label="Projects">
+    {PROJECTS.map((p) => (
+      <article class:list={["os-proj", p.tone && `os-proj--${p.tone}`]} id={p.id} data-reveal>
+        <div class="os-proj__main">
+          <p class="os-proj__brand">
+            <img src={p.icon} alt="" width="44" height="44" loading="lazy" />
+            <span>
+              <span class="os-proj__name">{p.name}</span>
+              <span class="os-proj__repo">github.com/{p.repo}</span>
+            </span>
+          </p>
+          <p class="os-proj__line">{p.line}</p>
+          <dl class="os-proj__facts">
+            {p.facts.map((f) => (
+              <div>
+                <dt>{f.label}</dt>
+                <dd>
+                  {f.value}
+                  {f.href && <> <a href={f.href}>Read it</a></>}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <p class="os-proj__ctas">
+          {p.primary && (
+            <a class="nx-btn os-proj__go" href={p.primary.href} target="_blank" rel="noopener">{p.primary.label} ↗</a>
+          )}
+          <a class:list={["nx-btn", p.primary ? "nx-btn--ghost" : "nx-btn--accent"]} href={`https://github.com/${p.repo}`}>
+            <svg class="os-gh" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            View on GitHub
+            {(stars[p.id] ?? 0) > 0 && (
+              <span class="os-stars" aria-label={`${stars[p.id]} stars on GitHub`}>★ {formatStars(stars[p.id]!)}</span>
+            )}
+          </a>
+        </p>
+      </article>
+    ))}
+  </section>
+
+  <section class="nx-wrap os-help" aria-labelledby="os-help-title">
+    <h2 id="os-help-title" class="os-help__h">Found something?</h2>
+    <p>
+      Open an issue on the repo it belongs to, or <a href={mailto}>email Derek</a>. Bug reports, fixes, and
+      questions about how something works are all welcome.
+    </p>
+  </section>
+
+  <ClosingCall title="See what the code turns into." />
+</NextLayout>
+
+<style>
+  .os-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .os-title { margin: 0.75rem 0 0; }
+  .os-lead { max-width: 32rem; margin: 1.25rem auto 0; }
+
+  .os-list { display: grid; gap: 1rem; max-width: calc(56rem + 2 * var(--nx-gutter)); padding-top: clamp(3rem, 7vw, 4.5rem); }
+  .os-proj {
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--nx-radius-scene);
+    background: var(--color-paper);
+  }
+  @media (min-width: 48rem) {
+    .os-proj { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 2.5rem; }
+  }
+  .os-proj__brand { display: flex; align-items: center; gap: 0.85rem; margin: 0; }
+  .os-proj__brand img { width: 44px; height: 44px; border-radius: 11px; }
+  .os-proj__name { display: block; font-family: var(--font-display); font-size: 1.375rem; font-weight: 600; letter-spacing: -0.02em; }
+  .os-proj__repo { display: block; font-size: 0.8125rem; color: var(--color-ink-faint); }
+  .os-proj__line { max-width: 34rem; margin: 1rem 0 0; font-size: 1.0625rem; line-height: 1.6; color: var(--color-ink-soft); text-wrap: pretty; }
+  .os-proj__facts { display: grid; gap: 0.75rem; max-width: 34rem; margin: 1.25rem 0 0; padding-top: 1.25rem; border-top: 1px solid var(--color-rule); }
+  .os-proj__facts > div { display: grid; gap: 0.15rem 1rem; }
+  @media (min-width: 40rem) { .os-proj__facts > div { grid-template-columns: 5rem minmax(0, 1fr); } }
+  .os-proj__facts dt { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-faint); padding-top: 0.2rem; }
+  .os-proj__facts dd { margin: 0; font-size: 0.9375rem; line-height: 1.55; color: var(--color-ink-soft); }
+  .os-proj__facts a { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-rule); text-underline-offset: 3px; }
+  .os-proj__facts a:hover { text-decoration-color: currentColor; }
+
+  .os-proj__ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0; }
+  @media (min-width: 48rem) { .os-proj__ctas { flex-direction: column; align-items: stretch; } }
+  .os-proj__ctas .nx-btn { white-space: nowrap; }
+  .os-gh { width: 1.1rem; height: 1.1rem; }
+  .os-stars { margin-left: 0.25rem; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 600; font-variant-numeric: tabular-nums; background: color-mix(in srgb, currentColor 14%, transparent); }
+
+  /* Here's My Church in its own colours. */
+  .os-proj--hmc { border-color: color-mix(in srgb, #a855f7 22%, var(--color-rule)); background: color-mix(in srgb, #a855f7 4%, var(--color-paper)); }
+  .os-proj__go { color: #fff; background: linear-gradient(135deg, #b46cf8 0%, #8b3fd9 55%, #6b21a8 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 20px -10px rgba(139, 63, 217, 0.8); }
+  .os-proj__go:hover { color: #fff; filter: brightness(1.08); }
+
+  .os-help { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: clamp(3.5rem, 8vw, 5rem); text-align: center; }
+  .os-help__h { margin: 0; font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 600; letter-spacing: -0.025em; }
+  .os-help p { margin: 0.75rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
+  .os-help a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; }
+</style>

@@ -33,7 +33,6 @@ const track = page === "about" ? fathomAbout : fathomHome;
 const stars = await getRepoStars();
 
 const repo = "https://github.com/harvouscom/harvous";
-const license = `${repo}/blob/main/LICENSE`;
 const hmcUrl = "https://heresmychurch.com";
 ---
 
@@ -51,7 +50,7 @@ const hmcUrl = "https://heresmychurch.com";
         <div class="oss__body oss__body--two">
           <div class="oss__words">
             <h2 id="oss-title" class="nx-title oss__title">Made in the open.</h2>
-            <p class="nx-lead oss__lead">Both things we make are open source. Read the code, learn from it, run your own copy.</p>
+            <p class="nx-lead oss__lead">Both things we make are open source. Read the code, learn from it, run your own copy. <a class="nx-link" href="/open-source/">What each license allows →</a></p>
           </div>
           <div class="oss__projects">
             <article class="oss__proj">
@@ -117,7 +116,7 @@ const hmcUrl = "https://heresmychurch.com";
               </span>
             )}
           </a>
-          <a class="nx-link" href={license} data-fathom-track={track.license}>Read the license →</a>
+          <a class="nx-link" href="/open-source/" data-fathom-track={track.license}>More on open source →</a>
         </div>
       </div>
       )}

@@ -72,6 +72,7 @@ const PAGES = [
   { name: "tour", kicker: "Tour", title: "How Harvous works.", icon: "compass", path: "/tour/" },
   { name: "now", kicker: "Now", title: "What I'm working on right now.", icon: "pen-nib" },
   { name: "support", kicker: "Support", title: "Help, from the person who built it.", icon: "life-ring" },
+  { name: "open-source", kicker: "Open source", title: "Made in the open.", icon: "code-branch" },
   { name: "faq", kicker: "FAQ", title: "Guaranteed questions, short answers.", icon: "circle-question" },
   { name: "privacy", kicker: "Legal", title: "Privacy Policy", icon: "shield-halved" },
   { name: "terms", kicker: "Legal", title: "Terms of Service", icon: "file-contract" },
