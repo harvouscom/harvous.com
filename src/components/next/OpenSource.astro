@@ -33,7 +33,6 @@ const track = page === "about" ? fathomAbout : fathomHome;
 const stars = await getRepoStars();
 
 const repo = "https://github.com/harvouscom/harvous";
-const license = `${repo}/blob/main/LICENSE`;
 const hmcUrl = "https://heresmychurch.com";
 ---
 
@@ -51,7 +50,7 @@ const hmcUrl = "https://heresmychurch.com";
         <div class="oss__body oss__body--two">
           <div class="oss__words">
             <h2 id="oss-title" class="nx-title oss__title">Made in the open.</h2>
-            <p class="nx-lead oss__lead">Both things we make are open source. Read the code, learn from it, run your own copy.</p>
+            <p class="nx-lead oss__lead">Both things we make are open source. Read the code, learn from it, run your own copy. <a class="nx-link" href="/open-source/">Learn more →</a></p>
           </div>
           <div class="oss__projects">
             <article class="oss__proj">
@@ -117,7 +116,7 @@ const hmcUrl = "https://heresmychurch.com";
               </span>
             )}
           </a>
-          <a class="nx-link" href={license} data-fathom-track={track.license}>Read the license →</a>
+          <a class="nx-link" href="/open-source/" data-fathom-track={track.license}>Learn more →</a>
         </div>
       </div>
       )}
@@ -193,6 +192,8 @@ const hmcUrl = "https://heresmychurch.com";
   }
   /* Two projects on one sheet: a shared heading, then a panel each. */
   .oss.oss--two .oss__body { display: block; max-width: none; }
+  /* A taller sheet: more air above the heading than the one-line card needs. */
+  .oss--two .oss__frame { padding-top: calc(clamp(2.5rem, 5vw, 3.5rem) + var(--snap, 0px) / 2); padding-bottom: calc(clamp(2rem, 4vw, 2.75rem) + var(--snap, 0px) / 2); }
   .oss--two .oss__lead { max-width: 30rem; }
   .oss__projects { display: grid; gap: 1rem; margin-top: 1.75rem; }
   @media (min-width: 48rem) { .oss__projects { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }

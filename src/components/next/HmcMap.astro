@@ -1,0 +1,116 @@
+---
+/**
+ * HmcMap — Here's My Church's map: a tile grid of the states, lit from one
+ * pin. Tiles glow brighter the closer they sit to the pin, which drops in once
+ * the nearest `.revealed` ancestor (the shared reveal observer) appears.
+ * Fixed colours, so it reads the same in dark mode. Used by
+ * HeresMyChurchCard and the /open-source/ page.
+ */
+interface Props {
+  /** Unique per page, for the SVG gradient ids. */
+  uid?: string;
+}
+const { uid = "hmcm" } = Astro.props;
+
+/* A tile-grid cartogram of the states (+ DC): [row, col]. */
+const STATES: [string, number, number][] = [
+  ["AK", 0, 0], ["ME", 0, 10],
+  ["WI", 1, 5], ["VT", 1, 9], ["NH", 1, 10],
+  ["WA", 2, 0], ["ID", 2, 1], ["MT", 2, 2], ["ND", 2, 3], ["MN", 2, 4], ["IL", 2, 5], ["MI", 2, 6], ["NY", 2, 8], ["MA", 2, 9],
+  ["OR", 3, 0], ["NV", 3, 1], ["WY", 3, 2], ["SD", 3, 3], ["IA", 3, 4], ["IN", 3, 5], ["OH", 3, 6], ["PA", 3, 7], ["NJ", 3, 8], ["CT", 3, 9], ["RI", 3, 10],
+  ["CA", 4, 0], ["UT", 4, 1], ["CO", 4, 2], ["NE", 4, 3], ["MO", 4, 4], ["KY", 4, 5], ["WV", 4, 6], ["VA", 4, 7], ["MD", 4, 8], ["DE", 4, 9],
+  ["AZ", 5, 1], ["NM", 5, 2], ["KS", 5, 3], ["AR", 5, 4], ["TN", 5, 5], ["NC", 5, 6], ["SC", 5, 7], ["DC", 5, 8],
+  ["OK", 6, 3], ["LA", 6, 4], ["MS", 6, 5], ["AL", 6, 6], ["GA", 6, 7],
+  ["HI", 7, 0], ["TX", 7, 3], ["FL", 7, 8],
+];
+const CELL = 30;
+const GAP = 4;
+const step = CELL + GAP;
+/* The pin lands on Missouri, near the middle; tiles glow brighter the closer
+   they sit to it, so the map reads as one shape lit from the pin. */
+const PIN: [number, number] = [4, 4];
+const tiles = STATES.map(([id, r, c]) => {
+  const d = Math.hypot(r - PIN[0], c - PIN[1]);
+  return {
+    id,
+    x: c * step,
+    y: r * step,
+    glow: Math.max(0, 1 - d / 6),
+  };
+}).filter((t) => t.id !== "MO");
+const W = 11 * step - GAP;
+const H = 8 * step - GAP;
+const homeX = PIN[1] * step;
+const homeY = PIN[0] * step;
+const pinX = homeX + CELL / 2;
+const pinY = homeY + CELL / 2;
+---
+
+<svg class="hmcm" viewBox={`-4 -26 ${W + 8} ${H + 30}`}>
+  <defs>
+    <linearGradient id={`${uid}-tile`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d8b4fe" />
+      <stop offset="1" stop-color="#a855f7" />
+    </linearGradient>
+    <linearGradient id={`${uid}-home`} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c084fc" />
+      <stop offset="1" stop-color="#7e22ce" />
+    </linearGradient>
+    <linearGradient id={`${uid}-pin`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#e9d5ff" />
+    </linearGradient>
+    <radialGradient id={`${uid}-halo`}>
+      <stop offset="0" stop-color="#a855f7" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#a855f7" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <circle cx={pinX} cy={pinY} r="70" fill={`url(#${uid}-halo)`} />
+  {tiles.map((t, i) => (
+    <rect
+      class="hmcm__tile"
+      style={`--i: ${i};`}
+      x={t.x + 0.5}
+      y={t.y + 0.5}
+      width={CELL - 1}
+      height={CELL - 1}
+      rx="7"
+      fill={`url(#${uid}-tile)`}
+      fill-opacity={(0.2 + 0.4 * t.glow).toFixed(2)}
+    />
+  ))}
+  <rect class="hmcm__home" x={homeX} y={homeY} width={CELL} height={CELL} rx="7" fill={`url(#${uid}-home)`} />
+  <ellipse class="hmcm__shadow" cx={pinX} cy={pinY + 2} rx="9" ry="3" />
+  <g class="hmcm__pin">
+    <path
+      transform={`translate(${pinX - 15} ${pinY - 38}) scale(1.15)`}
+      d="M13 0C5.8 0 0 5.7 0 12.8 0 22.4 13 34 13 34s13-11.6 13-21.2C26 5.7 20.2 0 13 0z"
+      fill={`url(#${uid}-pin)`}
+    />
+    <circle cx={pinX} cy={pinY - 23.3} r="5.2" class="hmcm__pin-eye" />
+  </g>
+</svg>
+
+<style>
+  .hmcm { display: block; width: 100%; overflow: visible; }
+  .hmcm__tile { stroke: rgba(255, 255, 255, 0.08); stroke-width: 1; }
+  .hmcm__home { filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.7)); }
+  .hmcm__shadow { fill: rgba(10, 4, 30, 0.55); }
+  .hmcm__pin path { filter: drop-shadow(0 4px 6px rgba(20, 8, 50, 0.5)); }
+  .hmcm__pin-eye { fill: #7e22ce; }
+
+  /* Tiles settle in, then the pin drops — once. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .hmcm__tile { opacity: 0; transition: opacity 600ms ease; transition-delay: calc(var(--i) * 10ms); }
+    :global(html.js .revealed) .hmcm__tile { opacity: 1; }
+    :global(html.js) .hmcm__pin { opacity: 0; transform: translateY(-40px); }
+    :global(html.js .revealed) .hmcm__pin { animation: hmcm-drop 600ms cubic-bezier(0.3, 1.3, 0.5, 1) 700ms forwards; }
+    :global(html.js) .hmcm__shadow { opacity: 0; transition: opacity 400ms ease 1000ms; }
+    :global(html.js .revealed) .hmcm__shadow { opacity: 1; }
+  }
+  @keyframes hmcm-drop {
+    0% { opacity: 0; transform: translateY(-40px); }
+    50% { opacity: 1; }
+    100% { opacity: 1; transform: none; }
+  }
+</style>
