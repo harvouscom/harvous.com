@@ -3,7 +3,8 @@
  * /next/ — the redesigned home. Seven beats instead of twelve: the hero, what
  * people say (straight after it, as proof), how it works (01–03), however you
  * study (the use cases), what else it does (bento), privacy, who makes it, and
- * one closing line. FAQs live on /faq/ (a small "Questions?" line points there);
+ * one closing line. FAQs live on /faq/; QuickAnswers answers the three asked
+ * before starting, just ahead of the closing line;
  * the code being public gets one card (OpenSource) after the maker note, and
  * the blog gets a small way in (BlogPreview) after that.
  */
@@ -20,6 +21,7 @@ import UseCaseRow from "../components/next/UseCaseRow.astro";
 import ClosingCall from "../components/next/ClosingCall.astro";
 import ComparePreview from "../components/next/ComparePreview.astro";
 import BlogPreview from "../components/next/BlogPreview.astro";
+import QuickAnswers from "../components/next/QuickAnswers.astro";
 import { buildHomeJsonLd } from "../lib/home-jsonld.ts";
 import { fathomHome } from "../lib/fathom-events.ts";
 const homeJsonLd = buildHomeJsonLd();
@@ -73,18 +75,7 @@ const homeJsonLd = buildHomeJsonLd();
 
   <div class="nx-wrap"><ComparePreview /></div>
 
-  <aside class="nx-wrap home__ask" aria-labelledby="home-ask-title" data-reveal>
-    <div class="home__ask-card">
-      <div>
-        <p id="home-ask-title" class="home__ask-q">Questions before you start?</p>
-        <p class="home__ask-sub">What it costs, where your notes live, how it's different. The short answers are all in one place.</p>
-      </div>
-      <p class="home__ask-links">
-        <a class="nx-btn nx-btn--accent" href="/faq/">Read the FAQs</a>
-        <a class="nx-link" href="mailto:derek@harvous.com?subject=A%20question%20about%20Harvous">or email Derek</a>
-      </p>
-    </div>
-  </aside>
+  <QuickAnswers />
 
   <ClosingCall />
 </NextLayout>
@@ -98,32 +89,4 @@ const homeJsonLd = buildHomeJsonLd();
   .home__head .nx-lead { margin: 1rem 0 0; }
   .home__more { margin: 2rem 0 0; text-align: center; }
   .home__bento { padding-top: 0; }
-  .home__ask { padding-block: clamp(2.5rem, 6vw, 4rem) 0; }
-  .home__ask-card {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem 2rem;
-    max-width: 56rem;
-    margin-inline: auto;
-    padding: clamp(1.5rem, 3.5vw, 2rem) clamp(1.5rem, 4vw, 2.5rem);
-    border-radius: 1.75rem;
-    background: var(--color-warm);
-  }
-  .home__ask-q {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-  }
-  .home__ask-sub { max-width: 30rem; margin: 0.35rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
-  .home__ask-links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 1rem;
-    margin: 0;
-  }
 </style>
