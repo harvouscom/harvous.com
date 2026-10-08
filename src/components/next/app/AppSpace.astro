@@ -97,7 +97,8 @@ const THREADS = [
   .aspc__group :global(.aui-sub i) { font-style: normal; padding-inline: 0.3em; }
   .aspc__group :global(.aui-acts) { color: var(--pds-text-tertiary); }
   .aspc__group :global(.aui-acts svg) { width: 10px; height: 10px; }
-  .aspc__thread { color: var(--pill-thread, var(--pds-accent)) !important; }
+  /* Threads are neutral in the app (secondary glyph, no colored tile) — match it. */
+  .aspc__thread { color: var(--pds-text-secondary) !important; }
   .aspc__progress { display: block; height: 3px; margin: 5px 0 3px; border-radius: 3px; background: var(--pds-bg-track); overflow: hidden; }
-  .aspc__progress i { display: block; height: 100%; border-radius: inherit; background: var(--pill-thread, var(--pds-accent)); }
+  .aspc__progress i { display: block; height: 100%; border-radius: inherit; background: var(--pds-text-secondary); }
 </style>

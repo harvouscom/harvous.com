@@ -1,4 +1,5 @@
-/** "What Harvous cares about" — shared by /about/ and /next/about/. */
+/** "What Harvous cares about" — shared by /about/ and /next/about/. Here's My
+ *  Church, which used to be a belief here, has its own card (HeresMyChurchCard). */
 export const ABOUT_BELIEFS = [
   {
     title: "Tools only help.",
@@ -18,14 +19,6 @@ export const ABOUT_BELIEFS = [
       "Long-term, Harvous wants to serve how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education, never a substitute for the body — ",
     linkHref: "/for/churches/",
     linkLabel: "read the plan for churches",
-    bodyAfter: ".",
-  },
-  {
-    title: "Church finding, kept current.",
-    bodyBefore:
-      "Separately from Harvous, Here's My Church is our open-source, crowd-sourced map of Christian churches in the U.S. — free to browse, no account needed — ",
-    linkHref: "https://heresmychurch.com",
-    linkLabel: "explore the map",
     bodyAfter: ".",
   },
 ] as const;

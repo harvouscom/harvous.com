@@ -17,13 +17,16 @@
  * shown below five, no attendance, no bulletin. Names and numbers are made up.
  */
 import AppIcon from "./app/AppIcon.astro";
+import FeatureChip from "./FeatureChip.astro";
 import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
-import type { ForAudienceSection } from "../../lib/for-audiences-data.ts";
+import type { ForAudienceFeatureLink, ForAudienceSection } from "../../lib/for-audiences-data.ts";
 
 interface Props {
   sections: ForAudienceSection[];
+  /** Each section's `feature`, resolved by the page, shown as a chip under its words. */
+  features?: Record<string, ForAudienceFeatureLink>;
 }
-const { sections } = Astro.props;
+const { sections, features = {} } = Astro.props;
 
 const washes = ["coral", "sky", "amber", "mint", "violet", "blue"];
 
@@ -86,6 +89,7 @@ const plans = {
           <p class="chs__num">{String(i + 1).padStart(2, "0")}</p>
           <h2 class="chs__h">{section.heading}</h2>
           {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+          {section.feature && features[section.feature] && <FeatureChip feature={features[section.feature]} />}
           {section.ctaHref && section.ctaLabel && (
             <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref}>{section.ctaLabel}</a></p>
           )}
@@ -407,7 +411,7 @@ const plans = {
     letter-spacing: -0.025em;
     text-wrap: balance;
   }
-  .chs__text p:not(.chs__num, .chs__cta), .chs__note p {
+  .chs__text > p:not(.chs__num, .chs__cta), .chs__note p {
     margin: 0.9rem 0 0;
     font-size: 1.0625rem;
     line-height: 1.65;

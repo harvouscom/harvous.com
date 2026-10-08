@@ -44,6 +44,8 @@
   */
   --pill-highlight-ink: #d4ac00;
   --pill-folder: #e84f83;
+  /* Site taxonomy only (ContentPill, category ink). Mock app UI draws threads
+     neutral, the way the app does — don't use this inside app mockups. */
   --pill-thread: #26c01c;
   --color-accent-soft: #eaf1ff;
   --color-warm: #f4f5f7;

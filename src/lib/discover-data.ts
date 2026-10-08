@@ -628,10 +628,9 @@ const THREAD_COLOR_INK: Record<string, string> = {
  * otherwise — the same rule the app's Discover panel follows, so a template is
  * the colour its author chose in both products.
  *
- * Only the tile on a `mini` card uses this. The full card carries its topic as
- * artwork instead, which is a deliberate difference: a card with room for a
- * picture shows the artifact, and a card without room shows what kind of thing
- * it is.
+ * The single source of a listing's tone: every grid card and "More like this"
+ * tile (via `toDiscoverCard`) and the listing's own detail page use it, so a
+ * listing is the same colour everywhere it appears.
  */
 export function discoverListingInk(listing: DiscoverListing): string {
   const own = listing.preview?.iconColor;

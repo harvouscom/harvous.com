@@ -56,7 +56,10 @@ const { compact = false } = Astro.props;
 <script>
   import { bindCopyButton } from "../lib/copy-button";
 
-  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-email]")) {
+  // Only this component's buttons: /support/ renders these cards inside an FAQ
+  // answer next to its own Copy button, and binding that one here (first) left
+  // the page's label and announcement unwired.
+  for (const button of document.querySelectorAll<HTMLButtonElement>(".support-contact [data-copy-email]")) {
     bindCopyButton(button, () => button.dataset.copyEmail, {
       idle: { label: "Copy email", ariaLabel: "Copy email address" },
       done: { label: "Copied", ariaLabel: "Copied email address" },

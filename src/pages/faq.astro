@@ -1,0 +1,39 @@
+---
+/**
+ * /faq/ — every question in one place. The same FaqSection /pricing/ ends on
+ * (search, copy-link, one-open accordion), as the whole page: an h1 head and
+ * every card showing. The footer's Help group and the homepage's "Questions?"
+ * line point here, and the FAQPage structured data lives here with it.
+ */
+import NextLayout from "../layouts/NextLayout.astro";
+import FaqSection from "../components/FaqSection.astro";
+import ClosingCall from "../components/next/ClosingCall.astro";
+import { ogCard } from "../lib/og-card.ts";
+import { buildFaqPageJsonLd, getFaqEntries } from "../lib/faq";
+
+const description =
+  "Short answers to the questions people ask about Harvous — what it is, what it costs, your data, the Bible reader, churches, and more.";
+---
+
+<NextLayout
+  ogImage={ogCard("faq")}
+  jsonLd={{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        name: "Harvous FAQ",
+        description,
+        url: "https://harvous.com/faq/",
+      },
+      // Same entries FaqSection renders, so the FAQPage matches what's on the page.
+      buildFaqPageJsonLd(await getFaqEntries("home")),
+    ],
+  }}
+  title="FAQ — Harvous"
+  description={description}
+>
+  <FaqSection page />
+
+  <ClosingCall />
+</NextLayout>

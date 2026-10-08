@@ -1,0 +1,112 @@
+---
+/**
+ * StudyScenes — a /for/ page's story as a journey, the same way the churches
+ * page tells its own (ChurchScenes): numbered rows, short words on one side
+ * and, on the other, the feature doing that step, drawn with the app's own
+ * pieces (ShowcaseVisual). Each step names the feature it leans on, so the
+ * features are the journey instead of a list at the end of it.
+ *
+ * Each section names its picture with `visual` (a ShowcaseVisual name) and its
+ * feature with `feature` (resolved by the page into `features`). A section
+ * without a visual is a centred closing line: why Harvous is for them.
+ */
+import ShowcaseVisual from "./ShowcaseVisual.astro";
+import FeatureChip from "./FeatureChip.astro";
+import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
+import type { ForAudienceFeatureLink, ForAudienceSection } from "../../lib/for-audiences-data.ts";
+
+interface Props {
+  sections: ForAudienceSection[];
+  features: Record<string, ForAudienceFeatureLink>;
+  label: string;
+}
+const { sections, features, label } = Astro.props;
+
+const washes = ["sky", "amber", "mint", "violet", "coral", "blue"];
+---
+
+<section class="nx-wrap sts" aria-label={label}>
+  {sections.map((section, i) => {
+    const visuals = sections.slice(0, i).filter((s) => s.visual).length;
+    const flip = visuals % 2 === 1;
+    const feature = section.feature ? features[section.feature] : undefined;
+    return section.visual ? (
+      <div class:list={["sts__row", flip && "is-flip"]}>
+        <div class="sts__text" data-reveal>
+          <p class="sts__num">{String(visuals + 1).padStart(2, "0")}</p>
+          <h2 class="sts__h">{section.heading}</h2>
+          {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+          {feature && <FeatureChip feature={feature} />}
+          {section.ctaHref && section.ctaLabel && (
+            <p class="sts__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref}>{section.ctaLabel}</a></p>
+          )}
+        </div>
+
+        <div class="sts__stage" style={`--wash: var(--tint-${washes[visuals % washes.length]}); --reveal-delay: 120ms;`} data-reveal>
+          <ShowcaseVisual name={section.visual} label={section.visualLabel ?? section.heading} />
+        </div>
+      </div>
+    ) : (
+      <div class="sts__note" data-reveal>
+        <h2 class="sts__h">{section.heading}</h2>
+        {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+        {section.ctaHref && section.ctaLabel && (
+          <p class="sts__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref}>{section.ctaLabel}</a></p>
+        )}
+      </div>
+    );
+  })}
+</section>
+
+<style>
+  .sts {
+    max-width: calc(68rem + 2 * var(--nx-gutter));
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: clamp(4rem, 9vw, 7rem);
+  }
+
+  .sts__row { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 56rem) {
+    .sts__row { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 5rem); }
+    .sts__row.is-flip { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+    .sts__row.is-flip .sts__stage { order: -1; }
+  }
+  .sts__num {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--aud-ink, var(--color-ink-faint));
+  }
+  .sts__h {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .sts__text > p:not(.sts__num, .sts__cta), .sts__note p:not(.sts__cta) {
+    margin: 0.9rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .sts__text > p :global(a:not(.nx-btn)) { color: var(--color-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .sts__cta { margin: 1.5rem 0 0; }
+  .sts__note { max-width: 40rem; margin-inline: auto; text-align: center; }
+
+  .sts__stage {
+    display: grid;
+    place-items: center;
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.75rem);
+    border-radius: var(--nx-radius-scene);
+    background: var(--wash);
+    min-height: 22rem;
+  }
+  .sts__stage > :global(*) { width: 100%; max-width: 26rem; }
+</style>
