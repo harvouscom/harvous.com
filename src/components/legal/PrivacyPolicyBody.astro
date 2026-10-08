@@ -293,30 +293,29 @@ const link =
       you haven't cleared is kept, but Harvous only uses the last 90 days of it.
     </p>
     <p class={soft}>
-      <strong class={ink}>When you delete your account,</strong> we remove your notes and
-      everything attached to them (highlights, connections, earlier versions, and Review items
-      about them), your threads, folders, and tags, the spaces you own and their members, your
-      place in other people's spaces, your profile and settings, your search history, and your
-      sign-in account with Clerk.
+      <strong class={ink}>When you delete your account,</strong> we delete what your account
+      holds: your notes and everything attached to them, your highlights, threads, folders, and
+      tags, the spaces you own and your place in other people's, your reading and search history,
+      Review, reminders and the devices they go to, Connector access, Discover listings, support
+      requests, imports, templates, your profile and settings, and your sign-in account with
+      Clerk. Any active subscription is cancelled at once.
     </p>
     <p class={soft}>
-      Some records are not yet removed automatically. They include your reading history, Review practice on Bible passages, reminder
-      devices and reminder history, your plan and billing records, your church connection,
-      Connector records, Discover submissions, and support requests. Email us and we will remove
-      them. Listings you gave to Discover stay public until you withdraw them or ask us to.
+      We also delete the copies our providers hold: your email subscription (Audienceful), your
+      analytics profile (PostHog), and your billing record with Polar, which is anonymized — Polar
+      keeps payment records it must keep for tax and legal reasons. Your daily backup files are
+      deleted too. Copies of something you listed on Discover that other people already added to
+      their own accounts stay theirs.
     </p>
-    {/* REVIEW: this paragraph is honest about today's code (DELETE /api/user/delete-account in
-         server/routes/user.ts). Derek may prefer to fix the deletion endpoint instead and then
-         shorten this. See the gap list in the PR notes. */}
     <p class={soft}>
-      We keep a daily backup copy of each account's notes for up to 30 days, after which it is
-      deleted, so a deleted account's notes can remain in a backup for up to 30 days. Copies held
-      by our providers — your email subscription (Audienceful), analytics profile (PostHog), and
-      billing record (Polar) — remain until they are removed; ask us and we will remove them,
-      though Polar may have to keep payment records for tax and legal reasons. Anonymous
-      diagnostics are not linked to your account, so they are not affected. Some information may
-      also be kept where required for legal or security purposes.
+      If you helped run a church in Harvous, the church's own records — its services, series, and
+      ministries — stay with the church. Anonymous diagnostics are not linked to your account, so
+      they are not affected. Some information may also be kept where required for legal or
+      security purposes.
     </p>
+    {/* REVIEW: true once the app's account-deletion change ships (harvous repo commit 144532aa7,
+         server/utils/delete-account.ts). PostHog deletion only runs when POSTHOG_PERSONAL_API_KEY
+         and POSTHOG_PROJECT_ID are set on the server — set them before publishing this. */}
     {/* REVIEW: Supabase's own database backups (point-in-time recovery) were not checked; if the
          plan keeps them, add their window here. */}
   </div>
