@@ -335,8 +335,19 @@ async function heroShot(page, path, hide = []) {
      at desktop width, still above the hero's 56rem breakpoint. */
   const cw = 920;
   await page.viewport(cw, Math.round((cw * H) / W), (W * 2) / cw);
-  const top = await page.eval(`(() => { const h = document.querySelector("h1"); return h.getBoundingClientRect().top + scrollY; })()`);
-  const png = await page.screenshot({ x: 0, y: Math.max(0, top - 56), width: cw, height: Math.round((cw * H) / W) });
+  /* The nav is hidden (PAGE_CLEANUP); the Harvous app icon stands in for it,
+     centred above the headline. */
+  const top = await page.eval(`(async () => {
+    const h = document.querySelector("h1");
+    const mark = new Image();
+    mark.src = "/images/harvous-2-icon.webp";
+    mark.alt = "";
+    mark.style.cssText = "display:block;width:44px;height:44px;margin:0 auto 14px;border-radius:11px;box-shadow:0 6px 16px -8px rgba(15,23,42,.35)";
+    h.parentElement.insertBefore(mark, h);
+    await mark.decode().catch(() => {});
+    return mark.getBoundingClientRect().top + scrollY;
+  })()`);
+  const png = await page.screenshot({ x: 0, y: Math.max(0, top - 28), width: cw, height: Math.round((cw * H) / W) });
   return sharp(png).resize(W, H, { kernel: "lanczos3" });
 }
 
