@@ -388,7 +388,7 @@ async function write(target, img) {
 }
 
 const skies = await lightSkies();
-const mark = dataUrl(await sharp(join(ROOT, "public/images/app-icon.webp")).resize(152, 152).png().toBuffer());
+const mark = dataUrl(await sharp(join(ROOT, "public/images/harvous-2-icon.png")).resize(152, 152).png().toBuffer());
 const live = await siteUp();
 if (!live) {
   console.warn(

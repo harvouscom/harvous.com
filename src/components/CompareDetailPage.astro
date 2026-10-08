@@ -10,6 +10,7 @@ import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import { fathomCompare, fathomTry } from "../lib/fathom-events.ts";
 import type { CompareEntry } from "../lib/compare-data.ts";
+import { withHarvousRef } from "../lib/outbound.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
 import { composeCompareIntro, featureLabel, getCompareCtaHeading, getHarvousPosition } from "../lib/compare-harvous-positioning.ts";
 import { backdropForImage } from "../lib/next/icon-backdrop.ts";
@@ -64,7 +65,7 @@ const theirHalf = (e: CompareEntry) => {
         <p class="cd-card__head"><img src={icon(entry.slug)} alt="" width="40" height="40" /> Choose {entry.name} if…</p>
         <p>{entry.idealFor}</p>
         {entry.competitorLink && (
-          <a class="cd-visit" href={entry.competitorLink} target="_blank" rel="noopener noreferrer nofollow">Visit {entry.name} ↗</a>
+          <a class="cd-visit" href={withHarvousRef(entry.competitorLink)} target="_blank" rel="noopener noreferrer nofollow">Visit {entry.name} ↗</a>
         )}
       </div>
       <div class="cd-card cd-card--harvous">

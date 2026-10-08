@@ -10,6 +10,7 @@ import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import type { CompareEntry } from "../lib/compare-data.ts";
+import { withHarvousRef } from "../lib/outbound.ts";
 import type { CompareSeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
 import { getHonestNoteForPage } from "../lib/compare-seo-pages.ts";
 import { fathomTry } from "../lib/fathom-events.ts";
@@ -81,7 +82,7 @@ const decisionRows = [
                   <>
                     <a class="nx-btn nx-btn--ghost" href={pick.compareHref}>Harvous vs {pick.name}</a>
                     {page.kind === "alternative" && pick.competitorLink && (
-                      <a class="cg-visit" href={pick.competitorLink} target="_blank" rel="noopener noreferrer nofollow">Visit {pick.name} ↗</a>
+                      <a class="cg-visit" href={withHarvousRef(pick.competitorLink)} target="_blank" rel="noopener noreferrer nofollow">Visit {pick.name} ↗</a>
                     )}
                   </>
                 )}
