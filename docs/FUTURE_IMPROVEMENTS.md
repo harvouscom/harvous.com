@@ -2,6 +2,10 @@
 
 Things noticed along the way that are worth doing, but not yet.
 
+## Compare popularity
+
+The hub's icon strips are ordered by App Store rating count, which doesn't refresh on its own. Rerun `npm run compare:popularity` now and then, and add an App Store id to `scripts/fetch-compare-popularity.mjs` for each new compare entry that has an app.
+
 ## Manna compare page
 
 - The copy comes only from Manna's own homepage. Re-read it against the product before publishing. Study Tools & Notes overlaps with Harvous, so check that the "Best at" framing is fair.
