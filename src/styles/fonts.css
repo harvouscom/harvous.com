@@ -5,3 +5,13 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* Caveat — the handwritten margin notes and footer line. Self-hosted, Latin
+   only (Google Fonts' latin subset, OFL), variable 400–700. */
+@font-face {
+  font-family: "Caveat";
+  src: url("/fonts/caveat/Caveat-Latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}

@@ -11,7 +11,7 @@
  *
  * `slugs` picks which apps show (unknown slugs are skipped; 6–8 reads best).
  */
-import { getCompareBySlug, getCompareEntries } from "../../lib/compare-data.ts";
+import { compareIconSrc, getCompareBySlug, getCompareEntries } from "../../lib/compare-data.ts";
 import { fathomCompare } from "../../lib/fathom-events.ts";
 
 /* Same set, same order as the live homepage's compare row. */
@@ -83,7 +83,7 @@ const rows = apps.length > 4 ? [apps.slice(0, perRow), apps.slice(perRow)] : [ap
                 {row.map((app) => (
                   <span class="cpv__tile" title={app.name}>
                     <img
-                      src={`/images/compare/icons/${app.slug}.png`}
+                      src={compareIconSrc(app.slug)}
                       alt=""
                       width="88"
                       height="88"

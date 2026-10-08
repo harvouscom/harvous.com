@@ -146,3 +146,16 @@ export function compareTypeToId(type: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+
+/**
+ * A competitor's icon for display: a 224px WebP cut (scripts make these from
+ * the 400px PNGs, which stay for colour sampling and OG generation).
+ */
+export function compareIconSrc(slug: string): string {
+  return `/images/compare/icons/${slug}.webp`;
+}
+
+/** The full-size PNG, for reading the icon's colour at build time. */
+export function compareIconPng(slug: string): string {
+  return `/images/compare/icons/${slug}.png`;
+}

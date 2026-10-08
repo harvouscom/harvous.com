@@ -9,7 +9,7 @@ import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import { fathomCompare, fathomTry } from "../lib/fathom-events.ts";
-import type { CompareEntry } from "../lib/compare-data.ts";
+import { compareIconPng, compareIconSrc, type CompareEntry } from "../lib/compare-data.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
 import { composeCompareIntro, featureLabel, getCompareCtaHeading, getHarvousPosition } from "../lib/compare-harvous-positioning.ts";
 import { backdropForImage } from "../lib/next/icon-backdrop.ts";
@@ -26,8 +26,8 @@ const position = getHarvousPosition(entry.competitorType);
 const intro = composeCompareIntro(entry.intro, entry.competitorType);
 const ctaHeading = getCompareCtaHeading(entry.name, entry.competitorType);
 
-const icon = (slug: string) => `/images/compare/icons/${slug}.png`;
-const sky = await backdropForImage(icon(entry.slug));
+const icon = compareIconSrc;
+const sky = await backdropForImage(compareIconPng(entry.slug));
 
 /** "Apple Notes is great at quick capture" — the other app's half of the intro. */
 const theirHalf = (e: CompareEntry) => {
