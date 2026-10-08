@@ -403,6 +403,3 @@ export function getFeatureInk(featureId: string): string {
   return `color-mix(in oklab, ${category.ink} ${tier}%, var(--color-ink))`;
 }
 
-export function getFeatureIdsForCategory(slug: string): string[] {
-  return getFeatureCategoryBySlug(slug)?.featureIds ?? [];
-}

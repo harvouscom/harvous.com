@@ -37,12 +37,6 @@ export type PricingRoadmapItem = {
   soonLabel?: string;
 };
 
-/** @deprecated Prefer PricingRoadmapItem — kept for existing call sites. */
-export type PricingAddon = PricingRoadmapItem;
-
-/** @deprecated Prefer PricingPlan — Free is no longer a separate type. */
-export type FreePlan = PricingPlan & { id: "free" };
-
 /** Opens the in-app Plus page; signed-out users get sign-up/sign-in with return to /upgrade. */
 export const APP_UPGRADE_URL = "https://app.harvous.com/upgrade?from=pricing";
 
@@ -116,5 +110,3 @@ export const PRICING_ROADMAP: PricingRoadmapItem[] = [
   },
 ];
 
-/** @deprecated Use PRICING_ROADMAP */
-export const PRICING_ADDONS = PRICING_ROADMAP;

@@ -285,21 +285,12 @@ const ADDON_PAGES: AddonPage[] = [
   },
 ];
 
-/** Card fields from pricing-data for pages that share the same ids. */
-export function getPricingAddonCard(slug: string) {
-  return PRICING_ROADMAP.find((a) => a.id === slug);
-}
-
 export function getAddonPages(): AddonPage[] {
   return ADDON_PAGES;
 }
 
 export function getAddonBySlug(slug: string): AddonPage | undefined {
   return ADDON_PAGES.find((a) => a.slug === slug);
-}
-
-export function getPublishedAddonSlugs(): Set<string> {
-  return new Set(ADDON_PAGES.filter((a) => !a.draft).map((a) => a.slug));
 }
 
 export function getAddonDetailHref(slug: string): string | undefined {

@@ -240,17 +240,6 @@ export const BLOG_CATEGORY_PRODUCT_BRIDGE: Record<BlogCategory, BlogProductBridg
   },
 };
 
-export function blogFeatureIds(
-  category: BlogCategory,
-  override?: string[],
-): string[] {
-  const ids =
-    override && override.length > 0
-      ? override
-      : (BLOG_CATEGORY_FEATURE_IDS[category] ?? BLOG_CATEGORY_FEATURE_IDS["using-harvous"]);
-  return ids.slice(0, 3);
-}
-
 export function blogProductBridgeCopy(category: BlogCategory): BlogProductBridgeCopy {
   return BLOG_CATEGORY_PRODUCT_BRIDGE[category] ?? BLOG_CATEGORY_PRODUCT_BRIDGE["using-harvous"];
 }

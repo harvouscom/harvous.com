@@ -56,7 +56,8 @@ function titleCase(word: string): string {
     try {
       history.replaceState(null, "", "/for/churches/?submitted=1#interest");
     } catch (e) {}
-    root!.scrollIntoView({ behavior: "smooth", block: "start" });
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    root!.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
   }
 
   function syncRoleOther() {

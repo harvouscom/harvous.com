@@ -8,6 +8,9 @@
  *
  * The view is drawn at the app's real pixel sizes; in a narrow scene the whole
  * window scales down with `zoom`, so it stays in proportion.
+ *
+ * The window is a picture, not content: it's `inert` (out of the tab order and
+ * the accessibility tree), and the figure carries `label` instead.
  */
 import { backdropSrc, type Backdrop } from "../../lib/next/content.ts";
 
@@ -15,13 +18,15 @@ interface Props {
   backdrop: Backdrop;
   aspect?: string;
   class?: string;
+  /** What the scene shows, for screen readers. */
+  label?: string;
 }
-const { backdrop, aspect = "1 / 1", class: className } = Astro.props;
+const { backdrop, aspect = "1 / 1", class: className, label = "The Harvous app" } = Astro.props;
 ---
 
-<figure class:list={["scene sapp", className]} style={`--sapp-aspect:${aspect};`}>
+<figure class:list={["scene sapp", className]} style={`--sapp-aspect:${aspect};`} aria-label={label}>
   <img class="sapp__bg" src={backdropSrc(backdrop)} alt="" loading="lazy" decoding="async" />
-  <div class="sapp__window">
+  <div class="sapp__window" inert>
     <slot />
   </div>
   <slot name="overlay" />

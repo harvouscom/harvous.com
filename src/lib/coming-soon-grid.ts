@@ -12,10 +12,6 @@ export type ComingSoonGridItem = {
   comingSoon?: boolean;
 };
 
-export type RelatedFeatureCard =
-  | { kind: "feature"; feature: import("astro:content").CollectionEntry<"features"> }
-  | { kind: "comingSoon"; item: ComingSoonGridItem };
-
 /** Product cards referenced from use-case / audience / blog bridges + homepage. */
 export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
   {
@@ -68,11 +64,3 @@ export function getComingSoonGridItem(id: string): ComingSoonGridItem | undefine
   return PRODUCT_GRID_ITEMS.find((item) => item.id === id);
 }
 
-export function getComingSoonGridItems(ids?: string[]): ComingSoonGridItem[] {
-  if (!ids) return COMING_SOON_GRID_ITEMS;
-  return COMING_SOON_GRID_ITEMS.filter((item) => ids.includes(item.id));
-}
-
-export function isComingSoonGridItem(item: ComingSoonGridItem): boolean {
-  return item.comingSoon !== false;
-}

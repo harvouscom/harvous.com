@@ -167,6 +167,3 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
   },
 ];
 
-export function getTourChapter(key: string): TourChapter | undefined {
-  return APP_TOUR_CHAPTERS.find((c) => c.key === key);
-}

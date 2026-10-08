@@ -2,10 +2,9 @@
 /**
  * NextLayout — the site's marketing chrome around BaseLayout's head.
  *
- * BaseLayout renders `bare` here, so its head, analytics, and the reveal / hash
- * / try-CTA scripts are shared, while the site Header, Footer, and page-frame
- * rails give way to a floating pill nav, a sticky "Try Harvous free" pill, and
- * a quieter footer.
+ * BaseLayout supplies the head, analytics, and the reveal / hash / try-CTA
+ * scripts; this adds the floating pill nav, a skip link, a sticky "Try Harvous
+ * free" pill, and the footer.
  *
  * `noindex` defaults off — this is the live site now — but a page can still
  * opt in (release notes keeps individual changelog entries out of the index,
@@ -33,17 +32,14 @@ interface Props {
   ogImageHeight?: number;
   ogType?: "website" | "article";
   articlePublishedTime?: string;
-  /** Keep the previous design's page rails (.page-frame) inside the new
-      chrome — for pages still on the old body design (the blog hub). */
-  frame?: boolean;
   /** A second action beside the fixed "Try Harvous free" pill (see StickyTryPill). */
   stickySecondary?: StickySecondary;
 }
 
-const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogImageHeight, ogType, articlePublishedTime, frame = false, stickySecondary } = Astro.props;
+const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogImageHeight, ogType, articlePublishedTime, stickySecondary } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage} ogImageWidth={ogImageWidth} ogImageHeight={ogImageHeight} ogType={ogType} articlePublishedTime={articlePublishedTime} noindex={noindex} jsonLd={jsonLd} bare>
+<BaseLayout title={title} description={description} ogImage={ogImage} ogImageWidth={ogImageWidth} ogImageHeight={ogImageHeight} ogType={ogType} articlePublishedTime={articlePublishedTime} noindex={noindex} jsonLd={jsonLd}>
   <Fragment slot="head">
     {/* Margin notes only. Self-host before cutover, like Google Sans Flex. */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,9 +51,10 @@ const { title, description, ogImage, noindex = false, jsonLd, ogImageWidth, ogIm
   </Fragment>
 
   <div class="nx">
+    <a class="nx-skip" href="#main">Skip to content</a>
     <NextHeader />
-    <main class="nx-main">
-      {frame ? <div class="page-frame nx-frame"><slot /></div> : <slot />}
+    <main class="nx-main" id="main" tabindex="-1">
+      <slot />
     </main>
     <NextFooter />
     <StickyTryPill secondary={stickySecondary} />

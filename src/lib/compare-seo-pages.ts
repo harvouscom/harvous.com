@@ -1319,10 +1319,6 @@ export function getCompareSeoPagesForBuild(): CompareSeoPage[] {
   return SEO_PAGES.filter((page) => !isCompareSeoPageDraft(page) || import.meta.env.DEV);
 }
 
-export function getCompareSeoPages(): CompareSeoPage[] {
-  return SEO_PAGES;
-}
-
 export function getCompareSeoPageBySlug(slug: string): CompareSeoPage | undefined {
   return SEO_PAGES.find((p) => p.slug === slug);
 }

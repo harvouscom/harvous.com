@@ -5,7 +5,7 @@
  * page's markup can't quietly lose its schema again.
  */
 import type { CollectionEntry } from "astro:content";
-import { blogAuthorJsonLd, blogBreadcrumbJsonLd, brightEnoughBlogJsonLd, blogCategoryHref, blogCategoryLabel, type resolveBlogAuthor } from "./blog.ts";
+import { blogAuthorJsonLd, blogBreadcrumbJsonLd, blogCategoryHref, blogCategoryLabel, type resolveBlogAuthor } from "./blog.ts";
 import { breadcrumbJsonLd } from "./breadcrumb-jsonld.ts";
 import { discoverListingHref, type DiscoverListing } from "./discover-data.ts";
 
@@ -162,27 +162,6 @@ export function discoverHubJsonLd(listings: DiscoverListing[]) {
       [
         { name: "Harvous", path: "/" },
         { name: "Discover", path: "/discover/" },
-      ],
-      site,
-    ),
-  ];
-}
-
-export function blogHubJsonLd(posts: CollectionEntry<"blog">[]) {
-  return [
-    brightEnoughBlogJsonLd(site, {
-      blogPost: posts.slice(0, 10).map((p) => ({
-        "@type": "BlogPosting",
-        headline: p.data.title,
-        url: new URL(`/blog/${p.id}/`, site).toString(),
-        datePublished: p.data.publishDate.toISOString(),
-        description: p.data.description,
-      })),
-    }),
-    blogBreadcrumbJsonLd(
-      [
-        { name: "Harvous", path: "/" },
-        { name: "Bright Enough", path: "/blog/" },
       ],
       site,
     ),
