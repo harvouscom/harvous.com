@@ -1,6 +1,6 @@
 ---
 /**
- * ToggleWall — "Yours, quietly." Rows of settings-style switches drifting past
+ * ToggleWall — "Your notes, your call." Rows of settings-style switches drifting past
  * in alternate directions, between the two halves of the heading, like Dia's
  * privacy wall. The switches are the claim, so every one is sourced — see
  * PRIVACY_TOGGLES in lib/next/content.ts.
@@ -20,7 +20,7 @@ const rows = [0, 3, 6].map((shift) => [
 <section class="tw nx-section" aria-labelledby="tw-title">
   <div class="nx-wrap nx-center">
     <p class="nx-kicker">Privacy</p>
-    <h2 id="tw-title" class="nx-display tw__word">Yours,</h2>
+    <h2 id="tw-title" class="nx-display tw__word">Your notes,<span class="sr-only"> your call.</span></h2>
   </div>
 
   <ul class="sr-only">
@@ -44,7 +44,7 @@ const rows = [0, 3, 6].map((shift) => [
   </div>
 
   <div class="nx-wrap nx-center">
-    <p class="nx-display tw__word" aria-hidden="true">quietly.</p>
+    <p class="nx-display tw__word" aria-hidden="true">your call.</p>
     <p class="nx-lead tw__lead">
       Your notes are yours. Nobody sees them unless you share a link, you can lock the ones
       that are just yours, I don't sell what you write, and you can export all of it whenever

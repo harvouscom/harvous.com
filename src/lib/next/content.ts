@@ -174,7 +174,7 @@ export const ALSO_INCLUDED: { label: string; icon: string; href?: string }[] = [
 ];
 
 /* ────────────────────────────────────────────────────────────────────────── */
-/* Home — "Yours, quietly" toggle wall                                        */
+/* Home — "Your notes, your call" toggle wall                                 */
 /* ────────────────────────────────────────────────────────────────────────── */
 
 /**
@@ -184,19 +184,22 @@ export const ALSO_INCLUDED: { label: string; icon: string; href?: string }[] = [
  * leaderboard in Review), privacy.astro (does not sell personal information),
  * faq/offline.mdx, faq/export.mdx, faq/try-without-account.mdx,
  * faq/locked-notes.mdx (lock a note with a PIN, encrypted on your device).
+ *
+ * "Never" is for the things that are principles rather than settings: Harvous
+ * doesn't offer them at all, so "Off" would undersell it.
  */
 export type ToggleSpec = { label: string; value: string; on: boolean };
 
 export const PRIVACY_TOGGLES: ToggleSpec[] = [
   { label: "Notes private by default", value: "On", on: true },
   { label: "Lock notes with a PIN", value: "On", on: true },
-  { label: "AI in note-taking", value: "Off", on: false },
+  { label: "AI writing your notes", value: "Never", on: false },
   { label: "AI apps reading your notes", value: "Your call", on: false },
-  { label: "Streaks and scores", value: "Off", on: false },
+  { label: "Streaks and scores", value: "Never", on: false },
   { label: "Selling your information", value: "Never", on: false },
   { label: "Works offline", value: "On", on: true },
   { label: "Share by link", value: "Your call", on: false },
-  { label: "Leaderboards", value: "Off", on: false },
+  { label: "Leaderboards", value: "Never", on: false },
   { label: "Export anytime", value: "On", on: true },
   { label: "Account needed to try", value: "No", on: false },
 ];
