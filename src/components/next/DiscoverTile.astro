@@ -10,6 +10,7 @@ import ResourcePlate from "./ResourcePlate.astro";
 import { Icon } from "astro-icon/components";
 import { DISCOVER_KIND_ICON, discoverSourceSlug } from "../../lib/discover-data.ts";
 import type { Card } from "../../lib/next/discover-card.ts";
+import { withHarvousRef } from "../../lib/outbound.ts";
 
 interface Props {
   card: Card;
@@ -33,7 +34,7 @@ const H = heading;
   data-source-logo={source?.logo ?? ""}
   data-search={card.search}
 >
-  <a class="dc__link" href={card.href} {...(leaves ? { target: "_blank", rel: "noopener" } : {})}>
+  <a class="dc__link" href={withHarvousRef(card.href)} {...(leaves ? { target: "_blank", rel: "noopener" } : {})}>
     <div class="dc__stage" aria-hidden="true">
       {card.stage === "paper" && (
         <div class="aui aui-paper dc__paper">

@@ -2,15 +2,16 @@
 
 Things noticed along the way that are worth doing, but not yet.
 
-## Outdated Harvous icon in OG cards
+## Leftover old Harvous icon
 
-`public/images/app-icon.webp` is the old square-glyph icon. The current icon is `public/images/harvous-2-icon.webp` (and `.png`), which is what the favicon, JSON-LD logo and compare OG cards use.
+`public/images/app-icon.webp` is the old square-glyph icon. Everything now uses `public/images/harvous-2-icon.webp` (and `.png`), including the page OG cards.
 
-The compare pages and compare hub now use the current icon. Still on the old one:
-
-- `scripts/generate-og-cards.mjs` (line ~390) builds the site's other OG cards from `app-icon.webp`. Switch it to `harvous-2-icon.png`, then regenerate the cards.
-- `scripts/compress-images.sh` (line ~76) lists `icons/app-icon.png`. Check whether anything still needs it.
+- `scripts/compress-images.sh` (line ~76) still lists `icons/app-icon.png`. Check whether anything needs it.
 - Once nothing references `app-icon.webp`, delete it.
+
+## Compare popularity
+
+The hub's icon strips are ordered by App Store rating count, which doesn't refresh on its own. Rerun `npm run compare:popularity` now and then, and add an App Store id to `scripts/fetch-compare-popularity.mjs` for each new compare entry that has an app.
 
 ## Manna compare page
 

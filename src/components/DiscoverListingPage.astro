@@ -38,6 +38,7 @@ import DiscoverVideoEmbed from "./DiscoverVideoEmbed.astro";
 import { breadcrumbJsonLd } from "../lib/breadcrumb-jsonld.ts";
 import { fathomDiscover } from "../lib/fathom-events.ts";
 import { isDraftPageSlug } from "../lib/draft-pages.ts";
+import { withHarvousRef } from "../lib/outbound.ts";
 import {
   DISCOVER_KIND_NOUN,
   DISCOVER_RESOURCE_TYPE_NOUN,
@@ -345,7 +346,7 @@ const leaves = (href: string) => /^https?:/.test(href);
           {source ? (
             <span>from {source.name}</span>
           ) : sourceCredit ? (
-            <span>based on <a href={sourceCredit.url} target="_blank" rel="noopener">{sourceCredit.name}</a></span>
+            <span>based on <a href={withHarvousRef(sourceCredit.url)} target="_blank" rel="noopener">{sourceCredit.name}</a></span>
           ) : preview.official ? (
             <span>included with Harvous</span>
           ) : listing.authorDisplayName ? (
@@ -361,7 +362,7 @@ const leaves = (href: string) => /^https?:/.test(href);
         <div class="dl-cta">
           <a
             class="nx-btn nx-btn--accent"
-            href={cta.href}
+            href={withHarvousRef(cta.href)}
             {...(cta.external || leaves(cta.href) ? { target: "_blank", rel: "noopener" } : {})}
             data-fathom-track={ctaSecondary || !source ? fathomDiscover.install(listing.slug) : fathomDiscover.sourceOut(listing.slug)}
           >
@@ -370,7 +371,7 @@ const leaves = (href: string) => /^https?:/.test(href);
           {ctaSecondary && (
             <a
               class="nx-btn nx-btn--ghost"
-              href={ctaSecondary.href}
+              href={withHarvousRef(ctaSecondary.href)}
               {...(ctaSecondary.external ? { target: "_blank", rel: "noopener" } : {})}
               data-fathom-track={fathomDiscover.sourceOut(listing.slug)}
             >
@@ -383,7 +384,7 @@ const leaves = (href: string) => /^https?:/.test(href);
         {source && (
           <p class="dl-credit">
             {source.logo && <img src={source.logo} alt="" width="18" height="18" loading="lazy" decoding="async" />}
-            <span>{credit?.before}<a href={source.homeUrl} target="_blank" rel="noopener">{source.domain} <span aria-hidden="true">↗</span></a>{credit?.after}</span>
+            <span>{credit?.before}<a href={withHarvousRef(source.homeUrl)} target="_blank" rel="noopener">{source.domain} <span aria-hidden="true">↗</span></a>{credit?.after}</span>
           </p>
         )}
         {source && (
@@ -547,7 +548,7 @@ const leaves = (href: string) => /^https?:/.test(href);
     margin: 1.5rem 0 0;
     font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 500;
+    font-weight: var(--nx-heading-weight, 560);
     line-height: 1.05;
     letter-spacing: -0.03em;
     color: var(--color-ink);
