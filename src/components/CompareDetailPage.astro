@@ -13,6 +13,7 @@ import { compareIconPng, compareIconSrc, type CompareEntry } from "../lib/compar
 import { withHarvousRef } from "../lib/outbound.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
 import { composeCompareIntro, featureLabel, getCompareCtaHeading, getHarvousPosition } from "../lib/compare-harvous-positioning.ts";
+import { getCompareAngle } from "../lib/compare-app-angles.ts";
 import { backdropForImage } from "../lib/next/icon-backdrop.ts";
 import { backdropSrc } from "../lib/next/content.ts";
 
@@ -24,7 +25,20 @@ interface Props {
 const { entry, related, jsonLd } = Astro.props;
 const guides = getGuidesForCompareSlug(entry.slug);
 const position = getHarvousPosition(entry.competitorType);
-const intro = composeCompareIntro(entry.intro, entry.competitorType);
+/* Written for this app when we have it; the category's positioning when we don't. */
+const angle = getCompareAngle(entry.slug);
+const intro = angle?.intro ?? composeCompareIntro(entry.intro, entry.competitorType);
+const chooseThem = angle?.chooseThem ?? entry.idealFor;
+const chooseHarvous = angle?.chooseHarvous ?? position.chooseIf;
+const harvousIsnt = angle?.harvousIsnt ?? position.tradeoff;
+const together = angle?.together ?? entry.worksBestAlongside;
+const rows = angle?.table ?? [
+  { label: "Best at", harvous: position.bestAt, them: entry.bestAt },
+  { label: "Primary use", harvous: position.primaryUse, them: entry.primaryUse },
+  ...position.tableRows.map((r) => ({ label: r.label, harvous: r.harvous, them: r.competitorHint })),
+  { label: "Ideal for", harvous: position.idealFor, them: entry.idealFor },
+];
+const description = angle?.seoDescription ?? entry.seoDescription;
 const ctaHeading = getCompareCtaHeading(entry.name, entry.competitorType);
 
 const icon = compareIconSrc;
@@ -32,12 +46,13 @@ const sky = await backdropForImage(compareIconPng(entry.slug));
 
 /** "Apple Notes is great at quick capture" — the other app's half of the intro. */
 const theirHalf = (e: CompareEntry) => {
-  const m = e.intro.trim().match(/^(.*?);\s*Harvous\b/i);
-  return (m?.[1] ?? e.intro).trim().replace(/[.;]$/, "");
+  const text = getCompareAngle(e.slug)?.intro ?? e.intro;
+  const m = text.trim().match(/^(.*?);\s*Harvous\b/i);
+  return (m?.[1] ?? text).trim().replace(/[.;]$/, "");
 };
 ---
 
-<NextLayout title={entry.seoTitle} description={entry.seoDescription} ogImage={ogCard(`vs-${entry.slug}`)} jsonLd={jsonLd}>
+<NextLayout title={entry.seoTitle} description={description} ogImage={ogCard(`vs-${entry.slug}`)} jsonLd={jsonLd}>
   <article class="cd">
     <header class="nx-wrap cd-intro">
       <a class="cd-back" href="/compare/">
@@ -63,14 +78,14 @@ const theirHalf = (e: CompareEntry) => {
     <section class="nx-wrap cd-choose" aria-label="Which to choose">
       <div class="cd-card">
         <p class="cd-card__head"><img src={icon(entry.slug)} alt="" width="40" height="40" /> Choose {entry.name} if…</p>
-        <p>{entry.idealFor}</p>
+        <p>{chooseThem}</p>
         {entry.competitorLink && (
           <a class="cd-visit" href={withHarvousRef(entry.competitorLink)} target="_blank" rel="noopener noreferrer nofollow">Visit {entry.name} ↗</a>
         )}
       </div>
       <div class="cd-card cd-card--harvous">
         <p class="cd-card__head"><img src="/images/harvous-2-icon.webp" alt="" width="40" height="40" /> Choose Harvous if…</p>
-        <p>{position.chooseIf}</p>
+        <p>{chooseHarvous}</p>
         {position.featureIds.length > 0 && (
           <ul class="cd-chips" role="list">
             {position.featureIds.map((id) => <li><a href={`/features/${id}/`}>{featureLabel(id)}</a></li>)}
@@ -79,11 +94,11 @@ const theirHalf = (e: CompareEntry) => {
       </div>
       <div class="cd-note">
         <h2>Harvous isn’t for…</h2>
-        <p>{position.tradeoff}</p>
+        <p>{harvousIsnt}</p>
       </div>
       <div class="cd-note">
         <h2>Works best alongside</h2>
-        <p>{entry.worksBestAlongside}</p>
+        <p>{together}</p>
       </div>
     </section>
 
@@ -100,10 +115,7 @@ const theirHalf = (e: CompareEntry) => {
             </tr>
           </thead>
           <tbody>
-            <tr><th scope="row">Best at</th><td>{position.bestAt}</td><td>{entry.bestAt}</td></tr>
-            <tr><th scope="row">Primary use</th><td>{position.primaryUse}</td><td>{entry.primaryUse}</td></tr>
-            {position.tableRows.map((r) => <tr><th scope="row">{r.label}</th><td>{r.harvous}</td><td>{r.competitorHint}</td></tr>)}
-            <tr><th scope="row">Ideal for</th><td>{position.idealFor}</td><td>{entry.idealFor}</td></tr>
+            {rows.map((r) => <tr><th scope="row">{r.label}</th><td>{r.harvous}</td><td>{r.them}</td></tr>)}
           </tbody>
         </table>
       </div>
@@ -153,7 +165,7 @@ const theirHalf = (e: CompareEntry) => {
     )}
   </article>
 
-  <ClosingCall title={ctaHeading} lead={entry.worksBestAlongside} fathomTrack={fathomTry.compareDetail(entry.slug)} />
+  <ClosingCall title={ctaHeading} lead={together} fathomTrack={fathomTry.compareDetail(entry.slug)} />
 </NextLayout>
 
 <style>

@@ -33,10 +33,10 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
 >
   <header class="tour-intro nx-wrap">
     <p class="nx-kicker">The tour</p>
-    <h1 class="nx-display">Everything it does, shown plainly.</h1>
+    <h1 class="nx-display">Here's the whole app.</h1>
     <p class="nx-lead">
-      Five places, one app. I've tried to keep each one doing a single thing well, so here's each
-      of them, one at a time.
+      Five places, each doing one thing well, and all of it out in the open. Here they are,
+      one at a time.
     </p>
   </header>
 
@@ -127,6 +127,7 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   /* One close-up open per chapter; the same item, the close button or Escape
      puts the app back. Close-ups are toggled by class, not `hidden`, so going
      from one item to the next cross-fades over a veil that stays put. */
+  const stacked = matchMedia("(max-width: 59.99rem)");
   document.querySelectorAll<HTMLElement>(".tour-ch").forEach((ch) => {
     const btns = ch.querySelectorAll<HTMLButtonElement>("[data-peek-btn]");
     const peeks = ch.querySelectorAll<HTMLElement>("[data-peek]");
@@ -140,6 +141,18 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
     );
     ch.querySelectorAll<HTMLButtonElement>("[data-peek-close]").forEach((c) => c.addEventListener("click", () => show(null)));
     ch.addEventListener("keydown", (e) => { if (e.key === "Escape") show(null); });
+
+    /* Stacked, the scene is a screen away from the list, so each close-up
+       moves under its own item and opens there, growing the row in place. */
+    const visual = ch.querySelector<HTMLElement>(".tour-ch__visual")!;
+    const place = (stacked: boolean) => {
+      peeks.forEach((p) => {
+        const li = ch.querySelector(`[data-peek-btn="${p.dataset.peek}"]`)?.closest("li");
+        if (li) (stacked ? li : visual).append(p);
+      });
+    };
+    place(stacked.matches);
+    stacked.addEventListener("change", (e) => place(e.matches));
   });
 </script>
 
@@ -300,7 +313,41 @@ const pad = (n: number) => String(n + 1).padStart(2, "0");
   .tour-ch__close svg { width: 0.8rem; height: 0.8rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
   .tour-ch__peek-stage { display: grid; place-items: center; padding: 0.25rem 0 0.5rem; }
   .tour-ch__peek-link { justify-self: start; font-size: 0.9375rem; }
+
+  /* Stacked: the close-up lives in its item's row (moved there by the script)
+     and the row grows to show it — the item and its close-up become one card. */
+  @media (max-width: 59.99rem) {
+    .tour-ch__veil { display: none; }
+    .tour-ch__items li { border-radius: 1rem; transition: background-color 150ms ease; }
+    .tour-ch__items li:has([aria-pressed="true"]) { background: var(--color-accent-soft); }
+    .tour-ch__items button.tour-ch__item[aria-pressed="true"] { background: none; }
+    .tour-ch__items .tour-ch__peek {
+      position: static;
+      grid-template-rows: 0fr;
+      place-items: stretch;
+      padding: 0;
+      overflow: hidden;
+      transform: none;
+      transition: grid-template-rows 320ms var(--nx-ease, cubic-bezier(0.2, 0.7, 0.2, 1)), opacity 220ms ease, visibility 0s linear 320ms;
+    }
+    .tour-ch__items .tour-ch__peek.is-open {
+      grid-template-rows: 1fr;
+      transition: grid-template-rows 320ms var(--nx-ease, cubic-bezier(0.2, 0.7, 0.2, 1)), opacity 260ms ease 60ms, visibility 0s;
+    }
+    .tour-ch__items .tour-ch__peek-card {
+      width: auto;
+      min-height: 0;
+      max-width: none;
+      margin: 0 0.6rem;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+    .tour-ch__items .tour-ch__peek.is-open .tour-ch__peek-card { margin-bottom: 0.6rem; }
+    /* The row above already names it and says Hide. */
+    .tour-ch__items .tour-ch__peek-head { display: none; }
+    .tour-ch__items .tour-ch__peek-card { padding-top: 1.1rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .tour-ch__veil, .tour-ch__peek, .tour-ch__peek.is-open { transition: none; transform: none; }
+    .tour-ch__veil, .tour-ch__peek, .tour-ch__peek.is-open,
+    .tour-ch__items .tour-ch__peek, .tour-ch__items .tour-ch__peek.is-open { transition: none; transform: none; }
   }
 </style>

@@ -1,5 +1,6 @@
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { getCompareAngle } from "./compare-app-angles.ts";
 
 export type CompareEntry = {
   name: string;
@@ -79,14 +80,16 @@ function rowToEntry(headers: string[], values: string[]): CompareEntry | null {
   const slug = get("Slug");
   if (!slug) return null;
 
+  // Per-app copy (data/compare-angles.json) wins over the CSV's where written.
+  const angle = getCompareAngle(slug);
   return {
     name: get("Name"),
     slug,
     competitorType: get("Competitor type"),
     seoTitle: get("SEO Title"),
-    seoDescription: get("SEO Description"),
+    seoDescription: angle?.seoDescription ?? get("SEO Description"),
     competitorLink: get("Competitor link"),
-    intro: get("Intro"),
+    intro: angle?.intro ?? get("Intro"),
     ogImage: resolveCompareOgImage(slug, get("Open Graph")),
     competitorImage: get("Competitor app image"),
     bestAt: get("Competitor Best at"),
@@ -97,11 +100,19 @@ function rowToEntry(headers: string[], values: string[]): CompareEntry | null {
 }
 
 let cache: CompareEntry[] | null = null;
+const ANGLES_PATH = join(process.cwd(), "data/compare-angles.json");
+let anglesMtimeMs = 0;
+function anglesChanged(): boolean {
+  const m = existsSync(ANGLES_PATH) ? statSync(ANGLES_PATH).mtimeMs : 0;
+  if (m === anglesMtimeMs) return false;
+  anglesMtimeMs = m;
+  return true;
+}
 let cacheMtimeMs = 0;
 
 export function getCompareEntries(): CompareEntry[] {
   const mtimeMs = existsSync(CSV_PATH) ? statSync(CSV_PATH).mtimeMs : 0;
-  if (cache && cacheMtimeMs === mtimeMs) return cache;
+  if (cache && cacheMtimeMs === mtimeMs && !anglesChanged()) return cache;
 
   const raw = readFileSync(CSV_PATH, "utf-8");
   const rows = parseCsvRows(raw);

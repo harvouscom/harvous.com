@@ -155,7 +155,9 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
     </figure>
 
     {isChurch && hasScenes ? (
-      <ChurchScenes sections={audience.sections} features={featureLinks} />
+      <ChurchScenes sections={audience.sections} features={featureLinks}>
+        <HeresMyChurchCard slot="after-join" />
+      </ChurchScenes>
     ) : hasScenes ? (
       <>
         <StudyScenes sections={audience.sections} features={featureLinks} label={`Harvous for ${audience.title.toLowerCase()}, step by step`} />
@@ -226,12 +228,6 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
             </li>
           ))}
         </ul>
-      </section>
-    )}
-
-    {isChurch && (
-      <section class="nx-wrap fa-hmc">
-        <HeresMyChurchCard />
       </section>
     )}
 
@@ -388,7 +384,6 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
   }
   .fa-bridge p:not(.nx-kicker) { margin: 0.6rem 0 0.9rem; }
   .fa-bridge--after { max-width: 40rem; margin: clamp(3.5rem, 8vw, 5rem) auto 0; color: var(--color-ink-soft); }
-  .fa-hmc { padding-top: clamp(4rem, 9vw, 6rem); }
 
   .fa-sec { padding-top: clamp(4rem, 9vw, 6rem); }
   .fa-h2--sec { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 600; letter-spacing: -0.03em; }

@@ -65,7 +65,7 @@ const categories: FeatureCategory[] = [
     seoTitle: "Activity — see your Bible study as it accumulates | Harvous",
     seoDescription:
       "Harvous opens on the study you have already done. Each day is its own sheet, the days behind it are still there, and what is worth revisiting comes back to you.",
-    heroTitle: "Your study is already there. Activity is where you see it.",
+    heroTitle: "Open the app. Your week is already there.",
     closingTitle: "Open Harvous to what you already know.",
     heroLead:
       "Most notes apps open on a blank page and leave the remembering to you. Harvous opens on what actually happened — the passages you read, the phrases you marked, the notes you wrote — one sheet per day, with the days behind it still there to flip back through.",
@@ -137,7 +137,7 @@ const categories: FeatureCategory[] = [
     seoTitle: "Read — a Bible reader with your notes in the margin | Harvous",
     seoDescription:
       "Read a chapter in 11 translations, compare two side by side verse for verse, and keep your notes and highlights in the margin where you left them.",
-    heroTitle: "Read the chapter with everything you have already said about it.",
+    heroTitle: "Every chapter, with everything you've said about it.",
     closingTitle: "Read with your notes beside you.",
     heroLead:
       "Reading somewhere else and taking notes here means two apps and a lost place. In Harvous the chapter and your study are the same surface — margin marks show where you have written, and the chapters either side of the one you are on are right there as paper.",
@@ -193,7 +193,7 @@ const categories: FeatureCategory[] = [
     seoTitle: "Write — Bible study notes that stay connected | Harvous",
     seoDescription:
       "Rich text that behaves like any good editor, with scripture references that become links, highlights you can annotate, and templates for the prep you do every week.",
-    heroTitle: "Write the way you write anywhere else. Harvous does the connecting.",
+    heroTitle: "Just write. Harvous does the connecting.",
     closingTitle: "Write it once. Find it again.",
     heroLead:
       "Headings, bullets, dividers, links — the editor gets out of the way. What it adds is underneath: every reference you type becomes something you can open later, and every phrase you mark stays findable long after you have closed the note.",
@@ -231,7 +231,7 @@ const categories: FeatureCategory[] = [
         body: "Mention a note, folder, thread or resource inline. It becomes a pill you can open without losing your place.",
       },
     ],
-    featureIds: ["highlights", "note-templates"],
+    featureIds: ["highlights", "note-templates", "scan-a-page"],
     featuresHeading: "What writing in Harvous gives you",
     featuresLead:
       "A good editor first, and a study system second — in that order, because a note you did not enjoy writing is a note you will not write again.",
@@ -250,7 +250,7 @@ const categories: FeatureCategory[] = [
     seoTitle: "Find — search and browse every Bible study note you have | Harvous",
     seoDescription:
       "Browse by kind or search across notes, highlights, scripture and resources in one panel — and act on what comes back without leaving the note underneath.",
-    heroTitle: "Browsing and searching stopped being two different places.",
+    heroTitle: "Search and browse are the same place now.",
     closingTitle: "Everything you saved, one panel away.",
     heroLead:
       "Searching is how you retrieve something you can already name. Browsing is how you rediscover the thing you had forgotten you wrote. Harvous needs both, so Search does both: pick a kind, or type what you half-remember, in one panel over the note you are already in.",
@@ -308,7 +308,7 @@ const categories: FeatureCategory[] = [
     seoTitle: "Share — send a note or host a space for your group | Harvous",
     seoDescription:
       "Share a single note by link, or host a space where a group studies together. Your own study stays private; joining a space is always free.",
-    heroTitle: "Share one note, or open a room for the whole group.",
+    heroTitle: "Send one note, or open a room for the group.",
     closingTitle: "Bring your group into the same notes.",
     heroLead:
       "Most of what you write is for you. Some of it is worth handing to one person, and some of it belongs to a group that meets every week. Harvous keeps those three separate on purpose, so sharing something never means exposing everything.",

@@ -2,11 +2,13 @@
 /**
  * FeatureWalkthrough — a feature page's "how it works": three or four steps,
  * each the feature at that moment, drawn with the app's own pieces
- * (ShowcaseVisual). The homepage StoryScroller's mechanic rather than the /for/
- * zig-zag: on wide screens the numbered steps stay pinned on the left while
- * the stages scroll past on the right, and the step whose stage is mid-screen
- * opens up and takes the bar. On narrow screens there's nothing to pin
- * against, so each stage carries its own caption.
+ * (ShowcaseVisual).
+ *
+ * One frame, not a stack of them. The steps are tabs; the frame is a single
+ * mesh in the feature's category colour (the same family its category page
+ * wears), and choosing a step morphs the picture inside it — the old moment
+ * lifts away as the next settles in. While the section is on screen it moves
+ * through the steps on its own, and stops the moment you pick one.
  */
 import ShowcaseVisual from "./ShowcaseVisual.astro";
 import type { ProductStep } from "../../lib/product-page-data.ts";
@@ -16,42 +18,64 @@ interface Props {
   steps: ProductStep[];
   /** The feature's name, for the section's label. */
   name: string;
+  /** The feature's category (activity, read, write, find, share), for the frame's colour. */
+  category?: string;
 }
-const { steps, name } = Astro.props;
+const { steps, name, category } = Astro.props;
+const COUNT = ["", "one", "two", "three", "four", "five", "six"];
+const stepsLine = `${name} in ${COUNT[steps.length] ?? steps.length} steps.`;
 
-const washes = ["sky", "amber", "mint", "violet", "coral"] as const;
+/* Each category's pill colour, as the mesh family nearest it. */
+const CATEGORY_MESH: Record<string, string> = {
+  activity: "sky",
+  read: "violet",
+  write: "amber",
+  find: "mint",
+  share: "coral",
+};
+const mesh = stageMesh(CATEGORY_MESH[category ?? ""] ?? "sky");
 const pad = (n: number) => String(n + 1).padStart(2, "0");
-const id = (i: number) => `step-${i + 1}`;
+const uid = `fw-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 ---
 
 <section class="nx-wrap fw" aria-labelledby="fw-title" data-fw>
   <div class="fw__head">
     <p class="nx-kicker">How it works</p>
-    <h2 id="fw-title" class="fw__h2">{name}, step by step</h2>
+    <h2 id="fw-title" class="fw__h2">{stepsLine}</h2>
   </div>
 
   <div class="fw__grid">
-    <ol class="fw__list" aria-label={`${name} steps`}>
+    <div class="fw__list" role="tablist" aria-label={`${name} steps`} aria-orientation="vertical">
       {steps.map((step, i) => (
-        <li class:list={["fw__item", i === 0 && "is-active"]} data-fw-item>
-          <a href={`#${id(i)}`} class="fw__num">{pad(i)}</a>
-          <h3 class="fw__title"><a href={`#${id(i)}`}>{step.title}</a></h3>
-          <div class="fw__body"><p>{step.body}</p></div>
-        </li>
+        <button
+          type="button"
+          class:list={["fw__item", i === 0 && "is-active"]}
+          role="tab"
+          id={`${uid}-tab-${i}`}
+          aria-selected={String(i === 0)}
+          aria-controls={`${uid}-panel-${i}`}
+          tabindex={i === 0 ? 0 : -1}
+          data-fw-tab={i}
+        >
+          <span class="fw__num">{pad(i)}</span>
+          <span class="fw__title">{step.title}</span>
+          <span class="fw__body"><span>{step.body}</span></span>
+          <span class="fw__progress" aria-hidden="true"><i></i></span>
+        </button>
       ))}
-    </ol>
+    </div>
 
-    <div class="fw__stages">
+    <div class="fw__stage nx-mesh" style={mesh}>
       {steps.map((step, i) => (
-        <div class="fw__scene" id={id(i)} data-fw-scene data-index={i}>
-          <div class="fw__caption">
-            <span class="fw__num">{pad(i)}</span>
-            <h3 class="fw__title">{step.title}</h3>
-            <p>{step.body}</p>
-          </div>
-          <div class="fw__stage nx-mesh" style={`${stageMesh(step.color ?? washes[i % washes.length])}`}>
-            <ShowcaseVisual name={step.visual} label={step.label} />
-          </div>
+        <div
+          class:list={["fw__panel", i === 0 && "is-active"]}
+          role="tabpanel"
+          id={`${uid}-panel-${i}`}
+          aria-labelledby={`${uid}-tab-${i}`}
+          aria-hidden={i === 0 ? undefined : "true"}
+          data-fw-panel={i}
+        >
+          <ShowcaseVisual name={step.visual} label={step.label} />
         </div>
       ))}
     </div>
@@ -59,23 +83,75 @@ const id = (i: number) => `step-${i + 1}`;
 </section>
 
 <script>
+  /* Tabs that morph the picture, and a gentle walk through them while the
+     section is in view. Any choice from the reader stops the walk for good. */
+  const STEP_MS = 5200;
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   document.querySelectorAll<HTMLElement>("[data-fw]").forEach((root) => {
-    const items = root.querySelectorAll<HTMLElement>("[data-fw-item]");
-    const scenes = root.querySelectorAll<HTMLElement>("[data-fw-scene]");
-    if (!("IntersectionObserver" in window) || !items.length) return;
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-fw-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-fw-panel]")];
+    if (tabs.length < 2) return;
 
-    const setActive = (index: number) =>
-      items.forEach((item, i) => item.classList.toggle("is-active", i === index));
+    let at = 0;
+    let timer = 0;
+    let chosen = false;
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.index));
-        });
-      },
-      { rootMargin: "-45% 0px -45% 0px" }
-    );
-    scenes.forEach((s) => io.observe(s));
+    const show = (i: number, focus = false) => {
+      at = (i + tabs.length) % tabs.length;
+      tabs.forEach((t, j) => {
+        const on = j === at;
+        t.classList.toggle("is-active", on);
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((p, j) => {
+        const on = j === at;
+        // The one leaving lifts away; the next rises in from below.
+        if (!on && p.classList.contains("is-active")) {
+          p.classList.add("is-leaving");
+          window.setTimeout(() => p.classList.remove("is-leaving"), 560);
+        }
+        p.classList.toggle("is-active", on);
+        if (on) p.removeAttribute("aria-hidden");
+        else p.setAttribute("aria-hidden", "true");
+      });
+      if (focus) tabs[at].focus();
+      root.style.setProperty("--fw-step-ms", `${STEP_MS}ms`);
+    };
+
+    const stop = () => {
+      chosen = true;
+      root.classList.remove("is-playing");
+      window.clearInterval(timer);
+    };
+    const play = () => {
+      if (chosen || still || timer) return;
+      root.classList.add("is-playing");
+      timer = window.setInterval(() => show(at + 1), STEP_MS);
+    };
+    const pause = () => {
+      root.classList.remove("is-playing");
+      window.clearInterval(timer);
+      timer = 0;
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", () => { stop(); show(i); });
+      t.addEventListener("keydown", (e) => {
+        const next = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        if (next) { e.preventDefault(); stop(); show(at + next, true); }
+        if (e.key === "Home") { e.preventDefault(); stop(); show(0, true); }
+        if (e.key === "End") { e.preventDefault(); stop(); show(tabs.length - 1, true); }
+      });
+    });
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        (entries) => entries.forEach((e) => (e.isIntersecting ? play() : pause())),
+        { threshold: 0.5 }
+      ).observe(root.querySelector(".fw__stage")!);
+    }
   });
 </script>
 
@@ -92,93 +168,117 @@ const id = (i: number) => `step-${i + 1}`;
     text-wrap: balance;
   }
 
-  .fw__grid { display: grid; gap: 2rem; }
-  .fw__list { display: none; }
-
-  .fw__stages { display: grid; gap: clamp(3rem, 8vw, 4.5rem); }
-  .fw__scene { scroll-margin-top: 6rem; }
-
-  .fw__stage {
-    display: grid;
-    place-items: center;
-    min-height: 22rem;
-    padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
-    border-radius: var(--nx-radius-scene);
-  }
-  .fw__stage > :global(*) { width: 100%; max-width: 26rem; }
-
-  .fw__num {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    font-variant-numeric: tabular-nums;
-    color: var(--pd-ink-fg, var(--color-ink-faint));
-    text-decoration: none;
-  }
-  .fw__title {
-    margin: 0.35rem 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.3rem, 2.2vw, 1.6rem);
-    font-weight: 600;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-  }
-  .fw__title a { color: inherit; text-decoration: none; }
-
-  .fw__caption { max-width: 34rem; margin-bottom: 1.25rem; }
-  .fw__caption p { margin: 0.5rem 0 0; font-size: 1.0625rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
-
+  .fw__grid { display: grid; gap: 1.5rem; }
   @media (min-width: 60rem) {
     .fw__grid {
       grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
       gap: clamp(3rem, 6vw, 5rem);
-      align-items: start;
+      align-items: center;
     }
-    .fw__caption { display: none; }
-    .fw__stage { min-height: min(34rem, 72vh); }
-
-    .fw__list {
-      position: sticky;
-      top: calc(50vh - 12rem);
-      display: grid;
-      gap: 1.5rem;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-    .fw__item {
-      position: relative;
-      padding-left: 1.5rem;
-      color: var(--color-ink-faint);
-      transition: color 300ms ease;
-    }
-    .fw__item::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.1rem;
-      bottom: 0.1rem;
-      width: 3px;
-      border-radius: 3px;
-      background: var(--pd-ink-fg, var(--accent-btn-bg));
-      transform: scaleY(0);
-      transform-origin: top;
-      transition: transform 450ms var(--nx-ease);
-    }
-    .fw__item .fw__num { color: inherit; }
-    .fw__item.is-active { color: var(--color-ink); }
-    .fw__item.is-active .fw__num { color: var(--pd-ink-fg, var(--color-ink-faint)); }
-    .fw__item.is-active::before { transform: scaleY(1); }
-
-    .fw__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 450ms var(--nx-ease); }
-    .fw__body > p { overflow: hidden; margin: 0; font-size: 1.0625rem; line-height: 1.55; color: var(--color-ink-soft); }
-    .fw__item.is-active .fw__body { grid-template-rows: 1fr; }
-    .fw__item.is-active .fw__body > p { padding-top: 0.6rem; }
   }
 
+  /* ── The steps, as tabs ──────────────────────────────────────────────── */
+  .fw__list { display: grid; gap: 0.35rem; order: 2; }
+  @media (min-width: 60rem) { .fw__list { order: 0; gap: 0.5rem; } }
+  .fw__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.9rem;
+    padding: 0.85rem 1rem 0.85rem 1rem;
+    border: 0;
+    border-radius: 1rem;
+    font: inherit;
+    text-align: left;
+    color: var(--color-ink-faint);
+    background: none;
+    cursor: pointer;
+    transition: color 300ms ease, background-color 300ms ease;
+  }
+  .fw__item:hover { color: var(--color-ink-soft); }
+  .fw__item.is-active { color: var(--color-ink); background: color-mix(in srgb, var(--color-ink) 4%, transparent); }
+  .fw__item:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .fw__num {
+    grid-row: 1 / span 2;
+    padding-top: 0.3rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    color: inherit;
+  }
+  .fw__item.is-active .fw__num { color: var(--pd-ink-fg, var(--color-ink-faint)); }
+  .fw__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  /* The active step's words open beneath its title. */
+  .fw__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 450ms var(--nx-ease); }
+  .fw__body > span { overflow: hidden; font-size: 1rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
+  .fw__item.is-active .fw__body { grid-template-rows: 1fr; }
+  .fw__item.is-active .fw__body > span { padding-top: 0.45rem; }
+
+  /* While it walks on its own, the active step shows how long it has left. */
+  .fw__progress {
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0.4rem;
+    height: 2px;
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+  .fw__progress i { display: block; height: 100%; background: var(--pd-ink-fg, var(--color-accent)); transform: scaleX(0); transform-origin: left; }
+  :global(.fw.is-playing) .fw__item.is-active .fw__progress { opacity: 0.5; }
+  :global(.fw.is-playing) .fw__item.is-active .fw__progress i { animation: fw-fill var(--fw-step-ms, 5200ms) linear forwards; }
+  @keyframes fw-fill { to { transform: scaleX(1); } }
+
+  /* ── One frame, the picture morphing inside it ───────────────────────── */
+  .fw__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: clamp(22rem, 52vw, 34rem);
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
+    border-radius: var(--nx-radius-scene);
+  }
+  /* Every moment sits in the same cell, so the frame holds the tallest and never jumps. */
+  .fw__panel {
+    grid-area: 1 / 1;
+    width: 100%;
+    max-width: 26rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px) scale(0.97);
+    filter: blur(6px);
+    transition:
+      opacity 320ms ease,
+      transform 520ms var(--nx-ease, cubic-bezier(0.2, 0.8, 0.2, 1)),
+      filter 420ms ease,
+      visibility 0s linear 520ms;
+  }
+  .fw__panel.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    filter: none;
+    transition:
+      opacity 420ms ease 120ms,
+      transform 620ms var(--nx-ease, cubic-bezier(0.2, 0.8, 0.2, 1)) 80ms,
+      filter 480ms ease 80ms,
+      visibility 0s;
+  }
+  /* The one leaving lifts away rather than sinking back. */
+  .fw__panel.is-leaving { transform: translateY(-12px) scale(1.02); }
+
   @media (prefers-reduced-motion: reduce) {
-    .fw__item, .fw__item::before, .fw__body { transition: none; }
+    .fw__item, .fw__body, .fw__panel, .fw__panel.is-active { transition: none; }
+    .fw__panel, .fw__panel.is-leaving { transform: none; filter: none; }
   }
 </style>

@@ -9,6 +9,7 @@ import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
 import ConnectorScenes from "./next/ConnectorScenes.astro";
+import ReviewScenes from "./next/ReviewScenes.astro";
 import FeatureWalkthrough from "./next/FeatureWalkthrough.astro";
 import ShowcaseVisual from "./next/ShowcaseVisual.astro";
 import ComparePreview from "./next/ComparePreview.astro";
@@ -94,9 +95,9 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
     </header>
 
     {hasSteps ? (
-      <FeatureWalkthrough steps={steps} name={page.title} />
+      <FeatureWalkthrough steps={steps} name={page.title} category={category?.slug} />
     ) : page.sections.some((section) => section.visual) ? (
-      <ConnectorScenes sections={page.sections} />
+      page.slug === "review-exercises" ? <ReviewScenes sections={page.sections} /> : <ConnectorScenes sections={page.sections} />
     ) : page.sections.length > 0 && (
       <section class="nx-wrap pd-story" aria-label="The story">
         {page.sections.map((section) => (
@@ -181,8 +182,8 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
       <ComparePreview
         id="works-alongside"
         kicker="Compare"
-        title="Works alongside other tools."
-        lead="Harvous does a different job than most Bible apps. Plenty of people use it next to something they already love."
+        title="Keep the app you already love."
+        lead="Harvous does a different job than most Bible apps, so plenty of people use it right next to one."
         slugs={compareSlugs}
       />
     )}

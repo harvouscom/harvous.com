@@ -1,0 +1,1105 @@
+---
+/**
+ * ReviewScenes — the Review exercises page's story, one row per section: the
+ * words on one side and, on the other, the Review card itself, working.
+ *
+ * The card is the app's, not an impression of it: the same markup and class
+ * names as the app's dock (StudyDockCardShell + ExerciseStage and its pieces),
+ * drawn by the app's own CSS, mirrored into styles/app-review.css. The copy is
+ * the app's too (proto-review-copy.ts, review-prompts.ts), and each question is
+ * the fixture the app's design-system gallery uses for that family
+ * (spa/src/pages/dev/design-system/ReviewCardsScene.tsx).
+ *
+ * Each section names its example with `visual`:
+ *   kinds  — every exercise family a reader is asked (Folder left out), one card each, all answerable (pick a family)
+ *   result — the card turned over: what you gave, how it reads, the verdict
+ *   gaps   — one question over several sittings: how it's held, when it's back
+ *   deck   — Activity's sitting card; Begin opens the card and deals today's
+ *
+ * The card is built in the browser from the data below, because one engine
+ * answers all of them; the words beside it carry the page without it.
+ */
+import AppIcon from "./app/AppIcon.astro";
+import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
+import type { ProductSection } from "../../lib/product-page-data.ts";
+import { stageMesh } from "../../lib/next/content.ts";
+import "../../styles/app-review.css";
+
+interface Props {
+  sections: ProductSection[];
+}
+const { sections } = Astro.props;
+
+const washes = ["violet", "sky", "amber", "mint"];
+
+/* The glyphs the card draws, rendered once and cloned by the script. */
+const ICONS = [
+  "arrows-rotate", "clock-rotate-left", "circle-minus", "caret-down", "xmark", "link", "arrow-right",
+  "location-dot", "tag", "folder", "check", "thumbs-up", "thumbs-down",
+];
+
+/* The family picker: every family the app asks, grouped by where it comes from. */
+const GROUPS = [
+  {
+    label: "From verses you keep",
+    ids: [
+      ["opening", "How it begins"], ["blanks", "Blanks"], ["letters", "First letters"], ["memory", "From memory"],
+      ["next", "What follows"], ["order", "Put in order"], ["where", "Where"], ["changed", "Changed word"],
+      ["marked", "What you marked"], ["who", "Who"], ["place", "Places"], ["theme", "Theme"], ["crossref", "Cross-reference"],
+    ],
+  },
+  { label: "From your notes", ids: [["cited", "Which passage"], ["linked", "What you linked"]] },
+  { label: "From your church", ids: [["question", "Question"], ["match", "Match"]] },
+];
+---
+
+<section class="nx-wrap rs" aria-label="How Review exercises work">
+  <template data-rs-icons>
+    {ICONS.map((name) => <span data-i={name}><AppIcon name={name} /></span>)}
+  </template>
+
+  {sections.map((section, i) => (
+    <div class:list={["rs__row", i % 2 === 1 && "is-flip", section.visual === "kinds" && "rs__row--wide"]}>
+      <div class="rs__text" data-reveal>
+        <p class="rs__num">{String(i + 1).padStart(2, "0")}</p>
+        <h2 class="rs__h">{section.heading}</h2>
+        {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+      </div>
+
+      <div class="rs__stage nx-mesh" style={`${stageMesh(washes[i % washes.length])} --reveal-delay: 120ms;`} data-reveal>
+        {section.visual === "kinds" && (
+          <div class="rs__card rs__kinds">
+            {/* One kind at a time: step through them, or open the list of them all. */}
+            <div class="rs__picker" data-picker>
+              <button type="button" class="rs__step" data-step="-1" aria-label="Previous kind of question"><AppIcon name="chevron-left" /></button>
+              <button type="button" class="rs__current" data-menu-btn aria-haspopup="true" aria-expanded="false">
+                <span data-cur-label>How it begins</span>
+                <span class="rs__count" data-cur-count>1 of {GROUPS.reduce((n, g) => n + g.ids.length, 0)}</span>
+                <AppIcon name="caret-down" />
+              </button>
+              <button type="button" class="rs__step" data-step="1" aria-label="Next kind of question"><AppIcon name="chevron-right" /></button>
+              <div class="rs__menu" data-menu hidden>
+                {GROUPS.map((g) => (
+                  <div class="rs__menu-group" role="group" aria-label={g.label}>
+                    <p class="rs__menu-label">{g.label}</p>
+                    <div class="rs__menu-items">
+                      {g.ids.map(([id, label]) => (
+                        <button type="button" class="rs__menu-item" data-fam={id} aria-pressed={String(id === "opening")}>{label}</button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div data-scene="kinds" aria-live="polite"></div>
+          </div>
+        )}
+
+        {section.visual === "result" && (
+          <div class="rs__card" data-scene="result">
+            <div class="rs__seg" role="group" aria-label="Show the result when you">
+              <button type="button" class="rs__seg-btn" aria-pressed="true" data-outcome="recalled">First go</button>
+              <button type="button" class="rs__seg-btn" aria-pressed="false" data-outcome="almost">Second go</button>
+              <button type="button" class="rs__seg-btn" aria-pressed="false" data-outcome="revealed">Missed it</button>
+            </div>
+            <div data-result-card></div>
+          </div>
+        )}
+
+        {section.visual === "gaps" && (
+          <div class="aui aui-card aui-card--float gaps" data-scene="gaps" role="group" aria-label="Example: one question over several sittings">
+            <p class="aui-label gaps__label">Review exercises</p>
+            <div class="aui-row gaps__row">
+              <span class="aui-tile"><AppIcon name="arrows-rotate" /></span>
+              <span>
+                <span class="aui-title">Psalm 23:1 <span class="proto-recall-mark" data-hold="learning" role="img" aria-label="You're learning this" data-mark><span class="proto-recall-mark__seg"></span><span class="proto-recall-mark__seg"></span><span class="proto-recall-mark__seg"></span></span></span>
+                <span class="aui-sub" data-state-label>Blanks</span>
+              </span>
+            </div>
+            <ol class="gaps__track" role="list" aria-label="Sittings so far" data-track></ol>
+            <p class="gaps__next" aria-live="polite" data-next>Answer it, and see when it comes back.</p>
+            <div class="gaps__acts">
+              <button type="button" class="proto-settings-btn proto-settings-btn--secondary proto-settings-btn--compact" data-answer="revealed">Not this time</button>
+              <button type="button" class="proto-settings-btn proto-settings-btn--secondary proto-settings-btn--compact" data-answer="almost">Got there</button>
+              <button type="button" class="proto-settings-btn proto-settings-btn--compact" data-answer="recalled">You had it</button>
+            </div>
+            <p class="gaps__foot"><span>Gaps shown are illustrative.</span> <button type="button" class="gaps__reset" data-reset>Start over</button></p>
+          </div>
+        )}
+
+        {section.visual === "deck" && (
+          <div class="rs__card dk" data-scene="deck">
+            <div class="aui aui-card dk__activity">
+              <p class="aui-label dk__label"><AppIcon name="house" /> Activity</p>
+              <p class="aui-label dk__label dk__label--sub">Review exercises</p>
+              <div class="aui-card dk__sitting" data-sitting></div>
+            </div>
+            <div data-deck-card hidden></div>
+          </div>
+        )}
+      </div>
+    </div>
+  ))}
+</section>
+
+<script>
+  /* ── Data: one question per family, from the app's own gallery fixtures ── */
+  type Fill = { text: string; state: "picked" | "right" | "wrong" };
+  type Q = {
+    fam: string;
+    label: string;
+    tr?: string;
+    task: string;
+    subject?: string;
+    kind: "choice" | "bank" | "order" | "letters" | "recall" | "altered" | "match";
+    scene?: string;
+    variant?: "portrait" | "place" | "folder" | "note" | "theme" | "shelf";
+    options?: string[];
+    answer?: string;
+    segments?: string[];
+    blanks?: string[];
+    letters?: string[];
+    bank?: string[];
+    phrases?: string[];
+    left?: string[];
+    right?: string[];
+    tokens?: string[];
+    altered?: number;
+    rest?: string;
+    hero?: string;
+    /** Where a pick lands in the scene. */
+    fill?: "opening" | "slot" | "portrait" | "tag";
+    /** The reference works answer this one, not the reader's own study. */
+    index?: boolean;
+    /** The verse as it reads, for the result. */
+    truth?: string;
+  };
+
+  const PSALM_23_1 = "The LORD is my shepherd; I shall not want.";
+  const JOHN_3_16 = "For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.";
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const hero = (t: string, size = "lg") => `<p class="rx-hero" data-scripture="" data-size="${size}">${t}</p>`;
+
+  let iconSrc: HTMLTemplateElement | null = null;
+  const ic = (name: string) => iconSrc?.content.querySelector(`[data-i="${name}"]`)?.innerHTML ?? "";
+
+  const rail = (fromLabel: string, from: string, join: "next" | "link", slot: string, scripture = true) =>
+    `<div class="rx-rail"><div class="rx-rail__card"${scripture ? ' data-scripture=""' : ""}><p class="rx-rail__label">${fromLabel}</p><div class="rx-rail__text">${from}</div></div>` +
+    `<span class="rx-rail__join" data-join="${join}" aria-hidden="true">${ic(join === "link" ? "link" : "arrow-right")}</span>` +
+    `<div class="rx-rail__slot" data-fill-slot><p class="rx-rail__label">${slot}</p><p class="rx-rail__text" data-fill-text></p></div></div>`;
+  const tagslot = (icon: string, label: string, verse: string) =>
+    `${hero(verse)}<p class="rx-tagslot" data-fill-slot>${ic(icon)}<span class="rx-tagslot__text" data-fill-text>${label}</span></p>`;
+
+  const QUESTIONS = (): Q[] => [
+    {
+      fam: "opening", label: "How it begins", tr: "ESV", kind: "choice", fill: "opening",
+      task: "Pick how Philippians 4:13 begins.",
+      scene: `<p class="rx-eyebrow">Philippians 4:13</p><p class="rx-hero" data-scripture="" data-size="lg"><span class="rx-opening" data-fill-slot><span data-fill-text>&nbsp;</span></span> …</p>`,
+      options: ["I can do all things", "I have learned in whatever state", "My God will supply every need", "Rejoice in the Lord always"],
+      answer: "I can do all things",
+      truth: `<sup class="verse-num">13</sup>I can do all things through him who strengthens me.`,
+    },
+    {
+      fam: "blanks", label: "Blanks", tr: "NET", kind: "bank",
+      task: "Fill in the blanks in John 15:5.",
+      segments: ["“I am the vine; you are the ", ". The one who remains in me bears ", " fruit."],
+      blanks: ["branches", "much"],
+      bank: ["spoken", "branches", "unless", "bear", "much"],
+      truth: `<sup class="verse-num">5</sup>“I am the vine; you are the branches. The one who remains in me — and I in him — bears much fruit, because apart from me you can accomplish nothing.`,
+    },
+    {
+      fam: "letters", label: "First letters", tr: "ESV", kind: "letters",
+      task: "Finish each word from its first letter in Psalm 23:1.",
+      segments: ["The LORD is my ", "; I shall not ", "."],
+      letters: ["s", "w"],
+      blanks: ["shepherd", "want"],
+      truth: `<sup class="verse-num">1</sup>${PSALM_23_1}`,
+    },
+    {
+      fam: "memory", label: "From memory", tr: "ESV", kind: "recall",
+      task: "Finish John 3:16.",
+      hero: "For God so loved the world, that he gave his only Son …",
+      rest: "that whoever believes in him should not perish but have eternal life.",
+      truth: `<sup class="verse-num">16</sup>${JOHN_3_16}`,
+    },
+    {
+      fam: "next", label: "What follows", tr: "ESV", kind: "choice", fill: "slot",
+      task: "Pick the verse that follows Psalm 23:1.",
+      scene: "rail:Psalm 23:1|" + PSALM_23_1 + "|next|Next verse|1",
+      options: ["He makes me lie down in green pastures", "He restores my soul", "You prepare a table before me", "Surely goodness and mercy"],
+      answer: "He makes me lie down in green pastures",
+      truth: `<sup class="verse-num">2</sup>He makes me lie down in green pastures. He leads me beside still waters.`,
+    },
+    {
+      fam: "order", label: "Put in order", tr: "ESV", kind: "order",
+      task: "Put John 3:16 back in order.",
+      phrases: ["For God so loved", "the world,", "that he gave", "his only Son"],
+      truth: `<sup class="verse-num">16</sup>${JOHN_3_16}`,
+    },
+    {
+      fam: "where", label: "Where", tr: "ESV", kind: "choice", variant: "shelf",
+      task: "Pick the book this is from.",
+      scene: hero("“…I shall not want…”"),
+      options: ["Genesis", "Psalms", "Isaiah", "John"],
+      answer: "Psalms",
+      truth: `<sup class="verse-num">1</sup>${PSALM_23_1}`,
+    },
+    {
+      fam: "changed", label: "Changed word", tr: "ESV", kind: "altered",
+      task: "One word in John 3:16 has been changed. Find it.",
+      tokens: JOHN_3_16.replace("world", "church").split(" "),
+      altered: 4,
+      truth: `<sup class="verse-num">16</sup>${JOHN_3_16}`,
+    },
+    {
+      fam: "marked", label: "What you marked", tr: "ESV", kind: "choice",
+      task: "Pick the words you marked in Psalm 23:1.",
+      hero: PSALM_23_1,
+      options: ["The LORD is my", "I shall not want.", "my shepherd; I", "is my shepherd;"],
+      answer: "I shall not want.",
+      truth: `<sup class="verse-num">1</sup>The LORD is my shepherd; <strong>I shall not want.</strong>`,
+    },
+    {
+      fam: "who", label: "Who", tr: "ESV", kind: "choice", variant: "portrait", fill: "portrait", index: true,
+      task: "Pick who 1 Samuel 17:45 is about.",
+      scene: `<div class="rx-speaker"><span class="rx-speaker__portrait" data-fill-slot aria-hidden="true">?</span><div class="rx-speaker__bubble"><p class="rx-rail__label">1 Samuel 17:45</p><div class="rx-speaker__text"><p>You come to me with a sword and with a spear and with a javelin, but I come to you in the name of the LORD of hosts.</p></div></div></div>`,
+      options: ["Saul", "David", "Jonathan", "Samuel"],
+      answer: "David",
+    },
+    {
+      fam: "place", label: "Places", tr: "ESV", kind: "choice", variant: "place", fill: "tag", index: true,
+      task: "Pick the place Luke 2:4 names.",
+      scene: "tag:location-dot|A place it names|And Joseph also went up from Galilee, from the town of Nazareth, to Judea, to the city of David, which is called Bethlehem.",
+      options: ["Bethlehem", "Capernaum", "Jericho", "Bethany"],
+      answer: "Bethlehem",
+    },
+    {
+      fam: "theme", label: "Theme", tr: "ESV", kind: "choice", variant: "theme", fill: "tag", index: true,
+      task: "Pick the theme Psalm 23:1 carries.",
+      scene: "tag:tag|A theme it carries|" + PSALM_23_1,
+      options: ["Judgment", "Provision", "Exile", "Wisdom"],
+      answer: "Provision",
+    },
+    {
+      fam: "crossref", label: "Cross-reference", tr: "ESV", kind: "choice", fill: "slot", index: true,
+      task: "Pick the passage Psalm 23:1 is cross-referenced with.",
+      scene: "rail:Psalm 23:1|" + PSALM_23_1 + "|link|Cross-referenced with|1",
+      options: ["John 10:11", "Romans 3:23", "Genesis 1:1", "Acts 2:38"],
+      answer: "John 10:11",
+    },
+    {
+      fam: "cited", label: "Which passage", kind: "choice", fill: "slot",
+      task: "Pick a passage you cited in Shepherd psalms.",
+      scene: "rail:Your note|Shepherd psalms|link|A passage you cited|0",
+      options: ["Psalm 100:3", "Psalm 23:1", "Ezekiel 34:11", "John 10:14"],
+      answer: "Psalm 23:1",
+    },
+    {
+      fam: "linked", label: "What you linked", kind: "choice", variant: "note", fill: "slot",
+      task: "Pick a note you linked to Shepherd psalms.",
+      scene: "rail:Your note|Shepherd psalms|link|Linked to|0",
+      options: ["Exile timeline", "Sermon on contentment", "The good shepherd", "Advent, week one"],
+      answer: "The good shepherd",
+    },
+    {
+      fam: "question", label: "Question", kind: "choice",
+      task: "In John 10, what does Jesus say the good shepherd does for the sheep?",
+      subject: "From Grace Church.",
+      options: ["Lays down his life", "Counts them each night", "Leads them to the river", "Builds them a fold"],
+      answer: "Lays down his life",
+    },
+    {
+      fam: "match", label: "Match", kind: "match",
+      task: "Match each passage to what it says.",
+      subject: "From Grace Church.",
+      left: ["Psalm 23", "John 10", "Ezekiel 34"],
+      right: ["The LORD is my shepherd", "I am the good shepherd", "I myself will search for my sheep"],
+    },
+  ];
+
+  /* Scenes written as short strings above, expanded once the icons are in reach. */
+  const sceneHtml = (s: string | undefined) => {
+    if (!s) return null;
+    if (s.startsWith("rail:")) {
+      const [fromLabel, from, join, slot, scripture] = s.slice(5).split("|");
+      return rail(fromLabel, esc(from), join as "next" | "link", slot, scripture === "1");
+    }
+    if (s.startsWith("tag:")) {
+      const [icon, label, verse] = s.slice(4).split("|");
+      return tagslot(icon, label, esc(verse));
+    }
+    return s;
+  };
+
+  /* The app's copy (proto-review-copy.ts). */
+  const COPY = {
+    check: "Check it",
+    again: "Not that one. One more go.",
+    parts: (n: number, of: number) =>
+      n === 0 ? "None of those yet. One more go." : n === of ? "All there. One more go." : n === 1 ? "One of those is right. One more go." : `${n} of those are right. One more go.`,
+    outcome: { recalled: "You had it.", almost: "Got there.", revealed: "Not this time." } as Record<string, string>,
+    next: { recalled: "Back in 4 days.", almost: "Back in 2 days.", revealed: "Back tomorrow." } as Record<string, string>,
+    truth: "As it actually reads",
+  };
+  const LETTERS = "ABCDEF";
+  const BOOKS = "Genesis Exodus Leviticus Numbers Deuteronomy Joshua Judges Ruth 1Samuel 2Samuel 1Kings 2Kings 1Chronicles 2Chronicles Ezra Nehemiah Esther Job Psalms Proverbs Ecclesiastes Song Isaiah Jeremiah Lamentations Ezekiel Daniel Hosea Joel Amos Obadiah Jonah Micah Nahum Habakkuk Zephaniah Haggai Zechariah Malachi Matthew Mark Luke John Acts Romans 1Corinthians 2Corinthians Galatians Ephesians Philippians Colossians 1Thessalonians 2Thessalonians 1Timothy 2Timothy Titus Philemon Hebrews James 1Peter 2Peter 1John 2John 3John Jude Revelation".split(" ");
+  const SECTION_STARTS = new Set([6, 18, 23, 28, 44, 45, 58, 66]);
+  const initialsOf = (name: string) => {
+    const w = name.trim().split(/\s+/);
+    const last = [...w.slice(1)].reverse().find((x) => /^[A-Z]/.test(x));
+    return `${w[0][0]}${last?.[0] ?? ""}`.toUpperCase();
+  };
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9' ]+/g, " ").replace(/\s+/g, " ").trim();
+  const STOP = new Set("the a an and of to in that he his him it is be but not should".split(" "));
+  const shuffle = <T,>(xs: T[], seed: number): T[] => {
+    let out = xs.map((x, i) => ({ k: ((i + 1) * 9301 + seed * 49297) % 233280, x })).sort((a, b) => a.k - b.k).map((p) => p.x);
+    // Never deal the pieces already in order.
+    if (out.every((x, i) => x === xs[i])) out = [...out.slice(1), out[0]];
+    return out;
+  };
+
+  /* ── The card ─────────────────────────────────────────────────────────── */
+  function shell(q: Q, inner: string, goes: { total: number; used: number } | null, result: boolean) {
+    const dots = goes && goes.total > 1 && !result
+      ? `<div class="study-dock-card__header-trailing"><span class="proto-review-dock__goes" aria-hidden="true">${Array.from({ length: goes.total }, (_, i) =>
+          `<span class="proto-review-dock__go"${i < goes.used ? " data-spent" : i === goes.used ? " data-current" : ""}></span>`).join("")}</span></div>`
+      : "";
+    const btn = (icon: string, label: string) => `<button type="button" class="study-dock-card__header-btn" aria-label="${label}" title="${label}" tabindex="-1">${ic(icon)}</button>`;
+    const acts = result ? btn("thumbs-up", "Good question") + btn("thumbs-down", "Not helpful") : btn("clock-rotate-left", "Not now") + btn("circle-minus", "Pause this");
+    return `<div class="proto-review-dock study-dock-card" role="region" aria-label="Review"><div class="study-dock-card__outer">
+      <div class="study-dock-card__card" data-expanded="true" style="--study-dock-accent: var(--pds-accent)"><div class="study-dock-card__card-main">
+        <div class="study-dock-card__header">
+          <span class="study-dock-card__header-icon" aria-hidden="true">${ic("arrows-rotate")}</span>
+          <div class="study-dock-card__header-title"><span class="study-dock-card__header-primary-text">Review<span class="proto-review-dock__header-prompt">${esc(q.label)}</span>${q.tr ? `<span class="scripture-pill-chrome__trans-chip proto-review-dock__header-trans">${q.tr}</span>` : ""}</span></div>
+          ${dots}
+          <div class="study-dock-card__header-actions" aria-hidden="true">${acts}<span class="study-dock-card__header-divider"></span>${btn("caret-down", "Collapse")}${btn("xmark", "Dismiss")}</div>
+        </div>
+        <div class="study-dock-card__body-wrap" data-expanded="true"><div class="study-dock-card__body"><div class="proto-review-dock__body">${inner}</div></div></div>
+      </div></div></div></div>`;
+  }
+
+  function resultCard(q: Q, outcome: string, yoursLabel: string, yours: string, answerHtml: string | null) {
+    const blocks = [
+      `<p class="proto-review-dock__prompt proto-review-dock__prompt--asked">${esc(q.task)}</p>`,
+      `<div class="proto-review-dock__answer"><p class="proto-caption proto-review-dock__truth-label">${yoursLabel}</p><p class="proto-review-dock__verse proto-review-dock__verse--yours proto-review-dock__verse--pick">${yours}</p></div>`,
+      answerHtml ? `<div class="proto-review-dock__answer"><p class="proto-caption proto-review-dock__truth-label">${q.index ? "The reference works say" : "The answer"}</p><p class="proto-review-dock__verse">${answerHtml}</p></div>` : "",
+      q.truth ? `<div class="proto-review-dock__answer"><p class="proto-caption proto-review-dock__truth-label">${COPY.truth}</p><p class="proto-review-dock__verse proto-review-dock__verse--scripture">${q.truth}</p></div>` : "",
+      `<div class="proto-review-dock__verdict" data-outcome="${outcome}" role="status"><span class="proto-review-dock__verdict-icon" aria-hidden="true">${ic(outcome === "revealed" ? "xmark" : "check")}</span><p class="proto-review-dock__result-text"><span class="proto-review-dock__result-outcome">${COPY.outcome[outcome]}</span> <span class="proto-review-dock__result-next">${COPY.next[outcome]}</span></p></div>`,
+    ];
+    return `<div class="proto-review-dock__result"><div class="proto-review-dock__result-scroll">${blocks.join("")}</div>
+      <div class="proto-review-dock__actions proto-review-dock__actions--footer">
+        <button type="button" class="proto-settings-btn proto-settings-btn--compact" data-next>Next one</button>
+        <button type="button" class="proto-settings-btn proto-settings-btn--secondary proto-settings-btn--compact" data-again>Enough for now</button>
+      </div></div>`;
+  }
+
+  function stage(task: string, subject: string | undefined, scene: string | null, work: string | null, foot: { say?: string; missed?: boolean; primary?: string | null }, tone?: string) {
+    const hasPrimary = foot.primary !== undefined && foot.primary !== null;
+    const hasFoot = !!foot.say || hasPrimary;
+    return `<div class="rx-stage"><div class="rx-main"${scene ? "" : ' data-bare=""'}>
+      <div class="rx-ask"><p class="rx-task">${esc(task)}</p>${subject ? `<p class="rx-subject">${esc(subject)}</p>` : ""}</div>
+      ${scene ? `<div class="rx-scene"${tone ? ` data-tone="${tone}"` : ""}>${scene}</div>` : ""}
+      ${work ? `<div class="rx-work">${work}</div>` : ""}
+    </div>${hasFoot ? `<div class="rx-foot"${foot.missed ? " data-missed" : ""}><div class="rx-foot__say">${foot.say ? `<p class="proto-caption proto-review-dock__retry">${foot.say}</p>` : ""}</div>${hasPrimary ? `<div class="rx-foot__actions"><button type="button" class="proto-settings-btn proto-settings-btn--compact rx-primary" data-check${foot.primary === "disabled" ? " disabled" : ""}><span class="rx-primary__label">${COPY.check}</span></button></div>` : ""}</div>` : ""}</div>`;
+  }
+
+  /**
+   * Mounts one question into `host` and runs it to its result. `onNext` is the
+   * result's "Next one"; `onEnough` its "Enough for now" (by default, the same
+   * question again).
+   */
+  function mount(host: HTMLElement, q: Q, onNext: () => void, onEnough?: () => void, seed = 1) {
+    const goesTotal = q.kind === "choice" || q.kind === "altered" ? 2 : 3;
+    let used = 0;
+    const st: Record<string, any> = { picks: [], placed: [], missed: [], typed: "" };
+
+    const finish = (outcome: string, yoursLabel: string, yours: string, answerHtml: string | null) => {
+      setTimeout(() => {
+        host.innerHTML = shell(q, resultCard(q, outcome, yoursLabel, yours, answerHtml), null, true);
+        host.querySelector("[data-next]")!.addEventListener("click", onNext);
+        host.querySelector("[data-again]")!.addEventListener("click", () => (onEnough ? onEnough() : mount(host, q, onNext, onEnough, seed + 1)));
+      }, outcome === "revealed" ? 500 : 650);
+    };
+    const outcomeFor = () => (used === 0 ? "recalled" : "almost");
+
+    const render = (foot: { say?: string; missed?: boolean } = {}) => {
+      let scene: string | null = sceneHtml(q.scene);
+      let work: string | null = null;
+      let primary: string | null = null;
+      let tone: string | undefined;
+
+      if (q.kind === "choice") {
+        if (q.fam === "marked") scene = `<p class="rx-hero" data-scripture="" data-size="lg" data-marked>${esc(q.hero!)}</p>`;
+        if (q.variant === "shelf") {
+          let books = "";
+          BOOKS.forEach((b, i) => {
+            const order = i + 1;
+            if (order === 40) books += `<span class="rx-shelf__gap" data-kind="testament" aria-hidden="true"></span>`;
+            else if (SECTION_STARTS.has(order)) books += `<span class="rx-shelf__gap" data-kind="section" aria-hidden="true"></span>`;
+            const at = q.options!.indexOf(b);
+            if (at === -1) books += `<span class="rx-shelf__spine" style="height:${56 + ((order * 37) % 5) * 7}%" aria-hidden="true"></span>`;
+            else {
+              const wrong = st.missed.includes(b);
+              books += `<button type="button" class="rx-shelf__book" data-opt="${esc(b)}"${wrong ? ' data-state="wrong" disabled' : ""}><span class="rx-shelf__title">${b}</span><span class="rx-shelf__key" aria-hidden="true">${LETTERS[at]}</span></button>`;
+            }
+          });
+          work = `<div class="rx-shelf" role="group" aria-label="Books of the Bible"><div class="rx-shelf__books">${books}</div><div class="rx-shelf__ends" aria-hidden="true"><span>Old Testament</span><span>New Testament</span></div></div>`;
+        } else {
+          // As ChoiceOptions.tsx: the letter key first, then the variant's face.
+          const long = !q.variant && (q.fam === "opening" || q.options!.some((o) => o.length > 28));
+          const trailOff = (t: string) => `${t.replace(/[\s.,;:]+$/u, "")}…`;
+          const face = (o: string) => {
+            const key = `<span class="rx-option__key" aria-hidden="true">${LETTERS[q.options!.indexOf(o)]}</span>`;
+            const label = `<span class="rx-option__label">${esc(q.fam === "opening" ? trailOff(o) : o)}</span>`;
+            if (q.variant === "portrait") return `${key}<span class="rx-option__avatar" aria-hidden="true">${initialsOf(o)}</span>${label}`;
+            if (q.variant === "place" || q.variant === "folder") return `${key}<span class="rx-option__glyph" aria-hidden="true">${ic(q.variant === "folder" ? "folder" : "location-dot")}</span>${label}`;
+            if (q.variant === "note") return `${key}${label}<span class="rx-option__lines" aria-hidden="true"><span></span><span></span><span></span></span>`;
+            return `${key}${label}`;
+          };
+          work = `<div class="rx-options"${q.variant ? ` data-variant="${q.variant}"` : ""}${long ? " data-long" : ""} data-count="${q.options!.length}">${q.options!.map((o) =>
+            `<button type="button" class="rx-option" data-opt="${esc(o)}"${st.missed.includes(o) ? ' data-state="wrong" disabled' : ""}>${face(o)}</button>`).join("")}</div>`;
+        }
+      }
+
+      if (q.kind === "bank") {
+        if (!st.picks.length) st.picks = q.blanks!.map(() => null);
+        const vals: (string | null)[] = st.picks;
+        const states: (string | undefined)[] = st.states ?? [];
+        scene = `<p class="rx-hero" data-size="lg" data-scripture="">${q.segments!.map((seg, i) => esc(seg) + (i < q.blanks!.length
+          ? `<button type="button" class="rx-gap" data-gap="${i}"${vals[i] ? " data-filled" : ""}${states[i] ? ` data-state="${states[i]}"` : ""} style="min-width:${Math.max(3, q.blanks![i].length) + 2}ch"${vals[i] ? "" : " disabled"}>${vals[i] ? esc(vals[i]!) : "&nbsp;"}</button>`
+          : "")).join("")}</p>`;
+        work = `<div class="rx-tray" role="group" aria-label="Words to place">${q.bank!.map((w, i) =>
+          `<button type="button" class="rx-tile" data-tile="${i}"${vals.includes(w) ? ' data-used disabled aria-hidden="true" tabindex="-1"' : ""}>${esc(w)}</button>`).join("")}</div>`;
+        primary = vals.every(Boolean) ? "" : "disabled";
+      }
+
+      if (q.kind === "order") {
+        const order: number[] = st.order ?? (st.order = shuffle(q.phrases!.map((_, i) => i), seed));
+        const states: (string | undefined)[] = st.states ?? [];
+        scene = `<ol class="rx-slots">${q.phrases!.map((_, pos) => {
+          const idx = st.placed[pos];
+          return `<li>${idx === undefined ? `<span class="rx-slot" aria-hidden="true"></span>` : `<button type="button" class="rx-slot" data-filled="" data-slot="${pos}"${states[pos] ? ` data-state="${states[pos]}"` : ""}>${esc(q.phrases![idx])}</button>`}</li>`;
+        }).join("")}</ol>`;
+        work = st.placed.length >= q.phrases!.length ? null : `<div class="rx-tray" role="group" aria-label="Pieces to place">${order.map((idx) =>
+          `<button type="button" class="rx-tile" data-piece="${idx}"${st.placed.includes(idx) ? ' data-used disabled aria-hidden="true" tabindex="-1"' : ""}>${esc(q.phrases![idx])}</button>`).join("")}</div>`;
+        primary = st.placed.length === q.phrases!.length ? "" : "disabled";
+      }
+
+      if (q.kind === "letters") {
+        const vals: string[] = st.vals ?? (st.vals = q.blanks!.map(() => ""));
+        const states: (string | undefined)[] = st.states ?? [];
+        scene = `<p class="rx-hero" data-size="lg" data-scripture="" data-gapline="">${q.segments!.map((seg, i) => esc(seg) + (i < q.blanks!.length
+          ? `<span class="proto-review-dock__gap"><span class="proto-review-dock__gap-letter" aria-hidden="true">${q.letters![i]}</span><input type="text" class="proto-review-dock__blank" data-blank="${i}"${states[i] ? ` data-answer="${states[i]}"` : ""} style="width:${Math.max(4, q.blanks![i].length) + 1}ch" value="${esc(vals[i])}" aria-label="Word ${i + 1}, starts with ${q.letters![i]}" autocomplete="off" spellcheck="false"></span>`
+          : "")).join("")}</p>`;
+        primary = "";
+      }
+
+      if (q.kind === "recall") {
+        scene = hero(esc(q.hero!));
+        const total = q.rest!.split(" ").length;
+        const written = st.typed.trim() ? st.typed.trim().split(/\s+/).length : 0;
+        work = `<textarea class="proto-review-dock__attempt" rows="3" placeholder="Write what you remember" aria-label="Write what you remember" data-attempt>${esc(st.typed)}</textarea>` +
+          `<div class="rx-ticks" role="img" aria-label="${Math.min(written, total)} of ${total} words written">${Array.from({ length: total }, (_, i) => `<span class="rx-tick"${i < written ? " data-filled" : ""}></span>`).join("")}</div>`;
+        primary = "";
+      }
+
+      if (q.kind === "altered") {
+        tone = "altered";
+        scene = `<p class="rx-eyebrow">One word here is not what it says</p><p class="rx-hero" data-size="md">${q.tokens!.map((t, i) =>
+          `<button type="button" class="proto-review-dock__altered-word" data-word="${i}"${st.missed.includes(String(i)) ? ' data-answer="wrong" disabled' : ""}>${esc(t)}</button>`).join(" ")}</p>`;
+      }
+
+      if (q.kind === "match") {
+        if (!st.picks.length) st.picks = q.left!.map(() => null);
+        const picks: (number | null)[] = st.picks;
+        const states: (string | undefined)[] = st.states ?? [];
+        const order: number[] = st.order ?? (st.order = shuffle(q.right!.map((_, i) => i), seed + 3));
+        scene = `<ol class="rx-match">${q.left!.map((l, row) => `<li class="rx-match__row"><span class="rx-match__left">${esc(l)}</span>${picks[row] == null
+          ? `<span class="rx-slot rx-match__slot" aria-hidden="true"></span>`
+          : `<button type="button" class="rx-slot rx-match__slot" data-filled="" data-row="${row}"${states[row] ? ` data-state="${states[row]}"` : ""}>${esc(q.right![picks[row]!])}</button>`}</li>`).join("")}</ol>`;
+        work = picks.every((p) => p != null) ? null : `<div class="rx-tray" role="group" aria-label="Pieces to place">${order.map((i) =>
+          `<button type="button" class="rx-tile" data-match="${i}"${picks.includes(i) ? ' data-used disabled aria-hidden="true" tabindex="-1"' : ""}>${esc(q.right![i])}</button>`).join("")}</div>`;
+        primary = picks.every((p) => p != null) ? "" : "disabled";
+      }
+
+      host.innerHTML = shell(q, stage(q.task, q.subject, scene, work, { ...foot, primary }, tone), { total: goesTotal, used }, false);
+      wire();
+    };
+
+    const fillScene = (f: Fill) => {
+      const slot = host.querySelector<HTMLElement>("[data-fill-slot]");
+      if (!slot) return;
+      slot.setAttribute("data-filled", "");
+      slot.dataset.state = f.state;
+      if (q.fill === "portrait") slot.textContent = initialsOf(f.text);
+      else slot.querySelector("[data-fill-text]")!.textContent = f.text;
+    };
+
+    /** Spends a go; false when there are none left. */
+    const spend = (say: string) => {
+      used += 1;
+      if (used >= goesTotal) return false;
+      render({ say, missed: true });
+      return true;
+    };
+
+    const matchKey = () => q.left!.map((l, i) => `${esc(l)} — ${esc(q.right![i])}`).join("<br>");
+
+    function wire() {
+      host.querySelectorAll<HTMLButtonElement>("[data-opt]").forEach((b) => {
+        if (q.fam === "marked") {
+          const p = host.querySelector<HTMLElement>("[data-marked]")!;
+          const paint = (on: boolean) => {
+            const t = q.hero!, o = b.dataset.opt!, at = t.indexOf(o);
+            p.innerHTML = on && at >= 0 ? `${esc(t.slice(0, at))}<mark class="rx-mark" data-state="preview">${esc(o)}</mark>${esc(t.slice(at + o.length))}` : esc(t);
+          };
+          b.addEventListener("mouseenter", () => paint(true));
+          b.addEventListener("mouseleave", () => paint(false));
+          b.addEventListener("focus", () => paint(true));
+          b.addEventListener("blur", () => paint(false));
+        }
+        b.addEventListener("click", () => {
+          const o = b.dataset.opt!;
+          if (o === q.answer) {
+            b.dataset.state = "right";
+            fillScene({ text: o, state: "right" });
+            host.querySelectorAll<HTMLButtonElement>("[data-opt]").forEach((x) => (x.disabled = true));
+            finish(outcomeFor(), "What you picked", `<span data-answer="right">${esc(o)}${q.fam === "opening" ? "…" : ""}</span>`, q.truth ? null : esc(q.answer!));
+            return;
+          }
+          st.missed.push(o);
+          if (spend(COPY.again)) {
+            fillScene({ text: o, state: "wrong" });
+            return;
+          }
+          b.dataset.state = "wrong";
+          fillScene({ text: o, state: "wrong" });
+          host.querySelectorAll<HTMLButtonElement>("[data-opt]").forEach((x) => (x.disabled = true));
+          finish("revealed", "What you picked", `<span data-answer="wrong">${esc(o)}</span>`, q.truth && q.fam !== "marked" && q.fam !== "where" && q.fam !== "next" && q.fam !== "opening" ? null : esc(q.answer!));
+        });
+      });
+
+      host.querySelectorAll<HTMLButtonElement>("[data-word]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const i = Number(b.dataset.word);
+          if (i === q.altered) {
+            b.dataset.answer = "right";
+            host.querySelectorAll<HTMLButtonElement>("[data-word]").forEach((x) => (x.disabled = true));
+            finish(outcomeFor(), "What you picked", `<span data-answer="right">${esc(q.tokens![i])}</span>`, "“church” stood where it reads “world”.");
+            return;
+          }
+          st.missed.push(String(i));
+          if (!spend(COPY.again)) finish("revealed", "What you picked", `<span data-answer="wrong">${esc(q.tokens![i])}</span>`, "“church” stood where it reads “world”.");
+        })
+      );
+
+      host.querySelectorAll<HTMLButtonElement>("[data-tile]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const empty = st.picks.findIndex((v: string | null) => !v);
+          if (empty === -1) return;
+          st.picks[empty] = q.bank![Number(b.dataset.tile)];
+          if (st.states) st.states[empty] = undefined;
+          render();
+        })
+      );
+      host.querySelectorAll<HTMLButtonElement>("[data-gap]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const i = Number(b.dataset.gap);
+          if (st.states?.[i] === "right") return;
+          st.picks[i] = null;
+          if (st.states) st.states[i] = undefined;
+          render();
+        })
+      );
+
+      host.querySelectorAll<HTMLButtonElement>("[data-piece]").forEach((b) =>
+        b.addEventListener("click", () => {
+          st.placed.push(Number(b.dataset.piece));
+          render();
+        })
+      );
+      host.querySelectorAll<HTMLButtonElement>("[data-slot]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const pos = Number(b.dataset.slot);
+          if (st.states?.[pos] === "right") return;
+          st.placed.splice(pos);
+          st.states = (st.states ?? []).slice(0, pos);
+          render();
+        })
+      );
+
+      host.querySelectorAll<HTMLButtonElement>("[data-match]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const empty = st.picks.findIndex((p: number | null) => p == null);
+          if (empty === -1) return;
+          st.picks[empty] = Number(b.dataset.match);
+          if (st.states) st.states[empty] = undefined;
+          render();
+        })
+      );
+      host.querySelectorAll<HTMLButtonElement>("[data-row]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const row = Number(b.dataset.row);
+          if (st.states?.[row] === "right") return;
+          st.picks[row] = null;
+          render();
+        })
+      );
+
+      host.querySelectorAll<HTMLInputElement>("[data-blank]").forEach((inp) => {
+        inp.addEventListener("input", () => (st.vals[Number(inp.dataset.blank)] = inp.value));
+        inp.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          host.querySelector<HTMLButtonElement>("[data-check]")?.click();
+        });
+      });
+      const ta = host.querySelector<HTMLTextAreaElement>("[data-attempt]");
+      ta?.addEventListener("input", () => {
+        st.typed = ta.value;
+        const total = q.rest!.split(" ").length;
+        const written = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+        host.querySelectorAll(".rx-tick").forEach((t, i) => t.toggleAttribute("data-filled", i < written));
+        host.querySelector(".rx-ticks")?.setAttribute("aria-label", `${Math.min(written, total)} of ${total} words written`);
+      });
+
+      host.querySelector<HTMLButtonElement>("[data-check]")?.addEventListener("click", check);
+    }
+
+    function check() {
+      if (q.kind === "recall") {
+        const want = norm(q.rest!).split(" ").filter((w) => !STOP.has(w));
+        const got = new Set(norm(st.typed).split(" "));
+        const n = want.filter((w) => got.has(w)).length;
+        const yours = `<span data-answer="${n / want.length >= 0.75 ? "right" : "wrong"}">${esc(st.typed.trim() || "…")}</span>`;
+        if (n / want.length >= 0.75) return finish(outcomeFor(), "What you wrote", yours, null);
+        const say = n === 0 ? "None of its key words yet." : `You wrote ${n} of its ${want.length} key words.`;
+        if (!spend(say)) finish("revealed", "What you wrote", yours, null);
+        return;
+      }
+
+      let states: string[] = [];
+      let yours = "";
+      let label = "What you filled in";
+      if (q.kind === "bank") {
+        states = q.blanks!.map((w, i) => (st.picks[i] === w ? "right" : "wrong"));
+        yours = q.segments!.map((s, i) => esc(s) + (i < q.blanks!.length ? `<span data-answer="${states[i]}">${esc(st.picks[i] ?? "")}</span>` : "")).join("");
+      } else if (q.kind === "letters") {
+        states = q.blanks!.map((w, i) => {
+          const v = norm(st.vals[i]);
+          return v === w || q.letters![i] + v === w ? "right" : "wrong";
+        });
+        yours = q.segments!.map((s, i) => {
+          if (i >= q.blanks!.length) return esc(s);
+          const v = st.vals[i].trim();
+          const word = v.toLowerCase().startsWith(q.letters![i]) && v.length > 1 && q.letters![i] + v.toLowerCase() !== q.blanks![i] ? v : q.letters![i] + v;
+          return esc(s) + `<span data-answer="${states[i]}">${esc(word)}</span>`;
+        }).join("");
+      } else if (q.kind === "order") {
+        states = st.placed.map((idx: number, pos: number) => (idx === pos ? "right" : "wrong"));
+        label = "The order you put them in";
+        yours = st.placed.map((idx: number, pos: number) => `<span data-answer="${states[pos]}">${esc(q.phrases![idx])}</span>`).join(" ");
+      } else if (q.kind === "match") {
+        states = st.picks.map((p: number, row: number) => (p === row ? "right" : "wrong"));
+        label = "What you matched";
+        yours = q.left!.map((l, row) => `${esc(l)} — <span data-answer="${states[row]}">${esc(q.right![st.picks[row]])}</span>`).join("<br>");
+      }
+      const right = states.filter((s) => s === "right").length;
+      const answerHtml = q.kind === "match" ? matchKey() : null;
+      st.states = states;
+
+      if (right === states.length) {
+        render();
+        host.querySelectorAll<HTMLButtonElement>(".rx-foot button, .rx-tray button, .rx-gap, .rx-slot").forEach((x) => (x.disabled = true));
+        return finish(outcomeFor(), label, yours, answerHtml);
+      }
+      if (used + 1 >= goesTotal) {
+        used += 1;
+        render();
+        host.querySelectorAll<HTMLButtonElement>(".rx-foot button, .rx-tray button, .rx-gap, .rx-slot").forEach((x) => (x.disabled = true));
+        return finish("revealed", label, yours, answerHtml);
+      }
+      // Right ones stay; wrong ones come back to the tray for the next go.
+      if (q.kind === "order") {
+        let keep = 0;
+        while (keep < st.placed.length && st.placed[keep] === keep) keep++;
+        st.placed = st.placed.slice(0, keep);
+        st.states = st.placed.map(() => "right");
+      }
+      if (q.kind === "bank" || q.kind === "match") states.forEach((s, i) => { if (s === "wrong") { st.picks[i] = null; st.states[i] = undefined; } });
+      spend(COPY.parts(right, states.length));
+    }
+
+    render();
+  }
+
+  /* ── Wiring the scenes ────────────────────────────────────────────────── */
+  document.querySelectorAll<HTMLElement>(".rs").forEach((page) => {
+    iconSrc = page.querySelector<HTMLTemplateElement>("template[data-rs-icons]");
+    const all = QUESTIONS();
+    const byFam = (f: string) => all.find((q) => q.fam === f)!;
+
+    // Every family
+    const kinds = page.querySelector<HTMLElement>("[data-scene='kinds']");
+    if (kinds) {
+      const picker = page.querySelector<HTMLElement>("[data-picker]")!;
+      const menu = picker.querySelector<HTMLElement>("[data-menu]")!;
+      const menuBtn = picker.querySelector<HTMLButtonElement>("[data-menu-btn]")!;
+      const fams = [...picker.querySelectorAll<HTMLButtonElement>("[data-fam]")];
+      let at = 0;
+      const setMenu = (open: boolean) => {
+        menu.hidden = !open;
+        menuBtn.setAttribute("aria-expanded", String(open));
+      };
+      const show = (fam: string) => {
+        at = all.findIndex((q) => q.fam === fam);
+        fams.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.fam === fam)));
+        picker.querySelector("[data-cur-label]")!.textContent = all[at].label;
+        picker.querySelector("[data-cur-count]")!.textContent = `${at + 1} of ${all.length}`;
+        mount(kinds, all[at], () => show(all[(at + 1) % all.length].fam));
+      };
+      picker.querySelectorAll<HTMLButtonElement>("[data-step]").forEach((b) =>
+        b.addEventListener("click", () => show(all[(at + Number(b.dataset.step) + all.length) % all.length].fam))
+      );
+      menuBtn.addEventListener("click", () => setMenu(menu.hidden));
+      fams.forEach((b) => b.addEventListener("click", () => { setMenu(false); show(b.dataset.fam!); menuBtn.focus(); }));
+      document.addEventListener("click", (e) => { if (!picker.contains(e.target as Node)) setMenu(false); });
+      picker.addEventListener("keydown", (e) => { if (e.key === "Escape") { setMenu(false); menuBtn.focus(); } });
+      show("opening");
+    }
+
+    // The result, three ways
+    const result = page.querySelector<HTMLElement>("[data-scene='result']");
+    if (result) {
+      const host = result.querySelector<HTMLElement>("[data-result-card]")!;
+      const q: Q = {
+        fam: "opening", label: "How it begins", tr: "ESV", kind: "choice",
+        task: "Pick the verse that is in Romans 14.",
+        truth: `<sup class="verse-num">19</sup>So then let us pursue what makes for peace and for mutual upbuilding.`,
+      };
+      const show = (outcome: string) => {
+        result.querySelectorAll<HTMLButtonElement>("[data-outcome]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.outcome === outcome)));
+        const yours = outcome === "revealed"
+          ? `<span data-answer="wrong">Let every person be subject to the governing…</span>`
+          : `<span data-answer="right">So then let us pursue what makes for…</span>`;
+        host.innerHTML = shell(q, resultCard(q, outcome, "What you picked", yours, null), null, true);
+        host.querySelectorAll<HTMLButtonElement>("[data-next], [data-again]").forEach((b) => (b.tabIndex = -1));
+      };
+      result.querySelectorAll<HTMLButtonElement>("[data-outcome]").forEach((b) => b.addEventListener("click", () => show(b.dataset.outcome!)));
+      show("recalled");
+    }
+
+    // One question over several sittings. The ladder is illustrative.
+    const gaps = page.querySelector<HTMLElement>("[data-scene='gaps']");
+    if (gaps) {
+      const LADDER = [1, 2, 4, 7, 14, 30, 60];
+      const say = (d: number) => d === 1 ? "tomorrow" : d < 7 ? `in ${d} days` : d === 7 ? "in a week" : d < 30 ? `in ${Math.round(d / 7)} weeks` : d < 60 ? "in a month" : `in ${Math.round(d / 30)} months`;
+      const track = gaps.querySelector<HTMLElement>("[data-track]")!;
+      const next = gaps.querySelector<HTMLElement>("[data-next]")!;
+      const label = gaps.querySelector<HTMLElement>("[data-state-label]")!;
+      const mark = gaps.querySelector<HTMLElement>("[data-mark]")!;
+      const LABELS: Record<string, string> = { learning: "You're learning this", held: "You have this", slipped: "Give this another look" };
+      let step = -1;
+      let held = false;
+      const setHold = (h: string) => {
+        mark.dataset.hold = h;
+        mark.setAttribute("aria-label", LABELS[h]);
+        label.textContent = `Blanks · ${LABELS[h]}`;
+      };
+      const answer = (outcome: string) => {
+        if (outcome === "recalled") step = Math.min(step + 2, LADDER.length - 1);
+        else if (outcome === "almost") step = Math.min(step + 1, LADDER.length - 1);
+        else step = -1;
+        const d = step < 0 ? 1 : LADDER[step];
+        const hold = outcome === "revealed" ? (held ? "slipped" : "learning") : d >= 7 ? "held" : "learning";
+        held = outcome === "revealed" ? false : held || hold === "held";
+        setHold(hold);
+        const li = document.createElement("li");
+        li.className = "gaps__visit";
+        li.dataset.outcome = outcome;
+        li.style.setProperty("--w", String(Math.min(d, 30)));
+        li.innerHTML = `<span class="gaps__dot"></span><span class="gaps__gap">${say(d)}</span>`;
+        track.append(li);
+        while (track.children.length > 4) track.firstElementChild!.remove();
+        next.innerHTML = `${COPY.outcome[outcome]} <b>Back ${say(d)}.</b>`;
+      };
+      gaps.querySelectorAll<HTMLButtonElement>("[data-answer]").forEach((b) => b.addEventListener("click", () => answer(b.dataset.answer!)));
+      gaps.querySelector("[data-reset]")!.addEventListener("click", () => {
+        step = -1;
+        held = false;
+        track.innerHTML = "";
+        setHold("learning");
+        label.textContent = "Blanks";
+        next.textContent = "Answer it, and see when it comes back.";
+      });
+    }
+
+    // Activity's sitting card, and the card it opens
+    const deck = page.querySelector<HTMLElement>("[data-scene='deck']");
+    if (deck) {
+      const sitting = deck.querySelector<HTMLElement>("[data-sitting]")!;
+      const cardHost = deck.querySelector<HTMLElement>("[data-deck-card]")!;
+      const today = [byFam("blanks"), byFam("who"), byFam("cited")];
+      const subjects = ["John 15:5", "1 Samuel 17:45", "Shepherd psalms"];
+      const sources = ["You keep coming back to this one.", "You marked this while reading.", ""];
+      let answered = 0;
+      const close = () => {
+        cardHost.hidden = true;
+        cardHost.innerHTML = "";
+        deck.classList.remove("is-open");
+        drawSitting();
+      };
+      const drawSitting = () => {
+        if (answered >= today.length) {
+          sitting.innerHTML = `<div class="proto-review-sitting" data-state="done"><p class="proto-review-sitting__prompt">That's today's sitting</p><p class="proto-caption proto-review-sitting__source">More tomorrow.</p><div class="proto-review-sitting__foot"><span class="proto-caption">${today.length} of ${today.length} today</span><button type="button" class="proto-settings-btn proto-settings-btn--secondary proto-settings-btn--compact" data-restart>Start over</button></div></div>`;
+          sitting.querySelector("[data-restart]")!.addEventListener("click", () => { answered = 0; drawSitting(); });
+          return;
+        }
+        const q = today[answered];
+        sitting.innerHTML = `<div class="proto-review-sitting" data-state="ready">
+          <p class="proto-caption proto-review-sitting__eyebrow">${subjects[answered]} · ${q.label}</p>
+          <p class="proto-review-sitting__prompt">${esc(q.task)}</p>
+          ${sources[answered] ? `<p class="proto-caption proto-review-sitting__source">${sources[answered]}</p>` : ""}
+          <div class="proto-review-dock__progress proto-review-sitting__bar" role="progressbar" aria-valuemin="0" aria-valuemax="${today.length}" aria-valuenow="${answered}"><span class="proto-review-dock__progress-fill" style="transform: scaleX(${answered / today.length})"></span></div>
+          <div class="proto-review-sitting__foot"><span class="proto-caption">${answered} of ${today.length} today</span><button type="button" class="proto-settings-btn proto-settings-btn--secondary proto-settings-btn--compact" data-begin>${answered > 0 ? "Keep going" : "Begin"}</button></div>
+        </div>`;
+        sitting.querySelector("[data-begin]")!.addEventListener("click", open);
+      };
+      const open = () => {
+        cardHost.hidden = false;
+        deck.classList.add("is-open");
+        mount(
+          cardHost,
+          today[answered],
+          () => {
+            answered += 1;
+            if (answered >= today.length) return close();
+            drawSitting();
+            open();
+          },
+          () => {
+            answered += 1;
+            close();
+          }
+        );
+      };
+      drawSitting();
+    }
+  });
+</script>
+
+<style>
+  .rs {
+    max-width: calc(72rem + 2 * var(--nx-gutter));
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: clamp(4rem, 9vw, 7rem);
+  }
+  .rs__row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; align-items: center; }
+  @media (min-width: 56rem) {
+    .rs__row { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(3rem, 6vw, 5rem); }
+    .rs__row.is-flip { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+    .rs__row.is-flip .rs__stage { order: -1; }
+    /* Every kind: the picker is short, the card wants room. */
+    .rs__row--wide { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); }
+  }
+  .rs__num {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--pd-ink-fg, var(--color-ink-faint));
+  }
+  .rs__h {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .rs__text > p:not(.rs__num) {
+    margin: 0.9rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .rs__stage {
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 4vw, 2.75rem) clamp(0.75rem, 3vw, 2.25rem);
+    border-radius: var(--nx-radius-scene);
+    min-height: 24rem;
+  }
+  .rs__stage { grid-template-columns: minmax(0, 1fr); }
+  .rs__card { width: 100%; max-width: 36rem; min-width: 0; justify-self: center; }
+  /* On a phone the app folds the header's own actions into an overflow menu;
+     here they just step aside, leaving collapse and dismiss. */
+  @media (max-width: 30rem) {
+    .rs__card :global(.study-dock-card__header-actions > :nth-child(-n + 3)) { display: none; }
+  }
+
+  /* The kind picker: a pill above the card — step through, or open the list. */
+  .rs__kinds { display: grid; gap: 12px; }
+  .rs__picker {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pds-bg-main) 72%, transparent);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border), 0 6px 16px -10px rgba(15, 23, 42, 0.3);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .rs__step,
+  .rs__current {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    color: var(--pds-text-primary);
+    background: none;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+  .rs__step { justify-content: center; width: 30px; height: 30px; color: var(--pds-text-secondary); }
+  .rs__step :global(svg) { width: 11px; height: 11px; }
+  .rs__current { height: 30px; padding: 0 12px; font-size: 13.5px; font-weight: 600; }
+  .rs__current :global(svg) { width: 10px; height: 10px; color: var(--pds-text-tertiary); }
+  .rs__count { font-weight: 500; color: var(--pds-text-tertiary); font-variant-numeric: tabular-nums; }
+  .rs__step:hover,
+  .rs__current:hover,
+  .rs__current[aria-expanded="true"] { background: var(--pds-bg-chip); }
+  .rs__step:focus-visible,
+  .rs__current:focus-visible,
+  .rs__menu-item:focus-visible { outline: 2px solid var(--pds-accent); outline-offset: 1px; }
+
+  /* The list of every kind, grouped by where they come from. */
+  .rs__menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    width: min(22rem, calc(100vw - 2rem));
+    transform: translateX(-50%);
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 16px;
+    background: var(--pds-bg-main);
+    box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35);
+  }
+  .rs__menu[hidden] { display: none; }
+  .rs__menu-label {
+    margin: 0 0 4px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--pds-text-tertiary);
+  }
+  .rs__menu-items { display: grid; grid-template-columns: 1fr 1fr; gap: 1px 4px; }
+  .rs__menu-item {
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 13px;
+    text-align: left;
+    color: var(--pds-text-primary);
+    background: none;
+    cursor: pointer;
+  }
+  .rs__menu-item:hover { background: var(--pds-bg-chip); }
+  .rs__menu-item[aria-pressed="true"] { font-weight: 600; background: var(--pds-bg-chip); }
+
+  /* A segmented picker above a card. */
+  .rs__seg {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 14px;
+    padding: 3px;
+    gap: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pds-bg-main) 70%, transparent);
+    box-shadow: inset 0 0 0 0.5px var(--pds-border);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .rs__seg-btn {
+    flex: none;
+    padding: 5px 12px;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--pds-text-secondary);
+    background: none;
+    cursor: pointer;
+  }
+  .rs__seg-btn[aria-pressed="true"] { color: var(--pds-bg-main); background: var(--pds-text-primary); }
+
+  /* ── One question over several sittings ───────────────────────────────── */
+  .gaps { width: 100%; max-width: 28rem; padding: 6px 0 0; font-size: 14px; }
+  .gaps__label { margin: 8px 14px 2px !important; font-size: 12.5px !important; }
+  .gaps__row { padding: 8px 14px !important; }
+  .gaps__track {
+    display: flex;
+    align-items: flex-end;
+    min-height: 56px;
+    margin: 4px 14px 0;
+    padding: 0 0 10px;
+    list-style: none;
+    box-shadow: inset 0 -0.5px 0 var(--pds-border);
+    overflow: hidden;
+  }
+  /* Each sitting is a dot; the space after it grows with the gap. */
+  :global(.gaps__visit) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: calc(3 + var(--w) * 0.2) 1 0;
+    min-width: 4.5rem;
+    animation: rs-in 300ms var(--nx-ease, ease);
+  }
+  :global(.gaps__dot) { width: 10px; height: 10px; border-radius: 999px; background: var(--pds-accent-gradient-end); box-shadow: 0 0 0 3px var(--pds-bg-main); }
+  :global(.gaps__visit[data-outcome="almost"] .gaps__dot) { background: var(--pds-accent-gradient-start); }
+  :global(.gaps__visit[data-outcome="revealed"] .gaps__dot) { background: color-mix(in oklab, var(--pds-text-secondary) 40%, transparent); }
+  :global(.gaps__gap) { margin-top: 6px; font-size: 11px; font-weight: 500; white-space: nowrap; color: var(--pds-text-tertiary); }
+  @keyframes rs-in { from { opacity: 0; transform: translateY(4px); } }
+  .gaps__next { margin: 10px 14px 0; font-size: 14px; color: var(--pds-text-secondary); }
+  .gaps__next :global(b) { color: var(--pds-text-primary); font-weight: 600; }
+  .gaps__acts { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 14px 0; }
+  .gaps__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0 0;
+    padding: 9px 14px;
+    font-size: 11.5px;
+    color: var(--pds-text-tertiary);
+    box-shadow: inset 0 0.5px 0 var(--pds-border);
+  }
+  .gaps__reset { padding: 0; border: 0; font: inherit; font-size: 11.5px; font-weight: 600; color: var(--pds-accent); background: none; cursor: pointer; }
+
+  /* ── Activity's sitting card, and the card it opens ───────────────────── */
+  .dk { display: grid; gap: 12px; }
+  .dk__activity { padding: 10px 2px 2px; transition: opacity 200ms ease; }
+  .dk__label { display: flex; align-items: center; gap: 6px; margin: 0 12px 4px !important; font-size: 12.5px !important; }
+  .dk__label :global(svg) { width: 12px; height: 12px; }
+  .dk__label--sub { margin-top: 8px !important; color: var(--pds-text-tertiary); font-size: 11.5px !important; }
+  .dk__sitting { margin: 4px 6px 6px; box-shadow: 0 0 0 0.5px var(--pds-border) !important; }
+  .dk.is-open .dk__activity { opacity: 0.55; }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.gaps__visit) { animation: none; }
+  }
+</style>

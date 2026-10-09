@@ -262,7 +262,7 @@ const { name, label } = Astro.props;
         {["NLT", "ESV", "NIV", "CSB", "KJV", "NASB 1995"].map((t, i) => (
           <div class:list={["aui-row sv__row-plain", i === 0 && "is-on"]}><span class="aui-title">{t}</span>{i === 0 ? <span class="aui-acts sv__ok"><AppIcon name="check" /></span> : <span></span>}</div>
         ))}
-        <p class="sv__row sv__row--menu"><AppIcon name="file-lines" /> Use for the whole note<span class="sv__switch"><i></i></span></p>
+        <p class="sv__row sv__row--menu"><AppIcon name="gear" /> New pills use your preferred Bible</p>
       </div>
     </div>
   )}
@@ -472,6 +472,46 @@ const { name, label } = Astro.props;
       <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="folder" /></span><span><span class="aui-title">Prayer</span><span class="aui-sub">8 notes<i>·</i>#waiting</span></span><span></span></div>
       <div class="aui-row"><span class="aui-tile"><AppIcon name="folder" /></span><span><span class="aui-title">Sunday sermons</span><span class="aui-sub">21 notes<i>·</i>#genesis</span></span><span></span></div>
       <p class="sv__foot sv__foot--in"><AppIcon name="wand-magic-sparkles" /> Sorted as you wrote. Add your own anytime.</p>
+    </div>
+  )}
+
+  {/* Scan a page — the offer on a blank note, the page read, its Scripture, the note. */}
+  {name === "scan-offer" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper sv__scan-blank">
+        <p class="sv__title sv__ph">Untitled</p>
+        <p class="sv__ph">Start writing…</p>
+        <p class="sv__scan-offer"><AppIcon name="camera" /> or scan a page</p>
+      </div>
+    </div>
+  )}
+
+  {name === "scan-page" && (
+    <div class="aui-card sv__card sv__pad sv__scan">
+      <p class="sv__scan-step"><span>1</span>The page <em>Edit text</em></p>
+      <div class="sv__scan-row">
+        <span class="sv__scan-photo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <p class="sv__scan-text">Sunday — Rom 8:28 (ESV). All things, not some things. Then <mark>Jn. 3;l6</mark> — so loved.</p>
+      </div>
+      <p class="sv__foot"><AppIcon name="check" /> Recognized<i class="sv__dot">·</i>read on your device</p>
+    </div>
+  )}
+
+  {name === "scan-scripture" && (
+    <div class="aui-card sv__card sv__pad sv__scan">
+      <p class="sv__scan-step"><span>2</span>Scripture on this page <em>2 found</em></p>
+      <div class="aui-row sv__scan-ref"><span class="aui-tile"><AppIcon name="book-bible" /></span><span><span class="aui-title">Romans 8:28 <span class="aui-tr">ESV</span></span><span class="aui-sub">Printed on the page</span></span><span></span></div>
+      <div class="aui-row sv__scan-ref"><span class="aui-tile"><AppIcon name="book-bible" /></span><span><span class="aui-title">John 3:16 <span class="aui-tr">NLT</span></span><span class="aui-sub sv__scan-guess">Read with a guess — check it against the photo</span></span><span></span></div>
+      <p class="sv__acts"><span class="sv__btn sv__btn--go">Create note</span><span class="sv__btn">Choose another photo</span></p>
+    </div>
+  )}
+
+  {name === "scan-note" && (
+    <div class="sv__stack">
+      <div class="aui-paper sv__paper">
+        <p class="sv__title">Sunday — Romans 8</p>
+        <p>All things, not some things. <span class="aui-pill">Romans 8:28 <span class="aui-tr">ESV</span></span> Then the reason underneath it: so loved. <span class="aui-pill sv__pill-on">John 3:16 <span class="aui-tr">NLT</span></span></p>
+      </div>
     </div>
   )}
 
@@ -813,4 +853,55 @@ const { name, label } = Astro.props;
 
   @keyframes sv-blink { 50% { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .sv__typing i { animation: none; } }
+
+  /* Scan a page */
+  .sv__ph { color: var(--pds-text-tertiary) !important; }
+  .sv__scan-blank { min-height: 9rem; }
+  .sv__scan-offer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px !important;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pds-text-secondary);
+    background: var(--pds-bg-chip);
+  }
+  .sv__scan-offer :global(svg) { width: 12px; height: 12px; }
+  .sv__scan { display: grid; gap: 10px; }
+  .sv__scan-step { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--pds-text-primary); }
+  .sv__scan-step span {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: var(--pds-text-secondary);
+    background: var(--pds-bg-chip);
+  }
+  .sv__scan-step em { margin-left: auto; font-style: normal; font-weight: 500; color: var(--pds-text-tertiary); }
+  .sv__scan-row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 12px; align-items: start; }
+  /* A photographed page: paper at a slight angle, ruled with handwriting-ish lines. */
+  .sv__scan-photo {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    aspect-ratio: 3 / 4;
+    padding: 9px 8px;
+    border-radius: 6px;
+    background: linear-gradient(160deg, #fbf7ee, #efe7d6);
+    box-shadow: 0 6px 14px -8px rgba(60, 40, 10, 0.45), inset 0 0 0 0.5px rgba(0, 0, 0, 0.08);
+    transform: rotate(-3deg);
+  }
+  .sv__scan-photo i { display: block; height: 2px; border-radius: 1px; background: rgba(40, 50, 90, 0.45); }
+  .sv__scan-photo i:nth-child(2n) { width: 78%; }
+  .sv__scan-photo i:nth-child(3n) { width: 60%; }
+  .sv__scan-text { font-size: 13px; line-height: 1.55; color: var(--pds-text-primary); }
+  .sv__scan-text mark { padding: 0 2px; border-radius: 3px; color: inherit; background: color-mix(in srgb, var(--pds-highlight-warm-amber) 40%, transparent); }
+  .sv__dot { font-style: normal; padding-inline: 2px; }
+  .sv__scan-ref { padding: 6px 4px !important; }
+  .sv__scan-guess { white-space: normal !important; color: oklch(52% 0.16 55) !important; }
 </style>

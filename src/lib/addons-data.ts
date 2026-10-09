@@ -112,46 +112,44 @@ const ADDON_PAGES: AddonPage[] = [
     comingSoon: false,
     heroTitle: "A deliberate way to keep what you studied.",
     heroLead:
-      "Short questions from what you wrote, kept or read, with answers Harvous can check.",
+      "Short questions from what you wrote, kept or read, with answers Harvous can check. No score, no streak.",
+    // Each section draws a working example beside it (ReviewScenes.astro).
     sections: [
       {
-        heading: "Your own material, and a real answer",
+        heading: "Asked a different way each time",
         paragraphs: [
-          "A question comes from a note you wrote, a verse you kept, or a chapter you actually read — never one invented about the text. Finish a verse from memory, put three of them in the order they come, pick the verse that belongs to a chapter, or say who appears in it.",
-          "Every question has a right answer and Harvous checks it. The result names what was asked, marks the words you got, and shows how the passage actually reads — so a question you missed is one you can sit with. It checks facts, never what a passage means to you or how you chose to say it.",
+          "A question comes from a verse you keep, a chapter you read, a note you wrote — or, if your church follows along, a question your church wrote. Never one invented about the text, and none written by AI.",
+          "There are seventeen ways of asking, from filling in the blanks to finding the word that's been changed. Pick one and try it.",
         ],
+        visual: "kinds",
       },
       {
-        heading: "Comes back sooner or later, depending",
+        heading: "Checked, with its working shown",
         paragraphs: [
-          "How you answer decides when it returns. Needed the reminder, and it's back the next day. Held it a few times in a row, and the gap between visits keeps widening — the things you know well stop asking for your attention, and the ones still forming keep showing up.",
-          "It's arithmetic, not a model guessing at what you might have forgotten. The same note, the same question, every time — until it stops needing to come back at all.",
+          "Every question has a right answer and Harvous checks it. Turned over, the card shows what was asked, what you gave, and the verse as it actually reads — so a question you missed is one you can sit with.",
+          "It checks facts, never what a passage means to you or how you chose to say it.",
         ],
+        visual: "result",
+      },
+      {
+        heading: "The gap grows as you hold it",
+        paragraphs: [
+          "How you answer decides when it comes back. Not this time, and it's back tomorrow. Had it a few times running, and the gap keeps widening — the things you know stop asking for your attention, and the ones still forming keep showing up.",
+          "It's arithmetic, not a model guessing at what you might have forgotten. Each one says where it stands in plain words: you're learning this, you have this, or give this another look.",
+        ],
+        visual: "gaps",
+      },
+      {
+        heading: "A sitting a day, in Activity",
+        paragraphs: [
+          "Today's questions wait in Activity, beside your study — not a separate page you have to leave your notes to visit. Begin, and they're dealt one card at a time.",
+          "No score, no streak. Enough for now puts the card away; what you didn't get to waits for tomorrow.",
+        ],
+        visual: "deck",
       },
     ],
     showcases: [],
-    moments: [
-      {
-        icon: "fa7-solid:pen",
-        heading: "Built from your study, not about it",
-        body: "Every question comes from a note you wrote, a verse you kept, or a chapter you read. Nothing is composed on your behalf, by a model or otherwise.",
-      },
-      {
-        icon: "fa7-solid:pen-to-square",
-        heading: "Checked, and shown its working",
-        body: "The result names the question, marks what you answered, and puts the passage underneath — a recap, not just a verdict.",
-      },
-      {
-        icon: "fa7-solid:arrows-rotate",
-        heading: "The gap grows as you hold it",
-        body: "Answer well a few times in a row and the return trip gets longer. Struggle, and it comes back sooner — no streak, no leaderboard, just where that one thing actually stands.",
-      },
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "Stays where you were",
-        body: "A question shows up in a card next to your study, not a separate page you have to leave your notes to visit.",
-      },
-    ],
+    moments: [],
     relatedIds: ["shared-spaces", "connector"],
     relatedHeading: "Harvous free + what's next",
     relatedLead:

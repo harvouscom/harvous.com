@@ -19,7 +19,12 @@
 import AppIcon from "./app/AppIcon.astro";
 import { Icon } from "astro-icon/components";
 import ThreadVignette from "./ThreadVignette.astro";
-import { ALSO_INCLUDED, BENTO_CARDS } from "../../lib/next/content.ts";
+import { ALSO_INCLUDED, BENTO_CARDS, stageMesh } from "../../lib/next/content.ts";
+/* Each card's tone picks the mesh family its stage is washed in. */
+const MESH: Record<string, string> = {
+  sky: "sky", mint: "mint", lilac: "violet", pink: "violet",
+  peach: "coral", cream: "amber", gray: "blue",
+};
 /* Which cards run wide, and where the picture sits on them. */
 /* "2" runs wide from two columns up; "2only" just at two, where Connector
    would otherwise sit alone on the last row. */
@@ -42,7 +47,7 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
       data-reveal
     >
       <a class="bcard__link" href={card.href}>
-        <div class:list={["bcard__stage", `stage--${card.visual}`]} aria-hidden="true">
+        <div class:list={["bcard__stage", "nx-mesh", `stage--${card.visual}`]} style={stageMesh(MESH[card.tone])} aria-hidden="true">
           {card.visual === "thread" && <ThreadVignette />}
 
           {card.visual === "templates" && (
@@ -265,9 +270,6 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     padding: 1.75rem 1.5rem 0;
     overflow: hidden;
     border-radius: 1.15rem;
-    background:
-      radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, #fff 55%, transparent), transparent 70%),
-      color-mix(in srgb, var(--tone) 62%, var(--color-paper));
   }
   .bcard__stage > :global(*) {
     width: 100%;

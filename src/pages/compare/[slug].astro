@@ -13,6 +13,7 @@ import {
   type CompareSeoPage,
 } from "../../lib/compare-seo-pages.ts";
 import type { CompareEntry } from "../../lib/compare-data.ts";
+import { getCompareAngle } from "../../lib/compare-app-angles.ts";
 
 export function getStaticPaths() {
   const vsPaths = getCompareEntries().map((entry) => ({
@@ -53,7 +54,7 @@ if (props.kind === "vs") {
       {
         "@type": "WebPage",
         name: vsEntry.seoTitle,
-        description: vsEntry.seoDescription,
+        description: getCompareAngle(vsEntry.slug)?.seoDescription ?? vsEntry.seoDescription,
         url: pageUrl,
         isPartOf: { "@type": "WebSite", name: "Harvous", url: site },
       },

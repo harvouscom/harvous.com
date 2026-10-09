@@ -50,6 +50,7 @@ export const FREE_PLAN: PricingPlan = {
     "Unlimited notes",
     "90 days of history",
     "Scripture pills, highlights, and threads",
+    "Scan a page into a note",
     "Built-in Bible reader",
     "Built-in dictionary and daily passage",
     "Built-in cross-references and themes",

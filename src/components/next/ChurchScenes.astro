@@ -28,6 +28,9 @@ interface Props {
   features?: Record<string, ForAudienceFeatureLink>;
 }
 const { sections, features = {} } = Astro.props;
+/* Anything slotted as "after-join" sits between the rows, after the join
+   step: the Here's My Church callout on /for/churches/. */
+const afterJoin = Astro.slots.has("after-join") ? await Astro.slots.render("after-join") : "";
 
 const washes = ["coral", "sky", "amber", "mint", "violet", "blue"];
 
@@ -84,7 +87,7 @@ const plans = {
 <section class="nx-wrap chs" aria-label="How Harvous works for a church">
   {sections.map((section, i) => {
     const flip = sections.slice(0, i).filter((s) => s.visual).length % 2 === 1;
-    return section.visual ? (
+    return (<>{section.visual ? (
       <div class:list={["chs__row", flip && "is-flip"]}>
         <div class="chs__text" data-reveal>
           <p class="chs__num">{String(i + 1).padStart(2, "0")}</p>
@@ -281,7 +284,7 @@ const plans = {
         <h2 class="chs__h">{section.heading}</h2>
         {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
       </div>
-    );
+    )}{section.visual === "join" && afterJoin && <Fragment set:html={afterJoin} />}</>);
   })}
 </section>
 
