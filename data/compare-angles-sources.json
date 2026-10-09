@@ -395,16 +395,45 @@
     ],
     "notes": "Manna (Blake Croft) also has a ‘Remember’ tab that resurfaces past notes and highlights — close to Harvous Suggestions, so resurfacing is not claimed as a difference. Native iPhone/iPad app vs Harvous web-only. Several unrelated apps share the name Manna; facts taken from the App Store listing that links gathermanna.com."
   },
-  "shepherd-docs": {
-    "sources": [
-      "https://www.shepherddocs.com/"
-    ],
-    "notes": "Assumes Harvous has no bulk file import (not listed in Harvous facts) — confirm before publishing the harvousIsnt line."
-  },
   "lyte": {
     "sources": [
       "https://asklyte.ai/"
     ],
     "notes": ""
+  },
+  "sermon-keeper": {
+    "sources": [
+      "https://sermonkeeper.app/",
+      "https://apps.apple.com/app/apple-store/id6758739935"
+    ],
+    "notes": "Brief suggested 'Sermon Prep', but Sermon Keeper is a listener-side sermon notes app, so competitorType is set to 'Bible Notes'. Platform from site: iPhone only."
+  },
+  "digible": {
+    "sources": [
+      "https://digibleapp.com/",
+      "https://apps.apple.com/app/id6748240828"
+    ],
+    "notes": ""
+  },
+  "she-reads-truth": {
+    "sources": [
+      "https://shereadstruth.com/blog/how-to/",
+      "https://apps.apple.com/us/app/-/id892128363"
+    ],
+    "notes": "App Store rating was low (~3.2) in snapshots; not mentioned. Third-party claims of a 'She Reads Truth+' tier were unverified and left out."
+  },
+  "day-one": {
+    "sources": [
+      "https://dayoneapp.com/",
+      "https://apps.apple.com/us/app/day-one-journal-private-diary/id1044867788"
+    ],
+    "notes": "App Store id 1044867788 is the iPhone/iPad/Mac listing; 1055511498 appears to be a separate Mac listing."
+  },
+  "notability": {
+    "sources": [
+      "https://notability.com/",
+      "https://apps.apple.com/app/id360593530"
+    ],
+    "notes": "Notability Android availability reported in 2026; site lists iOS, Android, web, Mac, Windows."
   }
 }

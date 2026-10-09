@@ -43,8 +43,8 @@ const entries = getCompareEntries();
 const total = entries.length;
 const types = getCompareTypes();
 
-/* The live homepage's compare row leads with Apple Notes. */
-const FEATURED_SLUG = "apple-notes";
+/* Spirit Notes: the Bible notes app closest to what someone choosing Harvous is weighing. */
+const FEATURED_SLUG = "spirit-notes";
 const featured = getCompareBySlug(FEATURED_SLUG) ?? entries[0];
 
 const iconSrc = (e: CompareEntry) => compareIconSrc(e.slug);
@@ -71,12 +71,12 @@ type Slot = { kind: "featured" } | { kind: "lane"; type: string; size: Size };
 /* Rows (12 tracks): L8+F4 · S4 S4 S4 · M6 M6 · S4+L8 · M6 M6.
    At two columns, L and F run full width and the rest pair off evenly. */
 const LAYOUT: { type: string; size: Size }[] = [
-  /* Bible Notes leads: the apps someone choosing Harvous most often weighs it against. */
-  { type: "Bible Notes", size: "large" },
+  /* General Notes leads: where most people keep their study before they find Harvous. */
+  { type: "General Notes", size: "large" },
   { type: "Prayer & Meditation", size: "small" },
   { type: "AI Guided Bible", size: "small" },
   { type: "Sermon Prep", size: "small" },
-  { type: "General Notes", size: "medium" },
+  { type: "Bible Notes", size: "medium" },
   { type: "Bible Reader", size: "medium" },
   { type: "Group Study", size: "small" },
   { type: "Small Groups", size: "large" },
