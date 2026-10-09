@@ -230,9 +230,9 @@
     ]
   },
   "bible-notes": {
-    "intro": "Bible Notes is a sermon notebook with auto-completing verses, timestamped recordings and the B.R.E.A.D. devotion method; Harvous connects notes across weeks with threads and brings them back.",
-    "seoDescription": "Harvous vs Bible Notes: a sermon notebook with auto-complete verses and timestamped audio, or study notes threaded across weeks.",
-    "chooseThem": "You want Sunday notes tagged by pastor, date and theme, with verses that finish themselves and a recording you can jump back into at the moment you wrote each line.",
+    "intro": "Bible Notes 2.0 is a sermon notebook on its way to iPhone and Android — verses that auto-complete, timestamped recordings, the B.R.E.A.D. devotion method; Harvous connects notes across weeks with threads.",
+    "seoDescription": "Harvous vs Bible Notes 2.0: a coming-soon sermon notebook with auto-complete verses and timestamped audio, or study notes threaded across weeks.",
+    "chooseThem": "You want a phone-first Sunday notebook — notes tagged by pastor, date and theme, verses that finish themselves, and a recording you can jump back into at the moment you wrote each line. It’s coming soon; their site has a waitlist.",
     "chooseHarvous": "You want sermon notes and personal study in one place, linked by threads.",
     "harvousIsnt": "Recording sermons alongside your notes — Bible Notes ties each line to a moment in the audio.",
     "together": "Take notes and record in Bible Notes on Sunday, then carry what matters into a Harvous thread you keep adding to.",
@@ -243,8 +243,13 @@
         "them": "Sermon notes with auto-filled verses and timestamped audio"
       },
       {
+        "label": "Available",
+        "harvous": "On the web today",
+        "them": "Coming soon to iPhone and Android"
+      },
+      {
         "label": "Recording",
-        "harvous": "No audio recording",
+        "harvous": "Typed notes, or scan a printed page",
         "them": "Timestamped recording to jump back to each note"
       },
       {
@@ -255,9 +260,10 @@
       {
         "label": "Ideal for",
         "harvous": "People building on study week to week",
-        "them": "Churchgoers who want a focused Sunday notebook on their phone"
+        "them": "Churchgoers who want a focused Sunday notebook, once it’s out"
       }
-    ]
+    ],
+    "status": "Coming soon"
   },
   "bible-study-tools": {
     "intro": "Bible Study Tools is a free, ad-supported reference site with 30+ translations, Strong’s concordance, interlinear and lexicons, and classic commentaries; Harvous is where your own findings get written down and connected.",

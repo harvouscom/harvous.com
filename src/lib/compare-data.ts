@@ -16,6 +16,8 @@ export type CompareEntry = {
   primaryUse: string;
   idealFor: string;
   worksBestAlongside: string;
+  /** From data/compare-angles.json — e.g. "Coming soon" for an app not out yet. */
+  status?: string;
 };
 
 const CSV_PATH = join(process.cwd(), "data/compare.csv");
@@ -90,6 +92,7 @@ function rowToEntry(headers: string[], values: string[]): CompareEntry | null {
     seoDescription: angle?.seoDescription ?? get("SEO Description"),
     competitorLink: get("Competitor link"),
     intro: angle?.intro ?? get("Intro"),
+    status: angle?.status,
     ogImage: resolveCompareOgImage(slug, get("Open Graph")),
     competitorImage: get("Competitor app image"),
     bestAt: get("Competitor Best at"),

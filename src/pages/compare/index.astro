@@ -12,6 +12,7 @@
  * data change and the layout no longer fits, they fall back to a plain run
  * of smalls with the tail widened.
  */
+import CompareStatus from "../../components/next/CompareStatus.astro";
 import NextLayout from "../../layouts/NextLayout.astro";
 import { ogCard } from "../../lib/og-card.ts";
 import ClosingCall from "../../components/next/ClosingCall.astro";
@@ -211,7 +212,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
                   </span>
                   <span class="cf__text">
                     <span class="cf__label">Featured</span>
-                    <span class="cf__name">Harvous vs {featured.name}</span>
+                    <span class="cf__name">Harvous vs {featured.name}<CompareStatus status={featured.status} /></span>
                     <span class="cf__line">{featured.intro}</span>
                     <span class="cf__btn">See the comparison</span>
                   </span>
@@ -356,7 +357,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
                     <img src={iconSrc(e)} alt="" width="64" height="64" loading="lazy" />
                   </span>
                   <span class="ct__text">
-                    <span class="ct__name">Harvous vs {e.name}</span>
+                    <span class="ct__name">Harvous vs {e.name}<CompareStatus status={e.status} /></span>
                     <span class="ct__line">{theirHalf(e)}.</span>
                   </span>
                   <svg class="ct__chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

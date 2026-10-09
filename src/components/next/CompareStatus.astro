@@ -1,0 +1,33 @@
+---
+/**
+ * CompareStatus — a quiet chip beside an app's name on the compare pages when
+ * that app isn't out yet (e.g. "Coming soon"). Set per app as `status` in
+ * data/compare-angles.json; nothing renders without one.
+ */
+interface Props {
+  status?: string;
+}
+const { status } = Astro.props;
+---
+
+{status && <span class="cmp-status">{status}</span>}
+
+<style>
+  .cmp-status {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.45em;
+    padding: 0.15em 0.55em;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.4;
+    white-space: nowrap;
+    vertical-align: 0.2em;
+    color: var(--color-ink-soft);
+    background: var(--color-warm);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 7%, transparent);
+  }
+</style>

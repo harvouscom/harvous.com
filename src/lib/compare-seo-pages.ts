@@ -23,6 +23,7 @@ export type ComparePick = {
   drawback: string;
   compareHref: string;
   isHarvous?: boolean;
+  status?: string;
 };
 
 export type WhenBlock = {
@@ -1247,6 +1248,7 @@ function entryToPick(entry: CompareEntry): ComparePick {
     bestAt: entry.bestAt,
     drawback: drawbackFor(entry),
     compareHref: `/compare/${entry.slug}/`,
+    status: entry.status,
   };
 }
 

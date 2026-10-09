@@ -6,6 +6,7 @@
  * (and, for alternatives, its tradeoff); Harvous's own pick carries a side
  * note about the bias of ranking yourself. Then how to choose, and the close.
  */
+import CompareStatus from "./next/CompareStatus.astro";
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
@@ -62,7 +63,7 @@ const decisionRows = [
             <img class="cg-pick__icon" src={pick.competitorImage} alt="" width="56" height="56" loading={i < 3 ? "eager" : "lazy"} />
             <div class="cg-pick__body">
               <h2 class="cg-pick__name">
-                {pick.name}
+                {pick.name}<CompareStatus status={pick.status} />
                 {pick.isHarvous && (
                   <details class="cg-note">
                     <summary>Side note</summary>
