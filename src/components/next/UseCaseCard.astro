@@ -23,15 +23,17 @@ interface Props {
   title?: string;
   /** Larger type and a taller sky, for the hub's wide cards. */
   large?: boolean;
+  /** A list row: the sky as a thumbnail beside the words (the /use-cases/ hub). */
+  row?: boolean;
   class?: string;
 }
 
-const { useCase, title: titleOverride, large = false, class: className } = Astro.props;
+const { useCase, title: titleOverride, large = false, row = false, class: className } = Astro.props;
 const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
 ---
 
 <a
-  class:list={["ucard", large && "ucard--large", className]}
+  class:list={["ucard", large && "ucard--large", row && "ucard--row", className]}
   href={useCase.href}
   style={`--uc-ink:${useCase.ink};`}
 >
@@ -45,8 +47,9 @@ const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
       {useCase.comingSoon && <span class="ucard__soon">{SOON_LABEL}</span>}
     </span>
     <span class="ucard__tagline">{useCase.tagline}</span>
-    <span class="ucard__more">See how <span aria-hidden="true">→</span></span>
+    {!row && <span class="ucard__more">See how <span aria-hidden="true">→</span></span>}
   </span>
+  {row && <span class="ucard__more">See how <span aria-hidden="true">→</span></span>}
 </a>
 
 <style>
@@ -147,7 +150,38 @@ const title = titleOverride ?? getUseCaseDisplayTitle(useCase as UseCase);
     color: var(--color-ink);
   }
 
+  /* Row: thumbnail left, words right, the arrow at the far end. */
+  .ucard--row {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem;
+    border-radius: 1.25rem;
+  }
+  .ucard--row:hover { transform: translateX(3px); }
+  .ucard--row .ucard__sky {
+    flex: none;
+    width: clamp(5.5rem, 22vw, 10rem);
+    aspect-ratio: 4 / 3;
+    border-radius: 0.85rem;
+  }
+  .ucard--row .ucard__icon { left: 0.5rem; bottom: 0.5rem; width: 2rem; height: 2rem; border-radius: 0.6rem; }
+  .ucard--row .ucard__icon :global(svg) { width: 0.85rem; height: 0.85rem; }
+  .ucard--row .ucard__text { padding: 0.25rem 0; min-width: 0; }
+  .ucard--row .ucard__title { font-size: 1.125rem; }
+  .ucard--row .ucard__tagline { margin-top: 0.2rem; font-size: 0.9rem; }
+  .ucard--row .ucard__more {
+    flex: none;
+    align-self: center;
+    margin: 0 0.75rem 0 auto;
+    padding: 0;
+  }
+  @media (max-width: 36rem) {
+    .ucard--row .ucard__more { display: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .ucard--row:hover { transform: none; }
     .ucard, .ucard__sky img { transition: none; }
     .ucard:hover { transform: none; }
     .ucard:hover .ucard__sky img { transform: scale(1.04); }

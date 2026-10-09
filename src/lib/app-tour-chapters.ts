@@ -128,6 +128,13 @@ export const APP_TOUR_CHAPTERS: TourChapter[] = [
         href: "/features/note-templates/",
       },
       {
+        icons: ["fa7-solid:camera"],
+        title: "Scan a page",
+        desc: "Scan sermon notes or a Bible page. It's read on your device, and every reference becomes a pill.",
+        visual: "scan-scripture",
+        href: "/features/scan-a-page/",
+      },
+      {
         icons: ["fa7-solid:lock"],
         title: "Locked notes",
         desc: "Lock a note with a PIN. It's encrypted on your device, so only you can open it — on the web for now.",

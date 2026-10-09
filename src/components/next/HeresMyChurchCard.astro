@@ -1,13 +1,11 @@
 ---
 /**
  * HeresMyChurchCard — a way out to Here's My Church (heresmychurch.com), the
- * open-source, crowd-sourced church map we make alongside Harvous. It wears
- * HMC's colours (the night-purple ground, the lilac "h" app icon) in Harvous's
- * type, with a quiet tile map of the states and one
- * pin that drops in. Kept deliberately spare: one line of brand, a headline,
- * a sentence, one button.
+ * open-source, crowd-sourced church map we make alongside Harvous. A slim
+ * callout on a violet mesh: the tile map with its pin, one question, one
+ * sentence, one button. It sits among the church scenes, right after
+ * "Invite with a link", where finding your church is already the subject.
  *
- * Colours are fixed (not theme tokens), so it reads the same in dark mode.
  * Used on /for/churches/. (On /about/, Here's My Church sits inside the
  * open-source card instead, as our other open project.)
  */
@@ -16,105 +14,97 @@ import HmcMap from "./HmcMap.astro";
 const HMC_URL = "https://heresmychurch.com";
 
 const copy = {
-  kicker: "Our other project, also open source",
-  title: "A crowd-sourced map of churches.",
-  body: "Here's My Church is free to browse, with no account needed, and anyone can add or correct a church. Check that yours is on it.",
+  kicker: "Here's My Church · our other project",
+  title: "Is your church on the map?",
+  body: "A free, open-source, crowd-sourced map of churches. No account needed to browse, and anyone can add or correct one.",
   cta: "Find your church",
 };
-
 ---
 
-<aside class="hmc" aria-labelledby="hmc-title" data-reveal>
-  <div class="hmc__text">
-    <p class="hmc__brand">
-      <img class="hmc__icon" src="/images/heresmychurch-icon.webp" alt="" width="36" height="36" loading="lazy" />
-      <span class="hmc__brand-text">
-        <span class="hmc__name">Here's My Church</span>
-        <span class="hmc__kicker">{copy.kicker}</span>
-      </span>
-    </p>
-    <h2 id="hmc-title" class="hmc__title">{copy.title}</h2>
-    <p class="hmc__body">{copy.body}</p>
-    <p class="hmc__actions">
-      <a class="hmc__btn" href={HMC_URL} target="_blank" rel="noopener">
-        {copy.cta}
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5" /></svg>
-      </a>
-    </p>
-  </div>
-
+<aside class="hmc nx-mesh nx-mesh--violet" aria-labelledby="hmc-title" data-reveal>
   <div class="hmc__map" aria-hidden="true">
     <HmcMap uid="hmc" />
   </div>
+
+  <div class="hmc__text">
+    <p class="hmc__brand">
+      <img class="hmc__icon" src="/images/heresmychurch-icon.webp" alt="" width="20" height="20" loading="lazy" />
+      {copy.kicker}
+    </p>
+    <h2 id="hmc-title" class="hmc__title">{copy.title}</h2>
+    <p class="hmc__body">{copy.body}</p>
+  </div>
+
+  <a class="hmc__btn" href={HMC_URL} target="_blank" rel="noopener">
+    {copy.cta}
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5" /></svg>
+  </a>
 </aside>
 
 <style>
   .hmc {
-    --hmc-ink: #1e1040;
-    --hmc-lilac: #c9a0dc;
-    --hmc-bright: #a855f7;
-    --hmc-cream: #f5f0e8;
     display: grid;
-    gap: 2rem;
-    overflow: hidden;
-    max-width: 52rem;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 0.9rem 1.25rem;
+    align-items: center;
+    max-width: 46rem;
     margin-inline: auto;
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-    border-radius: 1.75rem;
-    color: var(--hmc-cream);
-    background: radial-gradient(70% 90% at 80% 50%, #2c1660, transparent 70%), var(--hmc-ink);
+    padding: 1rem 1.25rem;
+    border-radius: 1.25rem;
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent);
   }
-  @media (min-width: 48rem) {
-    .hmc { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; gap: 3rem; }
+  @media (min-width: 40rem) {
+    .hmc { grid-template-columns: 7rem minmax(0, 1fr) auto; padding: 1.1rem 1.5rem 1.1rem 1.25rem; gap: 1.5rem; }
   }
 
-  .hmc__brand { display: flex; align-items: center; gap: 0.7rem; margin: 0; }
-  .hmc__icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 0 0 1px rgba(201, 160, 220, 0.18); }
-  .hmc__brand-text { display: grid; gap: 0.05rem; line-height: 1.25; }
-  .hmc__name { font-family: var(--font-display); font-size: 0.9375rem; font-weight: 600; color: var(--hmc-cream); }
-  .hmc__kicker { font-size: 0.8125rem; color: color-mix(in srgb, var(--hmc-cream) 58%, transparent); }
-  .hmc__title {
-    margin: 1.25rem 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 2.6vw, 1.875rem);
-    font-weight: 600;
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-    color: var(--hmc-cream);
-    text-wrap: balance;
-  }
-  .hmc__body {
-    max-width: 24rem;
-    margin: 0.6rem 0 0;
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--hmc-cream) 70%, transparent);
-    text-wrap: pretty;
-  }
-  .hmc__actions { margin: 1.5rem 0 0; }
-  .hmc__btn {
-    display: inline-flex;
+  .hmc__brand {
+    display: flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.6rem 1.05rem 0.6rem 1.15rem;
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+  .hmc__icon { width: 20px; height: 20px; border-radius: 5px; }
+  .hmc__title {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+  .hmc__body {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+    text-wrap: pretty;
+  }
+  .hmc__btn {
+    grid-column: 1 / -1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.95rem 0.55rem 1.05rem;
     border-radius: 999px;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 600;
     line-height: 1;
+    white-space: nowrap;
     color: #fff;
     background: linear-gradient(135deg, #b46cf8 0%, #8b3fd9 55%, #6b21a8 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 20px -8px rgba(168, 85, 247, 0.75);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 18px -10px rgba(126, 34, 206, 0.6);
     text-decoration: none;
     transition: filter 200ms ease, box-shadow 200ms ease;
   }
-  .hmc__btn:hover { filter: brightness(1.08); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 10px 24px -8px rgba(168, 85, 247, 0.9); }
-  .hmc__btn:focus-visible { outline: 2px solid var(--hmc-cream); outline-offset: 3px; }
-  .hmc__btn svg { width: 0.8rem; height: 0.8rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms ease; }
+  @media (min-width: 40rem) { .hmc__btn { grid-column: auto; } }
+  .hmc__btn:hover { filter: brightness(1.08); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 10px 22px -10px rgba(126, 34, 206, 0.75); }
+  .hmc__btn:focus-visible { outline: 2px solid #8b3fd9; outline-offset: 3px; }
+  .hmc__btn svg { width: 0.75rem; height: 0.75rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms ease; }
   .hmc__btn:hover svg { transform: translate(1px, -1px); }
-
-  /* ── The map: one quiet shape, one pin ───────────────────────────────── */
-  .hmc__map { order: -1; }
-  @media (min-width: 48rem) { .hmc__map { order: 0; } }
-
-  .hmc__map :global(.hmcm) { max-height: 16rem; }
 </style>

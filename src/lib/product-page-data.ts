@@ -9,8 +9,8 @@ export type ProductSection = {
   heading: string;
   paragraphs: string[];
   /**
-   * A stylized UI example drawn beside the section, by name. Only the Connector page has
-   * these so far (ConnectorScenes.astro); a page whose sections carry one renders them as
+   * A stylized UI example drawn beside the section, by name. The Connector page
+   * (ConnectorScenes.astro) and Review exercises (ReviewScenes.astro) have these; a page whose sections carry one renders them as
    * text-and-example rows instead of a single column of prose.
    */
   visual?: string;

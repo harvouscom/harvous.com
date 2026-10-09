@@ -80,7 +80,7 @@ const description =
   <section class="nx-wrap os-list" aria-label="Projects">
     {PROJECTS.map((p) => (
       <article class:list={["os-proj", p.tone && `os-proj--${p.tone}`]} id={p.id} data-reveal>
-        <div class:list={["os-proj__visual", `os-proj__visual--${p.id}`, p.id === "harvous" && "nx-mesh nx-mesh--sky"]} aria-hidden="true">
+        <div class:list={["os-proj__visual", `os-proj__visual--${p.id}`, p.id === "harvous" && "nx-mesh nx-mesh--sky", p.id === "heresmychurch" && "nx-mesh nx-mesh--violet"]} aria-hidden="true">
           {p.id === "heresmychurch" ? (
             <div class="os-map"><HmcMap uid="os-hmc" /></div>
           ) : (
@@ -187,7 +187,6 @@ const description =
     box-shadow: 0 24px 48px -20px rgba(15, 23, 42, 0.45);
   }
   @media (max-width: 40rem) { .os-hv__note { zoom: 0.6; top: 2rem; } }
-  .os-proj__visual--heresmychurch { background: radial-gradient(70% 90% at 50% 50%, #2c1660, transparent 70%), #1e1040; }
   .os-map { width: min(80%, 22rem); }
 
   .os-proj__brand { display: flex; align-items: center; gap: 0.85rem; margin: 0; }

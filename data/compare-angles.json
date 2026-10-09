@@ -1,0 +1,1762 @@
+{
+  "abide": {
+    "intro": "Abide, from Guideposts, is a Christian meditation app known for guided Scripture meditations and Bible sleep stories; Harvous is for study you write down, not audio to rest in.",
+    "seoDescription": "Abide offers guided Christian meditations and Bible sleep stories. Harvous is for written study — notes linked to Scripture you can find again.",
+    "chooseThem": "You want to slow down with God through a guided meditation, fall asleep to a Bible story, or settle stress on a commute — Abide’s audio is made for exactly that.",
+    "chooseHarvous": "You want to write out what a passage means to you and find it again.",
+    "harvousIsnt": "Meditation, prayer audio or sleep stories — Abide does those with real care.",
+    "together": "Rest with an Abide meditation at night, and when a verse from it lingers, study it in Harvous the next morning.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Written study, linked to Scripture",
+        "them": "Guided Christian meditation and Bible sleep stories"
+      },
+      {
+        "label": "How you engage",
+        "harvous": "Typing, reading, comparing",
+        "them": "Listening, often with eyes closed"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who want to dig into a text",
+        "them": "Anyone seeking calm, rest or better sleep in Scripture"
+      }
+    ]
+  },
+  "accordance": {
+    "intro": "Accordance is fast, precise original-language search, with a Bible Atlas and Timeline, built for scholars; Harvous is for the plain-language notes you return to later.",
+    "seoDescription": "Harvous vs Accordance: precise Greek and Hebrew search with Atlas and Timeline, or a simple notes app that keeps and connects your study.",
+    "chooseThem": "You work in Greek and Hebrew and want exact, fast searches of tagged texts, interactive maps and timelines, and a library of modules you buy as you need them.",
+    "chooseHarvous": "You want a light place to keep what your study turned up.",
+    "harvousIsnt": "Greek and Hebrew work, maps, or a scholarly module library — Accordance is built for that.",
+    "together": "Do the word study in Accordance, then save the conclusion as a Harvous note in your thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping notes you return to",
+        "them": "Precise Greek and Hebrew searching"
+      },
+      {
+        "label": "Original languages",
+        "harvous": "None",
+        "them": "Tagged texts, parsing, lexicons"
+      },
+      {
+        "label": "Setup",
+        "harvous": "Open in a browser and write",
+        "them": "Mac, Windows and mobile, with modules to buy"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Anyone who keeps study notes",
+        "them": "Pastors, scholars and seminary students"
+      }
+    ]
+  },
+  "apple-notes": {
+    "intro": "Apple Notes is the notes app already on your iPhone, iPad and Mac — quick to open, free, with scanning and Pencil; Harvous knows that “Romans 8:28” is a verse.",
+    "seoDescription": "Harvous vs Apple Notes: Apple Notes is free and built in for quick capture; Harvous turns references into verses and threads your Bible study.",
+    "chooseThem": "You want a free notes app that’s always there — Quick Note from anywhere, document scanning, Apple Pencil sketching, tags and Smart Folders, all syncing over iCloud.",
+    "chooseHarvous": "You want typed references to open the verse, and past study notes to resurface on their own.",
+    "harvousIsnt": "Being built into your Apple devices — Harvous is on the web today, with Mac, iPad and iPhone apps coming.",
+    "together": "Jot a thought in Apple Notes when you’re away from your desk, then move it into Harvous where the references become pills and it joins a thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bible notes that link to the text",
+        "them": "Fast, free capture on every Apple device"
+      },
+      {
+        "label": "Scanning",
+        "harvous": "Scan a page; references become pills",
+        "them": "Document scanner saves pages as searchable scans"
+      },
+      {
+        "label": "Where it runs",
+        "harvous": "Web today; Apple apps coming",
+        "them": "Built into iPhone, iPad and Mac, with iCloud sync"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Bible study you want to revisit",
+        "them": "Everything else you need to write down quickly"
+      }
+    ]
+  },
+  "ascension": {
+    "intro": "Ascension is a Catholic home for the Bible, Catechism and daily Mass readings, with Fr. Mike Schmitz’s Bible in a Year; Harvous is for the personal notes you take along the way.",
+    "seoDescription": "Harvous vs Ascension: the Catholic Bible, Catechism and Bible in a Year, or a notes app that threads and resurfaces your study.",
+    "chooseThem": "You’re Catholic and want the Great Adventure Bible and Catechism together, daily Mass readings and reflections, the Rosary, and Bible in a Year with Fr. Mike Schmitz.",
+    "chooseHarvous": "You want your own notes on each day’s reading kept and connected.",
+    "harvousIsnt": "A Catholic Bible — Harvous’s translations don’t include the deuterocanonical books — or Mass readings and Bible in a Year, which Ascension is made for.",
+    "together": "Listen to Bible in a Year in Ascension, then write the day’s note in a Harvous thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own notes, connected over time",
+        "them": "Catholic Bible, Catechism and daily readings"
+      },
+      {
+        "label": "Daily rhythm",
+        "harvous": "A daily passage and recent study",
+        "them": "Mass readings, Saint of the Day, podcasts"
+      },
+      {
+        "label": "Guidance",
+        "harvous": "Templates you choose",
+        "them": "Study plans and answers from Catholic teachers"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Note-takers of any tradition",
+        "them": "Catholics wanting guided formation"
+      }
+    ]
+  },
+  "aura-bible": {
+    "intro": "Aura is an AI-assisted prayer and devotional app with daily devotionals, a Scripture Meditation Room and memory-verse widgets; Harvous writes nothing for you — it keeps your own notes and highlights.",
+    "seoDescription": "Aura offers AI-guided prayer, devotionals and a Scripture Meditation Room. Harvous keeps your own notes and highlights, with no streaks or AI writing.",
+    "chooseThem": "You want a daily rhythm built for you — a guided devotional, AI help shaping prayers and answering questions from a Reformed perspective, a meditation room for winding down, and a streak to keep you going.",
+    "chooseHarvous": "You want your study in your own words, with no streaks and nothing generated.",
+    "harvousIsnt": "Guided prayer, meditation audio or AI answers — Aura offers all three.",
+    "together": "Pray with Aura’s devotional in the morning, and keep the passage and what you noticed in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own notes on Scripture",
+        "them": "AI-guided prayer and daily devotionals"
+      },
+      {
+        "label": "Who does the writing",
+        "harvous": "You",
+        "them": "You, with AI help on prayers and answers"
+      },
+      {
+        "label": "Daily rhythm",
+        "harvous": "A daily passage, no streaks",
+        "them": "Devotionals, streaks and memory-verse widgets"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Those who want a quiet, personal record",
+        "them": "People who want a guided daily prayer habit"
+      }
+    ]
+  },
+  "bible-gateway": {
+    "intro": "Bible Gateway is the web’s big Bible library — 200+ translations, audio, Verse of the Day; Harvous is where your own notes on those passages live and stay connected.",
+    "seoDescription": "Harvous vs Bible Gateway: a huge free Bible library with 200+ translations, or a notes app where references become Scripture pills.",
+    "chooseThem": "You want to look up any verse in 200+ translations, listen to audio Bibles, and — with Bible Gateway Plus — read 30+ study Bibles and commentaries beside the text.",
+    "chooseHarvous": "You want your notes in one place, with every reference a tappable Scripture pill.",
+    "harvousIsnt": "A library of hundreds of translations, audio Bibles, or study Bible and commentary content — Bible Gateway has far more.",
+    "together": "Look a passage up across translations on Bible Gateway, then write what you noticed in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping and connecting your notes",
+        "them": "Looking up any verse in 200+ translations"
+      },
+      {
+        "label": "Study content",
+        "harvous": "Easton’s dictionary, cross-references",
+        "them": "30+ study Bibles and commentaries with Plus"
+      },
+      {
+        "label": "Your notes",
+        "harvous": "Threads, templates, resurfaced over time",
+        "them": "Notes and highlights saved to your account"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who write while they study",
+        "them": "Anyone who wants a free Bible on any browser"
+      }
+    ]
+  },
+  "bible-memory": {
+    "intro": "Bible Memory turns verses into daily practice — first-letter typing, audio review and a Smart Review System that schedules each verse; Harvous is where you study what those verses mean.",
+    "seoDescription": "Harvous vs Bible Memory: word-for-word memorization with spaced review, or notes on what passages mean, with gentle review from Plus.",
+    "chooseThem": "You want to memorize Scripture word for word, with spaced review, audio for the car, heat maps of where you stumble, and groups for Bible Bee, Awana or your church.",
+    "chooseHarvous": "You want to remember what passages mean to you — Plus asks short questions from your own notes, with no score or streak.",
+    "harvousIsnt": "Word-for-word memorization — Bible Memory’s typing drills and spaced review are built for that.",
+    "together": "Memorize a passage in Bible Memory, and keep your notes on what it means in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Remembering what passages mean to you",
+        "them": "Memorizing verses word for word with spaced review"
+      },
+      {
+        "label": "Review style",
+        "harvous": "Questions from your notes, no score",
+        "them": "Typing drills, audio, points and badges"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Students of Scripture who think in notes",
+        "them": "Memorizers of any age, families, Bible Bee and Awana groups"
+      }
+    ]
+  },
+  "bible-note": {
+    "intro": "Bible Note records or imports a sermon and turns it into a transcript, a summary and scripture cards; Harvous is for the notes you write yourself and want to revisit.",
+    "seoDescription": "Harvous vs Bible Note: AI sermon transcripts and scripture cards, or your own study notes with Scripture pills, threads and review.",
+    "chooseThem": "You want to capture sermons without writing — record live, paste a YouTube link or upload audio — and get a Sermon Insight Summary, transcript and scripture cards to share with your group.",
+    "chooseHarvous": "You’d rather write in your own words, and have those notes link to Scripture and come back later.",
+    "harvousIsnt": "Recording or transcribing sermons — Bible Note listens and summarizes so you don’t have to.",
+    "together": "Let Bible Note transcribe Sunday’s sermon, then write the one or two things that stuck in Harvous, where they join a thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own notes, threaded and resurfaced",
+        "them": "Turning recorded sermons into transcripts, summaries and cards"
+      },
+      {
+        "label": "Sermon capture",
+        "harvous": "Type it, or scan a printed page",
+        "them": "Records live, or imports YouTube, audio or text"
+      },
+      {
+        "label": "Review",
+        "harvous": "Plus: questions drawn from your notes",
+        "them": "Scripture cards made from each sermon’s insights"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who think by writing",
+        "them": "Churchgoers and leaders who want sermons captured for them"
+      }
+    ]
+  },
+  "bible-notes": {
+    "intro": "Bible Notes is a sermon notebook with auto-completing verses, timestamped recordings and the B.R.E.A.D. devotion method; Harvous connects notes across weeks with threads and brings them back.",
+    "seoDescription": "Harvous vs Bible Notes: a sermon notebook with auto-complete verses and timestamped audio, or study notes threaded across weeks.",
+    "chooseThem": "You want Sunday notes tagged by pastor, date and theme, with verses that finish themselves and a recording you can jump back into at the moment you wrote each line.",
+    "chooseHarvous": "You want sermon notes and personal study in one place, linked by threads.",
+    "harvousIsnt": "Recording sermons alongside your notes — Bible Notes ties each line to a moment in the audio.",
+    "together": "Take notes and record in Bible Notes on Sunday, then carry what matters into a Harvous thread you keep adding to.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Linking study across weeks",
+        "them": "Sermon notes with auto-filled verses and timestamped audio"
+      },
+      {
+        "label": "Recording",
+        "harvous": "No audio recording",
+        "them": "Timestamped recording to jump back to each note"
+      },
+      {
+        "label": "Devotion method",
+        "harvous": "SOAP, inductive, your own",
+        "them": "Built-in B.R.E.A.D. devotion method"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People building on study week to week",
+        "them": "Churchgoers who want a focused Sunday notebook on their phone"
+      }
+    ]
+  },
+  "bible-study-tools": {
+    "intro": "Bible Study Tools is a free, ad-supported reference site with 30+ translations, Strong’s concordance, interlinear and lexicons, and classic commentaries; Harvous is where your own findings get written down and connected.",
+    "seoDescription": "Harvous vs Bible Study Tools: free concordances, lexicons and commentaries online, or a place to keep and connect what you find.",
+    "chooseThem": "You want to look things up — Strong’s numbers, Hebrew and Greek lexicons, Matthew Henry and other commentaries, parallel and interlinear Bibles — free in any browser.",
+    "chooseHarvous": "You want somewhere to keep what you find, linked to the verse and your other notes.",
+    "harvousIsnt": "Original-language lookups or a commentary library — Bible Study Tools has a deep shelf of reference works, free online.",
+    "together": "Look up a word or commentary on Bible Study Tools, then write down what you found in a Harvous note on that passage.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping and connecting what you learn",
+        "them": "Free lookups: concordances, lexicons, commentaries"
+      },
+      {
+        "label": "Original languages",
+        "harvous": "Not included",
+        "them": "Interlinear Bible, Strong’s, Hebrew and Greek lexicons"
+      },
+      {
+        "label": "Your notes",
+        "harvous": "The whole point",
+        "them": "Notes and highlights with a PLUS subscription"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Anyone keeping a record of their study",
+        "them": "Anyone who needs quick reference tools in a browser"
+      }
+    ]
+  },
+  "bible-ai": {
+    "intro": "bible.ai is a voice-and-text chat about faith and life, with a Theology Mode for deeper talks in the style of historic theologians; Harvous doesn’t chat — it keeps what you write.",
+    "seoDescription": "bible.ai lets you talk about faith by voice or text, with a Theology Mode. Harvous keeps a written record of your own study, linked to Scripture.",
+    "chooseThem": "You want to talk something through out loud — a question, a worry, a verse — and hear a warm reply, or go deeper in Theology Mode.",
+    "chooseHarvous": "You want a record of what you concluded, in your words, beside the text.",
+    "harvousIsnt": "Conversation — Harvous won’t answer back, and bible.ai is built to.",
+    "together": "Talk a question through with bible.ai, then open the verses it raised in Harvous and write what you landed on.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "A record of your own study",
+        "them": "Hands-free, voice-first conversation about faith and life"
+      },
+      {
+        "label": "Format",
+        "harvous": "Written notes and Scripture pills",
+        "them": "Voice or text chat, casual or Theology Mode"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who want to own their conclusions",
+        "them": "Anyone who processes faith questions by talking"
+      }
+    ]
+  },
+  "bibledojo": {
+    "intro": "BibleDojo teaches you to read the Bible well, belt by belt, with free scholar-built trainings starting in biblical law; Harvous is where you keep the notes from that study.",
+    "seoDescription": "Harvous vs BibleDojo: belt-ranked trainings in reading Scripture well, or a notebook to keep and connect what you learn.",
+    "chooseThem": "You want to learn how to read Scripture — hands-on trainings from Dru Johnson and Dominick Hernández that have you mark the text, notice structure and revise your reading as you move up from white belt.",
+    "chooseHarvous": "You want to keep and connect what you learn as you read on your own.",
+    "harvousIsnt": "Learning to interpret Scripture through guided lessons — BibleDojo is a free course, Harvous is a notebook.",
+    "together": "Work through a BibleDojo training, then carry what you noticed into Harvous notes on the same passages.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping and connecting your notes",
+        "them": "Teaching interpretation skills through belt-ranked trainings"
+      },
+      {
+        "label": "Format",
+        "harvous": "A notebook with a Bible reader",
+        "them": "Guided web trainings, about 90 minutes each"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Readers keeping notes over time",
+        "them": "Self-learners who want structured practice reading the Bible"
+      }
+    ]
+  },
+  "bibleproject": {
+    "intro": "BibleProject is the free nonprofit home of animated book and theme videos, the Tim and Jon podcast, and scholar-taught classes; Harvous keeps your own notes beside the verses they’re about.",
+    "seoDescription": "BibleProject teaches the Bible’s big story through free videos and classes. Harvous keeps your own study notes, linked to the verses.",
+    "chooseThem": "You want to see the shape of a whole book or theme before you read it — short animated overviews, long podcast conversations, and free classes that build real reading skills.",
+    "chooseHarvous": "You want somewhere to write what a video opened up, with every verse a tap away.",
+    "harvousIsnt": "Teaching content — Harvous has no videos, podcasts or classes, and BibleProject’s are free.",
+    "together": "Watch the BibleProject overview of a book, then read it in Harvous and keep your notes in one thread as you go.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own notes, kept with the verses",
+        "them": "Animated overviews of every book and major biblical theme"
+      },
+      {
+        "label": "Where insight comes from",
+        "harvous": "What you read and write",
+        "them": "Scholars’ videos, podcasts and classes"
+      },
+      {
+        "label": "Cost",
+        "harvous": "Free, with optional Plus",
+        "them": "Free, funded by supporters"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who write while they study",
+        "them": "Visual learners who want the Bible’s big picture"
+      }
+    ]
+  },
+  "blessed": {
+    "intro": "Blessed offers a daily verse with a short devotional and prayer, plus verses by topic and a Life Application section; Harvous is for going deeper into the passages you choose.",
+    "seoDescription": "Blessed brings a verse of the day, a short devotional and a prayer. Harvous is for staying longer with a passage and keeping notes you return to.",
+    "chooseThem": "You want ten minutes a day — a verse, a brief devotional, a prayer — and an easy way to browse verses on topics like waiting or authority.",
+    "chooseHarvous": "You want to stay with a passage longer and keep notes you can return to.",
+    "harvousIsnt": "Ready-made devotionals and prayers — Blessed writes a fresh one every day.",
+    "together": "Start with Blessed’s verse of the day, then open it in Harvous when you want to read the whole chapter.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Going deeper on passages you pick",
+        "them": "A quick daily verse, devotional and prayer"
+      },
+      {
+        "label": "Daily content",
+        "harvous": "A daily passage; you write the rest",
+        "them": "Verse of the day with devotional, prayer and audio"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People ready for longer study",
+        "them": "Busy people wanting a short daily touchpoint"
+      }
+    ]
+  },
+  "blue-letter-bible": {
+    "intro": "Blue Letter Bible is the free, donor-supported study desk — Interlinear, lexicons and commentaries on every verse; Harvous is where you keep what those tools showed you.",
+    "seoDescription": "Harvous vs Blue Letter Bible: free Interlinear, lexicons and commentaries, or a notes app that keeps and connects your findings.",
+    "chooseThem": "You want free original-language help on any verse — the Interlinear, lexicons, concordances — plus text, audio and video commentaries, all funded by donors.",
+    "chooseHarvous": "You want your findings kept as notes that link into threads.",
+    "harvousIsnt": "Greek and Hebrew word study or a commentary library — Blue Letter Bible offers both for free.",
+    "together": "Look up the word in Blue Letter Bible’s Interlinear, then note what you found in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping what your study found",
+        "them": "Free word study on any verse of Scripture"
+      },
+      {
+        "label": "Original languages",
+        "harvous": "None",
+        "them": "Interlinear, lexicons, concordances"
+      },
+      {
+        "label": "Commentaries",
+        "harvous": "Easton’s dictionary only",
+        "them": "Text, audio and video commentaries"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who want to remember it later",
+        "them": "Anyone digging into words and meaning"
+      }
+    ]
+  },
+  "church-notes": {
+    "intro": "Church Notes is a free sermon-notes app where Auto Verse Insert drops in the verse as you type, plus SOAP devotions; Harvous threads your notes and resurfaces them later.",
+    "seoDescription": "Harvous vs Church Notes: free sermon notes with Auto Verse Insert and SOAP, or study notes that thread together and resurface.",
+    "chooseThem": "You want a free app with no premium tier for sermon notes and daily SOAP journaling on iOS, Android or the web, with verses inserted in your chosen translation.",
+    "chooseHarvous": "You want past notes to come back — through threads, Suggestions and, with Plus, review questions.",
+    "harvousIsnt": "A free phone app for Sunday mornings — Church Notes is on iOS and Android today, while Harvous is web-only for now.",
+    "together": "Use Church Notes in the pew, and Harvous at your desk for the study you want to build on.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bringing past notes back to you",
+        "them": "Free sermon notes with verses inserted as you type"
+      },
+      {
+        "label": "Phone app",
+        "harvous": "Not yet; web today",
+        "them": "iOS and Android, plus the web"
+      },
+      {
+        "label": "Daily rhythm",
+        "harvous": "A daily passage and your recent study",
+        "them": "SOAP devotions and a Verse of the Day"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who want old notes to resurface",
+        "them": "Churchgoers who want sermon notes and SOAP in one free app"
+      }
+    ]
+  },
+  "craft": {
+    "intro": "Craft is a beautifully designed document editor — blocks, Daily Notes, whiteboards, pages you can publish to the web; Harvous is narrower, built only for notes on Scripture.",
+    "seoDescription": "Harvous vs Craft: Craft is a polished docs app with Daily Notes, whiteboards and web publishing; Harvous is built for Bible study notes.",
+    "chooseThem": "You want polished, native docs for everything — a block editor, Daily Notes, tasks, whiteboards, AI writing help and pages you can publish to the web — on Mac, iPhone, iPad, Windows and the web.",
+    "chooseHarvous": "You want a Bible reader beside your notes and every reference turned into the verse.",
+    "harvousIsnt": "Design-forward docs, tasks or whiteboards across your life — Craft handles all of that.",
+    "together": "Plan the small-group series in Craft, and keep the actual study — passages, notes, threads — in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes tied to the Bible text",
+        "them": "Elegant block-based docs, Daily Notes and publishing"
+      },
+      {
+        "label": "Scripture",
+        "harvous": "Reader, 11 translations, pills",
+        "them": "Plain text unless you paste it in"
+      },
+      {
+        "label": "Native apps",
+        "harvous": "Web today; Apple apps coming",
+        "them": "Mac, iPhone, iPad and Windows apps, plus web"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Focused Bible study",
+        "them": "People who care how their notes look and want one docs home"
+      }
+    ]
+  },
+  "dwell": {
+    "intro": "Dwell is an audio Bible with a wide choice of narrator voices across many translations, made for listening on the go; Harvous is for the moment you stop and write something down.",
+    "seoDescription": "Dwell is an audio Bible with many narrator voices and translations. Harvous is where you write down what a listen stirred up and find it later.",
+    "chooseThem": "You want to hear Scripture every day — picking a narrator and a translation, looping a chapter until it sticks, and listening on a walk or in the car.",
+    "chooseHarvous": "You want to write down what a listen stirred up and find it again later.",
+    "harvousIsnt": "Listening — Harvous has no audio Bible, and Dwell’s narration is the reason people love it.",
+    "together": "Listen in Dwell, then open the passage in Harvous and note the line that stayed with you.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Writing and finding your notes",
+        "them": "Listening to Scripture in a voice you choose"
+      },
+      {
+        "label": "How you take it in",
+        "harvous": "Reading and writing",
+        "them": "Listening, with looping to help memorize"
+      },
+      {
+        "label": "Model",
+        "harvous": "Free, with optional Plus",
+        "them": "Subscription after a free trial"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who think by writing",
+        "them": "Commuters, walkers and anyone who finds reading hard"
+      }
+    ]
+  },
+  "e-sword": {
+    "intro": "e-Sword is a free PC Bible library with Strong’s tooltips and a built-in editor for sermons and studies; Harvous is notes in a browser, threaded and synced across devices.",
+    "seoDescription": "Harvous vs e-Sword: a free PC Bible library with commentaries and Strong’s, or browser-based notes that thread and sync.",
+    "chooseThem": "You want a free, long-standing PC study library — Bibles, commentaries, dictionaries, Strong’s searches and parallel views — with your sermons and studies written right beside it.",
+    "chooseHarvous": "You want notes that follow you to any device and connect over time.",
+    "harvousIsnt": "A downloadable library of commentaries and Strong’s tools — e-Sword gives you that free.",
+    "together": "Research in e-Sword at your desk, then keep the notes you’ll revisit in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes that resurface",
+        "them": "A free desktop study library"
+      },
+      {
+        "label": "Where notes live",
+        "harvous": "Web, synced across devices",
+        "them": "On your PC, beside your library"
+      },
+      {
+        "label": "Original languages",
+        "harvous": "None",
+        "them": "Strong’s tooltips and Strong’s number search"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Note-takers on any device",
+        "them": "Desk-based students on a budget"
+      }
+    ]
+  },
+  "esv-bible": {
+    "intro": "The ESV app pairs a clean ESV reader with the free Global Study Bible and well-loved audio narrators; Harvous keeps your notes across eleven translations and connects them over time.",
+    "seoDescription": "Harvous vs the ESV Bible app: Crossway’s free ESV reader with study notes and audio, or a notes app that keeps and connects what you study.",
+    "chooseThem": "You read the ESV and want Crossway’s own reader, with the free ESV Global Study Bible alongside the text, narrated audio, and 50+ reading plans.",
+    "chooseHarvous": "You read more than one translation and want notes that link into threads.",
+    "harvousIsnt": "An audio Bible, reading plans, or ESV study Bible notes — the ESV app does all three well.",
+    "together": "Read and listen in the ESV app, then keep your notes and threads in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Connecting notes across weeks of study",
+        "them": "A focused ESV reader with study notes and audio"
+      },
+      {
+        "label": "Translations",
+        "harvous": "ESV plus ten more, compared",
+        "them": "The ESV, with Crossway’s study resources"
+      },
+      {
+        "label": "Listening",
+        "harvous": "No audio Bible",
+        "them": "Full audio Bible with several narrators"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Note-takers who compare translations",
+        "them": "ESV readers who want Crossway’s resources"
+      }
+    ]
+  },
+  "evernote": {
+    "intro": "Evernote is a long-standing place to keep everything — notebooks, Web Clipper, search across it all, tasks and calendar; Harvous keeps only your Bible study, and knows the verses in it.",
+    "seoDescription": "Harvous vs Evernote: Evernote clips and stores everything with search and tasks; Harvous is a study Bible that remembers your notes.",
+    "chooseThem": "You want one archive for your whole life — Web Clipper for articles, notebooks and Spaces, tasks and calendar linked to notes, and search that finds things years later.",
+    "chooseHarvous": "You want study notes that open the verse and connect across weeks, apart from everything else.",
+    "harvousIsnt": "Clipping web pages or storing documents and tasks — Evernote is the archive for that.",
+    "together": "Keep clipping articles in Evernote; bring your study notebooks into Harvous with an .enex export, where the references become pills.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Connecting what you’ve learned in Scripture",
+        "them": "Capturing and finding everything — notes, clips, tasks"
+      },
+      {
+        "label": "Capture",
+        "harvous": "Typing, or scan a printed page",
+        "them": "Web Clipper, files, scans, notes and tasks"
+      },
+      {
+        "label": "Connecting notes",
+        "harvous": "Threads across weeks and folders",
+        "them": "Notebooks, Spaces, tags and note links"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "A Bible-only study home",
+        "them": "People who want one searchable archive for everything"
+      }
+    ]
+  },
+  "faithstudy": {
+    "intro": "FaithStudy gives you a daily study plan, quick Bible quizzes and a Bible Tutor to ask about passages; Harvous skips the plan and keeps your own notes, linked to every verse.",
+    "seoDescription": "FaithStudy hands you daily study plans, quizzes and a Bible Tutor. Harvous lets you set your own pace and keep your study notes in one place.",
+    "chooseThem": "You want to be told what to read today — a structured daily plan, topic plans on things like forgiveness and relationships, and a quiz to check what stuck.",
+    "chooseHarvous": "You want to set your own pace and keep what you learn in one place.",
+    "harvousIsnt": "Ready-made study plans or quizzes — FaithStudy hands you both each day.",
+    "together": "Follow a FaithStudy plan for the day’s reading, and write your reflections in Harvous where you can find them again.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping your own study notes",
+        "them": "A guided daily plan with quizzes"
+      },
+      {
+        "label": "Who sets the path",
+        "harvous": "You do",
+        "them": "The app’s daily and topic plans"
+      },
+      {
+        "label": "Model",
+        "harvous": "Free; Plus is optional",
+        "them": "Free, with ads in the app"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Readers who choose their own path",
+        "them": "Newer readers who want a plan and a tutor"
+      }
+    ]
+  },
+  "glorify": {
+    "intro": "Glorify is a daily rhythm — a quote, a passage, a short devotional, worship music; Harvous keeps what you noticed in that passage and links it to what you studied before.",
+    "seoDescription": "Harvous vs Glorify: Glorify guides a daily devotional and worship rhythm; Harvous keeps your own Scripture notes and connects them over time.",
+    "chooseThem": "You want a gentle, guided start to the day — a daily passage and devotional, worship tracks, guided meditations and sleep stories, with prompts to journal and a community to share it with.",
+    "chooseHarvous": "You want the verse from today’s devotional kept, opened in your translation, and tied to your earlier notes.",
+    "harvousIsnt": "Guided devotionals, worship music or sleep stories — Glorify does that daily rhythm well.",
+    "together": "Do Glorify’s daily rhythm in the morning, then put the passage reference and what stood out into a Harvous thread so it comes back later.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping and connecting your own Scripture notes",
+        "them": "A guided daily devotional, passage and worship rhythm"
+      },
+      {
+        "label": "Daily rhythm",
+        "harvous": "A daily passage and your recent study",
+        "them": "Quote, passage, devotional, Faith Essentials, music"
+      },
+      {
+        "label": "Audio",
+        "harvous": "None",
+        "them": "Worship tracks, guided meditations, sleep stories"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who want to remember what they read",
+        "them": "People building a simple, guided daily habit with God"
+      }
+    ]
+  },
+  "goodnotes": {
+    "intro": "Goodnotes is digital paper — handwriting that feels natural, PDF markup and searchable ink; Harvous is typed, and turns each reference into the verse.",
+    "seoDescription": "Harvous vs Goodnotes: Goodnotes is handwriting and PDF markup on a tablet; Harvous is typed Bible notes with verses and threads.",
+    "chooseThem": "You think with a pen — handwritten notebooks, marking up PDFs and slides, searchable handwriting, an infinite whiteboard, and a quiz generator from your notes — on iPad, Android, Windows and more.",
+    "chooseHarvous": "You’d rather type, and want each reference to open the verse and join a thread.",
+    "harvousIsnt": "Handwriting or drawing — there’s no pen input in Harvous; Goodnotes is made for it.",
+    "together": "Handwrite during the sermon in Goodnotes, then type up what mattered in Harvous later so it’s linked to the passages.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Typed notes that link to Scripture",
+        "them": "Natural handwriting and PDF markup on a tablet"
+      },
+      {
+        "label": "Input",
+        "harvous": "Keyboard, or scan printed pages",
+        "them": "Pen, keyboard and audio recording"
+      },
+      {
+        "label": "Study tools",
+        "harvous": "Review exercises from your notes (Plus)",
+        "them": "Quiz generator and AI Q&A from your notes"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Typists who want verses linked",
+        "them": "Students and visual thinkers who love paper-like notes"
+      }
+    ]
+  },
+  "google-docs": {
+    "intro": "Google Docs is the shared document — real-time co-editing, comments and suggestions, free with a Google account; Harvous is for your own study notes, linked to the verses.",
+    "seoDescription": "Harvous vs Google Docs: Google Docs is free real-time co-editing; Harvous keeps Bible study notes linked to verses and threaded over time.",
+    "chooseThem": "You need several people writing in one document at once — live co-editing, comments, suggestion mode, version history — free, in any browser, with everyone already on it.",
+    "chooseHarvous": "You want each study note linked to its verse and connected to the ones before it.",
+    "harvousIsnt": "Writing one document together in real time — Google Docs is the standard for that.",
+    "together": "Draft the group’s study guide together in Google Docs, and keep your own notes on each passage in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Personal study notes tied to Scripture",
+        "them": "Many people editing one document at the same time"
+      },
+      {
+        "label": "Working together",
+        "harvous": "Shared spaces up to 12 (Plus)",
+        "them": "Live co-editing, comments and suggestions"
+      },
+      {
+        "label": "Finding it later",
+        "harvous": "Threads and Suggestions",
+        "them": "Search across your Drive files"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Your ongoing Bible study",
+        "them": "Teams and groups drafting documents together"
+      }
+    ]
+  },
+  "google-keep": {
+    "intro": "Google Keep is sticky notes on your phone — color-coded cards, checklists, time and place reminders; Harvous is for the longer notes that come from studying a passage.",
+    "seoDescription": "Harvous vs Google Keep: Keep is quick color-coded notes and reminders; Harvous is for Bible study notes that link verses and connect.",
+    "chooseThem": "You want a thought down in two taps — color-coded cards, checklists, voice notes, text pulled from photos, and reminders that fire at a time or when you reach a place.",
+    "chooseHarvous": "You want study notes that open the verse and come back when they’re relevant.",
+    "harvousIsnt": "Grocery lists and location reminders — Keep is quicker for that.",
+    "together": "Drop a verse into Keep when it catches you mid-day, then study it in Harvous that evening.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Study notes that grow and connect",
+        "them": "Fast, colorful notes, checklists and reminders"
+      },
+      {
+        "label": "Reminders",
+        "harvous": "Optional study reminders",
+        "them": "Time and location reminders synced with Google"
+      },
+      {
+        "label": "Depth",
+        "harvous": "Reader, dictionary, cross-refs",
+        "them": "Short notes, labels and colors"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Bible study you’ll revisit",
+        "them": "Everyday quick capture on Android, iPhone and web"
+      }
+    ]
+  },
+  "hallow": {
+    "intro": "Hallow is guided audio prayer rooted in Catholic tradition — the Rosary, Lectio Divina, the Examen, seasonal challenges; Harvous is where the passages you pray with get written down and connected.",
+    "seoDescription": "Harvous vs Hallow: Hallow leads Catholic and Christian audio prayer — Rosary, Lectio Divina, Examen; Harvous keeps your Scripture notes connected.",
+    "chooseThem": "You want someone to lead you in prayer — the Rosary, Lectio Divina, the Ignatian Examen, Praylists, sleep content — and community challenges like Pray25 in Advent to pray with others.",
+    "chooseHarvous": "You want the verse from a Lectio session written down, compared across translations, and linked to past notes.",
+    "harvousIsnt": "Guided audio prayer, the Rosary or meditation sessions — that’s what Hallow is built for.",
+    "together": "Pray with Hallow, then open the day’s passage in Harvous and note what you heard so it joins a thread you can return to.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Writing down and connecting what Scripture shows you",
+        "them": "Guided audio prayer in Catholic and Christian traditions"
+      },
+      {
+        "label": "Prayer practices",
+        "harvous": "None guided — notes only",
+        "them": "Rosary, Lectio Divina, Examen, novenas, chant"
+      },
+      {
+        "label": "Shared rhythm",
+        "harvous": "Shared spaces for up to 12 (Plus)",
+        "them": "Seasonal community prayer challenges like Pray25"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who want to keep what they pray through",
+        "them": "Catholics and Christians wanting guided daily prayer"
+      }
+    ]
+  },
+  "illuminate": {
+    "intro": "Illuminate is a free, ad-free Bible reader where you can tap any verse to ask a question, with reflection prompts and fast offline search; Harvous is for the notes you write yourself.",
+    "seoDescription": "Illuminate answers questions at any verse, free and ad-free. Harvous keeps the notes you write yourself and connects them across weeks of study.",
+    "chooseThem": "You want a clean, free reader that answers questions right at the verse, with no subscription, no ads and no data collection, plus prompts to pray and apply what you read.",
+    "chooseHarvous": "You want your notes to connect across passages and weeks, not one verse at a time.",
+    "harvousIsnt": "Answers on demand — Harvous won’t explain a verse for you; Illuminate will, for free.",
+    "together": "Ask Illuminate about a verse that puzzles you, then write what you make of it in a Harvous thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Connecting your notes across weeks",
+        "them": "Quick AI answers at any verse, free"
+      },
+      {
+        "label": "Price",
+        "harvous": "Free, with optional Plus",
+        "them": "Free, no ads or subscription"
+      },
+      {
+        "label": "Platform",
+        "harvous": "Web today; Apple apps coming",
+        "them": "iPhone app that works offline"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People building their study over time",
+        "them": "Readers who want quick help understanding a verse"
+      }
+    ]
+  },
+  "life-bible": {
+    "intro": "Life Bible is known for TouchPoints — 500+ life questions answered from Scripture — plus hundreds of plans; Harvous is for writing down your own answers and finding them again.",
+    "seoDescription": "Harvous vs Life Bible: TouchPoints, plans and study Bibles, or a notes app that threads and resurfaces your own study.",
+    "chooseThem": "You want TouchPoints for life questions, 450+ topical plans and devotional books, and Explain to pull study Bibles and commentaries onto any verse, across 40 translations.",
+    "chooseHarvous": "You want your own notes, not just publishers’, to come back when they matter.",
+    "harvousIsnt": "Topical answers, devotional books, or study Bible commentary — Life Bible has a deep shelf of all three.",
+    "together": "Start from a TouchPoint or plan in Life Bible, then write what it meant to you in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bringing your past notes back",
+        "them": "TouchPoints: Bible answers to everyday life questions"
+      },
+      {
+        "label": "Where insight comes from",
+        "harvous": "Your own notes and highlights",
+        "them": "Study Bibles, commentaries, devotionals"
+      },
+      {
+        "label": "Reading plans",
+        "harvous": "None",
+        "them": "450+ topical plans and 150+ devotional books"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People keeping their own study",
+        "them": "Readers who want guided, topical help"
+      }
+    ]
+  },
+  "logos": {
+    "intro": "Logos is a vast research library with Factbook, Smart Search and an AI Study Assistant; Harvous is a simple notebook for what you want to remember.",
+    "seoDescription": "Harvous vs Logos: a deep research library with Factbook and Smart Search, or a simple notes app for everyday Bible study.",
+    "chooseThem": "You prepare sermons or study academically and want a large owned library, Factbook on any passage or topic, and Smart Search and Study Assistant answering from your books with citations.",
+    "chooseHarvous": "You want everyday notes that are quick to write and come back to you.",
+    "harvousIsnt": "Research across a library of books, original languages, or AI answers — Logos is built for that.",
+    "together": "Research the passage in Logos, then keep your takeaway in a Harvous thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Everyday notes that come back",
+        "them": "Deep research across a large library"
+      },
+      {
+        "label": "Learning curve",
+        "harvous": "Open and write",
+        "them": "Rich, with a lot to learn"
+      },
+      {
+        "label": "Finding answers",
+        "harvous": "Your own notes, resurfaced",
+        "them": "Factbook, Smart Search, Study Assistant"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People studying week to week",
+        "them": "Pastors, teachers and students"
+      }
+    ]
+  },
+  "lumen": {
+    "intro": "Lumen is an open-source, browser-based Bible reader with an AI study companion for explaining passages and answering questions; Harvous is a notebook first, with no AI doing the explaining.",
+    "seoDescription": "Lumen is an open-source Bible reader with an AI study companion. Harvous is a notebook first: your own notes, linked to every Scripture reference.",
+    "chooseThem": "You want seminary-style explanations of a passage on demand, a reader that runs in the browser, and code you can inspect on GitHub.",
+    "chooseHarvous": "You want your own words at the center, with translations to compare.",
+    "harvousIsnt": "AI explanations or a community feed — Lumen has both.",
+    "together": "Use Lumen to unpack a hard passage, then keep your own conclusions in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your notes, linked to every reference",
+        "them": "AI explanations of any passage you select"
+      },
+      {
+        "label": "Source of insight",
+        "harvous": "Your own reading and notes",
+        "them": "An AI companion, framed as seminary-level insight"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who study by writing",
+        "them": "Curious believers who want answers while they read"
+      }
+    ]
+  },
+  "notion": {
+    "intro": "Notion is a build-it-yourself workspace — linked pages, databases, wikis, templates and Notion AI; Harvous is built for Bible study already, with no setup.",
+    "seoDescription": "Harvous vs Notion: Notion builds workspaces from pages and databases; Harvous is ready-made for Bible notes with verses, threads and recall.",
+    "chooseThem": "You want to design your own system — databases with views, linked pages, wikis for a team or church, project tracking and Notion AI — and you enjoy building it.",
+    "chooseHarvous": "You want Bible study working on day one — reader, references and threads included.",
+    "harvousIsnt": "Databases, wikis or project tracking — Notion is the place to build those.",
+    "together": "Run the ministry’s planning and wiki in Notion, and keep personal study notes in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bible study that works with no setup",
+        "them": "Flexible pages and databases for any workflow"
+      },
+      {
+        "label": "Scripture",
+        "harvous": "Built-in reader, verse pills",
+        "them": "Whatever you paste in or embed"
+      },
+      {
+        "label": "Setup",
+        "harvous": "Ready to use",
+        "them": "Build your own templates, databases and views"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Personal Bible study",
+        "them": "People and teams organizing work, life and church"
+      }
+    ]
+  },
+  "obsidian": {
+    "intro": "Obsidian is a local vault of Markdown files you link by hand, with a graph view and plugins galore; Harvous links notes to the Bible text for you, nothing to configure.",
+    "seoDescription": "Harvous vs Obsidian: Obsidian is local Markdown, wikilinks, graph view and plugins; Harvous links Bible notes to verses with no setup.",
+    "chooseThem": "You want your notes as plain Markdown files on your own device — wikilinks, a graph of connections, Canvas, community plugins — and you enjoy shaping the whole system yourself.",
+    "chooseHarvous": "You want references to become verses and notes to thread without plugins or setup.",
+    "harvousIsnt": "Keeping notes as local Markdown files you control, or extending with plugins — that’s Obsidian’s strength.",
+    "together": "Keep your wider vault in Obsidian; import the Markdown files that are Bible study into Harvous, where references become pills.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes linked to Scripture, out of the box",
+        "them": "Linked, local-first notes you fully control"
+      },
+      {
+        "label": "Where notes live",
+        "harvous": "Synced across your devices",
+        "them": "Markdown files in a folder on your device"
+      },
+      {
+        "label": "Linking",
+        "harvous": "References and threads, automatic",
+        "them": "Wikilinks, backlinks, graph view, Canvas"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Studying, not system-building",
+        "them": "Tinkerers who want a custom, plugin-built system"
+      }
+    ]
+  },
+  "olive-tree": {
+    "intro": "Olive Tree is a free Bible app built around a growing library, with a Resource Guide that surfaces it beside each passage; Harvous is where your own notes connect and return.",
+    "seoDescription": "Harvous vs Olive Tree: a study library with the Resource Guide and split windows, or your own notes linked to Scripture and resurfaced.",
+    "chooseThem": "You want one app for reading, listening and deep study — split windows, original-language tools, audio Bibles, and a Resource Guide that searches the commentaries and dictionaries in your library.",
+    "chooseHarvous": "Your own notes are the point, and you want them threaded and resurfaced, not filed away.",
+    "harvousIsnt": "A commentary library, original-language tools or audio Bibles — Olive Tree’s store and Resource Guide do that well.",
+    "together": "Study a passage in Olive Tree with its commentaries open, then write what you’re learning in Harvous, where it joins a thread and comes back later.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Remembering and connecting your own study notes",
+        "them": "Reading alongside a growing commentary and reference library"
+      },
+      {
+        "label": "Study resources",
+        "harvous": "11 translations, Easton’s, cross-references",
+        "them": "Bibles, commentaries and lexicons from the Olive Tree Store"
+      },
+      {
+        "label": "Platforms",
+        "harvous": "Web today; Apple apps later",
+        "them": "iOS, Android, Mac and Windows apps"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People whose notes matter more than a library",
+        "them": "Readers building a lasting digital study library across devices"
+      }
+    ]
+  },
+  "onenote": {
+    "intro": "OneNote is a free-form digital notebook — sections, pages, and a canvas for typing, ink, and clippings; Harvous is a study Bible where notes link straight to the verses.",
+    "seoDescription": "Harvous vs OneNote: OneNote’s free-form notebooks and ink, or Harvous’s Bible study notes where every reference opens the verse.",
+    "chooseThem": "You want one notebook for everything — sermon notes beside work and school — and you like writing with a pen, dropping text anywhere on the page, or marking up PDF printouts.",
+    "chooseHarvous": "You want a typed reference to open the verse, and old notes to return when you read that passage again.",
+    "harvousIsnt": "Handwriting, drawing, or a free-form canvas — OneNote does pen input far better.",
+    "together": "Keep handwritten sermon notes in OneNote, and scan or copy the parts worth keeping into Harvous, where the references become pills.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes tied to the verses they’re about",
+        "them": "Free-form notebooks with ink, clippings, and section tabs"
+      },
+      {
+        "label": "Pen input",
+        "harvous": "None — typing only",
+        "them": "Full ink, ink-to-text, and PDF markup"
+      },
+      {
+        "label": "Bible built in",
+        "harvous": "11 translations, side by side",
+        "them": "None — you paste passages in yourself"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Bible study that builds over years",
+        "them": "Anyone already living in Microsoft 365 notebooks"
+      }
+    ]
+  },
+  "pencil-bible": {
+    "intro": "Pencil Bible lets you sketch, highlight and journal right in the margins of the text, pen in hand; Harvous keeps typed notes that link across passages and come back later.",
+    "seoDescription": "Harvous vs Pencil Bible: drawing and journaling in the margins of Scripture, or typed notes that link across passages and resurface.",
+    "chooseThem": "You think with a pen — you want to draw in the margins, highlight and journal on the page itself, in a Bible you can style with your own fonts and backgrounds.",
+    "chooseHarvous": "You want typed notes that link across books and topics, not tied to one page.",
+    "harvousIsnt": "Handwriting or sketching on the page — Harvous has no pen input, and Pencil Bible is made for it.",
+    "together": "Mark up the passage by hand in Pencil Bible, then type the bigger connections into a Harvous thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Linking typed notes across passages",
+        "them": "Drawing and journaling in the margins of the text"
+      },
+      {
+        "label": "How you write",
+        "harvous": "Keyboard only",
+        "them": "Hand-drawn margin notes and sketches"
+      },
+      {
+        "label": "Platforms",
+        "harvous": "Web today; Apple apps later",
+        "them": "iPhone, iPad and Android apps"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Typists who want notes to connect",
+        "them": "Visual, creative readers who annotate as they go"
+      }
+    ]
+  },
+  "pocketbible": {
+    "intro": "PocketBible is Laridian’s Bible library you buy once and own forever, with BookBuilder for making your own reference titles; Harvous keeps your study notes linked to Scripture and brings them back.",
+    "seoDescription": "Harvous vs PocketBible: Laridian’s buy-once Bible and commentary library, or study notes that link Scripture and resurface over time.",
+    "chooseThem": "You want Bibles and commentaries you buy once and keep on every device you own, synced through Laridian Cloud, with the option to build your own titles in BookBuilder.",
+    "chooseHarvous": "What you write matters most, and you want it threaded and resurfaced over time.",
+    "harvousIsnt": "Owning a library of commentaries and reference books — PocketBible’s buy-once store is built for that.",
+    "together": "Read with PocketBible’s commentaries on your phone, and keep the notes you want to remember in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes that connect and resurface",
+        "them": "A buy-once Bible and commentary library on every device"
+      },
+      {
+        "label": "How you pay",
+        "harvous": "Free; Plus is a subscription",
+        "them": "Free core app; books bought once, owned forever"
+      },
+      {
+        "label": "Platforms",
+        "harvous": "Web today; Apple apps later",
+        "them": "iPhone, iPad, Android, Mac and Windows"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Note-takers who revisit what they’ve learned",
+        "them": "Readers who want to own their study library outright"
+      }
+    ]
+  },
+  "pray-com": {
+    "intro": "Pray.com is a large library of Christian audio — narrated bedtime Bible stories, sleep Psalms, Bible in a Year teaching; Harvous is where you write down and connect what you read.",
+    "seoDescription": "Harvous vs Pray.com: Pray.com offers narrated bedtime Bible stories and prayer audio; Harvous keeps your own Scripture notes and threads.",
+    "chooseThem": "You want to listen — narrated bedtime Bible stories, sleep Psalms, nightly prayers, Bible in a Year teaching, podcasts and worship playlists — with a place for prayer communities and requests.",
+    "chooseHarvous": "You want to read the passage yourself, write what you see, and find it again weeks later.",
+    "harvousIsnt": "Listening — Bible stories, sleep audio and teaching are what Pray.com offers in depth.",
+    "together": "Fall asleep to a Pray.com story, then look up the passage in Harvous the next morning and add a note to your thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own notes, linked to the verses",
+        "them": "Narrated Bible stories, sleep content and prayer audio"
+      },
+      {
+        "label": "Format",
+        "harvous": "Reading and writing",
+        "them": "Audio, video, podcasts and music"
+      },
+      {
+        "label": "Community",
+        "harvous": "Private notes; Shared spaces on Plus",
+        "them": "Prayer communities and prayer requests"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Readers who take notes",
+        "them": "Families and listeners winding down with Scripture audio"
+      }
+    ]
+  },
+  "readscripture": {
+    "intro": "ReadScripture walks you through the whole Bible in a year, with BibleProject videos at just the right moments; Harvous keeps what you noticed after the plan ends.",
+    "seoDescription": "Harvous vs ReadScripture: a year through the Bible with BibleProject videos, or a notes app that keeps and connects what you learn.",
+    "chooseThem": "You want a free, beautifully made plan through the whole Bible, with hand-drawn BibleProject videos that explain each book and its big themes before you read.",
+    "chooseHarvous": "You want somewhere to write what each day’s reading showed you.",
+    "harvousIsnt": "A guided year-long plan or explainer videos — ReadScripture and BibleProject do that wonderfully.",
+    "together": "Follow the day’s ReadScripture plan, then jot a note in Harvous and add it to a thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Holding onto what you noticed",
+        "them": "A guided year through the Bible with videos"
+      },
+      {
+        "label": "Daily rhythm",
+        "harvous": "A daily passage; no plan to keep up",
+        "them": "Curated plan with progress and reminders"
+      },
+      {
+        "label": "Notes",
+        "harvous": "Threads and pills",
+        "them": "Not the app’s focus"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Readers who write as they go",
+        "them": "First-time readers of the whole Bible"
+      }
+    ]
+  },
+  "reflect": {
+    "intro": "Reflect is a networked notebook built on daily notes, backlinks, and AI — now with an open-source Mac app on local Markdown; Harvous links each note to the verses it’s about.",
+    "seoDescription": "Harvous vs Reflect: Reflect’s daily notes, backlinks, and bring-your-own-key AI, or Harvous’s notes anchored to Bible passages.",
+    "chooseThem": "You want one graph for your whole life — a daily note each morning, backlinks between people and ideas, audio memos, and AI that answers from your notes using your own API key.",
+    "chooseHarvous": "Your notes are mostly about Bible passages, and you want the Bible open beside them.",
+    "harvousIsnt": "A second brain for everything — Reflect’s daily notes and backlinks span work, people, and life.",
+    "together": "Run your day in Reflect and keep Bible study in Harvous, where each note stays anchored to the passage it came from.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes anchored to Scripture passages",
+        "them": "Daily notes and backlinks across everything you think about"
+      },
+      {
+        "label": "How notes connect",
+        "harvous": "Threads and shared verse references",
+        "them": "Backlinks, tags, and a graph of linked ideas"
+      },
+      {
+        "label": "Where notes live",
+        "harvous": "Synced in your Harvous account",
+        "them": "Local Markdown files you own (Reflect Open)"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People studying the Bible over years",
+        "them": "Thinkers building a lifelong personal knowledge graph"
+      }
+    ]
+  },
+  "simplenote": {
+    "intro": "Simplenote is free, fast plain-text notes on every platform, with full version history; Harvous adds what plain text can’t — a Bible beside your notes and verses that open.",
+    "seoDescription": "Harvous vs Simplenote: free plain-text notes on every device, or Bible study notes with a built-in reader and verses that open from the page.",
+    "chooseThem": "You want a free, no-setup scratchpad that opens instantly on iPhone, Android, Windows, Linux, or the web, with tags, Markdown, and a history slider to recover any past version.",
+    "chooseHarvous": "You want “John 3:16” in a note to open the verse, and a reader to study from.",
+    "harvousIsnt": "Grocery lists and quick jots in a native app on every platform — Simplenote does that with less.",
+    "together": "Jot quick thoughts in Simplenote during the week, then move the ones about Scripture into Harvous to keep and connect.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bible notes that open their verses",
+        "them": "Instant, synced plain-text notes everywhere, free"
+      },
+      {
+        "label": "Platforms",
+        "harvous": "Web today; Apple apps coming",
+        "them": "iOS, Android, Mac, Windows, Linux, and web"
+      },
+      {
+        "label": "Bible built in",
+        "harvous": "11 translations with highlights",
+        "them": "None — it’s plain text by design"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Steady, connected Bible study",
+        "them": "Minimalists who want notes without features"
+      }
+    ]
+  },
+  "spirit-notes": {
+    "intro": "Spirit Notes pairs sermon notes with a timestamped recording and a reader that shows your notes on each verse; Harvous threads notes together and brings them back over time.",
+    "seoDescription": "Harvous vs Spirit Notes: sermon notes tied to a timestamped recording on iPhone, or study notes threaded and resurfaced over time.",
+    "chooseThem": "You want an iPhone or iPad app for church notes, with Scripture auto-complete, recordings you can jump into by timestamp, and notes grouped by preacher.",
+    "chooseHarvous": "You want notes linked into threads that span weeks, and resurfaced when relevant.",
+    "harvousIsnt": "Recording a sermon as you write — Spirit Notes ties every note to a moment in the audio.",
+    "together": "Record and write in Spirit Notes during the service, then carry the lasting ideas into Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Threading study across weeks",
+        "them": "Sermon notes tied to a timestamped recording"
+      },
+      {
+        "label": "Organized by",
+        "harvous": "Threads, folders, tags",
+        "them": "Preacher, notebook or tag"
+      },
+      {
+        "label": "Platforms",
+        "harvous": "Web, for now",
+        "them": "iPhone and iPad"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who want old notes back",
+        "them": "Churchgoers, students and small groups on iPhone and iPad"
+      }
+    ]
+  },
+  "supernotes": {
+    "intro": "Supernotes turns ideas into linked notecards you can nest, graph, and edit with others in real time; Harvous keeps each note tied to the Bible passage it’s about.",
+    "seoDescription": "Harvous vs Supernotes: collaborative notecards with a 2D/3D graph, or Bible study notes where every reference opens the verse.",
+    "chooseThem": "You think in small cards — with tables, math, and images — and want to arrange them in a hierarchy, explore them in a 2D or 3D graph, and share them with people who don’t use Supernotes.",
+    "chooseHarvous": "Your cards would mostly be about Scripture, and you want the passage one tap away.",
+    "harvousIsnt": "Live co-editing of notecards on any subject — Supernotes is built for that.",
+    "together": "Keep course or work cards in Supernotes and Bible study in Harvous, where threads gather the notes over time.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes anchored to Bible passages",
+        "them": "Rich notecards you nest, link, and see as a graph"
+      },
+      {
+        "label": "Collaboration",
+        "harvous": "Shared spaces for up to 12 (Plus)",
+        "them": "Real-time editing and comments, even with non-users"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Readers building a Bible study trail",
+        "them": "Students and teams who think in cards"
+      }
+    ]
+  },
+  "through-the-word": {
+    "intro": "Through the Word pairs every Bible chapter with a short audio guide from a pastor or teacher, free with no ads; Harvous is where you write what the guide helped you see.",
+    "seoDescription": "Through the Word pairs each Bible chapter with a short audio guide. Harvous is where you keep your own notes on what each chapter showed you.",
+    "chooseThem": "You want someone to walk you through each chapter — about ten minutes of context and meaning — inside journeys like Start or The Big Picture, with TTW Together for a group or family.",
+    "chooseHarvous": "You want your own notes on each chapter, linked and easy to find again.",
+    "harvousIsnt": "Teaching — Harvous won’t explain a chapter to you, and Through the Word’s guides do it well, for free.",
+    "together": "Listen to the day’s guide, read the chapter in Harvous, and keep your notes in a thread for the whole book.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your notes on what you read",
+        "them": "A short teaching guide for every chapter"
+      },
+      {
+        "label": "Who explains the text",
+        "harvous": "You, with a dictionary and cross-references",
+        "them": "Bible teachers, in about ten minutes a chapter"
+      },
+      {
+        "label": "Reading with others",
+        "harvous": "Shared spaces (Plus)",
+        "them": "TTW Together, with voice notes after each chapter"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who write as they read",
+        "them": "Anyone who finds Scripture hard going alone"
+      }
+    ]
+  },
+  "youversion": {
+    "intro": "YouVersion is the free Bible app on everyone’s phone — thousands of plans, audio, and versions in 2,000+ languages; Harvous is for the notes you want to keep beyond today’s plan.",
+    "seoDescription": "Harvous vs YouVersion: the free Bible app with thousands of plans and audio, or a notes app that keeps and connects your study.",
+    "chooseThem": "You want a free Bible on every device with audio, thousands of reading plans you can do alongside friends, and 3,500+ versions in more languages than any other app.",
+    "chooseHarvous": "You want your notes threaded and brought back to you over time.",
+    "harvousIsnt": "Reading plans, an audio Bible, or reading with friends — YouVersion does those beautifully.",
+    "together": "Read the day’s plan in YouVersion, then keep your notes and threads in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes that connect and resurface",
+        "them": "Free daily reading with plans and audio"
+      },
+      {
+        "label": "Languages",
+        "harvous": "11 English translations",
+        "them": "3,500+ versions in 2,000+ languages"
+      },
+      {
+        "label": "Your notes",
+        "harvous": "Threads, templates, Suggestions",
+        "them": "Highlights, bookmarks and notes on verses"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who study and write",
+        "them": "Anyone starting or keeping a daily habit"
+      }
+    ]
+  },
+  "pulpit-ai": {
+    "intro": "Pulpit AI turns one sermon into clips, group guides, devotionals, and posts, with an AI Sermon Assistant for prep; Harvous is where the study behind the sermon is kept and found again.",
+    "seoDescription": "Harvous vs Pulpit AI: multiply a sermon into clips and guides with Pulpit AI, or keep the passage study behind it linked in Harvous.",
+    "chooseThem": "You want Sunday to keep working all week — captioned video clips for social, discussion guides and devotionals generated from the message, and a Sermon Assistant for openers, illustrations, and applications.",
+    "chooseHarvous": "You want your own study on a passage, linked to the text, there when you preach it again.",
+    "harvousIsnt": "Generating sermon content or social clips — Pulpit AI does that, and Harvous has no AI that writes for you.",
+    "together": "Study and outline in Harvous during the week, then hand the finished sermon to Pulpit AI to multiply it.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping and resurfacing your own prep notes",
+        "them": "Turning one sermon into clips, guides, and posts"
+      },
+      {
+        "label": "AI",
+        "harvous": "No writing AI; Connector for your assistant",
+        "them": "Sermon Assistant plus 20+ generated content types"
+      },
+      {
+        "label": "After Sunday",
+        "harvous": "Notes stay linked for next time",
+        "them": "Clips, devotionals, recap email, and group guides"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Pastors keeping years of passage notes",
+        "them": "Church teams publishing beyond the Sunday service"
+      }
+    ]
+  },
+  "sermonary": {
+    "intro": "Sermonary is a full sermon workflow — calendar, sourced Study, a drag-and-drop Write view, and Present for the pulpit; Harvous holds the passage notes that outlast any one sermon.",
+    "seoDescription": "Harvous vs Sermonary: plan, write, and preach in Sermonary, and keep the passage notes that outlast each series in Harvous.",
+    "chooseThem": "You preach weekly and want one place to plan series on a calendar, research with named commentaries, build the manuscript, preach from it with a timer, and review delivery afterward in Recap.",
+    "chooseHarvous": "You want notes on a passage to stay linked and resurface long after the series ends.",
+    "harvousIsnt": "Writing and preaching a sermon — Sermonary’s builder, commentaries, and Present view are made for that.",
+    "together": "Keep running study notes and threads on a book in Harvous, then build and preach each sermon in Sermonary.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Passage notes that resurface for years",
+        "them": "Planning, writing, and preaching sermons in one app"
+      },
+      {
+        "label": "Research",
+        "harvous": "Dictionary and cross-references",
+        "them": "Named commentaries by passage or topic"
+      },
+      {
+        "label": "In the pulpit",
+        "harvous": "Not built for preaching from",
+        "them": "Present view with timer or clock"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Pastors keeping study across series",
+        "them": "Pastors and staff teams preaching every week"
+      }
+    ]
+  },
+  "sermons-app": {
+    "intro": "Sermons.app is an AI coach that questions and sharpens your sermon without writing it; Harvous is a study Bible that keeps your passage notes linked to the text.",
+    "seoDescription": "Harvous vs Sermons.app: an AI coach that sharpens your draft in your voice, or a study Bible that keeps your passage notes for years.",
+    "chooseThem": "You want a coach in the room — talk an idea through by voice, get line-by-line feedback on clarity and length as you draft, and a final review of structure and faithfulness to the text, in your own voice.",
+    "chooseHarvous": "You want a Bible reader with your notes on each passage, built up over years.",
+    "harvousIsnt": "Coaching on a sermon draft — Sermons.app gives that feedback, and Harvous has no AI that reviews your writing.",
+    "together": "Gather passage notes in Harvous, then draft and refine the sermon with the Sermons.app coach.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "A Bible with your notes on every passage",
+        "them": "AI feedback that sharpens your draft in your voice"
+      },
+      {
+        "label": "AI’s role",
+        "harvous": "None in the app; optional Connector",
+        "them": "A coach that asks questions, never writes for you"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Pastors whose study builds over time",
+        "them": "Pastors who want a thinking partner while drafting"
+      }
+    ]
+  },
+  "sermons-com": {
+    "intro": "Sermons.com is a lectionary-week library of illustrations, sample sermons, children’s sermons, and worship graphics; Harvous holds your own notes on the passage, not borrowed ones.",
+    "seoDescription": "Harvous vs Sermons.com: weekly lectionary illustrations and sample sermons, or your own passage notes kept for the next time the text returns.",
+    "chooseThem": "You preach from the lectionary and want each week’s illustrations, sermons on the texts, children’s sermons, commentary excerpts, and title slides ready when you sit down to prep.",
+    "chooseHarvous": "You want your own study of each text kept and connected for the next time it comes around.",
+    "harvousIsnt": "Ready-made illustrations or sample sermons — Sermons.com’s library supplies those, and Harvous has none.",
+    "together": "Browse Sermons.com for the week’s illustrations, and keep what you actually learned from the text in Harvous for three years from now.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own notes, linked to the text",
+        "them": "Illustrations and sermons for each lectionary week"
+      },
+      {
+        "label": "Whose words",
+        "harvous": "Yours",
+        "them": "Contributors’ sermons and Baker commentary excerpts"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Preachers building their own archive",
+        "them": "Lectionary preachers who want starter material weekly"
+      }
+    ]
+  },
+  "planning-center-groups": {
+    "intro": "Planning Center Groups runs the logistics — member lists, attendance, events, and a group finder in Church Center; Harvous gives the group a shared place for what it studies.",
+    "seoDescription": "Harvous vs Planning Center Groups: sign-ups, attendance, and Resources in Planning Center, and a shared study trail in Harvous.",
+    "chooseThem": "Your church is on Planning Center and needs group sign-ups, attendance, calendars, chat, and shared resources, all tied to the church database and the Church Center app.",
+    "chooseHarvous": "You want the group’s notes on each passage collected in one shared space.",
+    "harvousIsnt": "Rosters, attendance, or sign-ups — Planning Center Groups handles the people side.",
+    "together": "Run sign-ups and attendance in Planning Center Groups, and keep the study itself in a Harvous shared space.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "The group’s shared study trail",
+        "them": "Member lists, attendance, events, and group sign-ups"
+      },
+      {
+        "label": "Group chat",
+        "harvous": "None — notes, not messages",
+        "them": "Group chat in the Church Center app"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Groups keeping their study together",
+        "them": "Churches already running on Planning Center"
+      }
+    ]
+  },
+  "band": {
+    "intro": "Band is a free group app for posts, chat, a shared calendar, polls, and live video; Harvous is only for the study — it has no chat or calendar.",
+    "seoDescription": "Harvous vs Band: Band’s free posts, chat, and calendar for group logistics, and Harvous for the notes on what your group studies.",
+    "chooseThem": "You need the whole group reachable in one free app — announcements, chat, event RSVPs, polls, photo albums, and the occasional live stream.",
+    "chooseHarvous": "You want the group’s notes on the passage kept, not lost in a feed.",
+    "harvousIsnt": "Group chat, calendars, or event RSVPs — Band handles those, free.",
+    "together": "Use Band to coordinate the meeting and Harvous to keep what the group studied once you’re there.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping a group’s study notes together",
+        "them": "Free group posts, chat, calendars, and polls"
+      },
+      {
+        "label": "Group chat",
+        "harvous": "None",
+        "them": "Built in, plus live streaming"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Groups that study the same passage",
+        "them": "Any group that needs everyone in one feed"
+      }
+    ]
+  },
+  "flock": {
+    "intro": "Flock is a group-care app built around a Prayer Wall, photo attendance, and alerts when someone starts drifting; Harvous keeps the group’s study, not its care.",
+    "seoDescription": "Harvous vs Flock: Flock’s Prayer Wall and care alerts for group leaders, and Harvous for the notes on what the group studies.",
+    "chooseThem": "You want leaders to notice people between Sundays — prayer requests with follow-up, attendance from a single group photo, and Care Alerts when someone misses three weeks in a row.",
+    "chooseHarvous": "You want what the group learned from each passage gathered and easy to revisit.",
+    "harvousIsnt": "Prayer requests or pastoral care — Flock’s Prayer Wall and Care Alerts are built for that.",
+    "together": "Track prayer and attendance in Flock, and keep the group’s study notes in a Harvous shared space.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Remembering what the group studied",
+        "them": "Prayer walls, attendance, and care alerts"
+      },
+      {
+        "label": "Prayer",
+        "harvous": "No prayer tools",
+        "them": "Prayer Wall with follow-up tracking"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Groups studying a book together",
+        "them": "Churches that want leaders caring between Sundays"
+      }
+    ]
+  },
+  "subsplash-groups": {
+    "intro": "Subsplash Groups is chat, group finder, and push announcements built into a church’s own Subsplash app; Harvous is where a group’s Bible study notes stay connected to the verses.",
+    "seoDescription": "Harvous vs Subsplash Groups: in-app church chat, group finder, and attendance, or Bible study notes that stay linked to Scripture.",
+    "chooseThem": "Your church already runs its app on Subsplash and wants members to find groups, chat, share prayer requests, and get leader announcements without leaving it. Attendance tracking and moderation come built in.",
+    "chooseHarvous": "Your group wants its study itself — notes, highlights, references — kept in one shared space that’s easy to search later.",
+    "harvousIsnt": "Church messaging, group finder, or attendance — Subsplash handles those inside your church’s app.",
+    "together": "Announce the meeting and chat in the church app, then keep what the group studied in a Harvous shared space.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Study notes with tappable Scripture references",
+        "them": "Group chat and announcements inside a branded church app"
+      },
+      {
+        "label": "Run by",
+        "harvous": "You or your group leader",
+        "them": "Your church, on its Subsplash platform"
+      },
+      {
+        "label": "Messaging",
+        "harvous": "None — notes only",
+        "them": "Group chat, DMs, polls, push notifications"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Groups keeping a record of their study",
+        "them": "Churches already on Subsplash wanting groups in-app"
+      }
+    ]
+  },
+  "called": {
+    "intro": "Called brings a ministry’s chat, groups, events, and prayer into one app with follow-up tools for leaders; Harvous keeps the Bible study those groups actually do.",
+    "seoDescription": "Harvous vs Called: a ministry hub for chat, events, and follow-up, or a place where a group’s Bible study notes stay linked to the verses.",
+    "chooseThem": "You lead a church, youth, or college ministry and want chat, events, prayer, and a directory in one place — plus Pathways and Insights to see who’s engaged and who’s going quiet.",
+    "chooseHarvous": "You want the group’s study notes kept together, each reference opening to its verse.",
+    "harvousIsnt": "Running a ministry’s communication, events, or member follow-up — Called is built for that.",
+    "together": "Organize the gathering and follow up with people in Called; keep the passage, notes, and questions in a Harvous shared space.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bible study notes that link to Scripture",
+        "them": "One ministry hub for chat, groups, events, and prayer"
+      },
+      {
+        "label": "Leader view",
+        "harvous": "A shared space of the group’s notes",
+        "them": "Tags, notes, and Insights on who’s engaged"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Leaders who want the study to last",
+        "them": "Churches, youth, and campus ministries leaving scattered group chats"
+      }
+    ]
+  },
+  "groupme": {
+    "intro": "GroupMe is free, quick group chat — polls, events, photos, even plain SMS for anyone without the app; Harvous is for study notes that need to outlast the chat.",
+    "seoDescription": "Harvous vs GroupMe: free group chat with polls and events, or Bible study notes that stay organized and linked to Scripture after the meeting.",
+    "chooseThem": "You need everyone in one thread fast — RSVPs on events, a quick poll about where to meet, photos from Sunday — and some members will only ever reply by text message.",
+    "chooseHarvous": "You want the week’s study findable later, not buried under 300 messages.",
+    "harvousIsnt": "Group chat, polls, or event RSVPs — GroupMe does those simply and for free.",
+    "together": "Keep the logistics and banter in GroupMe; drop a link to the Harvous note with the week’s passage and questions.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping study notes organized and searchable",
+        "them": "Free group chat with polls, events, and photos"
+      },
+      {
+        "label": "After a month",
+        "harvous": "Notes sorted by passage and thread",
+        "them": "A long scroll of messages to search back through"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Groups that want to revisit what they studied",
+        "them": "Leaders who need everyone reachable, app or not"
+      }
+    ]
+  },
+  "whatsapp": {
+    "intro": "WhatsApp is the messenger most people already have, worldwide; Harvous barely overlaps — it’s a notes app for Bible study, not a way to talk.",
+    "seoDescription": "Harvous vs WhatsApp: they barely overlap. Chat where your group already is; keep Bible study notes linked to Scripture in Harvous.",
+    "chooseThem": "Your group already lives there — no new app to install, voice notes and calls included, and it works the same in every country.",
+    "chooseHarvous": "You want somewhere to keep the study itself, not the conversation.",
+    "harvousIsnt": "Messaging of any kind — keep your group chat in WhatsApp.",
+    "together": "Chat in WhatsApp; share a Harvous note link there when the group needs the passage and questions.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bible study notes",
+        "them": "Messaging and calls almost everyone already uses"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Keeping what you studied",
+        "them": "Groups already chatting there"
+      }
+    ]
+  },
+  "wordgo": {
+    "intro": "WordGo is free BSF-written courses of a few weeks, with daily readings, study notes, and a group feed; Harvous keeps your notes from every course in one place.",
+    "seoDescription": "Harvous vs WordGo: free short BSF courses with daily readings and group sharing, or one place for notes that outlast every course.",
+    "chooseThem": "You want a study written for you — short daily readings, guided questions, and BSF’s written and audio notes — with friends sharing insights and prayer requests as you go. It’s always free.",
+    "chooseHarvous": "You want what you learn in each course kept together and linked to the verses.",
+    "harvousIsnt": "Writing the lesson for you — WordGo’s BSF courses do that, free.",
+    "together": "Work through a WordGo course each day; keep your answers and highlights in Harvous, threaded by book, so they’re there after the course ends.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes that connect across studies",
+        "them": "Free, guided BSF courses one to six weeks long"
+      },
+      {
+        "label": "Content",
+        "harvous": "Your own notes and templates",
+        "them": "50+ courses with daily readings and BSF study notes"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Anyone who wants their study to add up",
+        "them": "New or returning readers who want the lesson written for them"
+      }
+    ]
+  },
+  "bsf": {
+    "intro": "BSF is a free, verse-by-verse 30-week study — daily questions, group discussion, teaching, then lesson notes; Harvous keeps your answers and insights findable once the year ends.",
+    "seoDescription": "Harvous vs BSF: a free 30-week study with questions, discussion, teaching, and notes, or a place to keep what you learn for years.",
+    "chooseThem": "You want a committed weekly rhythm in community: answer the daily questions, discuss them with 8–18 people, hear a trained leader teach, then read BSF’s lesson notes. This year it’s Romans.",
+    "chooseHarvous": "You want this year’s answers next to last year’s, linked to every verse.",
+    "harvousIsnt": "A curriculum, a teacher, or a weekly class — BSF provides all three, free.",
+    "together": "Do the BSF lesson each week, and type your answers and the lecture’s key points into Harvous, so Romans is still there when you reach Hebrews.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping your notes across many studies",
+        "them": "Free 30-week, verse-by-verse study in community"
+      },
+      {
+        "label": "Weekly rhythm",
+        "harvous": "Whatever pace you set",
+        "them": "Questions, group discussion, teaching, lesson notes"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "BSF members who want their notes to last",
+        "them": "Anyone wanting deep, committed study with a group"
+      }
+    ]
+  },
+  "waha": {
+    "intro": "Waha is free audio that runs a Discovery Bible Study for you — press play, pause to discuss — in 63 languages; Harvous is where a facilitator keeps notes between meetings.",
+    "seoDescription": "Harvous vs Waha: free audio-led Discovery Bible Study in 63 languages, or a place to keep notes and follow-up between meetings.",
+    "chooseThem": "You’re starting a group and would rather facilitate than teach: Waha plays the lesson and the questions, from Creation to Christ onward, in your group’s language, with offline downloads and no ads.",
+    "chooseHarvous": "You want your own notes on each passage and each meeting kept in one place.",
+    "harvousIsnt": "Leading the meeting or teaching in other languages — Waha’s audio does that.",
+    "together": "Run the meeting with Waha; afterward, jot what the group discovered and who to follow up with in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Notes linked to the passages you studied",
+        "them": "Audio-guided Discovery Bible Study anyone can facilitate"
+      },
+      {
+        "label": "Languages",
+        "harvous": "English Bible translations",
+        "them": "63 languages, with more being added"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Facilitators keeping a record",
+        "them": "New group leaders, anywhere, in any language"
+      }
+    ]
+  },
+  "manna": {
+    "intro": "Manna is a streak-free reading rhythm — Paths that pick up where you left off, and Circles for sharing with friends; Harvous is the place for longer notes and threads.",
+    "seoDescription": "Harvous vs Manna: guilt-free daily reading with Paths and Circles, or a notes app for threaded study that outlives any plan.",
+    "chooseThem": "You want to read every day without streaks or catching up, using Paths or classic plans like M’Cheyne, and share reflections, audio and prayer in a small Circle.",
+    "chooseHarvous": "You want long-form notes that link into threads and templates.",
+    "harvousIsnt": "Daily reading plans, an audio Bible, or a Circle to pray with — Manna is built for those.",
+    "together": "Read with your Circle in Manna, then take the passage you can’t let go of into a Harvous thread.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Threads of notes across weeks",
+        "them": "Streak-free daily reading that bends with life"
+      },
+      {
+        "label": "Daily rhythm",
+        "harvous": "A daily passage, nothing to keep up",
+        "them": "Paths that pick up wherever you stopped"
+      },
+      {
+        "label": "Friends",
+        "harvous": "Shared spaces with Plus",
+        "them": "Circles: reflections, audio, prayer, group chat"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People who write to think",
+        "them": "Readers, families and small groups"
+      }
+    ]
+  },
+  "shepherd-docs": {
+    "intro": "Shepherd Docs imports your old .docx, .md and .txt files and sorts each one by the books it cites in a Scripture Index; Harvous threads notes and brings them back with Suggestions.",
+    "seoDescription": "Harvous vs Shepherd Docs: a verse-indexed archive of your sermon files, or study notes threaded, resurfaced and shared with a group.",
+    "chooseThem": "You’re a pastor with years of sermons in Word, Pages or Markdown and want them in one searchable place, sorted by book and chapter automatically, with other notes on the same chapter shown as you write.",
+    "chooseHarvous": "You want your files brought in once, then threaded, resurfaced, and shared with a small team.",
+    "harvousIsnt": "A Scripture Index of your whole archive, book by book — Shepherd Docs sorts every sermon file that way as it comes in.",
+    "together": "Keep the indexed sermon archive in Shepherd Docs, and bring the study you’re doing now into Harvous to thread and revisit.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Threading and resurfacing current study",
+        "them": "Turning an archive of sermon files into a verse index"
+      },
+      {
+        "label": "Getting notes in",
+        "harvous": "Import files, or scan a printed page",
+        "them": "Import .docx, .md and .txt files"
+      },
+      {
+        "label": "While you write",
+        "harvous": "Scripture pills open the verse",
+        "them": "See other notes on the same chapter"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Ongoing study, solo or with a group",
+        "them": "Pastors with years of sermon files to gather"
+      }
+    ]
+  },
+  "lyte": {
+    "intro": "LYTE is a general-purpose AI chat with a biblical worldview — help with an email or a hard decision — plus a Daily LYTE liturgy and challenge; Harvous is only for Bible study notes.",
+    "seoDescription": "LYTE is an everyday AI chat with a biblical worldview. Harvous is a Bible study notes app. They barely overlap — here’s how they fit together.",
+    "chooseThem": "You want an AI you can ask about anything — work, family, a tough choice — with answers that point you back to prayer, Scripture and the church, and a short daily liturgy to start the day.",
+    "chooseHarvous": "You want a place to study the Bible itself and keep what you find.",
+    "harvousIsnt": "An everyday AI assistant — LYTE is built for that, and the two barely overlap.",
+    "together": "When a LYTE answer sends you to a passage, read it in Harvous and write down what you see.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Studying a passage and keeping your notes",
+        "them": "Answering everyday questions from a biblical worldview"
+      },
+      {
+        "label": "Scope",
+        "harvous": "Bible study only",
+        "them": "Work, life and faith"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People studying Scripture closely",
+        "them": "Believers who want an AI with boundaries they trust"
+      }
+    ]
+  }
+}

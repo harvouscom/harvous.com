@@ -1,0 +1,410 @@
+{
+  "abide": {
+    "sources": [
+      "https://abide.com/"
+    ],
+    "notes": ""
+  },
+  "accordance": {
+    "sources": [
+      "https://www.accordancebible.com/History",
+      "https://www.ligonier.org/blog/accordance-8-a-review/",
+      "https://www.callapple.org/?p=13927"
+    ],
+    "notes": "accordancebible.com returned 403; features drawn from Accordance’s history page and reviews (some older). Exact current names of search features not verified."
+  },
+  "apple-notes": {
+    "sources": [
+      "https://support.apple.com/en-al/118442",
+      "https://apps.apple.com/us/app/notes/id1110145109"
+    ],
+    "notes": ""
+  },
+  "ascension": {
+    "sources": [
+      "https://ascensionpress.com/pages/ascension-app",
+      "https://ascensionpress.com/pages/ascension-app-faq"
+    ],
+    "notes": "Harvous’ translation list (KJV, NKJV, ESV, NIV, NLT, NET…) may not include a Catholic edition with deuterocanonical books — worth a check before claiming fit for Catholic readers."
+  },
+  "aura-bible": {
+    "sources": [
+      "https://www.auraofhope.com/",
+      "https://apps.apple.com/us/app/6736381898",
+      "https://learnofchrist.com/resources/aura-bible"
+    ],
+    "notes": "The Reformed/Westminster grounding comes from Aura’s own site and a third-party review."
+  },
+  "bible-gateway": {
+    "sources": [
+      "https://www.biblegateway.com/app"
+    ],
+    "notes": "Translation/audio counts from biblegateway.com/app; Plus pricing intentionally omitted."
+  },
+  "bible-memory": {
+    "sources": [
+      "https://biblememory.com"
+    ],
+    "notes": ""
+  },
+  "bible-note": {
+    "sources": [
+      "https://biblenote.ai/"
+    ],
+    "notes": ""
+  },
+  "bible-notes": {
+    "sources": [
+      "https://biblenotesapp.org/"
+    ],
+    "notes": "biblenotesapp.com now redirects to biblenotesapp.org, which lists the iOS/Android apps as “coming soon” — confirm the app is actually shipping before publishing. The old copy’s live polls, feedback and prayer requests were not found on the current site, so they were dropped."
+  },
+  "bible-study-tools": {
+    "sources": [
+      "https://www.biblestudytools.com/"
+    ],
+    "notes": ""
+  },
+  "bible-ai": {
+    "sources": [
+      "https://www.bible.ai/",
+      "https://apps.apple.com/us/app/bible-ai-chat-about-anything/id6739915445"
+    ],
+    "notes": "Third-party sites say Theology Mode voices are styled after C. S. Lewis, Spurgeon and others; the App Store listing only says “theologians,” so names are left out."
+  },
+  "bibledojo": {
+    "sources": [
+      "https://religionunplugged.com/news/2024/7/2/bibledojo-how-a-new-online-platform-mixes-faith-with-technology",
+      "https://learnofchrist.com/resources/bibledojo",
+      "https://faith.tools/app/bibledojo"
+    ],
+    "notes": "The BibleDojo site didn’t render for fetching; facts come from third-party write-ups. Reports in 2026 say only the Law genre is live, with nine more genres planned — hence “starting in biblical law.” Worth a quick check of the site."
+  },
+  "bibleproject": {
+    "sources": [
+      "https://bibleproject.com/app/",
+      "https://apps.apple.com/app/id1523687027"
+    ],
+    "notes": ""
+  },
+  "blessed": {
+    "sources": [
+      "https://www.blessedapp.com/"
+    ],
+    "notes": "The old copy mentions custom prayer lists and social sharing; the site doesn’t confirm them, so they’re left out."
+  },
+  "blue-letter-bible": {
+    "sources": [
+      "https://www.blueletterbible.org/"
+    ],
+    "notes": ""
+  },
+  "church-notes": {
+    "sources": [
+      "https://www.churchnotesapp.com/"
+    ],
+    "notes": ""
+  },
+  "craft": {
+    "sources": [
+      "https://www.craft.do/"
+    ],
+    "notes": "Craft Android support only appears in structured data on its site; left out."
+  },
+  "dwell": {
+    "sources": [
+      "https://dwellapp.io/"
+    ],
+    "notes": "Dwell is often praised for background music and listen-along text, but the homepage didn’t confirm them, so they’re left out."
+  },
+  "e-sword": {
+    "sources": [
+      "https://www.e-sword.net/"
+    ],
+    "notes": "e-Sword also has Mac (e-Sword X), iPad (HD) and iPhone (LT) apps; ‘Where notes live’ row describes the PC edition — check phrasing."
+  },
+  "esv-bible": {
+    "sources": [
+      "https://www.crossway.org/articles/introducing-the-new-esv-bible-app/",
+      "https://crossway.org/articles/dig-into-gods-word-with-the-updated-esv-bible-app-for-android",
+      "https://www.crossway.org/articles/esv-bible-for-ios-faq/"
+    ],
+    "notes": "ESV app page link in the input 404s; please check the competitor link. Plan count varies by source (50+ / 60+), so it’s kept as ‘50+’. Narrator names (e.g. Kristyn Getty) not used."
+  },
+  "evernote": {
+    "sources": [
+      "https://evernote.com/"
+    ],
+    "notes": ""
+  },
+  "faithstudy": {
+    "sources": [
+      "https://apps.apple.com/us/app/-/id6751494810"
+    ],
+    "notes": "The site copy mentions videos; the App Store listing doesn’t, so videos are left out. FaithStudy is iPhone-only and from Forerunner Technology (HK), the publisher of Blessedid — the blessedid.com link carries no product info, so it’s worth a check that this is the intended app."
+  },
+  "glorify": {
+    "sources": [
+      "https://www.glorify.global/app",
+      "https://learnofchrist.com/resources/glorify",
+      "https://bibleinyear.com/blog/best-daily-devotional-apps"
+    ],
+    "notes": "Glorify’s premium tier name/price varies across sources (Glorify+ ~$59.99/yr reported); omitted. Journaling described by reviewers, not on the current homepage."
+  },
+  "goodnotes": {
+    "sources": [
+      "https://www.goodnotes.com",
+      "https://www.goodnotes.com/pricing"
+    ],
+    "notes": ""
+  },
+  "google-docs": {
+    "sources": [
+      "https://docs.google.com"
+    ],
+    "notes": "Google Docs feature claims (comments, suggestion mode, version history) are well known; not re-verified on a page this run."
+  },
+  "google-keep": {
+    "sources": [
+      "https://keep.google.com",
+      "https://arekore.app/en/productivity/google-keep-complete-guide"
+    ],
+    "notes": ""
+  },
+  "hallow": {
+    "sources": [
+      "https://hallow.com/",
+      "https://learnofchrist.com/resources/hallow"
+    ],
+    "notes": "Hallow added Hallow AI (Feb 2026) and Kids Profiles (May 2026) per secondary sources; not used. Verify Pray25 naming is still current."
+  },
+  "illuminate": {
+    "sources": [
+      "https://www.illuminatebible.com/"
+    ],
+    "notes": "The site no longer describes “1,000+ teachings” or a specific tradition, so that claim from the old copy is dropped."
+  },
+  "life-bible": {
+    "sources": [
+      "https://lifebible.com/features"
+    ],
+    "notes": "Pricing model not stated on lifebible.com; omitted. Life Bible is from Tecarta."
+  },
+  "logos": {
+    "sources": [
+      "https://www.logos.com/grow/release-november-2025/",
+      "https://en.wikipedia.org/wiki/Logos_Bible_Software"
+    ],
+    "notes": "AI feature tiers (Premium and up) change often; not mentioned in copy."
+  },
+  "lumen": {
+    "sources": [
+      "https://www.withlumen.app/about",
+      "https://github.com/andrewhuang427/lumen-ai",
+      "https://learnofchrist.com/resources/lumen"
+    ],
+    "notes": "Feature details (ESV, community feed) come from a third-party review; Lumen’s own site is behind sign-in. Pricing is unpublished."
+  },
+  "notion": {
+    "sources": [
+      "https://www.notion.com/product"
+    ],
+    "notes": ""
+  },
+  "obsidian": {
+    "sources": [
+      "https://obsidian.md/",
+      "https://jwatte.com/blog/blog-obsidian-local-first-notes/"
+    ],
+    "notes": ""
+  },
+  "olive-tree": {
+    "sources": [
+      "https://www.olivetree.com/",
+      "https://bibleinyear.com/blog/olive-tree-bible-app",
+      "https://help.olivetree.com/hc/en-us/articles/360018338672-Windows-Study-Center"
+    ],
+    "notes": ""
+  },
+  "onenote": {
+    "sources": [
+      "https://onenote.cloud.microsoft/",
+      "https://www.uctoday.com/unified-communications/microsoft-reveals-onenote-revamp/",
+      "https://www.anoopcnair.com/copilot-in-onenote-supports-inked-notes-written/"
+    ],
+    "notes": ""
+  },
+  "pencil-bible": {
+    "sources": [
+      "https://pencilbible.com/"
+    ],
+    "notes": ""
+  },
+  "pocketbible": {
+    "sources": [
+      "https://www.laridian.com/"
+    ],
+    "notes": ""
+  },
+  "pray-com": {
+    "sources": [
+      "https://www.pray.com/",
+      "https://learnofchrist.com/resources/pray-com",
+      "https://pushpay.com/?p=18264"
+    ],
+    "notes": "Pray.com’s prayer-request/community features are described by partner and secondary sources, not its current homepage — worth a quick check."
+  },
+  "readscripture": {
+    "sources": [
+      "https://www.readscripture.org/",
+      "https://apps.apple.com/us/app/-/id1067865974"
+    ],
+    "notes": "Could not confirm whether ReadScripture has any notes feature; table says ‘Not a focus’ — check. Free per App Store listing."
+  },
+  "reflect": {
+    "sources": [
+      "https://reflect.app",
+      "https://outlinersoftware.com/topics/viewt/12690"
+    ],
+    "notes": "Reflect is mid-transition: the original subscription app continues, while ‘Reflect Open’ (free, open-source Mac app, local Markdown, iCloud/Git sync, bring-your-own AI key) launched mid-2026 with iPhone in beta. Copy avoids encryption and calendar claims and prices; verify reflect.app wording before publishing."
+  },
+  "simplenote": {
+    "sources": [
+      "https://simplenote.com"
+    ],
+    "notes": ""
+  },
+  "spirit-notes": {
+    "sources": [
+      "https://spiritnotes.com/"
+    ],
+    "notes": "spiritnotes.app redirects to spiritnotes.com; pricing isn’t stated on the site, so the model was left out."
+  },
+  "supernotes": {
+    "sources": [
+      "https://supernotes.app"
+    ],
+    "notes": ""
+  },
+  "through-the-word": {
+    "sources": [
+      "https://throughtheword.org/"
+    ],
+    "notes": ""
+  },
+  "youversion": {
+    "sources": [
+      "https://www.youversion.com/bible-app",
+      "https://deals.christianpost.com/post/top-4-bible-apps-in-north-america-for-2026-enhancing-your-digital-devotion"
+    ],
+    "notes": "Version/language counts from youversion.com (3.5k+ versions, 2,300 languages). ‘Plans with friends’ is long-standing but not on the fetched page; a 2026 article calls it Community Plans."
+  },
+  "pulpit-ai": {
+    "sources": [
+      "https://www.pulpitai.com/"
+    ],
+    "notes": ""
+  },
+  "sermonary": {
+    "sources": [
+      "https://sermonary.com/"
+    ],
+    "notes": "Sermonary’s site now names its views Calendar, Study, Write, Present, Recap, Insights, Multiply; it no longer says ‘podium mode’ or ‘blocks’, so the copy uses the current names."
+  },
+  "sermons-app": {
+    "sources": [
+      "https://www.sermons.app/"
+    ],
+    "notes": "Sermons.app also advertises ‘searchable sermon memory’ for illustrations and series threads, which overlaps Harvous; copy leans on the Bible reader instead."
+  },
+  "sermons-com": {
+    "sources": [
+      "https://sermons.com/"
+    ],
+    "notes": ""
+  },
+  "planning-center-groups": {
+    "sources": [
+      "https://www.planningcenter.com/groups"
+    ],
+    "notes": ""
+  },
+  "band": {
+    "sources": [
+      "https://band.us/",
+      "https://apps.apple.com/kr/app/%EB%B0%B4%EB%93%9C-%EB%AA%A8%EC%9E%84%EC%9D%B4-%EC%89%AC%EC%9B%8C%EC%A7%84%EB%8B%A4/id542613198?l=en-GB"
+    ],
+    "notes": "band.us could not be fetched directly; features taken from the App Store listing and release notes."
+  },
+  "flock": {
+    "sources": [
+      "https://flock.church/"
+    ],
+    "notes": ""
+  },
+  "subsplash-groups": {
+    "sources": [
+      "https://www.subsplash.com/product/messaging-for-churches"
+    ],
+    "notes": ""
+  },
+  "called": {
+    "sources": [
+      "https://called.app/"
+    ],
+    "notes": "Called pricing not stated on site (free trial/demo only); omitted."
+  },
+  "groupme": {
+    "sources": [
+      "https://groupme.com/",
+      "https://apps.apple.com/us/app/join/id392796698"
+    ],
+    "notes": ""
+  },
+  "whatsapp": {
+    "sources": [
+      "https://www.whatsapp.com/"
+    ],
+    "notes": ""
+  },
+  "wordgo": {
+    "sources": [
+      "https://www.bsfinternational.org/wordgo/",
+      "https://learnofchrist.com/resources/wordgo"
+    ],
+    "notes": "Previous copy claimed a ‘per-course journal’; the official WordGo page doesn’t mention one (a third-party review mentions a private journal), so it was left out."
+  },
+  "bsf": {
+    "sources": [
+      "https://www.bsfinternational.org/",
+      "https://www.bsfinternational.org/what-to-expect/"
+    ],
+    "notes": ""
+  },
+  "waha": {
+    "sources": [
+      "https://waha.app/eng/app/",
+      "https://alternativeto.net/software/waha/about"
+    ],
+    "notes": "Waha’s official page didn’t state free/ad-free; that’s from AlternativeTo and faith.tools. Previous copy said 50+ languages; official page now says 63."
+  },
+  "manna": {
+    "sources": [
+      "https://gathermanna.com/",
+      "https://apps.apple.com/app/id6757349977"
+    ],
+    "notes": "Manna (Blake Croft) also has a ‘Remember’ tab that resurfaces past notes and highlights — close to Harvous Suggestions, so resurfacing is not claimed as a difference. Native iPhone/iPad app vs Harvous web-only. Several unrelated apps share the name Manna; facts taken from the App Store listing that links gathermanna.com."
+  },
+  "shepherd-docs": {
+    "sources": [
+      "https://www.shepherddocs.com/"
+    ],
+    "notes": "Assumes Harvous has no bulk file import (not listed in Harvous facts) — confirm before publishing the harvousIsnt line."
+  },
+  "lyte": {
+    "sources": [
+      "https://asklyte.ai/"
+    ],
+    "notes": ""
+  }
+}
