@@ -69,7 +69,7 @@ const laneLine = (type: string) => {
 /* A lane's icon strip, hand-ordered where we've picked one (best-looking icons
    first); anything not listed keeps its popularity order after them. */
 const STRIP_ORDER: Record<string, string[]> = {
-  "Bible Notes": ["bible-notes", "velora", "spirit-notes", "bible-note", "sermon-keeper", "church-notes", "pencil-bible", "digible"],
+  "Bible Notes": ["velora", "spirit-notes", "pencil-bible", "bible-note", "sermon-keeper", "church-notes", "digible"],
 };
 const stripOrder = (type: string, apps: CompareEntry[]) => {
   const order = STRIP_ORDER[type];

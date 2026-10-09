@@ -53,12 +53,6 @@
     ],
     "notes": ""
   },
-  "bible-notes": {
-    "sources": [
-      "https://biblenotesapp.org/"
-    ],
-    "notes": "biblenotesapp.com now redirects to biblenotesapp.org, which lists the iOS/Android apps as “coming soon” — confirm the app is actually shipping before publishing. The old copy’s live polls, feedback and prayer requests were not found on the current site, so they were dropped."
-  },
   "bible-study-tools": {
     "sources": [
       "https://www.biblestudytools.com/"
