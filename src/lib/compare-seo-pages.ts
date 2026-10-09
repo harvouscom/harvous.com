@@ -23,6 +23,7 @@ export type ComparePick = {
   drawback: string;
   compareHref: string;
   isHarvous?: boolean;
+  status?: string;
 };
 
 export type WhenBlock = {
@@ -133,7 +134,6 @@ const SEO_PAGES: CompareSeoPage[] = [
       "bible-note",
       "pencil-bible",
       "church-notes",
-      "bible-notes",
       "obsidian",
       "notion",
       "apple-notes",
@@ -227,10 +227,10 @@ const SEO_PAGES: CompareSeoPage[] = [
     guideDescription: "Notes-first without sermon transcription",
     seoTitle: "Best Bible Note alternative — Harvous",
     seoDescription:
-      "Looking for a Bible Note alternative? Compare Harvous, Church Notes, Bible Notes, Spirit Notes, and Pencil Bible — notes-first options without AI sermon transcription.",
+      "Looking for a Bible Note alternative? Compare Harvous, Church Notes, Spirit Notes, and Pencil Bible — notes-first options without AI sermon transcription.",
     h1: "Best Bible Note alternative",
     lead: "Bible Note focuses on AI sermon transcription. These alternatives are notes-first — your reflections, linked to Scripture, findable later.",
-    pickSlugs: ["church-notes", "bible-notes", "spirit-notes", "pencil-bible"],
+    pickSlugs: ["church-notes", "spirit-notes", "pencil-bible"],
     whenToChoose: [
       chooseHarvous("Bible Notes"),
       {
@@ -254,8 +254,9 @@ const SEO_PAGES: CompareSeoPage[] = [
       "church-notes",
       "harvous",
       "bible-note",
-      "bible-notes",
       "spirit-notes",
+      "velora",
+      "sermon-keeper",
       "goodnotes",
     ],
     honestNote:
@@ -290,7 +291,6 @@ const SEO_PAGES: CompareSeoPage[] = [
       "spirit-notes",
       "bible-note",
       "church-notes",
-      "bible-notes",
       "obsidian",
       "notion",
       "apple-notes",
@@ -323,7 +323,6 @@ const SEO_PAGES: CompareSeoPage[] = [
       "bible-note",
       "pencil-bible",
       "church-notes",
-      "bible-notes",
       "obsidian",
       "notion",
       "logos",
@@ -355,7 +354,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       "Looking for a Church Notes alternative? Compare Harvous, Bible Note, Spirit Notes, and Pencil Bible — notes-first options that sit beside the Bible app you already use.",
     h1: "Best Church Notes alternative",
     lead: "Church Notes combines sermon notes, SOAP, and a Bible reader. These alternatives are notes-first — or lighter tools for the same jobs.",
-    pickSlugs: ["bible-note", "spirit-notes", "pencil-bible", "bible-notes", "goodnotes"],
+    pickSlugs: ["bible-note", "spirit-notes", "pencil-bible", "goodnotes"],
     whenToChoose: [
       chooseHarvous("Bible Notes"),
       {
@@ -375,32 +374,12 @@ const SEO_PAGES: CompareSeoPage[] = [
       "Looking for a Spirit Notes alternative? Compare Harvous, Church Notes, Bible Note, and Pencil Bible — notes-first options for scripture-linked study notes.",
     h1: "Best Spirit Notes alternative",
     lead: "Spirit Notes is a dedicated Bible notes peer. These alternatives cover the same notes-first job — or adjacent tools for sermon and journaling.",
-    pickSlugs: ["church-notes", "bible-note", "pencil-bible", "bible-notes", "goodnotes"],
+    pickSlugs: ["church-notes", "bible-note", "pencil-bible", "goodnotes"],
     whenToChoose: [
       chooseHarvous("Bible Notes"),
       {
         heading: "Choose Spirit Notes if…",
         body: "You already like its dedicated Bible notes workflow and don’t need a different notes-first home.",
-      },
-    ],
-  },
-  {
-    kind: "alternative",
-    slug: "bible-notes-alternative",
-    targetSlug: "bible-notes",
-    guideLabel: "Best Bible Notes alternative",
-    guideDescription: "Notes-first without live transcription focus",
-    seoTitle: "Best Bible Notes alternative — Harvous",
-    seoDescription:
-      "Looking for a Bible Notes alternative? Compare Harvous, Church Notes, Bible Note, Spirit Notes, and Pencil Bible — notes-first options focused on what you write, not live transcription.",
-    h1: "Best Bible Notes alternative",
-    lead: "Bible Notes leans toward live capture and transcription. These alternatives are notes-first — your reflections, linked to Scripture, findable later.",
-    pickSlugs: ["church-notes", "bible-note", "spirit-notes", "pencil-bible", "goodnotes"],
-    whenToChoose: [
-      chooseHarvous("Bible Notes"),
-      {
-        heading: "Choose Bible Notes if…",
-        body: "You want live sermon capture and transcription-style workflows more than a long-term written study journal.",
       },
     ],
   },
@@ -1247,6 +1226,7 @@ function entryToPick(entry: CompareEntry): ComparePick {
     bestAt: entry.bestAt,
     drawback: drawbackFor(entry),
     compareHref: `/compare/${entry.slug}/`,
+    status: entry.status,
   };
 }
 

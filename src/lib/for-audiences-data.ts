@@ -349,7 +349,7 @@ const audiences: ForAudience[] = [
     featuresHeading: "What Sunday notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you have — so Sunday doesn't disappear by Monday.",
-    compareSlugs: ["bible-note", "bible-notes", "church-notes", "pencil-bible", "spirit-notes", "goodnotes"],
+    compareSlugs: ["bible-note", "church-notes", "pencil-bible", "spirit-notes", "goodnotes"],
     useCaseSlugs: ["sermon-notes"],
     testimonialId: "teaella",
   },

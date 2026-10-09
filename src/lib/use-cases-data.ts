@@ -166,7 +166,7 @@ const useCases: UseCase[] = [
     featuresHeading: "What sermon notes need to survive the week",
     featuresLead:
       "Link scripture, group by series, and search when half a phrase is all you remember — the pieces that keep Sunday from fading by Monday.",
-    compareSlugs: ["bible-note", "bible-notes", "church-notes", "pencil-bible", "spirit-notes"],
+    compareSlugs: ["bible-note", "church-notes", "pencil-bible", "spirit-notes"],
     relatedUseCaseSlugs: ["sermon-prep"],
     testimonialId: "teaella",
   },

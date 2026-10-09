@@ -229,36 +229,6 @@
       }
     ]
   },
-  "bible-notes": {
-    "intro": "Bible Notes is a sermon notebook with auto-completing verses, timestamped recordings and the B.R.E.A.D. devotion method; Harvous connects notes across weeks with threads and brings them back.",
-    "seoDescription": "Harvous vs Bible Notes: a sermon notebook with auto-complete verses and timestamped audio, or study notes threaded across weeks.",
-    "chooseThem": "You want Sunday notes tagged by pastor, date and theme, with verses that finish themselves and a recording you can jump back into at the moment you wrote each line.",
-    "chooseHarvous": "You want sermon notes and personal study in one place, linked by threads.",
-    "harvousIsnt": "Recording sermons alongside your notes — Bible Notes ties each line to a moment in the audio.",
-    "together": "Take notes and record in Bible Notes on Sunday, then carry what matters into a Harvous thread you keep adding to.",
-    "table": [
-      {
-        "label": "Best at",
-        "harvous": "Linking study across weeks",
-        "them": "Sermon notes with auto-filled verses and timestamped audio"
-      },
-      {
-        "label": "Recording",
-        "harvous": "No audio recording",
-        "them": "Timestamped recording to jump back to each note"
-      },
-      {
-        "label": "Devotion method",
-        "harvous": "SOAP, inductive, your own",
-        "them": "Built-in B.R.E.A.D. devotion method"
-      },
-      {
-        "label": "Ideal for",
-        "harvous": "People building on study week to week",
-        "them": "Churchgoers who want a focused Sunday notebook on their phone"
-      }
-    ]
-  },
   "bible-study-tools": {
     "intro": "Bible Study Tools is a free, ad-supported reference site with 30+ translations, Strong’s concordance, interlinear and lexicons, and classic commentaries; Harvous is where your own findings get written down and connected.",
     "seoDescription": "Harvous vs Bible Study Tools: free concordances, lexicons and commentaries online, or a place to keep and connect what you find.",
@@ -1704,36 +1674,6 @@
       }
     ]
   },
-  "shepherd-docs": {
-    "intro": "Shepherd Docs imports your old .docx, .md and .txt files and sorts each one by the books it cites in a Scripture Index; Harvous threads notes and brings them back with Suggestions.",
-    "seoDescription": "Harvous vs Shepherd Docs: a verse-indexed archive of your sermon files, or study notes threaded, resurfaced and shared with a group.",
-    "chooseThem": "You’re a pastor with years of sermons in Word, Pages or Markdown and want them in one searchable place, sorted by book and chapter automatically, with other notes on the same chapter shown as you write.",
-    "chooseHarvous": "You want your files brought in once, then threaded, resurfaced, and shared with a small team.",
-    "harvousIsnt": "A Scripture Index of your whole archive, book by book — Shepherd Docs sorts every sermon file that way as it comes in.",
-    "together": "Keep the indexed sermon archive in Shepherd Docs, and bring the study you’re doing now into Harvous to thread and revisit.",
-    "table": [
-      {
-        "label": "Best at",
-        "harvous": "Threading and resurfacing current study",
-        "them": "Turning an archive of sermon files into a verse index"
-      },
-      {
-        "label": "Getting notes in",
-        "harvous": "Import files, or scan a printed page",
-        "them": "Import .docx, .md and .txt files"
-      },
-      {
-        "label": "While you write",
-        "harvous": "Scripture pills open the verse",
-        "them": "See other notes on the same chapter"
-      },
-      {
-        "label": "Ideal for",
-        "harvous": "Ongoing study, solo or with a group",
-        "them": "Pastors with years of sermon files to gather"
-      }
-    ]
-  },
   "lyte": {
     "intro": "LYTE is a general-purpose AI chat with a biblical worldview — help with an email or a hard decision — plus a Daily LYTE liturgy and challenge; Harvous is only for Bible study notes.",
     "seoDescription": "LYTE is an everyday AI chat with a biblical worldview. Harvous is a Bible study notes app. They barely overlap — here’s how they fit together.",
@@ -1756,6 +1696,186 @@
         "label": "Ideal for",
         "harvous": "People studying Scripture closely",
         "them": "Believers who want an AI with boundaries they trust"
+      }
+    ]
+  },
+  "sermon-keeper": {
+    "intro": "Sermon Keeper records the sermon while you type, timestamps every note and turns the audio into an AI transcript; Harvous carries those sermon notes into a longer study, linked by threads.",
+    "seoDescription": "Sermon Keeper records and transcribes the sermon as you take notes. Harvous turns sermon notes into ongoing study with Scripture pills and threads.",
+    "chooseThem": "You want one tap to record the sermon, notes stamped to the exact moment you wrote them, and an AI transcript with a summary and key points afterward — on iPhone, with notes in your own iCloud.",
+    "chooseHarvous": "You want Sunday’s notes to join the rest of your study — Scripture pills, a full Bible reader and threads across weeks.",
+    "harvousIsnt": "Recording or transcribing the sermon itself — Sermon Keeper captures the audio and the words for you.",
+    "together": "Record and transcribe in Sermon Keeper on Sunday, then bring the key points into Harvous and thread them with the week’s reading.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Growing sermon notes into ongoing study",
+        "them": "Recording sermons with timestamped notes and AI transcripts"
+      },
+      {
+        "label": "During the service",
+        "harvous": "Type notes; references become Scripture pills",
+        "them": "Audio recording, timestamps and verse autocomplete"
+      },
+      {
+        "label": "After Sunday",
+        "harvous": "Threads and Suggestions bring it back",
+        "them": "An AI transcript, summary and key points"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Listeners who study the passage all week",
+        "them": "Busy churchgoers who want every word captured"
+      }
+    ]
+  },
+  "digible": {
+    "intro": "Digible is a digital journaling Bible — draw, letter and add stickers right on the page with Apple Pencil; Harvous keeps typed notes that link verses and connect over weeks of study.",
+    "seoDescription": "Digible lets you draw and letter on Scripture like a loaded journaling Bible. Harvous keeps typed study notes with Scripture pills, threads and compare.",
+    "chooseThem": "You love the feel of a journaling Bible — hand lettering, highlights, photos and stickers on the page with Apple Pencil — plus Study Paths and Style Studio themes for each Bible.",
+    "chooseHarvous": "You think in typed notes and want them connected — Scripture pills, threads and Suggestions that bring past study back.",
+    "harvousIsnt": "Drawing, hand lettering or decorating the page — Digible’s Apple Pencil canvas is made for that.",
+    "together": "Journal creatively on the page in Digible, and keep longer study notes and threads in Harvous.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Typed study notes that connect over time",
+        "them": "Creative Bible journaling with Apple Pencil on the page"
+      },
+      {
+        "label": "How you write",
+        "harvous": "Typed notes, templates, Scripture pills",
+        "them": "Handwriting, lettering, stickers, photos and text boxes"
+      },
+      {
+        "label": "Where it runs",
+        "harvous": "Web; Apple apps coming",
+        "them": "iPad, iPhone and Android apps"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Note-takers following a theme over weeks",
+        "them": "Visual journalers who want a digital loaded Bible"
+      }
+    ]
+  },
+  "she-reads-truth": {
+    "intro": "She Reads Truth pairs each day’s Scripture with a devotional and a community of women reading along; Harvous keeps what you notice, linked by Scripture pills and threads.",
+    "seoDescription": "She Reads Truth offers daily reading plans, devotionals and Study Books for women. Harvous keeps your own study notes, highlights and threads.",
+    "chooseThem": "You want a beautifully made reading plan with Scripture and a devotional each day, a print Study Book to match, and the company of women reading the same passage.",
+    "chooseHarvous": "You want your own notes on those passages to stay connected — threads, highlights and Suggestions that bring them back.",
+    "harvousIsnt": "Daily reading plans or written devotionals — She Reads Truth does those with real care.",
+    "together": "Read the day’s plan in She Reads Truth, then write what stood out in Harvous and thread it with the rest of the study.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Keeping and connecting your own study notes",
+        "them": "Daily reading plans with Scripture and a devotional"
+      },
+      {
+        "label": "Daily rhythm",
+        "harvous": "Activity home with a daily passage",
+        "them": "A new plan day each morning, plus Study Books in print"
+      },
+      {
+        "label": "Community",
+        "harvous": "Shared spaces for a small group (Plus)",
+        "them": "Comments alongside women reading the same day"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Readers who want their notes to build up",
+        "them": "Women who want a guided plan and devotional"
+      }
+    ]
+  },
+  "day-one": {
+    "intro": "Day One is a private, encrypted journal that captures your life with photos, places, weather and On This Day memories; Harvous is a journal shaped around Scripture, where references open the verse.",
+    "seoDescription": "Day One is an encrypted life journal with photos, On This Day and printed books. Harvous keeps Bible study notes with Scripture pills and a reader.",
+    "chooseThem": "You want one private journal for your whole life — end-to-end encryption, photos and audio, automatic weather and location, On This Day, streaks and printed books — across iPhone, iPad, Mac and Apple Watch.",
+    "chooseHarvous": "Your journaling centers on Scripture — references become pills, with a Bible reader, highlights and threads beside your notes.",
+    "harvousIsnt": "A life journal of photos, places and daily memories — Day One captures that beautifully.",
+    "together": "Keep your life journal in Day One and your Bible study in Harvous, where every verse you mention opens in place.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bible study notes with Scripture built in",
+        "them": "Private, encrypted journaling of everyday life"
+      },
+      {
+        "label": "Looking back",
+        "harvous": "Suggestions resurface past notes",
+        "them": "On This Day memories, a map view and printed books"
+      },
+      {
+        "label": "Scripture",
+        "harvous": "11 translations and Scripture pills",
+        "them": "Verses typed or pasted into an entry"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "Anyone journaling through the Bible",
+        "them": "Anyone keeping a lifelong personal journal"
+      }
+    ]
+  },
+  "notability": {
+    "intro": "Notability is a handwriting-first notebook that records audio alongside your notes and turns them into summaries and quizzes; Harvous is built for Bible study, with Scripture pills and a reader.",
+    "seoDescription": "Notability pairs handwriting with audio recording, summaries and quizzes. Harvous keeps Bible study notes with Scripture pills, translations and threads.",
+    "chooseThem": "You take notes by hand on iPad, want audio recorded alongside them with live transcription, and like having summaries, flashcards and quizzes made from class or meeting notes.",
+    "chooseHarvous": "You study the Bible and want each reference to open the verse, with translations compared and notes threaded.",
+    "harvousIsnt": "Handwriting with a pen, marking up PDFs or recording lectures — Notability is made for that.",
+    "together": "Handwrite or record a class in Notability, then keep the Scripture study in Harvous, where every reference becomes a pill.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Bible study notes with Scripture built in",
+        "them": "Handwritten notes with audio recording and transcription"
+      },
+      {
+        "label": "How you write",
+        "harvous": "Typed notes and templates; scan a printed page",
+        "them": "Apple Pencil handwriting, typing and PDF markup"
+      },
+      {
+        "label": "Review",
+        "harvous": "Review exercises from your own verses (Plus)",
+        "them": "AI summaries, flashcards and quizzes from notes"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People studying Scripture over time",
+        "them": "Students and professionals who write by hand"
+      }
+    ]
+  },
+  "velora": {
+    "intro": "Velora listens along in church, pulling up each passage as your pastor preaches and turning the sermon into a transcript you can ask questions of; Harvous is where your own study builds week to week.",
+    "seoDescription": "Harvous vs Velora: a smart Bible that follows the sermon live and transcribes it, or your own study notes, threaded and brought back.",
+    "chooseThem": "You want the sermon itself captured — Relay brings up each passage as it’s preached, then a transcript, an outline for your group, and Ask Velora for questions about your church’s teaching. Bookmarks now let you highlight and annotate verses too.",
+    "chooseHarvous": "You want your own notes on a passage, threaded and brought back as you keep studying.",
+    "harvousIsnt": "Following a sermon live or transcribing it — Velora listens in the room and does that for you.",
+    "together": "Let Velora capture Sunday’s sermon, then write what stuck with you in Harvous, where it threads into the study you’re already doing.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own study, connected over time",
+        "them": "Capturing the sermon as it’s preached"
+      },
+      {
+        "label": "On Sunday",
+        "harvous": "Type, or scan your paper notes",
+        "them": "Relay pulls up each passage as it’s referenced"
+      },
+      {
+        "label": "Afterward",
+        "harvous": "Threads and Suggestions bring notes back",
+        "them": "Transcript, outline, and Ask Velora on the sermon"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People building on study week to week",
+        "them": "Churchgoers who want every sermon kept and searchable"
       }
     ]
   }

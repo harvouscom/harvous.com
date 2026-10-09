@@ -12,6 +12,7 @@
  * data change and the layout no longer fits, they fall back to a plain run
  * of smalls with the tail widened.
  */
+import CompareStatus from "../../components/next/CompareStatus.astro";
 import NextLayout from "../../layouts/NextLayout.astro";
 import { ogCard } from "../../lib/og-card.ts";
 import ClosingCall from "../../components/next/ClosingCall.astro";
@@ -43,8 +44,8 @@ const entries = getCompareEntries();
 const total = entries.length;
 const types = getCompareTypes();
 
-/* The live homepage's compare row leads with Apple Notes. */
-const FEATURED_SLUG = "apple-notes";
+/* Spirit Notes: the Bible notes app closest to what someone choosing Harvous is weighing. */
+const FEATURED_SLUG = "spirit-notes";
 const featured = getCompareBySlug(FEATURED_SLUG) ?? entries[0];
 
 const iconSrc = (e: CompareEntry) => compareIconSrc(e.slug);
@@ -65,18 +66,30 @@ const laneLine = (type: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+/* A lane's icon strip, hand-ordered where we've picked one (best-looking icons
+   first); anything not listed keeps its popularity order after them. */
+const STRIP_ORDER: Record<string, string[]> = {
+  "Bible Notes": ["velora", "spirit-notes", "pencil-bible", "bible-note", "sermon-keeper", "church-notes", "digible"],
+};
+const stripOrder = (type: string, apps: CompareEntry[]) => {
+  const order = STRIP_ORDER[type];
+  if (!order) return apps;
+  const rank = (e: CompareEntry) => (order.includes(e.slug) ? order.indexOf(e.slug) : order.length);
+  return [...apps].sort((a, b) => rank(a) - rank(b));
+};
+
 type Size = "large" | "medium" | "small";
 type Slot = { kind: "featured" } | { kind: "lane"; type: string; size: Size };
 
 /* Rows (12 tracks): L8+F4 · S4 S4 S4 · M6 M6 · S4+L8 · M6 M6.
    At two columns, L and F run full width and the rest pair off evenly. */
 const LAYOUT: { type: string; size: Size }[] = [
-  /* Bible Notes leads: the apps someone choosing Harvous most often weighs it against. */
-  { type: "Bible Notes", size: "large" },
+  /* General Notes leads: where most people keep their study before they find Harvous. */
+  { type: "General Notes", size: "large" },
   { type: "Prayer & Meditation", size: "small" },
   { type: "AI Guided Bible", size: "small" },
   { type: "Sermon Prep", size: "small" },
-  { type: "General Notes", size: "medium" },
+  { type: "Bible Notes", size: "medium" },
   { type: "Bible Reader", size: "medium" },
   { type: "Group Study", size: "small" },
   { type: "Small Groups", size: "large" },
@@ -211,7 +224,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
                   </span>
                   <span class="cf__text">
                     <span class="cf__label">Featured</span>
-                    <span class="cf__name">Harvous vs {featured.name}</span>
+                    <span class="cf__name">Harvous vs {featured.name}<CompareStatus status={featured.status} /></span>
                     <span class="cf__line">{featured.intro}</span>
                     <span class="cf__btn">See the comparison</span>
                   </span>
@@ -219,7 +232,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
               </li>
             );
           }
-          const apps = sortByPopularity(getCompareByType(slot.type));
+          const apps = stripOrder(slot.type, sortByPopularity(getCompareByType(slot.type)));
           const tone = TONES[i % TONES.length];
           return (
             <li class:list={["cmp-slot", `cmp-slot--${slot.size}`]}>
@@ -356,7 +369,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
                     <img src={iconSrc(e)} alt="" width="64" height="64" loading="lazy" />
                   </span>
                   <span class="ct__text">
-                    <span class="ct__name">Harvous vs {e.name}</span>
+                    <span class="ct__name">Harvous vs {e.name}<CompareStatus status={e.status} /></span>
                     <span class="ct__line">{theirHalf(e)}.</span>
                   </span>
                   <svg class="ct__chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -494,7 +507,9 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     flex-wrap: wrap;
     justify-content: center;
     align-content: flex-start;
-    gap: var(--shadow-room) calc(var(--tile) * 0.18);
+    /* The row gap is wider than the room under the first row, so the wrapped
+       row starts well below the cut and none of its outline peeks in. */
+    gap: calc(var(--shadow-room) * 2) calc(var(--tile) * 0.18);
     height: calc(var(--tile) + var(--shadow-room));
     padding: clamp(2rem, 3.5vw, 2.75rem) clamp(1rem, 2.5vw, 1.75rem) 0;
     box-sizing: content-box;

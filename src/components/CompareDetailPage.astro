@@ -14,6 +14,7 @@ import { withHarvousRef } from "../lib/outbound.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
 import { composeCompareIntro, featureLabel, getCompareCtaHeading, getHarvousPosition } from "../lib/compare-harvous-positioning.ts";
 import { getCompareAngle } from "../lib/compare-app-angles.ts";
+import CompareStatus from "./next/CompareStatus.astro";
 import { backdropForImage } from "../lib/next/icon-backdrop.ts";
 import { backdropSrc } from "../lib/next/content.ts";
 
@@ -61,6 +62,7 @@ const theirHalf = (e: CompareEntry) => {
       </a>
       <p class="cd-kicker">{entry.competitorType}</p>
       <h1 class="nx-display cd-title">Harvous vs {entry.name}</h1>
+      {entry.status && <p class="cd-status"><CompareStatus status={entry.status} /></p>}
       <p class="nx-lead cd-lead">{intro}</p>
     </header>
 
@@ -153,7 +155,7 @@ const theirHalf = (e: CompareEntry) => {
               <a class="cd-row" href={`/compare/${e.slug}/`} data-fathom-track={fathomCompare.detailRelated}>
                 <span class="cd-row__mark"><img src={icon(e.slug)} alt="" width="48" height="48" loading="lazy" /></span>
                 <span class="cd-row__text">
-                  <span class="cd-row__title">Harvous vs {e.name}</span>
+                  <span class="cd-row__title">Harvous vs {e.name}<CompareStatus status={e.status} /></span>
                   <span class="cd-row__desc">{theirHalf(e)}.</span>
                 </span>
                 <svg class="cd-row__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>
@@ -235,7 +237,7 @@ const theirHalf = (e: CompareEntry) => {
   @media (min-width: 48rem) { .cd-choose { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .cd-card { padding: 1.5rem; border-radius: 1.5rem; background: var(--color-warm); }
   .cd-card--harvous { background: color-mix(in oklab, var(--color-sky) 40%, var(--color-paper)); }
-  .cd-card__head { display: flex; align-items: center; gap: 0.65rem; margin: 0; font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; color: var(--color-ink); }
+  .cd-card__head { display: flex; align-items: center; gap: 0.65rem; margin: 0; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--color-ink); }
   .cd-card__head img { width: 2.25rem; height: 2.25rem; border-radius: 26%; background: transparent; box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06); }
   .cd-card > p:not(.cd-card__head) { margin: 0.85rem 0 0; line-height: 1.6; color: var(--color-ink-soft); }
   .cd-visit { display: inline-block; margin-top: 0.9rem; font-size: 0.875rem; color: var(--color-ink-soft); text-decoration: none; }
@@ -257,7 +259,7 @@ const theirHalf = (e: CompareEntry) => {
   .cd-note p { margin: 0.5rem 0 0; line-height: 1.6; color: var(--color-ink-soft); }
 
   .cd-sec { max-width: calc(56rem + 2 * var(--nx-gutter)); padding-top: clamp(4rem, 9vw, 6rem); }
-  .cd-h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 500; letter-spacing: -0.025em; }
+  .cd-h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 600; letter-spacing: -0.025em; }
   .cd-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); }
   .cd-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
   .cd-more { font-size: 0.9375rem; font-weight: 500; color: var(--color-ink); text-decoration: none; }
@@ -278,6 +280,8 @@ const theirHalf = (e: CompareEntry) => {
   .cd-row__mark img { display: block; width: 2.75rem; height: 2.75rem; border-radius: 26%; background: transparent; box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.06); }
   .cd-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
   .cd-row__title { font-weight: 600; color: var(--color-ink); }
+  .cd-status { margin: 0.9rem 0 0; }
+  .cd-status :global(.cmp-status) { margin-left: 0; font-size: 0.8rem; }
   .cd-row__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); }
   .cd-row__chev { flex: none; width: 0.8rem; height: 0.8rem; fill: none; stroke: var(--color-ink-faint); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms ease, stroke 200ms ease; }
   .cd-row:hover .cd-row__chev { transform: translateX(2px); stroke: var(--color-ink); }

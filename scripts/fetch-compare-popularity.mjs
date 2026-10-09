@@ -30,7 +30,6 @@ const APP_IDS = {
   "bible-gateway": 506512797,
   "bible-memory": 496790833,
   "bible-note": 6743159952,
-  "bible-notes": 6453161701,
   "bible-study-tools": 396906089,
   "bible-ai": 6739915445,
   bibleproject: 1523687027,

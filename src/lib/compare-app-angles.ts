@@ -28,6 +28,8 @@ export type CompareAngle = {
   /** “Works best alongside”. */
   together: string;
   table: CompareAngleRow[];
+  /** Shown as a chip beside the name when the app isn't out yet, e.g. "Coming soon". */
+  status?: string;
 };
 
 const PATH = join(process.cwd(), "data/compare-angles.json");
