@@ -80,9 +80,9 @@ export const PLUS_PLAN: PricingPlan = {
     "Review exercises",
     "Unlimited shared spaces",
     "Up to 12 people per space",
+    "People you invite join free, no Plus needed",
     "Turn a thread into a shared study plan",
     "Use your study in Claude, ChatGPT, and more",
-    "Joining is always free",
   ],
   comingSoonFeatures: [],
   cta: {
