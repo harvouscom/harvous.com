@@ -66,6 +66,18 @@ const laneLine = (type: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+/* A lane's icon strip, hand-ordered where we've picked one (best-looking icons
+   first); anything not listed keeps its popularity order after them. */
+const STRIP_ORDER: Record<string, string[]> = {
+  "Bible Notes": ["bible-notes", "velora", "spirit-notes", "bible-note", "sermon-keeper", "church-notes", "pencil-bible", "digible"],
+};
+const stripOrder = (type: string, apps: CompareEntry[]) => {
+  const order = STRIP_ORDER[type];
+  if (!order) return apps;
+  const rank = (e: CompareEntry) => (order.includes(e.slug) ? order.indexOf(e.slug) : order.length);
+  return [...apps].sort((a, b) => rank(a) - rank(b));
+};
+
 type Size = "large" | "medium" | "small";
 type Slot = { kind: "featured" } | { kind: "lane"; type: string; size: Size };
 
@@ -220,7 +232,7 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
               </li>
             );
           }
-          const apps = sortByPopularity(getCompareByType(slot.type));
+          const apps = stripOrder(slot.type, sortByPopularity(getCompareByType(slot.type)));
           const tone = TONES[i % TONES.length];
           return (
             <li class:list={["cmp-slot", `cmp-slot--${slot.size}`]}>
