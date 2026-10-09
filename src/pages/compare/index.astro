@@ -507,7 +507,9 @@ const leafletRows3 = Math.ceil(leaflets.length / 3);
     flex-wrap: wrap;
     justify-content: center;
     align-content: flex-start;
-    gap: var(--shadow-room) calc(var(--tile) * 0.18);
+    /* The row gap is wider than the room under the first row, so the wrapped
+       row starts well below the cut and none of its outline peeks in. */
+    gap: calc(var(--shadow-room) * 2) calc(var(--tile) * 0.18);
     height: calc(var(--tile) + var(--shadow-room));
     padding: clamp(2rem, 3.5vw, 2.75rem) clamp(1rem, 2.5vw, 1.75rem) 0;
     box-sizing: content-box;
