@@ -1884,5 +1884,35 @@
         "them": "Students and professionals who write by hand"
       }
     ]
+  },
+  "velora": {
+    "intro": "Velora listens along in church, pulling up each passage as your pastor preaches and turning the sermon into a transcript you can ask questions of; Harvous is where your own study builds week to week.",
+    "seoDescription": "Harvous vs Velora: a smart Bible that follows the sermon live and transcribes it, or your own study notes, threaded and brought back.",
+    "chooseThem": "You want the sermon itself captured — Relay brings up each passage as it’s preached, then a transcript, an outline for your group, and Ask Velora for questions about your church’s teaching. Bookmarks now let you highlight and annotate verses too.",
+    "chooseHarvous": "You want your own notes on a passage, threaded and brought back as you keep studying.",
+    "harvousIsnt": "Following a sermon live or transcribing it — Velora listens in the room and does that for you.",
+    "together": "Let Velora capture Sunday’s sermon, then write what stuck with you in Harvous, where it threads into the study you’re already doing.",
+    "table": [
+      {
+        "label": "Best at",
+        "harvous": "Your own study, connected over time",
+        "them": "Capturing the sermon as it’s preached"
+      },
+      {
+        "label": "On Sunday",
+        "harvous": "Type, or scan your paper notes",
+        "them": "Relay pulls up each passage as it’s referenced"
+      },
+      {
+        "label": "Afterward",
+        "harvous": "Threads and Suggestions bring notes back",
+        "them": "Transcript, outline, and Ask Velora on the sermon"
+      },
+      {
+        "label": "Ideal for",
+        "harvous": "People building on study week to week",
+        "them": "Churchgoers who want every sermon kept and searchable"
+      }
+    ]
   }
 }

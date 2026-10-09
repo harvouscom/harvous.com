@@ -257,6 +257,8 @@ const SEO_PAGES: CompareSeoPage[] = [
       "bible-note",
       "bible-notes",
       "spirit-notes",
+      "velora",
+      "sermon-keeper",
       "goodnotes",
     ],
     honestNote:

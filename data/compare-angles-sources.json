@@ -435,5 +435,15 @@
       "https://apps.apple.com/app/id360593530"
     ],
     "notes": "Notability Android availability reported in 2026; site lists iOS, Android, web, Mac, Windows."
+  },
+  "velora": {
+    "sources": [
+      "https://velorabible.com/",
+      "https://apps.apple.com/app/id6747405780",
+      "https://play.google.com/store/apps/details?id=com.everywai.velora",
+      "https://x.com/velorabible",
+      "https://faith.tools/app/15081-velora"
+    ],
+    "notes": "Bookmarks (save, highlight, favorite, annotate) announced on X on 2026-09-28. Free on both stores; pricing for Ask Velora not stated."
   }
 }
