@@ -241,7 +241,7 @@ export const PRIVACY_TOGGLES: ToggleSpec[] = [
  * true, and bump NOW_UPDATED whenever it changes. "Just shipped" and "Next up"
  * below it come from release notes and the roadmap, so only this needs tending.
  */
-export const NOW_UPDATED = "2026-10-03";
+export const NOW_UPDATED = "2026-10-09";
 
 export const NOW_WORKING_ON: { title: string; body: string }[] = [
   {
@@ -253,7 +253,7 @@ export const NOW_WORKING_ON: { title: string; body: string }[] = [
     body: "Word tiles, drag-to-order, and learning steps, so remembering a passage feels less like a quiz and more like practice.",
   },
   {
-    title: "A better Connector",
-    body: "Improving the MCP server behind Connector, so Claude and ChatGPT can search what your group shares, not just what you wrote.",
+    title: "Family accounts",
+    body: "A Family Space for your household, one Plus that covers up to five more people, and a parent view that shows a child's progress, never their notes. Not open yet.",
   },
 ];
