@@ -841,7 +841,7 @@ const audiences: ForAudience[] = [
       "Harvous Plus covers up to 5 more people in your family, with a Family Space everyone shares. Parents see how their teenagers' study is going, never what they wrote. For ages 13 and up.",
     heroTitle: "Bible study for the whole household.",
     heroLead:
-      "Everyone keeps their own notes. You get a space to study in together, one Plus that covers up to 5 more people, and a way to see how your teenagers are doing without reading over their shoulder.",
+      "Everyone keeps their own notes. You get a space to study together, one Plus for up to 5 more people, and a way to see how your teenagers are doing.",
     sections: [
       {
         heading: "One Plus, the whole family",
@@ -849,8 +849,7 @@ const audiences: ForAudience[] = [
         visualLabel: "Starting a family in Settings: a Family Space, Plus for 5 more people, progress not notes, ages 13 and up",
         feature: "family",
         paragraphs: [
-          "Start a family in Settings, name it, and invite up to 5 more people. Each of them gets Review exercises, unlimited history and Connector, covered by your [Harvous Plus](/pricing/). Hosting other shared spaces stays with whoever pays.",
-          "If your Plus ever lapses, the family and its space keep working. Only the coverage and new invites stop.",
+          "Start a family in Settings and invite up to 5 more people. Your [Harvous Plus](/pricing/) covers their Review exercises, history and Connector.",
         ],
       },
       {
@@ -859,8 +858,7 @@ const audiences: ForAudience[] = [
         visualLabel: "The Castelli family's space, with notes on Mark from three people in the family",
         feature: "shared-spaces",
         paragraphs: [
-          "Every family gets its own shared space, with the same threads, notes and Scripture you use on your own. Read through a book together, keep what came up at the table, or leave a passage for someone to find. Anyone in the family can write there, and parents can arrange it.",
-          "What's in the Family Space stays there. Nothing lands in anyone's own notes unless they copy it in.",
+          "A shared space for the household to read through a book together. Anyone can write there, and nothing lands in anyone's own notes unless they copy it in.",
         ],
       },
       {
@@ -868,8 +866,7 @@ const audiences: ForAudience[] = [
         visual: "family-people",
         visualLabel: "The Castelli family's people: Derek and Monique as parents, Lilo, Leroy and Kiya as children, and an invite waiting for Irma",
         paragraphs: [
-          "Invite each person as a parent, a child or an adult member. Parents invite and arrange the family. Children share their progress. Adult members, like a grown son or a grandparent, share the plan and the space and nothing else.",
-          "Each invite is a single-use link for one person, good for a week.",
+          "Invite each person as a parent, a child or an adult member. Each invite is a single-use link, good for a week.",
         ],
       },
       {
@@ -877,8 +874,7 @@ const audiences: ForAudience[] = [
         visual: "family-progress",
         visualLabel: "A parent's view of Lilo: active this week, 11 chapters read, 4 notes written, in Psalms, Mark and Romans",
         paragraphs: [
-          "Parents see how each child's study is going over the last 30 days: when they were last active, how many chapters they read and in which books, and how many notes they wrote. Never the notes themselves, their highlights, their searches or their Review.",
-          "Notes are where people write prayers and doubts, and nobody writes those honestly in an app that reports to a parent. There's no streak or score either. It's there to encourage, not to grade.",
+          "Parents see when a child was last active, how many chapters they read, and how many notes they wrote. Never the notes themselves, and no streaks or scores.",
         ],
       },
       {
@@ -886,8 +882,7 @@ const audiences: ForAudience[] = [
         visual: "family-invite",
         visualLabel: "A family invite telling a teenager exactly what their parents will and won't see before they join",
         paragraphs: [
-          "Families are for people 13 and older. Before a teenager joins as a child, the invite spells out what their parents will see and what they never will, and they see exactly the same numbers about themselves afterwards.",
-          "A child can ask to become an adult member, and a parent approves it. Anyone can leave the family at any time, without asking.",
+          "For ages 13 and up. The invite spells out what parents will see, a child can ask to become an adult member, and anyone can leave at any time.",
         ],
       },
       {
@@ -895,8 +890,7 @@ const audiences: ForAudience[] = [
         visual: "family-church",
         visualLabel: "Derek following Sunday service and Kiya following Youth at the same church",
         paragraphs: [
-          "If your church is on Harvous, each person in the family connects to it on their own and follows the ministries they want: Sunday service for you, Youth for your teenager. What each ministry publishes shows up on that person's Home, beside their own study.",
-          "Church connection stays personal, so a teenager's church life is theirs, and the family is where you bring it home.",
+          "If your church is on Harvous, each of you follows your own ministries: Sunday service for you, Youth for your teenager.",
         ],
         ctaHref: "/for/churches/",
         ctaLabel: "Harvous for churches",
@@ -904,7 +898,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Faith that's practiced at home",
         paragraphs: [
-          "Harvous won't replace the dinner-table conversation or the church you share. It gives each of you a place to keep what you're learning, and the family a place to keep it together.",
+          "Harvous won't replace the dinner table or your church. It gives each of you a place to keep what you're learning, and the family a place to keep it together.",
         ],
       },
     ],
