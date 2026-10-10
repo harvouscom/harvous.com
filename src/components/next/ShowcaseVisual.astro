@@ -645,7 +645,7 @@ const { name, label } = Astro.props;
         ["K", "is-orange", "Kiya", [["Sunday service", false], ["Youth", true], ["Women's", false]]],
       ].map(([who, cls, name, chans]) => (
         <div class="aui-card sv__card sv__pad">
-          <p class="sv__head"><span class:list={["sv__face", cls as string]}>{who as string}</span><span><b>{name as string}</b><small>Grace Church · follows</small></span></p>
+          <p class="sv__head"><span class:list={["sv__face", cls as string]}>{who as string}</span><span><b>{name as string}</b><small>New Hope Church · follows</small></span></p>
           <p class="fam__follow">
             {(chans as [string, boolean][]).map(([c, on]) => <span class:list={[on && "is-on"]}>{on && <AppIcon name="check" />} {c}</span>)}
           </p>
