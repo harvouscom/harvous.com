@@ -254,6 +254,6 @@ export const NOW_WORKING_ON: { title: string; body: string }[] = [
   },
   {
     title: "Family accounts",
-    body: "A Family Space for your household, one Plus that covers up to five more people, and a parent view that shows a child's progress, never their notes. Not open yet.",
+    body: "A Family Space for your household, one Plus that covers up to five more people, and a parent view that shows a child's progress, never their notes. Just launched with Harvous Plus.",
   },
 ];

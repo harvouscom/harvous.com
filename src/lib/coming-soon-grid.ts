@@ -31,6 +31,14 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
     comingSoon: false,
   },
   {
+    id: "family",
+    icon: "fa7-solid:house-chimney-user",
+    title: "Family",
+    desc: "One Plus covers up to 5 more people in your household, with a Family Space to study in together.",
+    href: "/add-ons/family/",
+    comingSoon: false,
+  },
+  {
     // Deliberately light on specifics — solo vs. group, in-app vs. guest, the
     // exact cadence are all still moving. Nothing here should need rewriting
     // again before the shape is locked; see the "may be Friday" plan note.
