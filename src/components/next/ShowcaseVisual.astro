@@ -552,6 +552,111 @@ const { name, label } = Astro.props;
       ))}
     </div>
   )}
+
+  {/* Family — drawn from the app's Settings › Family and the family invite page. */}
+  {name === "family-start" && (
+    <div class="aui-card sv__card sv__pad fam">
+      <p class="sv__head"><span class="aui-tile sv__tile--teal"><AppIcon name="user-group" /></span><span><b>Start a family</b><small>Name it, then invite up to 5 people.</small></span></p>
+      {[
+        ["folder", "A Family Space everyone shares", "Everyone in the family can read and write there."],
+        ["plus", "Your Plus covers 5 more people", "Review, full history and the Connector. Hosting spaces stays yours."],
+        ["chart-simple", "Parents see progress, never notes", "Chapters read, books, notes written. Your child sees the same."],
+        ["person", "For ages 13 and up", "A child can ask to become an adult member, and can always leave."],
+      ].map(([icon, title, sub]) => (
+        <div class="fam__glyph">
+          <span class="fam__gi"><AppIcon name={icon} /></span>
+          <span><span class="aui-title">{title}</span><span class="aui-sub fam__wrap">{sub}</span></span>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {name === "family-space" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="aui-tile sv__tile--teal"><AppIcon name="user-group" /></span><span><b>The Johnson family</b><small>Reading Mark together · 4 people</small></span></p>
+      {[
+        ["S", "is-mint", "Jesus sleeping in the boat while they panic. Talked about this one at dinner.", "Mark 4:35–41"],
+        ["K", "is-violet", "Why does he keep telling people not to tell anyone?", "Mark 1:44"],
+        ["D", "is-b", "For Thursday: the feeding of the five thousand.", "Mark 6:30–44"],
+      ].map(([who, cls, text, ref]) => (
+        <div class="sv__post">
+          <span class:list={["sv__face", cls]}>{who}</span>
+          <span><span class="sv__post-t">{text}</span><span class="aui-pill">{ref}</span></span>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {name === "family-people" && (
+    <div class="aui-card sv__card fam fam--list">
+      <p class="aui-label fam__label">People · 4 of 6</p>
+      {[
+        ["D", "is-b", "Derek J. (you)", "Parent · pays for Plus"],
+        ["S", "is-mint", "Sam J.", "Parent · covered"],
+        ["K", "is-violet", "Kit J.", "Child · covered"],
+        ["R", "is-orange", "Ruth J.", "Adult member · covered"],
+      ].map(([who, cls, name, sub]) => (
+        <div class="aui-row">
+          <span class:list={["sv__face", cls]}>{who}</span>
+          <span><span class="aui-title">{name}</span><span class="aui-sub">{sub}</span></span>
+        </div>
+      ))}
+      <div class="aui-row">
+        <span class="aui-tile"><AppIcon name="envelope" /></span>
+        <span><span class="aui-title">Child · for Tyler</span><span class="aui-sub">Invite sent · works until Wed, Oct 14</span></span>
+      </div>
+      <div class="aui-row fam__add">
+        <span class="aui-tile"><AppIcon name="plus" /></span>
+        <span><span class="aui-title">Invite someone</span></span>
+      </div>
+    </div>
+  )}
+
+  {name === "family-progress" && (
+    <div class="sv__stack">
+      <p class="aui-label fam__label fam__label--out">How your children are doing · last 30 days</p>
+      <div class="aui-card sv__card sv__pad fam__prog">
+        <p class="fam__who"><span class="sv__face is-violet">K</span><b>Kit J.</b><span class="fam__active"><i></i>Active this week</span></p>
+        <div class="fam__stats">
+          <p><b>11</b><span><AppIcon name="book-open" /> chapters read</span></p>
+          <p><b>4</b><span><AppIcon name="pen" /> notes written</span></p>
+        </div>
+        <p class="fam__books">{["Psalms", "Mark", "Romans"].map((b) => <span><AppIcon name="scroll" /> {b}</span>)}</p>
+      </div>
+      <p class="sv__status"><AppIcon name="lock" /> Counts only. You never see their notes, highlights, searches, or Review.</p>
+    </div>
+  )}
+
+  {name === "family-invite" && (
+    <div class="aui-card sv__card sv__pad fam">
+      <p class="fam__from">Derek invited you to join their family on Harvous.</p>
+      <p class="sv__title">The Johnson family</p>
+      <p class="fam__role">You'd join as a child</p>
+      <p class="fam__sum">Your parents can see how your study is going, never what you write.</p>
+      <ul class="fam__see">
+        {["When you were last active", "How many chapters you read, and which books they were in", "How many notes you wrote"].map((t) => <li><AppIcon name="eye" /> {t}</li>)}
+      </ul>
+      <p class="fam__never"><AppIcon name="lock" /> They can never see your notes, highlights, searches, or Review. You can ask to become an adult member, and you can leave the family any time.</p>
+      <p class="fam__join">Join the Johnson family</p>
+    </div>
+  )}
+
+  {name === "family-church" && (
+    <div class="sv__stack">
+      {[
+        ["D", "is-b", "Derek", [["Sunday service", true], ["Youth", false], ["Women's", false]]],
+        ["K", "is-violet", "Kit", [["Sunday service", false], ["Youth", true], ["Women's", false]]],
+      ].map(([who, cls, name, chans]) => (
+        <div class="aui-card sv__card sv__pad">
+          <p class="sv__head"><span class:list={["sv__face", cls as string]}>{who as string}</span><span><b>{name as string}</b><small>Grace Church · follows</small></span></p>
+          <p class="fam__follow">
+            {(chans as [string, boolean][]).map(([c, on]) => <span class:list={[on && "is-on"]}>{on && <AppIcon name="check" />} {c}</span>)}
+          </p>
+        </div>
+      ))}
+      <p class="sv__status"><AppIcon name="user" /> Each person connects and follows on their own</p>
+    </div>
+  )}
 </div>
 
 <style>
@@ -904,4 +1009,41 @@ const { name, label } = Astro.props;
   .sv__dot { font-style: normal; padding-inline: 2px; }
   .sv__scan-ref { padding: 6px 4px !important; }
   .sv__scan-guess { white-space: normal !important; color: oklch(52% 0.16 55) !important; }
+
+  /* Family */
+  .sv__tile--teal { color: var(--study-dock-accent-teal) !important; background: color-mix(in srgb, var(--study-dock-accent-teal) 16%, var(--pds-bg-main)) !important; }
+  .sv__face.is-mint { background: #3aa57a; } .sv__face.is-violet { background: #8b5cf6; } .sv__face.is-orange { background: #e8873a; }
+  .fam__glyph { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; margin-top: 12px; padding-top: 12px; box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .fam__gi { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .fam__gi :global(svg) { width: 12px; height: 12px; }
+  .sv .fam__wrap { white-space: normal; line-height: 1.4; margin-top: 2px; }
+  .fam--list { padding: 6px 0; }
+  .fam__label { padding: 8px 13px 4px; font-size: 11px !important; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pds-text-tertiary); }
+  .fam__label--out { padding: 0 4px; }
+  .fam--list .aui-row { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: center; }
+  .fam--list .aui-row .sv__face, .fam--list .aui-row .aui-tile { width: 26px; height: 26px; }
+  .fam__add .aui-title { color: var(--pds-accent); }
+  .fam__prog { display: grid; gap: 12px; }
+  .fam__who { display: flex; align-items: center; gap: 10px; }
+  .fam__who b { font-size: 15px; font-weight: 600; color: var(--pds-text-primary); }
+  .fam__active { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: 12px; color: var(--pds-text-secondary); }
+  .fam__active i { width: 6px; height: 6px; border-radius: 50%; background: var(--pds-accent); }
+  .fam__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fam__stats p { padding: 10px 12px; border-radius: 10px; background: var(--pds-bg-input, var(--pds-bg-chip)); }
+  .fam__stats b { display: block; font-family: var(--pds-font-display); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--pds-text-primary); }
+  .fam__stats span { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--pds-text-secondary); }
+  .fam__stats :global(svg), .fam__books :global(svg) { width: 10px; height: 10px; }
+  .fam__books, .fam__follow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .fam__books span, .fam__follow span { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .fam__follow { margin-top: 10px !important; }
+  .fam__follow .is-on { color: var(--pds-text-primary); background: var(--pds-bg-main); box-shadow: var(--pds-shadow-chip-selected); }
+  .fam__follow :global(svg) { width: 9px; height: 9px; }
+  .fam__from { font-size: 12.5px; color: var(--pds-text-secondary); margin-bottom: 6px !important; }
+  .fam__role { margin-top: 8px !important; font-size: 13px; font-weight: 600; color: var(--pds-text-primary); }
+  .fam__sum { margin-top: 4px !important; font-size: 13px; line-height: 1.5; color: var(--pds-text-secondary); }
+  .fam__see { display: grid; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--pds-text-primary); }
+  .fam__see li { display: flex; gap: 7px; align-items: baseline; }
+  .fam__see :global(svg), .fam__never :global(svg) { flex-shrink: 0; width: 11px; height: 11px; color: var(--pds-text-tertiary); }
+  .fam__never { display: flex; gap: 7px; align-items: baseline; margin-top: 10px !important; padding-top: 10px; font-size: 12px; line-height: 1.45; color: var(--pds-text-secondary); box-shadow: inset 0 0.5px 0 var(--pds-border); }
+  .fam__join { margin-top: 12px !important; padding: 9px 12px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 600; color: var(--pds-on-accent); background: var(--pds-accent); }
 </style>

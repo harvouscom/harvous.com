@@ -124,12 +124,12 @@ export type BentoCardSpec = {
   body: string;
   href: string;
   tone: "sky" | "mint" | "lilac" | "peach" | "cream" | "pink" | "gray";
-  visual: "thread" | "templates" | "discover" | "space" | "review" | "compare" | "connector";
+  visual: "thread" | "templates" | "discover" | "space" | "review" | "compare" | "connector" | "family";
   plus?: boolean;
 };
 
-/* Seven: whole at three columns (the three Plus cards share the last row) and
-   at two (Connector runs wide alone) — see Bento.astro. */
+/* Eight: whole at three columns (three Plus cards share a row, Family runs the
+   full width under them) and at two (Connector and Family pair up) — see Bento.astro. */
 export const BENTO_CARDS: BentoCardSpec[] = [
   {
     label: "Threads",
@@ -188,6 +188,15 @@ export const BENTO_CARDS: BentoCardSpec[] = [
     href: "/add-ons/connector/",
     tone: "gray",
     visual: "connector",
+    plus: true,
+  },
+  {
+    label: "Family",
+    title: "Study together at home.",
+    body: "One Plus covers up to 5 more people. Parents see progress, never notes.",
+    href: "/for/families/",
+    tone: "mint",
+    visual: "family",
     plus: true,
   },
 ];

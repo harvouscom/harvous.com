@@ -1,14 +1,15 @@
 ---
 /**
- * Bento — "Built for how you actually study." Seven cards, each built the
+ * Bento — "Built for how you actually study." Eight cards, each built the
  * same way (a framed stage in the card's tone with a piece of the app composed
  * to fill it, then the words), laid out so the rows zig-zag rather than march:
  *
  *   3 columns   [ Threads ···· | Templates ]   wide cards lay out sideways,
  *               [ Discover | ···· Compare ]    words beside the picture
- *               [ Review | Spaces | Connector ]   ← the Plus row
+ *               [ Review | Spaces | Connector ]   ← the Plus rows
+ *               [ Family ············· ]
  *   2 columns   [ Threads ···· ] [ Templates | Discover ]
- *               [ ···· Compare ] [ Review | Spaces ] [ Connector ···· ]
+ *               [ ···· Compare ] [ Review | Spaces ] [ Connector | Family ]
  *
  * Every row is full at both widths; one column is just a stack.
  *
@@ -26,12 +27,12 @@ const MESH: Record<string, string> = {
   peach: "coral", cream: "amber", gray: "blue",
 };
 /* Which cards run wide, and where the picture sits on them. */
-/* "2" runs wide from two columns up; "2only" just at two, where Connector
-   would otherwise sit alone on the last row. */
-const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
+/* "2" runs wide from two columns up; "3" runs the full width at three columns
+   only, where Family would otherwise sit alone on the last row. */
+const WIDE: Record<string, { at: "2" | "3"; flip?: boolean }> = {
   thread: { at: "2" },
   compare: { at: "2", flip: true },
-  connector: { at: "2only" },
+  family: { at: "3" },
 };
 ---
 
@@ -138,6 +139,19 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
             </div>
           )}
 
+          {card.visual === "family" && (
+            <div class="aui aui-card aui-card--float stage__fill fmy">
+              <p class="fmy__label">How your children are doing · last 30 days</p>
+              <p class="fmy__who"><span class="fmy__face">K</span><b>Kit J.</b><span class="fmy__active"><i></i>Active this week</span></p>
+              <div class="fmy__stats">
+                <p><b>11</b><span><AppIcon name="book-open" /> chapters read</span></p>
+                <p><b>4</b><span><AppIcon name="pen" /> notes written</span></p>
+              </div>
+              <p class="fmy__books">{["Psalms", "Mark", "Romans"].map((b) => <span><AppIcon name="scroll" /> {b}</span>)}</p>
+              <p class="fmy__foot"><AppIcon name="lock" /> Counts only. Never their notes.</p>
+            </div>
+          )}
+
           {card.visual === "space" && (
             <div class="aui aui-card aui-card--float stage__fill spc">
               <img class="spc__cover" src="/images/auth-hero/ai_bg_076.webp" alt="" loading="lazy" />
@@ -199,11 +213,9 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bcard--wide2 { grid-column: span 2; }
   }
-  @media (min-width: 44rem) and (max-width: 67.99rem) {
-    .bcard--wide2only { grid-column: span 2; }
-  }
   @media (min-width: 68rem) {
     .bento { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+    .bcard--wide3 { grid-column: span 3; }
   }
 
   /* A wide card lays out sideways: the picture on one side, the words beside
@@ -221,14 +233,17 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     .bcard--wide2.bcard--flip .bcard__link { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
     .bcard--wide2.bcard--flip .bcard__text { padding: 1.5rem 1.5rem 1.5rem 1.5rem; }
   }
-  @media (min-width: 44rem) and (max-width: 67.99rem) {
-    .bcard--wide2only .bcard__link {
+  /* Full width at three columns: the picture takes two of them, the words one. */
+  @media (min-width: 68rem) {
+    .bcard--wide3 .bcard__link {
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
       align-items: center;
     }
-    .bcard--wide2only .bcard__stage { aspect-ratio: auto; height: 100%; min-height: 19rem; }
-    .bcard--wide2only .bcard__text { padding: 1.5rem 2rem 1.5rem 1.75rem; }
+    .bcard--wide3 .bcard__stage { aspect-ratio: auto; height: 100%; min-height: 19rem; }
+    .bcard--wide3 .bcard__text { padding: 1.5rem 2rem 1.5rem 1.75rem; }
+    .bcard--wide3 .bcard__title { font-size: 1.6rem; }
+    .bcard--wide3 .stage--family > :global(*) { max-width: 26rem; }
   }
   @media (min-width: 68rem) {
     .bcard--wide2 .bcard__title { font-size: 1.6rem; }
@@ -295,10 +310,8 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     .bcard--wide2 .stage--thread > :global(.thv) { display: flex; flex-direction: column; margin-bottom: -2rem; }
     .bcard--wide2 .stage--thread :global(.thv__card) { flex: 1; }
   }
-  @media (min-width: 44rem) and (max-width: 67.99rem) {
-    .bcard--wide2only .bcard__stage { align-items: stretch; padding-top: 2.25rem; }
-    .bcard--wide2only .bcard__stage > :global(*) { zoom: 1.15; }
-    .bcard--wide2only .stage__fill { margin-bottom: -2rem; }
+  @media (min-width: 68rem) {
+    .bcard--wide3 .bcard__stage { padding-top: 2.25rem; }
   }
 
   .bcard__text { padding: 1.1rem 1rem; }
@@ -534,4 +547,21 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     .bcard__stage > :global(*) { transition: none; }
     .bcard:hover .bcard__stage > :global(*) { transform: none; }
   }
+
+  /* Family — a parent's progress card for one child, from Settings › Family. */
+  .fmy { padding: 14px 16px 44px; font-size: 13px; display: grid; gap: 10px; }
+  .fmy__label { margin: 0; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pds-text-tertiary); }
+  .fmy__who { display: flex; align-items: center; gap: 9px; margin: 0; }
+  .fmy__who b { font-size: 14.5px; font-weight: 600; color: var(--pds-text-primary); }
+  .fmy__face { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; font-weight: 700; color: #fff; background: #8b5cf6; }
+  .fmy__active { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: 11.5px; color: var(--pds-text-secondary); }
+  .fmy__active i { width: 6px; height: 6px; border-radius: 50%; background: var(--pds-accent); }
+  .fmy__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fmy__stats p { margin: 0; padding: 9px 11px; border-radius: 10px; background: var(--pds-bg-input, var(--pds-bg-chip)); }
+  .fmy__stats b { display: block; font-family: var(--pds-font-display); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--pds-text-primary); }
+  .fmy__stats span { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--pds-text-secondary); }
+  .fmy__books { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+  .fmy__books span { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 500; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
+  .fmy :global(svg) { width: 10px; height: 10px; }
+  .fmy__foot { display: flex; align-items: center; gap: 6px; margin: 0; padding-top: 10px; font-size: 11.5px; color: var(--pds-text-secondary); box-shadow: inset 0 0.5px 0 var(--pds-border); }
 </style>

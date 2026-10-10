@@ -35,7 +35,7 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
     icon: "fa7-solid:house-chimney-user",
     title: "Family",
     desc: "One Plus covers up to 5 more people in your household, with a Family Space to study in together.",
-    href: "/add-ons/family/",
+    href: "/for/families/",
     comingSoon: false,
   },
   {
