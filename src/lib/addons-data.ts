@@ -18,8 +18,8 @@ const ADDON_PAGES: AddonPage[] = [
     seoDescription:
       "Shared Spaces let your whole group study in the same threads — questions, discoveries, and scripture references that live beyond the hour you meet. Hosting is included with Harvous Plus; joining is always free.",
     icon: "fa7-solid:user-group",
-    ink: "var(--study-dock-accent-coralRose)",
-    image: "/images/auth-hero/ai_bg_045.webp",
+    ink: "var(--study-dock-accent-violet)",
+    image: "/images/auth-hero/ai_bg_076.webp",
     comingSoon: false,
     heroTitle: "One space where your group studies together.",
     heroLead:
@@ -50,7 +50,7 @@ const ADDON_PAGES: AddonPage[] = [
       {
         eyebrow: "Group study",
         title: "Threads your whole group can add to",
-        color: "coral",
+        color: "violet",
         body: [
           "Week four of your James study gets its own thread. Everyone's notes from that session live together — questions, answers, and scripture references in one place.",
           "Look back at what the group found, weeks after the night everyone was in the room.",
@@ -107,8 +107,8 @@ const ADDON_PAGES: AddonPage[] = [
     seoDescription:
       "Review exercises turn your own notes, the verses you keep, and the chapters you read into short questions with real answers. No question is written by AI, and there is no score, streak, or leaderboard.",
     icon: "fa7-solid:clock-rotate-left",
-    ink: "var(--study-dock-accent-violet)",
-    image: "/images/auth-hero/ai_bg_075.webp",
+    ink: "var(--study-dock-accent-coralRose)",
+    image: "/images/auth-hero/ai_bg_045.webp",
     comingSoon: false,
     heroTitle: "A deliberate way to keep what you studied.",
     heroLead:

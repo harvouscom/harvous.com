@@ -143,9 +143,18 @@ const features = [
     .filter(Boolean),
 ];
 
+/** Add-ons: their own sky and ink, like the home bento card each one matches. */
 const addons = getAddonPages()
   .filter((a) => !a.draft)
-  .map((a) => ({ name: `addon-${a.slug}`, kicker: "Harvous Plus", title: a.title, icon: a.icon, path: `/add-ons/${a.slug}/` }));
+  .map((a) => ({
+    name: `addon-${a.slug}`,
+    kicker: "Harvous Plus",
+    title: a.title,
+    icon: a.icon,
+    ink: inkOf(a.ink),
+    skyPath: a.image,
+    path: `/add-ons/${a.slug}/`,
+  }));
 
 /** Use cases and audiences: their own sky and ink, as their pages open. */
 const useCases = getUseCases().map((u) => ({

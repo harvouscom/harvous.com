@@ -835,7 +835,7 @@ const audiences: ForAudience[] = [
     tagline: "One Plus for the household, a space to study in together, and notes that stay each person's own.",
     icon: "fa7-solid:house-chimney-user",
     ink: "var(--study-dock-accent-teal)",
-    image: "/images/auth-hero/ai_bg_052.webp",
+    image: "/images/auth-hero/ai_bg_075.webp",
     seoTitle: "For families — one Harvous Plus for your household",
     seoDescription:
       "Harvous Plus covers up to 5 more people in your family, with a Family Space everyone shares. Parents see how their teenagers' study is going, never what they wrote. For ages 13 and up.",
