@@ -123,7 +123,7 @@ export type BentoCardSpec = {
   title: string;
   body: string;
   href: string;
-  tone: "sky" | "mint" | "lilac" | "peach" | "cream" | "pink" | "gray";
+  tone: "sky" | "mint" | "lilac" | "peach" | "cream" | "pink" | "gray" | "teal";
   visual: "thread" | "templates" | "discover" | "space" | "review" | "compare" | "connector" | "family";
   plus?: boolean;
 };
@@ -144,7 +144,7 @@ export const BENTO_CARDS: BentoCardSpec[] = [
     title: "Start with a shape.",
     body: "SOAP, inductive, a sermon outline, or your own. Then make it yours.",
     href: "/features/note-templates/",
-    tone: "cream",
+    tone: "teal",
     visual: "templates",
   },
   {

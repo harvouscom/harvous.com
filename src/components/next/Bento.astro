@@ -24,7 +24,7 @@ import { ALSO_INCLUDED, BENTO_CARDS, stageMesh } from "../../lib/next/content.ts
 /* Each card's tone picks the mesh family its stage is washed in. */
 const MESH: Record<string, string> = {
   sky: "sky", mint: "mint", lilac: "violet", pink: "violet",
-  peach: "coral", cream: "amber", gray: "blue",
+  peach: "coral", cream: "amber", gray: "blue", teal: "blue",
 };
 /* Which cards run wide, and where the picture sits on them. */
 /* "2" runs wide from two columns up; "3" runs the full width at three columns
@@ -262,6 +262,7 @@ const WIDE: Record<string, { at: "2" | "3"; flip?: boolean }> = {
   .bcard--peach { --tone: var(--color-peach); --tone-ink: var(--color-peach-ink); }
   .bcard--cream { --tone: var(--color-cream); --tone-ink: var(--color-cream-ink); }
   .bcard--pink { --tone: var(--color-pink); --tone-ink: var(--color-pink-ink); }
+  .bcard--teal { --tone: var(--color-teal); --tone-ink: var(--color-teal-ink); }
   /* A neutral, drawn from ink on paper so it holds in both themes. */
   .bcard--gray { --tone: color-mix(in srgb, var(--color-ink) 16%, var(--color-paper)); --tone-ink: var(--color-ink-soft); }
 

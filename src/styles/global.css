@@ -62,6 +62,8 @@
   --color-sky-ink: #143a6e;
   --color-mint: #c9e3b8;
   --color-mint-ink: #2a5a25;
+  --color-teal: #b9e2de;
+  --color-teal-ink: #1b5550;
   --color-lilac: #dec5ed;
   --color-lilac-ink: #4a1a70;
   --color-pink: #f3c8e0;
@@ -452,6 +454,8 @@ details > summary::-webkit-details-marker {
     --color-sky-ink: oklch(89% 0.06 240);
     --color-mint: oklch(41% 0.08 150);
     --color-mint-ink: oklch(89% 0.08 150);
+    --color-teal: oklch(42% 0.07 190);
+    --color-teal-ink: oklch(89% 0.06 190);
     --color-lilac: oklch(41% 0.1 305);
     --color-lilac-ink: oklch(89% 0.08 305);
     --color-pink: oklch(44% 0.1 335);
@@ -499,6 +503,8 @@ details > summary::-webkit-details-marker {
   --color-sky-ink: oklch(89% 0.06 240);
   --color-mint: oklch(41% 0.08 150);
   --color-mint-ink: oklch(89% 0.08 150);
+  --color-teal: oklch(42% 0.07 190);
+  --color-teal-ink: oklch(89% 0.06 190);
   --color-lilac: oklch(41% 0.1 305);
   --color-lilac-ink: oklch(89% 0.08 305);
   --color-pink: oklch(44% 0.1 335);
