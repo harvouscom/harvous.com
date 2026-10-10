@@ -856,7 +856,7 @@ const audiences: ForAudience[] = [
       {
         heading: "A Family Space everyone shares",
         visual: "family-space",
-        visualLabel: "The Johnson family's space, with notes on Mark from three people in the family",
+        visualLabel: "The Castelli family's space, with notes on Mark from three people in the family",
         feature: "shared-spaces",
         paragraphs: [
           "Every family gets its own shared space, with the same threads, notes and Scripture you use on your own. Read through a book together, keep what came up at the table, or leave a passage for someone to find. Anyone in the family can write there, and parents can arrange it.",
@@ -866,7 +866,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Everyone in their place",
         visual: "family-people",
-        visualLabel: "The family's people: two parents, a child and an adult member, and an invite waiting for Tyler",
+        visualLabel: "The Castelli family's people: Derek and Monique as parents, and Lilo, Kiya, Irma and Leroy as children",
         paragraphs: [
           "Invite each person as a parent, a child or an adult member. Parents invite and arrange the family. Children share their progress. Adult members, like a grown son or a grandparent, share the plan and the space and nothing else.",
           "Each invite is a single-use link for one person, good for a week.",
@@ -875,7 +875,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Progress, not content",
         visual: "family-progress",
-        visualLabel: "A parent's view of Kit: active this week, 11 chapters read, 4 notes written, in Psalms, Mark and Romans",
+        visualLabel: "A parent's view of Lilo: active this week, 11 chapters read, 4 notes written, in Psalms, Mark and Romans",
         paragraphs: [
           "Parents see how each child's study is going over the last 30 days: when they were last active, how many chapters they read and in which books, and how many notes they wrote. Never the notes themselves, their highlights, their searches or their Review.",
           "Notes are where people write prayers and doubts, and nobody writes those honestly in an app that reports to a parent. There's no streak or score either. It's there to encourage, not to grade.",
@@ -893,7 +893,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Your church, one follow at a time",
         visual: "family-church",
-        visualLabel: "A parent following Sunday service and a teenager following Youth at the same church",
+        visualLabel: "Derek following Sunday service and Kiya following Youth at the same church",
         paragraphs: [
           "If your church is on Harvous, each person in the family connects to it on their own and follows the ministries they want: Sunday service for you, Youth for your teenager. What each ministry publishes shows up on that person's Home, beside their own study.",
           "Church connection stays personal, so a teenager's church life is theirs, and the family is where you bring it home.",

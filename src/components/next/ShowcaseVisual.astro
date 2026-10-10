@@ -573,10 +573,10 @@ const { name, label } = Astro.props;
 
   {name === "family-space" && (
     <div class="aui-card sv__card sv__pad">
-      <p class="sv__head"><span class="aui-tile sv__tile--teal"><AppIcon name="user-group" /></span><span><b>The Johnson family</b><small>Reading Mark together · 4 people</small></span></p>
+      <p class="sv__head"><span class="aui-tile sv__tile--teal"><AppIcon name="user-group" /></span><span><b>The Castelli family</b><small>Reading Mark together · 6 people</small></span></p>
       {[
-        ["S", "is-mint", "Jesus sleeping in the boat while they panic. Talked about this one at dinner.", "Mark 4:35–41"],
-        ["K", "is-violet", "Why does he keep telling people not to tell anyone?", "Mark 1:44"],
+        ["M", "is-mint", "Jesus sleeping in the boat while they panic. Talked about this one at dinner.", "Mark 4:35–41"],
+        ["L", "is-violet", "Why does he keep telling people not to tell anyone?", "Mark 1:44"],
         ["D", "is-b", "For Thursday: the feeding of the five thousand.", "Mark 6:30–44"],
       ].map(([who, cls, text, ref]) => (
         <div class="sv__post">
@@ -589,26 +589,20 @@ const { name, label } = Astro.props;
 
   {name === "family-people" && (
     <div class="aui-card sv__card fam fam--list">
-      <p class="aui-label fam__label">People · 4 of 6</p>
+      <p class="aui-label fam__label">People · 6 of 6</p>
       {[
-        ["D", "is-b", "Derek J. (you)", "Parent · pays for Plus"],
-        ["S", "is-mint", "Sam J.", "Parent · covered"],
-        ["K", "is-violet", "Kit J.", "Child · covered"],
-        ["R", "is-orange", "Ruth J.", "Adult member · covered"],
+        ["D", "is-b", "Derek C. (you)", "Parent · pays for Plus"],
+        ["M", "is-mint", "Monique C.", "Parent · covered"],
+        ["L", "is-violet", "Lilo C.", "Child · covered"],
+        ["K", "is-orange", "Kiya C.", "Child · covered"],
+        ["I", "is-a", "Irma C.", "Child · covered"],
+        ["L", "is-teal", "Leroy C.", "Child · covered"],
       ].map(([who, cls, name, sub]) => (
         <div class="aui-row">
           <span class:list={["sv__face", cls]}>{who}</span>
           <span><span class="aui-title">{name}</span><span class="aui-sub">{sub}</span></span>
         </div>
       ))}
-      <div class="aui-row">
-        <span class="aui-tile"><AppIcon name="envelope" /></span>
-        <span><span class="aui-title">Child · for Tyler</span><span class="aui-sub">Invite sent · works until Wed, Oct 14</span></span>
-      </div>
-      <div class="aui-row fam__add">
-        <span class="aui-tile"><AppIcon name="plus" /></span>
-        <span><span class="aui-title">Invite someone</span></span>
-      </div>
     </div>
   )}
 
@@ -616,7 +610,7 @@ const { name, label } = Astro.props;
     <div class="sv__stack">
       <p class="aui-label fam__label fam__label--out">How your children are doing · last 30 days</p>
       <div class="aui-card sv__card sv__pad fam__prog">
-        <p class="fam__who"><span class="sv__face is-violet">K</span><b>Kit J.</b><span class="fam__active"><i></i>Active this week</span></p>
+        <p class="fam__who"><span class="sv__face is-violet">L</span><b>Lilo C.</b><span class="fam__active"><i></i>Active this week</span></p>
         <div class="fam__stats">
           <p><b>11</b><span><AppIcon name="book-open" /> chapters read</span></p>
           <p><b>4</b><span><AppIcon name="pen" /> notes written</span></p>
@@ -630,14 +624,14 @@ const { name, label } = Astro.props;
   {name === "family-invite" && (
     <div class="aui-card sv__card sv__pad fam">
       <p class="fam__from">Derek invited you to join their family on Harvous.</p>
-      <p class="sv__title">The Johnson family</p>
+      <p class="sv__title">The Castelli family</p>
       <p class="fam__role">You'd join as a child</p>
       <p class="fam__sum">Your parents can see how your study is going, never what you write.</p>
       <ul class="fam__see">
         {["When you were last active", "How many chapters you read, and which books they were in", "How many notes you wrote"].map((t) => <li><AppIcon name="eye" /> {t}</li>)}
       </ul>
       <p class="fam__never"><AppIcon name="lock" /> They can never see your notes, highlights, searches, or Review. You can ask to become an adult member, and you can leave the family any time.</p>
-      <p class="fam__join">Join the Johnson family</p>
+      <p class="fam__join">Join the Castelli family</p>
     </div>
   )}
 
@@ -645,7 +639,7 @@ const { name, label } = Astro.props;
     <div class="sv__stack">
       {[
         ["D", "is-b", "Derek", [["Sunday service", true], ["Youth", false], ["Women's", false]]],
-        ["K", "is-violet", "Kit", [["Sunday service", false], ["Youth", true], ["Women's", false]]],
+        ["K", "is-orange", "Kiya", [["Sunday service", false], ["Youth", true], ["Women's", false]]],
       ].map(([who, cls, name, chans]) => (
         <div class="aui-card sv__card sv__pad">
           <p class="sv__head"><span class:list={["sv__face", cls as string]}>{who as string}</span><span><b>{name as string}</b><small>Grace Church · follows</small></span></p>
@@ -1012,7 +1006,7 @@ const { name, label } = Astro.props;
 
   /* Family */
   .sv__tile--teal { color: var(--study-dock-accent-teal) !important; background: color-mix(in srgb, var(--study-dock-accent-teal) 16%, var(--pds-bg-main)) !important; }
-  .sv__face.is-mint { background: #3aa57a; } .sv__face.is-violet { background: #8b5cf6; } .sv__face.is-orange { background: #e8873a; }
+  .sv__face.is-mint { background: #3aa57a; } .sv__face.is-violet { background: #8b5cf6; } .sv__face.is-orange { background: #e8873a; } .sv__face.is-teal { background: #2a9d8f; }
   .fam__glyph { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; margin-top: 12px; padding-top: 12px; box-shadow: inset 0 0.5px 0 var(--pds-border); }
   .fam__gi { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: var(--pds-text-secondary); background: var(--pds-bg-chip); }
   .fam__gi :global(svg) { width: 12px; height: 12px; }
@@ -1022,7 +1016,6 @@ const { name, label } = Astro.props;
   .fam__label--out { padding: 0 4px; }
   .fam--list .aui-row { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: center; }
   .fam--list .aui-row .sv__face, .fam--list .aui-row .aui-tile { width: 26px; height: 26px; }
-  .fam__add .aui-title { color: var(--pds-accent); }
   .fam__prog { display: grid; gap: 12px; }
   .fam__who { display: flex; align-items: center; gap: 10px; }
   .fam__who b { font-size: 15px; font-weight: 600; color: var(--pds-text-primary); }
