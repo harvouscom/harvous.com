@@ -866,7 +866,7 @@ const audiences: ForAudience[] = [
       {
         heading: "Everyone in their place",
         visual: "family-people",
-        visualLabel: "The Castelli family's people: Derek and Monique as parents, and Lilo, Kiya, Irma and Leroy as children",
+        visualLabel: "The Castelli family's people: Derek and Monique as parents, Lilo, Leroy and Kiya as children, and an invite waiting for Irma",
         paragraphs: [
           "Invite each person as a parent, a child or an adult member. Parents invite and arrange the family. Children share their progress. Adult members, like a grown son or a grandparent, share the plan and the space and nothing else.",
           "Each invite is a single-use link for one person, good for a week.",

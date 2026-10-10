@@ -573,7 +573,7 @@ const { name, label } = Astro.props;
 
   {name === "family-space" && (
     <div class="aui-card sv__card sv__pad">
-      <p class="sv__head"><span class="aui-tile sv__tile--teal"><AppIcon name="user-group" /></span><span><b>The Castelli family</b><small>Reading Mark together · 6 people</small></span></p>
+      <p class="sv__head"><span class="aui-tile sv__tile--teal"><AppIcon name="user-group" /></span><span><b>The Castelli family</b><small>Reading Mark together · 5 people</small></span></p>
       {[
         ["M", "is-mint", "Jesus sleeping in the boat while they panic. Talked about this one at dinner.", "Mark 4:35–41"],
         ["L", "is-violet", "Why does he keep telling people not to tell anyone?", "Mark 1:44"],
@@ -589,20 +589,23 @@ const { name, label } = Astro.props;
 
   {name === "family-people" && (
     <div class="aui-card sv__card fam fam--list">
-      <p class="aui-label fam__label">People · 6 of 6</p>
+      <p class="aui-label fam__label">People · 5 of 6</p>
       {[
         ["D", "is-b", "Derek C. (you)", "Parent · pays for Plus"],
         ["M", "is-mint", "Monique C.", "Parent · covered"],
         ["L", "is-violet", "Lilo C.", "Child · covered"],
-        ["K", "is-orange", "Kiya C.", "Child · covered"],
-        ["I", "is-a", "Irma C.", "Child · covered"],
         ["L", "is-teal", "Leroy C.", "Child · covered"],
+        ["K", "is-orange", "Kiya C.", "Child · covered"],
       ].map(([who, cls, name, sub]) => (
         <div class="aui-row">
           <span class:list={["sv__face", cls]}>{who}</span>
           <span><span class="aui-title">{name}</span><span class="aui-sub">{sub}</span></span>
         </div>
       ))}
+      <div class="aui-row">
+        <span class="aui-tile"><AppIcon name="envelope" /></span>
+        <span><span class="aui-title">Child · for Irma</span><span class="aui-sub">Invite sent · works until Fri, Oct 16</span></span>
+      </div>
     </div>
   )}
 
