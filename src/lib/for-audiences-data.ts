@@ -902,7 +902,7 @@ const audiences: ForAudience[] = [
         ctaLabel: "Harvous for churches",
       },
       {
-        heading: "Faith that's practised at home",
+        heading: "Faith that's practiced at home",
         paragraphs: [
           "Harvous won't replace the dinner-table conversation or the church you share. It gives each of you a place to keep what you're learning, and the family a place to keep it together.",
         ],
