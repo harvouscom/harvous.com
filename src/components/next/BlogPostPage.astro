@@ -118,16 +118,28 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
     <div class="nx-wrap bp-body">
       <div class="bp-col">
         {toc.length >= 3 && (
-          <nav class="bp-toc" aria-label="In this post">
-            <p class="bp-toc__h">In this post</p>
-            <ol>
-              {toc.map((h) => (
-                <li>
-                  <a href={`#${h.slug}`}>{h.text}</a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <div class="bp-toc-slot" data-bp-toc-slot>
+            <div class="bp-toc-float" data-bp-toc-float>
+              <nav class="bp-toc" aria-label="In this post">
+                <p class="bp-toc__h">In this post</p>
+                <ol>
+                  {toc.map((h) => (
+                    <li>
+                      <a href={`#${h.slug}`} data-bp-toc-link={h.slug}>{h.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+              <div class="bp-toc-select">
+                <label class="bp-toc-select__label" for="bp-toc-select">In this post</label>
+                <select id="bp-toc-select" data-bp-toc-select>
+                  {toc.map((h) => (
+                    <option value={h.slug}>{h.text}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
         )}
 
         <div class="bp-prose" data-bp-prose data-categories={BLOG_CATEGORIES.join(" ")}>
@@ -260,9 +272,10 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
 
   .bp-body { padding-block: clamp(2.5rem, 6vw, 4rem) clamp(3rem, 7vw, 5rem); }
 
-  /* ── Contents: a quiet list, not a widget ────────────────────────────── */
+  /* ── Contents: a quiet list at rest, a pinned dropdown while reading ─── */
+  .bp-toc-slot { margin: 0 0 2.75rem; }
+  .bp-toc-float { position: relative; }
   .bp-toc {
-    margin: 0 0 2.75rem;
     padding: 1.25rem 1.4rem;
     border-radius: 1.25rem;
     background: var(--color-warm);
@@ -288,7 +301,62 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
     color: var(--color-ink-soft);
     text-decoration: none;
   }
-  .bp-toc a:hover { color: var(--color-ink); text-decoration: underline; text-underline-offset: 0.2em; }
+  .bp-toc a:hover,
+  .bp-toc a.is-active { color: var(--color-ink); text-decoration: underline; text-underline-offset: 0.2em; }
+
+  .bp-toc-select { display: none; position: relative; }
+  .bp-toc-select__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .bp-toc-select select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0.7rem 2.5rem 0.7rem 1.1rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  .bp-toc-select::after {
+    content: "";
+    position: absolute;
+    right: 1.1rem;
+    top: 50%;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-right: 1.5px solid var(--color-ink-faint);
+    border-bottom: 1.5px solid var(--color-ink-faint);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .bp-toc-float.is-fixed {
+    position: fixed;
+    top: 4.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 45;
+    width: min(22rem, calc(100% - 2rem));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-paper) 82%, transparent);
+    backdrop-filter: saturate(1.6) blur(18px);
+    -webkit-backdrop-filter: saturate(1.6) blur(18px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-ink) 7%, transparent),
+      0 8px 28px -12px rgba(15, 23, 42, 0.22);
+  }
+  .bp-toc-float.is-fixed .bp-toc { display: none; }
+  .bp-toc-float.is-fixed .bp-toc-select { display: block; }
 
   /* ── Prose ───────────────────────────────────────────────────────────── */
   .bp-prose {
@@ -307,7 +375,7 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
     font-weight: 600;
     color: var(--color-ink);
     text-wrap: balance;
-    scroll-margin-top: 7rem;
+    scroll-margin-top: 9rem;
   }
   .bp-prose :global(h2) {
     margin: 2.4em 0 0.6em;
@@ -516,3 +584,57 @@ const pageDescription = post.data.seoDescription ?? post.data.description;
   }
   .bp-more__all { margin: 2rem 0 0; text-align: center; }
 </style>
+
+<script>
+  const slot = document.querySelector<HTMLElement>("[data-bp-toc-slot]");
+  const float = document.querySelector<HTMLElement>("[data-bp-toc-float]");
+  const prose = document.querySelector<HTMLElement>("[data-bp-prose]");
+  if (slot && float && prose) {
+    const select = float.querySelector<HTMLSelectElement>("[data-bp-toc-select]");
+    const links = [...float.querySelectorAll<HTMLAnchorElement>("[data-bp-toc-link]")];
+    const sections = links
+      .map((a) => document.getElementById(a.dataset.bpTocLink ?? ""))
+      .filter((el): el is HTMLElement => !!el);
+    const pinTop = 76; // just under the fixed site header
+    let restHeight = float.offsetHeight;
+
+    const update = () => {
+      if (!float.classList.contains("is-fixed")) restHeight = float.offsetHeight;
+      // Pin once the list has scrolled under the header; release at the end of the prose.
+      const pin =
+        slot.getBoundingClientRect().top <= pinTop - 8 &&
+        prose.getBoundingClientRect().bottom > pinTop + 120;
+      float.classList.toggle("is-fixed", pin);
+      slot.style.minHeight = pin ? `${restHeight}px` : "";
+
+      let current: string | null = null;
+      for (const el of sections) {
+        if (el.getBoundingClientRect().top <= pinTop + 70) current = el.id;
+      }
+      links.forEach((a) => a.classList.toggle("is-active", a.dataset.bpTocLink === current));
+      if (select && current && select.value !== current) select.value = current;
+    };
+
+    select?.addEventListener("change", () => {
+      const el = document.getElementById(select.value);
+      if (!el) return;
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const y = el.getBoundingClientRect().top + scrollY - (pinTop + 70);
+      scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+      history.replaceState(null, "", `#${el.id}`);
+    });
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    };
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll, { passive: true });
+    update();
+  }
+</script>
