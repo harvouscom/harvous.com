@@ -10,6 +10,7 @@
  *                   title="Already reading in another app?" />
  *
  * `slugs` picks which apps show (unknown slugs are skipped; 6–8 reads best).
+ * `guide` adds a second link under the first, to one compare guide.
  */
 import { compareIconSrc, getCompareBySlug, getCompareEntries } from "../../lib/compare-data.ts";
 import { fathomCompare } from "../../lib/fathom-events.ts";
@@ -33,6 +34,7 @@ interface Props {
   slugs?: string[];
   href?: string;
   id?: string;
+  guide?: { href: string; label: string };
 }
 
 const total = getCompareEntries().length;
@@ -44,6 +46,7 @@ const {
   slugs = DEFAULT_SLUGS,
   href = "/compare/",
   id = "compare",
+  guide,
 } = Astro.props;
 
 const apps = slugs
@@ -68,6 +71,13 @@ const rows = apps.length > 4 ? [apps.slice(0, perRow), apps.slice(perRow)] : [ap
         <a class="cpv__link" href={href} data-fathom-track={fathomCompare.homeAll}>
           See how Harvous compares <span aria-hidden="true">→</span>
         </a>
+        {
+          guide && (
+            <a class="cpv__link cpv__link--guide" href={guide.href} data-fathom-track={fathomCompare.homeCard}>
+              {guide.label} <span aria-hidden="true">→</span>
+            </a>
+          )
+        }
       </div>
 
       {
@@ -160,6 +170,11 @@ const rows = apps.length > 4 ? [apps.slice(0, perRow), apps.slice(perRow)] : [ap
     font-weight: 500;
     color: var(--color-accent);
     text-decoration: none;
+  }
+  .cpv__link--guide {
+    display: block;
+    width: fit-content;
+    margin-top: 0.6rem;
   }
   .cpv__link:hover { text-decoration: underline; text-underline-offset: 0.2em; }
   .cpv__link span { display: inline-block; transition: transform 150ms ease; }

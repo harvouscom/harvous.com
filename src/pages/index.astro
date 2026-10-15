@@ -30,7 +30,7 @@ const homeJsonLd = buildHomeJsonLd();
 <NextLayout
   ogImage={ogCard("home")}
   jsonLd={homeJsonLd}
-  title="Harvous — a study Bible that remembers"
+  title="Harvous is the Bible notes app that remembers"
   description="A quiet notes app for studying the Bible, made by one person. Write what you notice; Harvous keeps it with the verse and brings it back before it fades."
 >
   <NextHero />
@@ -40,8 +40,7 @@ const homeJsonLd = buildHomeJsonLd();
   <section class="nx-section" id="story" aria-labelledby="story-title">
     <div class="nx-wrap">
       <div class="home__head" data-reveal>
-        <p class="nx-kicker">How it works</p>
-        <h2 id="story-title" class="nx-title">A study Bible that remembers.</h2>
+        <h2 id="story-title" class="nx-title">Meet Harvous, a Bible notes app.</h2>
       </div>
       <StoryScroller />
     </div>
@@ -73,7 +72,9 @@ const homeJsonLd = buildHomeJsonLd();
 
   <BlogPreview />
 
-  <div class="nx-wrap"><ComparePreview /></div>
+  <div class="nx-wrap"><ComparePreview
+    guide={{ href: "/compare/best-free-bible-notes-apps/", label: "Best free Bible note-taking apps" }}
+  /></div>
 
   <QuickAnswers />
 
@@ -85,7 +86,8 @@ const homeJsonLd = buildHomeJsonLd();
     max-width: 40rem;
     margin-bottom: clamp(2.5rem, 6vw, 4rem);
   }
-  .home__head .nx-title { margin: 0.75rem 0 0; }
+  .home__head .nx-title { margin: 0; }
+  .home__head .nx-kicker + .nx-title { margin-top: 0.75rem; }
   .home__head .nx-lead { margin: 1rem 0 0; }
   .home__more { margin: 2rem 0 0; text-align: center; }
   .home__bento { padding-top: 0; }

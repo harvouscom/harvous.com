@@ -282,11 +282,11 @@ const SEO_PAGES: CompareSeoPage[] = [
     slug: "best-free-bible-notes-apps",
     guideLabel: "Best free Bible notes apps",
     guideDescription: "Free and freemium options for scripture-linked notes",
-    seoTitle: "Best free Bible notes apps — Harvous",
+    seoTitle: "Best free Bible note-taking apps — Harvous",
     seoDescription:
       "Compare the best free Bible notes apps for scripture-linked study notes — Harvous, Church Notes, Bible Note, Obsidian, and more. Start free; upgrade when notes matter.",
-    h1: "Best free Bible notes apps",
-    lead: "Free and freemium apps for scripture-linked study notes. Harvous is notes-first — start free, keep what you save findable later.",
+    h1: "Best free Bible note-taking apps",
+    lead: "Free and freemium note-taking apps for scripture-linked study notes. Harvous is notes-first — start free, keep what you save findable later.",
     pickSlugs: [
       "spirit-notes",
       "bible-note",
