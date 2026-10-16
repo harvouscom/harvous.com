@@ -88,8 +88,8 @@
     "intro": "Ascension is a Catholic home for the Bible, Catechism and daily Mass readings, with Fr. Mike Schmitz’s Bible in a Year; Harvous is for the personal notes you take along the way.",
     "seoDescription": "Harvous vs Ascension: the Catholic Bible, Catechism and Bible in a Year, or a notes app that threads and resurfaces your study.",
     "chooseThem": "You’re Catholic and want the Great Adventure Bible and Catechism together, daily Mass readings and reflections, the Rosary, and Bible in a Year with Fr. Mike Schmitz.",
-    "chooseHarvous": "You want your own notes on each day’s reading kept and connected.",
-    "harvousIsnt": "A Catholic Bible — Harvous’s translations don’t include the deuterocanonical books — or Mass readings and Bible in a Year, which Ascension is made for.",
+    "chooseHarvous": "You want your own notes on each day’s reading kept and connected, in a Catholic Bible with all 73 books and the day’s Gospel on Home.",
+    "harvousIsnt": "A Catechism, a guided Bible in a Year or Catholic teaching and reflections. Harvous has the 73 books, four Catholic editions and the daily Gospel, but the formation is Ascension’s.",
     "together": "Listen to Bible in a Year in Ascension, then write the day’s note in a Harvous thread.",
     "table": [
       {
@@ -99,7 +99,7 @@
       },
       {
         "label": "Daily rhythm",
-        "harvous": "A daily passage and recent study",
+        "harvous": "Today’s Gospel from the Mass readings, and your recent study",
         "them": "Mass readings, Saint of the Day, podcasts"
       },
       {
@@ -439,7 +439,7 @@
       },
       {
         "label": "Scripture",
-        "harvous": "Reader, 11 translations, pills",
+        "harvous": "Reader, 15 translations, pills",
         "them": "Plain text unless you paste it in"
       },
       {
@@ -515,7 +515,7 @@
     ]
   },
   "esv-bible": {
-    "intro": "The ESV app pairs a clean ESV reader with the free Global Study Bible and well-loved audio narrators; Harvous keeps your notes across eleven translations and connects them over time.",
+    "intro": "The ESV app pairs a clean ESV reader with the free Global Study Bible and well-loved audio narrators; Harvous keeps your notes across fifteen translations and connects them over time.",
     "seoDescription": "Harvous vs the ESV Bible app: Crossway’s free ESV reader with study notes and audio, or a notes app that keeps and connects what you study.",
     "chooseThem": "You read the ESV and want Crossway’s own reader, with the free ESV Global Study Bible alongside the text, narrated audio, and 50+ reading plans.",
     "chooseHarvous": "You read more than one translation and want notes that link into threads.",
@@ -529,7 +529,7 @@
       },
       {
         "label": "Translations",
-        "harvous": "ESV plus ten more, compared",
+        "harvous": "ESV plus fourteen more, compared",
         "them": "The ESV, with Crossway’s study resources"
       },
       {
@@ -728,7 +728,7 @@
     "intro": "Hallow is guided audio prayer rooted in Catholic tradition — the Rosary, Lectio Divina, the Examen, seasonal challenges; Harvous is where the passages you pray with get written down and connected.",
     "seoDescription": "Harvous vs Hallow: Hallow leads Catholic and Christian audio prayer — Rosary, Lectio Divina, Examen; Harvous keeps your Scripture notes connected.",
     "chooseThem": "You want someone to lead you in prayer — the Rosary, Lectio Divina, the Ignatian Examen, Praylists, sleep content — and community challenges like Pray25 in Advent to pray with others.",
-    "chooseHarvous": "You want the verse from a Lectio session written down, compared across translations, and linked to past notes.",
+    "chooseHarvous": "You want the verse from a Lectio session written down, compared across translations (the NABRE and RSV-2CE among them), and linked to past notes.",
     "harvousIsnt": "Guided audio prayer, the Rosary or meditation sessions — that’s what Hallow is built for.",
     "together": "Pray with Hallow, then open the day’s passage in Harvous and note what you heard so it joins a thread you can return to.",
     "table": [
@@ -944,7 +944,7 @@
       },
       {
         "label": "Study resources",
-        "harvous": "11 translations, Easton’s, cross-references",
+        "harvous": "15 translations, Easton’s, cross-references",
         "them": "Bibles, commentaries and lexicons from the Olive Tree Store"
       },
       {
@@ -979,7 +979,7 @@
       },
       {
         "label": "Bible built in",
-        "harvous": "11 translations, side by side",
+        "harvous": "15 translations, side by side",
         "them": "None — you paste passages in yourself"
       },
       {
@@ -1159,7 +1159,7 @@
       },
       {
         "label": "Bible built in",
-        "harvous": "11 translations with highlights",
+        "harvous": "15 translations with highlights",
         "them": "None — it’s plain text by design"
       },
       {
@@ -1269,7 +1269,7 @@
       },
       {
         "label": "Languages",
-        "harvous": "11 English translations",
+        "harvous": "15 English translations",
         "them": "3,500+ versions in 2,000+ languages"
       },
       {
@@ -1809,7 +1809,7 @@
       },
       {
         "label": "Scripture",
-        "harvous": "11 translations and Scripture pills",
+        "harvous": "15 translations and Scripture pills",
         "them": "Verses typed or pasted into an entry"
       },
       {

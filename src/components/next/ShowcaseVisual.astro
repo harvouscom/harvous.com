@@ -7,7 +7,8 @@
  *
  * Verse text appears only where the app shows it (the passage card, an opened
  * pill, the reader, a reminder), from the NLT, as the rest of the site's
- * replicas do.
+ * replicas do. The Catholic Gospel card quotes the Douay-Rheims, which is public
+ * domain.
  */
 import AppIcon from "./app/AppIcon.astro";
 import { backdropSrc } from "../../lib/next/content.ts";
@@ -17,6 +18,15 @@ interface Props {
   label: string;
 }
 const { name, label } = Astro.props;
+
+/* My Bible: how full each of the 66 spines is (0–1), and the map's sections. */
+const BEEN: Record<number, number> = { 0: 0.35, 18: 0.5, 19: 0.2, 22: 0.25, 39: 0.4, 40: 0.3, 41: 0.55, 42: 1, 43: 0.45, 44: 0.8, 48: 0.5, 58: 0.6 };
+const SHELF = Array.from({ length: 66 }, (_, i) => BEEN[i] ?? 0);
+const MAP_SECTIONS: [string, number, number][] = [
+  ["Law", 5, 1], ["History", 12, 0], ["Wisdom", 5, 2], ["Major prophets", 5, 1], ["Minor prophets", 12, 0],
+  ["Gospels", 4, 4], ["Acts", 1, 1], ["Paul's letters", 13, 2], ["General letters", 8, 1], ["Revelation", 1, 0],
+];
+const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
 ---
 
 <div class="aui sv" role="img" aria-label={label}>
@@ -259,7 +269,7 @@ const { name, label } = Astro.props;
       </div>
       <div class="aui-card sv__card sv__pop sv__menu">
         <p class="sv__label sv__label--in">Translation</p>
-        {["NLT", "ESV", "NIV", "CSB", "KJV", "NASB 1995"].map((t, i) => (
+        {["NLT", "ESV", "NIV", "CSB", "KJV", "NABRE"].map((t, i) => (
           <div class:list={["aui-row sv__row-plain", i === 0 && "is-on"]}><span class="aui-title">{t}</span>{i === 0 ? <span class="aui-acts sv__ok"><AppIcon name="check" /></span> : <span></span>}</div>
         ))}
         <p class="sv__row sv__row--menu"><AppIcon name="gear" /> New pills use your preferred Bible</p>
@@ -550,6 +560,114 @@ const { name, label } = Astro.props;
           <span><span class="sv__post-t">{text}</span><span class="aui-pill">{ref}</span></span>
         </div>
       ))}
+    </div>
+  )}
+
+  {name === "catholic-setting" && (
+    <div class="aui-card sv__card">
+      <p class="sv__label sv__label--in">My Bible · Books</p>
+      <div class="aui-row sv__row-plain"><span><span class="aui-title">Protestant</span><span class="aui-sub">The 66 books</span></span><span></span></div>
+      <div class="aui-row sv__row-plain is-on"><span><span class="aui-title">Catholic</span><span class="aui-sub">The 73 books and daily Mass readings</span></span><span class="aui-acts sv__ok"><AppIcon name="check" /></span></div>
+      <p class="sv__row sv__row--menu"><AppIcon name="book-bible" /> Your translation stays the same</p>
+    </div>
+  )}
+
+  {name === "catholic-books" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Old Testament · 46 books</p>
+      <div class="sv__books">
+        {["Ezra", "Neh", "Tob", "Jdt", "Esth", "1 Macc", "2 Macc", "Job", "Ps", "Prov", "Eccl", "Song", "Wis", "Sir", "Isa", "Jer"].map((b) => (
+          <span class:list={["sv__book", b === "Sir" && "is-on", ["Tob", "Jdt", "1 Macc", "2 Macc", "Wis", "Sir"].includes(b) && "is-dc"]}>{b}</span>
+        ))}
+      </div>
+      <p class="sv__label sv__label--gap">Translation</p>
+      <p class="sv__trs sv__trs--flush"><span class="is-on">NABRE</span><span>Douay-Rheims</span><span>RSV-2CE</span><span>NRSV-CE</span></p>
+      <p class="sv__foot"><AppIcon name="book-bible" /> Catholic editions come first in the picker.</p>
+    </div>
+  )}
+
+  {name === "gospel" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Today's Gospel<i class="sv__season">·</i>The Nativity of the Lord</p>
+      <p class="sv__ref">John 1:1–3 <span class="aui-tr">DRB</span></p>
+      <p class="sv__verse"><sup>1</sup>In the beginning was the Word, and the Word was with God, and the Word was God. <sup>2</sup>The same was in the beginning with God. <sup>3</sup>All things were made by him: and without him was made nothing that was made.</p>
+      <p class="sv__acts">
+        <span class="sv__btn sv__btn--go"><AppIcon name="book-open" /> Open in Bible</span>
+        <span class="sv__btn"><AppIcon name="pen-to-square" /> Create note</span>
+      </p>
+    </div>
+  )}
+
+  {name === "bible-shelf" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__vhead"><b>My Bible</b><span class="sv__expand"><AppIcon name="up-right-and-down-left-from-center" /></span></p>
+      <p class="sv__shelf-t">You've been in 12 books. John most of all.</p>
+      <div class="sv__shelf" aria-hidden="true">
+        {SHELF.map((fill) => (
+          <i style={`--fill:${fill}`}></i>
+        ))}
+      </div>
+      <p class="sv__ends"><span>Genesis</span><span>Revelation</span></p>
+    </div>
+  )}
+
+  {name === "bible-map" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__title">You've been in 12 books.</p>
+      <p class="sv__ref">John most of all.</p>
+      <div class="sv__sections">
+        {MAP_SECTIONS.map(([label, books, been]) => (
+          <div class:list={["sv__section", label === "Gospels" && "is-on"]}>
+            <span class="sv__section-t">{label}</span>
+            <span class="sv__section-dots">{Array.from({ length: books }, (_, i) => <i class:list={[i < been && "is-been"]}></i>)}</span>
+            <span class="sv__section-n">{been > 0 ? `${been}/${books}` : ""}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {name === "bible-chapters" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__vhead"><b>John</b><span class="sv__section-n">14/21</span></p>
+      <div class="sv__strip">
+        {JOHN.map((level, i) => (
+          <span class={`sv__cell is-l${level}`}>{i + 1}</span>
+        ))}
+      </div>
+      <p class="sv__key">
+        {["Not yet", "Read", "Wrote or highlighted", "Studied deeply"].map((k, i) => (
+          <span><i class={`sv__cell is-l${i}`}></i>{k}</span>
+        ))}
+      </p>
+      <p class="sv__foot"><AppIcon name="book-open" /> A map of study, not a reading tracker.</p>
+    </div>
+  )}
+
+  {name === "family-members" && (
+    <div class="aui-card sv__card">
+      <p class="sv__label sv__label--in">My Family · 4 of 6</p>
+      {[
+        ["D", "is-me", "Derek", "Organizer"],
+        ["S", "is-a", "Sarah", "Parent/Guardian"],
+        ["G", "is-b", "Grandma Ruth", "Adult"],
+        ["E", "is-kid", "Ellie", "Child"],
+      ].map(([who, cls, nm, role]) => (
+        <div class="aui-row sv__row-plain sv__member"><span class="sv__who"><span class:list={["sv__face", cls]}>{who}</span><span class="aui-title">{nm}</span></span><span class="sv__chip">{role}</span></div>
+      ))}
+      <p class="sv__row sv__row--menu"><AppIcon name="link" /> Invite with a one-time link, good for 7 days</p>
+    </div>
+  )}
+
+  {name === "family-progress" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="sv__face is-kid">E</span><span><b>Ellie</b><small>Last active today</small></span></p>
+      <div class="sv__stats">
+        <p><b>9</b><span>chapters this month</span></p>
+        <p><b>14</b><span>notes</span></p>
+      </div>
+      <p class="sv__refline"><span class="aui-pill">Mark</span><span class="aui-pill">Psalms</span><span class="aui-pill">Ruth</span></p>
+      <p class="sv__foot"><AppIcon name="lock" /> Her notes, highlights and searches stay hers.</p>
     </div>
   )}
 </div>
@@ -904,4 +1022,43 @@ const { name, label } = Astro.props;
   .sv__dot { font-style: normal; padding-inline: 2px; }
   .sv__scan-ref { padding: 6px 4px !important; }
   .sv__scan-guess { white-space: normal !important; color: oklch(52% 0.16 55) !important; }
+  /* Catholic Bible */
+  .sv__book.is-dc { box-shadow: inset 0 0 0 1px var(--pds-border-control-medium); }
+  .sv__trs--flush { margin-top: 0 !important; }
+  .sv__season { font-style: normal; padding-inline: 0.35em; color: var(--pds-text-tertiary); }
+
+  /* My Bible: the shelf of spines, the map's sections, a book's chapters. */
+  .sv__expand { color: var(--pds-text-tertiary); }
+  .sv__expand :global(svg) { width: 11px; height: 11px; }
+  .sv__shelf-t { margin-top: 2px !important; font-size: 13px; color: var(--pds-text-secondary); }
+  .sv__shelf { display: flex; align-items: flex-end; gap: 1.5px; height: 46px; margin-top: 12px; }
+  .sv__shelf i { position: relative; flex: 1; height: 100%; overflow: hidden; border-radius: 2px; background: var(--pds-bg-chip); }
+  .sv__shelf i::after { content: ""; position: absolute; inset: auto 0 0; height: calc(var(--fill) * 100%); background: var(--pds-accent); }
+  .sv__ends { display: flex; justify-content: space-between; margin-top: 6px !important; font-size: 11px; color: var(--pds-text-tertiary); }
+  .sv__sections { display: grid; gap: 2px; margin-top: 10px; }
+  .sv__section { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 2.5rem; gap: 10px; align-items: center; padding: 5px 8px; border-radius: 8px; font-size: 12.5px; }
+  .sv__section.is-on { background: var(--pds-bg-row-selected); }
+  .sv__section-t { color: var(--pds-text-primary); white-space: nowrap; }
+  .sv__section-dots { display: flex; flex-wrap: wrap; gap: 4px; }
+  .sv__section-dots i { width: 7px; height: 7px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--pds-text-tertiary); }
+  .sv__section-dots i.is-been { background: var(--pds-accent); box-shadow: none; }
+  .sv__section-n { justify-self: end; font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--pds-text-secondary); }
+  .sv__strip { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
+  .sv__cell { display: grid; place-items: center; aspect-ratio: 1; border-radius: 6px; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--pds-text-secondary); }
+  .sv__cell.is-l0 { box-shadow: inset 0 0 0 1px var(--pds-border-control-medium); }
+  .sv__cell.is-l1 { color: var(--pds-text-primary); background: color-mix(in srgb, var(--pds-accent) 22%, transparent); }
+  .sv__cell.is-l2 { color: var(--pds-text-primary); background: color-mix(in srgb, var(--pds-accent) 50%, transparent); }
+  .sv__cell.is-l3 { color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__key { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px !important; font-size: 11.5px; color: var(--pds-text-secondary); }
+  .sv__key span { display: inline-flex; align-items: center; gap: 5px; }
+  .sv__key .sv__cell { width: 10px; height: 10px; border-radius: 3px; }
+  /* Family */
+  .sv__face.is-kid { background: #2f9e73; }
+  .sv__who { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
+  .sv__who .sv__face { width: 22px; height: 22px; font-size: 10px; }
+  .sv :global(.aui-row.sv__member) { padding-block: 6px; }
+  .sv__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .sv__stats p { display: grid; gap: 1px; padding: 8px 10px; border-radius: 10px; background: var(--pds-bg-chip); }
+  .sv__stats b { font-family: var(--pds-font-display); font-size: 20px; font-weight: 600; color: var(--pds-text-primary); }
+  .sv__stats span { font-size: 11.5px; color: var(--pds-text-secondary); }
 </style>

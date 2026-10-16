@@ -136,7 +136,7 @@ const categories: FeatureCategory[] = [
     image: "/images/auth-hero/ai_bg_076.webp",
     seoTitle: "Read — a Bible reader with your notes in the margin | Harvous",
     seoDescription:
-      "Read a chapter in 11 translations, compare two side by side verse for verse, and keep your notes and highlights in the margin where you left them.",
+      "Read a chapter in 15 translations, compare two side by side verse for verse, and keep your notes and highlights in the margin where you left them.",
     heroTitle: "Every chapter, with everything you've said about it.",
     closingTitle: "Read with your notes beside you.",
     heroLead:
@@ -162,7 +162,7 @@ const categories: FeatureCategory[] = [
       {
         icon: "fa7-solid:book-bible",
         heading: "Type the reference, get the verse",
-        body: "A reference becomes a tappable pill in 11 translations, with a per-pill override when one version says it better.",
+        body: "A reference becomes a tappable pill in 15 translations, with a per-pill override when one version says it better.",
       },
       {
         icon: "fa7-solid:table-columns",
@@ -175,7 +175,7 @@ const categories: FeatureCategory[] = [
         body: "Select a name or term for its Easton's entry and cross-references, in place, without losing the chapter.",
       },
     ],
-    featureIds: ["bible-reader", "compare-translations", "scripture-pills", "dictionary"],
+    featureIds: ["bible-reader", "compare-translations", "scripture-pills", "dictionary", "my-bible", "catholic-bible"],
     featuresHeading: "What reading in Harvous gives you",
     featuresLead:
       "Keep the Bible app you love. This is for the reading that you want to leave something behind.",
@@ -346,10 +346,10 @@ const categories: FeatureCategory[] = [
         body: "Nothing is shared until you share it. Lock a note with a PIN and only you can open it — not a space, not a link, not a connected app.",
       },
     ],
-    featureIds: ["shared-spaces"],
+    featureIds: ["shared-spaces", "family"],
     featuresHeading: "Studying with other people",
     featuresLead:
-      "Shared spaces are a Harvous Plus add-on for the person hosting. Everyone they invite joins free.",
+      "Shared spaces are a Harvous Plus add-on for the person hosting. Everyone they invite joins free. Family sharing puts your household on the same Plus.",
     useCaseSlugs: ["small-group", "sermon-prep"],
     compareSlugs: ["notion", "google-docs", "groupme", "youversion"],
     testimonialId: "joschua",

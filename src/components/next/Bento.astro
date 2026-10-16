@@ -14,7 +14,7 @@
  *
  * The app pieces are drawn with next-app-ui.css (the app's own tokens), each
  * copied from a real screen (Shared spaces from the tour's share screen). The smaller
- * features every account gets sit in a grid of chips below.
+ * features every account gets sit in a grid of tiles below.
  */
 import AppIcon from "./app/AppIcon.astro";
 import { Icon } from "astro-icon/components";
@@ -175,15 +175,17 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
 <div class="also" data-reveal>
   <p class="also__label">Also in every account</p>
   <ul class="also__list" role="list">
-    {ALSO_INCLUDED.map((item) => (
-      <li>
-        {item.href ? (
-          <a class="also__chip" href={item.href}><Icon name={item.icon} aria-hidden="true" /> {item.label}</a>
-        ) : (
-          <span class="also__chip"><Icon name={item.icon} aria-hidden="true" /> {item.label}</span>
-        )}
-      </li>
-    ))}
+    {ALSO_INCLUDED.map((item) => {
+      const Tag = item.href ? "a" : "div";
+      return (
+        <li>
+          <Tag class="also__cell" href={item.href}>
+            <span class="also__icon"><Icon name={item.icon} aria-hidden="true" /></span>
+            <span class="also__text"><b>{item.label}</b><span>{item.desc}</span></span>
+          </Tag>
+        </li>
+      );
+    })}
   </ul>
 </div>
 
@@ -495,40 +497,80 @@ const WIDE: Record<string, { at: "2" | "2only"; flip?: boolean }> = {
     text-transform: uppercase;
     color: var(--color-ink-faint);
   }
-  /* A grid, not a wrapping row, so six chips always break evenly —
-     6 across, then 3 × 2, then 2 × 3 — and none is left on a line alone. */
+  /* A 4 × 2 sheet of tiles split by hairlines, no boxes — 2 × 4 on a phone.
+     Eight items so both layouts break evenly; keep the count even. */
   .also__list {
     display: grid;
-    grid-template-columns: repeat(2, auto);
-    justify-content: center;
-    gap: 0.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    max-width: 64rem;
     margin: 0;
     padding: 0;
     list-style: none;
+    --also-solid: linear-gradient(var(--color-rule), var(--color-rule));
+    --also-fade-in: linear-gradient(90deg, transparent, var(--color-rule) 80%);
+    --also-fade-out: linear-gradient(90deg, var(--color-rule) 20%, transparent);
   }
-  @media (min-width: 36rem) {
-    .also__list { grid-template-columns: repeat(3, auto); }
+  @media (min-width: 52rem) {
+    .also__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
-  @media (min-width: 80rem) {
-    .also__list { grid-template-columns: repeat(6, auto); }
+  .also__list li { position: relative; display: flex; }
+  .also__list li:not(:nth-child(2n)) { border-right: 1px solid var(--color-rule); }
+  /* Horizontal rules are drawn per tile so the outer tiles can fade theirs
+     into the page: each line runs solid through the middle and dissolves at
+     both ends. ::before is the top rule (first row only), ::after the bottom. */
+  .also__list li::before,
+  .also__list li::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--also-solid);
+    pointer-events: none;
   }
-  .also__list li { display: flex; }
-  .also__list li > * { flex: 1; justify-content: center; }
-  .also__chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.45rem 0.85rem;
-    border-radius: 999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-ink);
+  .also__list li::after { bottom: 0; }
+  .also__list li::before { top: 0; display: none; }
+  .also__list li:nth-child(-n + 2)::before { display: block; }
+  .also__list li:nth-child(2n + 1)::before,
+  .also__list li:nth-child(2n + 1)::after { background: var(--also-fade-in); }
+  .also__list li:nth-child(2n)::before,
+  .also__list li:nth-child(2n)::after { background: var(--also-fade-out); }
+  @media (min-width: 52rem) {
+    .also__list li:nth-child(2n) { border-right: 1px solid var(--color-rule); }
+    .also__list li:nth-child(4n) { border-right: 0; }
+    .also__list li:nth-child(-n + 4)::before { display: block; }
+    .also__list li:nth-child(n)::before,
+    .also__list li:nth-child(n)::after { background: var(--also-solid); }
+    .also__list li:nth-child(4n + 1)::before,
+    .also__list li:nth-child(4n + 1)::after { background: var(--also-fade-in); }
+    .also__list li:nth-child(4n)::before,
+    .also__list li:nth-child(4n)::after { background: var(--also-fade-out); }
+  }
+  .also__cell {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    flex: 1;
+    padding: 1.25rem 1.1rem 1.35rem;
+    color: inherit;
     text-decoration: none;
-    background: var(--color-warm);
     transition: background-color 150ms ease;
   }
-  a.also__chip:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
-  .also__chip :global(svg) { width: 0.85rem; height: 0.85rem; color: var(--color-ink-soft); }
+  a.also__cell:hover { background: color-mix(in srgb, var(--color-ink) 4%, transparent); }
+  .also__icon {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 0.6rem;
+    color: var(--color-ink-soft);
+    background: var(--color-warm);
+  }
+  .also__icon :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .also__text { display: grid; gap: 0.2rem; }
+  .also__text b { font-size: 0.975rem; font-weight: 600; color: var(--color-ink); }
+  .also__text span { font-size: 0.85rem; line-height: 1.4; color: var(--color-ink-soft); }
 
   @media (prefers-reduced-motion: reduce) {
     .bcard__stage > :global(*) { transition: none; }
