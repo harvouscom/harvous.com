@@ -8,12 +8,15 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 
 - Notes-first: scripture pills, highlights, and references linked to your writing
 - Opens on Activity — the study you already did, a sheet per day, rather than a blank page
-- Built-in Bible reader that feeds your notes — browse or type a reference in one of 11 translations, open the chapter, and your notes/highlights for it are right there
+- Built-in Bible reader that feeds your notes — browse or type a reference in one of 15 translations, open the chapter, and your notes/highlights for it are right there
+- Catholic Bible setting (free): all 73 books including the deuterocanon, the NABRE, Douay-Rheims, RSV-2CE and NRSV-CE, and Today's Gospel from the daily Mass readings on Home
+- My Bible (free): a map of where you've been in Scripture, every book as a spine filled by what you read, wrote or highlighted — no streaks, no percentages
 - No sermon transcription focus — capture what matters to you, not auto-generated transcripts
 - Suggestions: resurface notes, highlights, and passages worth revisiting (called Recall before Harvous 3)
 - Reminders: an optional web push, at a rhythm you choose — Sunday and midweek, or every day — carrying the day's verse or the chapter you left, opening straight to it and pausing itself when it goes unopened
 - Review (Harvous Plus): answer a question about your own notes from memory, then say how it went — no AI-written questions, no score
 - Connector (Harvous Plus): let Claude, ChatGPT, or another AI app you choose read your notes — read-only, locked notes stay locked
+- Family (Harvous Plus): one Plus covers up to five more people in your household, with a shared Family Space and a parent view that shows a child's progress, never their notes
 - Search from the top middle finds anything you have saved
 - Shared Spaces, threads, and folders that organize themselves around what you study — hosting a space is Plus, joining is always free
 
@@ -28,6 +31,9 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 - Discover — free templates and references, some ours, some curated: https://harvous.com/discover/
 - Release Notes: https://harvous.com/release-notes/
 - Connector (use your study in Claude and ChatGPT): https://harvous.com/add-ons/connector/
+- Family (share Plus with your household): https://harvous.com/add-ons/family/
+- Catholic Bible: https://harvous.com/features/catholic-bible/
+- My Bible: https://harvous.com/features/my-bible/
 - Sign up: https://app.harvous.com/
 
 ## Bright Enough — the Harvous blog

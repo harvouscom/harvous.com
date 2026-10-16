@@ -92,7 +92,7 @@ export const STORY_STEPS: StoryStep[] = [
   {
     key: "write",
     title: "Write a note. The verse comes with it.",
-    body: "Type John 3:16 and it turns into a pill you can tap, in any of 11 translations. Headings, bullets, highlights. It writes like any doc you already know.",
+    body: "Type John 3:16 and it turns into a pill you can tap, in any of 15 translations. Headings, bullets, highlights. It writes like any doc you already know.",
     backdrop: "072",
     vignette: "scripture",
     note: { text: "I just type the reference. That's it.", at: { top: "5%", right: "5%" }, arrow: "down-left", tilt: 3, target: { selector: "[data-anote-pill]", at: [0.8, -0.15] } },
@@ -192,14 +192,16 @@ export const BENTO_CARDS: BentoCardSpec[] = [
   },
 ];
 
-/** The smaller things every account gets — a line of chips under the grid. From FeatureGrid.astro. */
-export const ALSO_INCLUDED: { label: string; icon: string; href?: string }[] = [
-  { label: "Daily passage", icon: "fa7-solid:sun", href: "/features/daily-passage/" },
-  { label: "Easton's dictionary", icon: "fa7-solid:book-atlas", href: "/features/dictionary/" },
-  { label: "Offline & sync", icon: "fa7-solid:cloud-arrow-down", href: "/faq/#faq-offline" },
-  { label: "Reminders", icon: "fa7-solid:bell", href: "/features/reminders/" },
-  { label: "Light & dark", icon: "fa7-solid:circle-half-stroke" },
-  { label: "Keyboard shortcuts", icon: "fa7-solid:keyboard" },
+/** The smaller things every account gets — a grid of tiles under the bento, each with one line on what it does. */
+export const ALSO_INCLUDED: { label: string; desc: string; icon: string; href?: string }[] = [
+  { label: "Daily passage", desc: "A short passage on Home each day", icon: "fa7-solid:sun", href: "/features/daily-passage/" },
+  { label: "My Bible map", desc: "Where you've been in Scripture", icon: "fa7-solid:map", href: "/features/my-bible/" },
+  { label: "Catholic Bible", desc: "All 73 books and the daily Gospel", icon: "fa7-solid:cross", href: "/features/catholic-bible/" },
+  { label: "Easton's dictionary", desc: "Names and terms, in place", icon: "fa7-solid:book-atlas", href: "/features/dictionary/" },
+  { label: "Offline & sync", desc: "Keeps working without a signal", icon: "fa7-solid:cloud-arrow-down", href: "/faq/#faq-offline" },
+  { label: "Reminders", desc: "An optional nudge, with the verse", icon: "fa7-solid:bell", href: "/features/reminders/" },
+  { label: "Light & dark", desc: "Follows your system", icon: "fa7-solid:circle-half-stroke" },
+  { label: "Keyboard shortcuts", desc: "Write without the mouse", icon: "fa7-solid:keyboard" },
 ];
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -241,7 +243,7 @@ export const PRIVACY_TOGGLES: ToggleSpec[] = [
  * true, and bump NOW_UPDATED whenever it changes. "Just shipped" and "Next up"
  * below it come from release notes and the roadmap, so only this needs tending.
  */
-export const NOW_UPDATED = "2026-10-09";
+export const NOW_UPDATED = "2026-10-15";
 
 export const NOW_WORKING_ON: { title: string; body: string }[] = [
   {
@@ -251,9 +253,5 @@ export const NOW_WORKING_ON: { title: string; body: string }[] = [
   {
     title: "Review exercises that teach",
     body: "Word tiles, drag-to-order, and learning steps, so remembering a passage feels less like a quiz and more like practice.",
-  },
-  {
-    title: "Family accounts",
-    body: "A Family Space for your household, one Plus that covers up to five more people, and a parent view that shows a child's progress, never their notes. Not open yet.",
   },
 ];

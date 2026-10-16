@@ -16,4 +16,6 @@ export const FEATURE_ICONS: Record<string, string> = {
   "note-templates": "fa7-solid:list-check",
   "resource-library": "fa7-solid:newspaper",
   reminders: "fa7-solid:bell",
+  "my-bible": "fa7-solid:book-atlas",
+  "catholic-bible": "fa7-solid:cross",
 };

@@ -725,7 +725,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     seoDescription:
       "Compare the best apps for scripture-linked notes — Harvous, Church Notes, Spirit Notes, Obsidian, and Logos. Type a reference, keep the verse in your writing — or open the chapter and write from there.",
     h1: "Best scripture notes apps",
-    lead: "Notes where Scripture stays in the writing — dedicated apps and tools people adapt. Harvous turns typed references into scripture pills across 11 translations.",
+    lead: "Notes where Scripture stays in the writing — dedicated apps and tools people adapt. Harvous turns typed references into scripture pills across 15 translations.",
     pickSlugs: [
       "church-notes",
       "spirit-notes",

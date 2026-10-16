@@ -51,7 +51,9 @@ export const FREE_PLAN: PricingPlan = {
     "90 days of history",
     "Scripture pills, highlights, and threads",
     "Scan a page into a note",
-    "Built-in Bible reader",
+    "Built-in Bible reader in 15 translations",
+    "Catholic Bible: all 73 books and the daily Gospel",
+    "My Bible, a map of where you've studied",
     "Built-in dictionary and daily passage",
     "Built-in cross-references and themes",
     "Offline sync across devices",
@@ -83,6 +85,7 @@ export const PLUS_PLAN: PricingPlan = {
     "People you invite join free, no Plus needed",
     "Turn a thread into a shared study plan",
     "Use your study in Claude, ChatGPT, and more",
+    "Family sharing with up to 5 more people",
   ],
   comingSoonFeatures: [],
   cta: {
