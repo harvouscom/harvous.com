@@ -1,4 +1,5 @@
 import { getUseCaseBySlug, getUseCases, type UseCase } from "./use-cases-data.ts";
+import { APP_CHURCH_START_URL } from "./signup-url.ts";
 
 export type ForAudienceMoment = {
   icon: string;
@@ -686,11 +687,11 @@ const audiences: ForAudience[] = [
     icon: "fa7-solid:church",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
-    statusLine: "Invite-only",
+    statusLine: "30-day pilot, set up with you",
     interestForm: true,
     seoTitle: "For churches — teaching plans, series, and curriculum in Harvous",
     seoDescription:
-      "Harvous serves how the church learns. Plan what each ministry teaches, keep a series together across its weeks, give a volunteer a room to lead, and let connected people receive it. Running with churches now — tell us about yours.",
+      "Harvous serves how the church learns. Plan what each ministry teaches, keep a series together across its weeks, give a volunteer a room to lead, and let connected people receive it. Bring your church: we set it up with you and start a 30-day pilot.",
     heroTitle: "Education for the church.",
     heroLead:
       "Harvous serves how the church learns — believers studying Scripture, pastors teaching it, and churches organizing it. A tool for education. Never a substitute for the body.",
@@ -716,8 +717,8 @@ const audiences: ForAudience[] = [
         paragraphs: [
           "A pastor decides what the church teaches. A teacher publishes to the ministry they lead, and only there. The volunteer who runs a group can lead that one room, granted on purpose and taken back the same way.",
         ],
-        ctaHref: "#interest",
-        ctaLabel: "Tell us about your church",
+        ctaHref: APP_CHURCH_START_URL,
+        ctaLabel: "Bring your church to Harvous",
       },
       {
         heading: "Invite with a link",
@@ -734,6 +735,14 @@ const audiences: ForAudience[] = [
         ],
       },
       {
+        heading: "Everyone at their own service",
+        visual: "service",
+        paragraphs: [
+          "People pick the service they go to. This Sunday shows that time, and church notifications wait until it's over. The ministries that meet during it come first when they choose what to follow, and following is still their choice.",
+          "Staff see how many people chose each service, never who.",
+        ],
+      },
+      {
         heading: "What a church sees",
         visual: "sees",
         paragraphs: [
@@ -741,9 +750,17 @@ const audiences: ForAudience[] = [
         ],
       },
       {
+        heading: "How a church starts",
+        paragraphs: [
+          "Create an account, find your church in the directory, and tell us who you are. We set your church up with you and start a 30-day pilot. Then invite your team and share your join link.",
+        ],
+        ctaHref: APP_CHURCH_START_URL,
+        ctaLabel: "Bring your church to Harvous",
+      },
+      {
         heading: "What Harvous is not",
         paragraphs: [
-          "A notes and study tool, not a church management system: no giving, check-in, or scheduling, and never a substitute for pastors or the gathered body. Down the road, I plan integrations with tools like Planning Center so rosters can sync in.",
+          "A notes and study tool, not a church management system: no giving, check-in, or volunteer scheduling, and never a substitute for pastors or the gathered body. Down the road, I plan integrations with tools like Planning Center so rosters can sync in.",
         ],
       },
     ],

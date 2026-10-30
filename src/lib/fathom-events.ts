@@ -140,4 +140,6 @@ export const fathomCta = {
   v3Announce: "cta_v3_announce",
   /** /for/churches/ — "Share interest" in the fixed bottom bar, to the interest form. */
   churchInterestSticky: "church_interest_sticky",
+  /** /for/churches/ — "Bring your church to Harvous", out to the app's request flow. */
+  churchStart: "church_start",
 } as const;

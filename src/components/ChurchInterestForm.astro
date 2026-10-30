@@ -1,5 +1,6 @@
 ---
 import { HMC_COUNTRIES, getHmcRegionsForCountry } from "../lib/hmc-directory";
+import { APP_CHURCH_START_URL } from "../lib/signup-url";
 
 interface Props {
   id?: string;
@@ -31,10 +32,10 @@ const defaultRegions = getHmcRegionsForCountry(defaultCountry);
     </div>
 
     <div data-church-interest-form-panel>
-      <h2 class="church-interest-form__heading">Tell us about your church</h2>
+      <h2 class="church-interest-form__heading">Questions first?</h2>
       <p class="church-interest-form__lead">
-        Churches are teaching on Harvous now. We set each one up by hand while we grow, so
-        tell us a little about yours and we’ll take it from there.
+        Not ready to set up yet? Tell us a little about your church and what you’re hoping for,
+        and we’ll write back. Ready now? <a href={APP_CHURCH_START_URL}>Bring your church to Harvous</a>.
       </p>
 
       <form
