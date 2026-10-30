@@ -303,8 +303,11 @@ const defaultRegions = getHmcRegionsForCountry(defaultCountry);
         <p class="church-interest-form__error" data-church-interest-error hidden role="alert"></p>
 
         <div class="church-interest-form__actions">
-          <button type="submit" class="btn-accent church-interest-form__submit" data-church-interest-submit>
+          <button type="submit" class="church-interest-form__submit" data-church-interest-submit disabled>
             Share interest
+          </button>
+          <button type="button" class="church-interest-form__cancel" data-church-interest-close>
+            Cancel
           </button>
         </div>
       </form>
@@ -687,24 +690,72 @@ const defaultRegions = getHmcRegionsForCountry(defaultCountry);
     color: #b42318;
   }
 
+  /*
+   * The app's sheet footer, mirrored (prototype-components.css: .proto-add-notes-sheet__footer
+   * and .proto-sheet-footer--stacked): a hairline-topped strip, primary on the right, a quiet
+   * Cancel beside it. In the modal it sticks to the bottom while the form scrolls.
+   */
   .church-interest-form__actions {
     margin-top: 1.5rem;
     display: flex;
+    flex-direction: row-reverse;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.85rem 1.25rem;
+    justify-content: flex-start;
+    gap: 6px 8px;
   }
 
   .church-interest-form__submit {
-    padding: 0.75rem 1.35rem;
-    font-size: 1rem;
+    appearance: none;
+    min-width: 96px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--pds-on-accent, #fff);
+    background: linear-gradient(171deg, var(--pds-accent-gradient-start) 7%, var(--pds-accent-gradient-end) 93%);
+    box-shadow: var(--pds-shadow-accent-button);
     cursor: pointer;
-    border: none;
+    transition: filter 0.1s, opacity 0.15s, box-shadow 0.15s;
   }
 
+  .church-interest-form__submit:hover:not(:disabled) {
+    filter: brightness(1.06);
+  }
+
+  /* Not ready yet: clearly off, with no glow, so it never reads as pressable. */
   .church-interest-form__submit:disabled {
-    opacity: 0.7;
-    cursor: wait;
+    opacity: 0.4;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .church-interest-form__submit:focus-visible,
+  .church-interest-form__cancel:focus-visible {
+    outline: 2px solid var(--pds-accent-focus-ring, #2f7cf6);
+    outline-offset: 2px;
+  }
+
+  .church-interest-form__cancel {
+    appearance: none;
+    min-height: 36px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--pds-text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .church-interest-form__cancel:hover {
+    color: var(--pds-text-primary);
+    background: var(--pds-bg-ghost);
   }
 
   .church-interest-form__success {

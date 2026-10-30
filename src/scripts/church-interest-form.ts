@@ -81,8 +81,44 @@ function titleCase(word: string): string {
 
   if (!form) return;
 
+  /*
+   * "Share interest" stays disabled until everything required is there, like an app footer's
+   * primary. checkValidity() covers the native required fields, but not three things: the
+   * church name (disabled, so skipped, until a region is picked), "at least one" interest, and
+   * the role note when the role is Other. The directory picker fills fields from script without
+   * firing input events, so clicks and attribute changes re-check too.
+   */
+  function isComplete(): boolean {
+    const churchName = form!.querySelector<HTMLInputElement>('[name="churchName"]');
+    const interests = form!.querySelectorAll('input[name="interests"]:checked').length > 0;
+    const roleOtherOk =
+      !roleSelect || roleSelect.value !== "other" || Boolean(roleOtherInput?.value.trim());
+    return (
+      form!.checkValidity() &&
+      Boolean(churchName && !churchName.disabled && churchName.value.trim()) &&
+      interests &&
+      roleOtherOk
+    );
+  }
+
+  function syncSubmit() {
+    if (!submitBtn || submitBtn.dataset.sending === "1") return;
+    submitBtn.disabled = !isComplete();
+  }
+
+  const resync = () => window.setTimeout(syncSubmit, 0);
+  form.addEventListener("input", resync);
+  form.addEventListener("change", resync);
+  form.addEventListener("click", resync);
+  new MutationObserver(resync).observe(form, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["disabled", "required", "hidden"],
+  });
+
   roleSelect?.addEventListener("change", syncRoleOther);
   syncRoleOther();
+  syncSubmit();
 
   fieldset?.addEventListener("change", function () {
     const checked = form.querySelectorAll('input[name="interests"]:checked');
@@ -116,6 +152,7 @@ function titleCase(word: string): string {
     }
 
     if (submitBtn) {
+      submitBtn.dataset.sending = "1";
       submitBtn.disabled = true;
       submitBtn.textContent = "Sending…";
     }
@@ -137,8 +174,9 @@ function titleCase(word: string): string {
           errorEl.textContent = "Something went wrong. Please try again.";
         }
         if (submitBtn) {
-          submitBtn.disabled = false;
+          delete submitBtn.dataset.sending;
           submitBtn.textContent = "Share interest";
+          syncSubmit();
         }
       });
   });
