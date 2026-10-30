@@ -97,7 +97,7 @@ const plans = {
           {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
           {section.feature && features[section.feature] && <FeatureChip feature={features[section.feature]} />}
           {section.ctaHref && section.ctaLabel && (
-            <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref} data-fathom-track={fathomCta.churchStart}>{section.ctaLabel}</a></p>
+            <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref} data-fathom-track={fathomCta.churchInterestOpen}>{section.ctaLabel}</a></p>
           )}
         </div>
 
@@ -306,7 +306,7 @@ const plans = {
         <h2 class="chs__h">{section.heading}</h2>
         {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
         {section.ctaHref && section.ctaLabel && (
-          <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref} data-fathom-track={fathomCta.churchStart}>{section.ctaLabel}</a></p>
+          <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref} data-fathom-track={fathomCta.churchInterestOpen}>{section.ctaLabel}</a></p>
         )}
       </div>
     )}{section.visual === "join" && afterJoin && <Fragment set:html={afterJoin} />}</>);

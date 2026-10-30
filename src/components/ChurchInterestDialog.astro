@@ -1,0 +1,122 @@
+---
+/**
+ * The church form, in a modal — "Bring your church to Harvous" without leaving the site.
+ *
+ * Any link to `#interest` on the page opens it (the scene buttons, the sticky pill, links from
+ * other pages that land on /for/churches/#interest). The form inside is unchanged and still posts
+ * to the Worker, which saves it, emails Derek, and forwards it into the app's request queue.
+ *
+ * A native <dialog>: focus is trapped and returned, Escape closes it, and the page behind is
+ * inert, with no library. The form's own script already needs JavaScript to submit, so a
+ * no-script visitor loses nothing here they had before.
+ */
+import ChurchInterestForm from "./ChurchInterestForm.astro";
+---
+
+<dialog class="ci-dialog" id="church-interest-dialog" aria-label="Bring your church to Harvous" data-church-interest-dialog>
+  <button type="button" class="ci-dialog__close" aria-label="Close" data-church-interest-close>
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+  </button>
+  <div class="ci-dialog__body">
+    <ChurchInterestForm id="interest" />
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("[data-church-interest-dialog]");
+  if (dialog && typeof dialog.showModal === "function") {
+    const open = () => {
+      if (!dialog.open) dialog.showModal();
+    };
+    document.addEventListener("click", (event) => {
+      const link = (event.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (!link) return;
+      const url = new URL(link.href, location.href);
+      if (url.hash !== "#interest" || url.pathname !== location.pathname) return;
+      event.preventDefault();
+      open();
+    });
+    dialog.querySelector("[data-church-interest-close]")?.addEventListener("click", () => dialog.close());
+    // A click on the backdrop (the dialog element itself, outside its box) closes it.
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    // Arriving from another page's "#interest" link, or back after submitting.
+    const params = new URLSearchParams(location.search);
+    if (location.hash === "#interest" || params.get("submitted") === "1") open();
+  }
+</script>
+
+<style>
+  .ci-dialog {
+    /* The site's reset zeroes margins, which strips <dialog>'s own centring. */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+    width: min(44rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    border: 0;
+    border-radius: 1.6rem;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    box-shadow: 0 30px 80px -20px rgba(15, 23, 42, 0.45);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .ci-dialog::backdrop {
+    background: rgba(10, 12, 18, 0.55);
+    backdrop-filter: blur(4px);
+  }
+  .ci-dialog__body {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ci-dialog__body :global(section),
+  .ci-dialog__body :global(form) {
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
+  }
+  .ci-dialog__body :global(.frame-divider) {
+    padding-block: 0;
+    border: 0;
+  }
+  /* No hairline above a form that already has a card's edge around it. */
+  .ci-dialog__body :global(.frame-divider)::before {
+    display: none;
+  }
+  /* The form fades in on scroll on the page; in a modal it is simply there. */
+  .ci-dialog :global([data-reveal]) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .ci-dialog__close {
+    position: sticky;
+    top: 0.75rem;
+    float: right;
+    margin: 0.75rem 0.75rem 0 0;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 0;
+    border-radius: 999px;
+    color: var(--color-ink);
+    background: color-mix(in oklab, var(--color-ink) 8%, transparent);
+    cursor: pointer;
+    z-index: 1;
+  }
+  .ci-dialog__close svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .ci-dialog__close:focus-visible {
+    outline: 2px solid var(--color-accent, #2f7cf6);
+    outline-offset: 2px;
+  }
+</style>

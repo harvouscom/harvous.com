@@ -15,6 +15,7 @@
  */
 import { handleChurchSearch } from '../src/lib/church-search.ts';
 import { parseChurchInterest } from '../src/lib/church-interest.ts';
+import { forwardChurchInterest, readForwardConfig } from '../src/lib/church-interest-forward.ts';
 import {
   readNotifyConfig,
   sendChurchInterestNotification,
@@ -61,6 +62,9 @@ type Env = {
   RESEND_API_KEY?: string;
   NOTIFY_FROM?: string;
   NOTIFY_TO?: string;
+  /** Forwarding into the app's church request queue. Both unset = D1 + email only. */
+  HARVOUS_INTAKE_URL?: string;
+  HARVOUS_INTAKE_SECRET?: string;
   HERESMYCHURCH_API_BASE?: string;
   HERESMYCHURCH_ANON_KEY?: string;
   HERESMYCHURCH_PARTNER_API_KEY?: string;
@@ -270,6 +274,16 @@ async function handleChurchInterest(
   });
   if (notify) {
     ctx.waitUntil(sendChurchInterestNotification(r, notify));
+  }
+
+  // And into Harvous's own queue (/admin/churches › Requests), the same way: after the row is
+  // safe, never in the visitor's way.
+  const forward = readForwardConfig({
+    HARVOUS_INTAKE_URL: env.HARVOUS_INTAKE_URL,
+    HARVOUS_INTAKE_SECRET: env.HARVOUS_INTAKE_SECRET,
+  });
+  if (forward) {
+    ctx.waitUntil(forwardChurchInterest(r, forward));
   }
 
   return submissionResponse(request, { ok: true }, 200);
