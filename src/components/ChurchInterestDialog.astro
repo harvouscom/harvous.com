@@ -84,6 +84,14 @@ import ChurchInterestForm from "./ChurchInterestForm.astro";
     padding-block: 0;
     border: 0;
   }
+  /* The form's own section padding is for the page, not a modal: with it, the pinned footer
+     floated above a band of empty space once scrolled to the end. The footer is the bottom. */
+  .ci-dialog__body {
+    padding-bottom: 0;
+  }
+  .ci-dialog__body :global(.church-interest-form__inner) {
+    padding-bottom: 0;
+  }
   /* No hairline above a form that already has a card's edge around it. */
   .ci-dialog__body :global(.frame-divider)::before {
     display: none;
@@ -98,7 +106,7 @@ import ChurchInterestForm from "./ChurchInterestForm.astro";
     position: sticky;
     bottom: 0;
     z-index: 1;
-    margin: 1.5rem calc(-1 * clamp(1.5rem, 4vw, 2.5rem)) calc(-1 * clamp(1.5rem, 4vw, 2.5rem));
+    margin: 1.5rem calc(-1 * clamp(1.5rem, 4vw, 2.5rem)) 0;
     padding: 12px clamp(1.5rem, 4vw, 2.5rem) 14px;
     border-top: 0.5px solid var(--pds-border-control);
     background: color-mix(in oklab, var(--color-paper) 92%, transparent);
