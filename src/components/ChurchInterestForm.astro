@@ -1,6 +1,7 @@
 ---
 import { HMC_COUNTRIES, getHmcRegionsForCountry } from "../lib/hmc-directory";
 import { APP_CHURCH_START_URL } from "../lib/signup-url";
+import { fathomCta } from "../lib/fathom-events";
 
 interface Props {
   id?: string;
@@ -32,10 +33,11 @@ const defaultRegions = getHmcRegionsForCountry(defaultCountry);
     </div>
 
     <div data-church-interest-form-panel>
-      <h2 class="church-interest-form__heading">Questions first?</h2>
+      <h2 class="church-interest-form__heading">Bring your church to Harvous</h2>
       <p class="church-interest-form__lead">
-        Not ready to set up yet? Tell us a little about your church and what you’re hoping for,
-        and we’ll write back. Ready now? <a href={APP_CHURCH_START_URL}>Bring your church to Harvous</a>.
+        Tell us a little about your church and what you’re hoping for. We set each church up with
+        you and start a 30-day pilot. Already have a Harvous account?
+        <a href={APP_CHURCH_START_URL} data-fathom-track={fathomCta.churchStart}>Start in the app</a>
       </p>
 
       <form

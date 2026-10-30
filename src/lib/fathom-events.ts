@@ -138,8 +138,10 @@ export const fathomCta = {
   videoTour: "video_tour_click",
   /** Homepage hero — the small "Harvous 3 is here" callout linking to /3/. */
   v3Announce: "cta_v3_announce",
-  /** /for/churches/ — "Share interest" in the fixed bottom bar, to the interest form. */
+  /** /for/churches/ — "Bring your church" in the fixed bottom bar, opening the form modal. */
   churchInterestSticky: "church_interest_sticky",
-  /** /for/churches/ — "Bring your church to Harvous", out to the app's request flow. */
+  /** /for/churches/ — a "Bring your church to Harvous" button, opening the form modal. */
+  churchInterestOpen: "church_interest_open",
+  /** The church form — "Already have an account? Start in the app", out to /churches/start. */
   churchStart: "church_start",
 } as const;
