@@ -21,6 +21,13 @@
       "runtimeArgs": ["run", "preview", "--", "--port", "4322"],
       "port": 4322,
       "autoPort": false
+    },
+    {
+      "name": "video-studio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "video", "run", "dev", "--", "--port", "3010", "--no-open"],
+      "port": 3010,
+      "autoPort": false
     }
   ]
 }

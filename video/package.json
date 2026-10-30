@@ -29,6 +29,7 @@
     "build": "remotion bundle",
     "render": "remotion render HarvousTour out/harvous-tour.mp4 --codec=h264",
     "render:site": "remotion render HarvousTour out/tour-full.mp4 --codec=h264 && ../scripts/compress-tour-video.sh out/tour-full.mp4 ../media/touring-harvous-short.mp4",
+    "narrate": "node --env-file-if-exists=.env scripts/narrate.mjs",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"
   },

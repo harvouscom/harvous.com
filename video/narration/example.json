@@ -1,0 +1,16 @@
+{
+  "scenes": [
+    {
+      "id": "intro",
+      "text": "Hey, it's Derek, maker of Harvous. So I wanted to show you something I've been working on this week."
+    },
+    {
+      "id": "reader",
+      "text": "When you're in a note and you tap on a scripture pill, it now takes you right into the Bible reader. And you can see every note you've made on that chapter, all in one place."
+    },
+    {
+      "id": "outro",
+      "text": "Which I think is pretty neat. Give it a try, and let me know what you think."
+    }
+  ]
+}
