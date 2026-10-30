@@ -1,5 +1,4 @@
 import { getUseCaseBySlug, getUseCases, type UseCase } from "./use-cases-data.ts";
-import { APP_CHURCH_START_URL } from "./signup-url.ts";
 
 export type ForAudienceMoment = {
   icon: string;
@@ -717,7 +716,7 @@ const audiences: ForAudience[] = [
         paragraphs: [
           "A pastor decides what the church teaches. A teacher publishes to the ministry they lead, and only there. The volunteer who runs a group can lead that one room, granted on purpose and taken back the same way.",
         ],
-        ctaHref: APP_CHURCH_START_URL,
+        ctaHref: "#interest",
         ctaLabel: "Bring your church to Harvous",
       },
       {
@@ -752,9 +751,9 @@ const audiences: ForAudience[] = [
       {
         heading: "How a church starts",
         paragraphs: [
-          "Create an account, find your church in the directory, and tell us who you are. We set your church up with you and start a 30-day pilot. Then invite your team and share your join link.",
+          "Tell us about your church: who you are, where it is, and what you're hoping for. We set it up with you and start a 30-day pilot. Then invite your team and share your join link.",
         ],
-        ctaHref: APP_CHURCH_START_URL,
+        ctaHref: "#interest",
         ctaLabel: "Bring your church to Harvous",
       },
       {

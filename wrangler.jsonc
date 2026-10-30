@@ -95,7 +95,11 @@
   // (work-mx.app.hey.com) — real mail, not to be disturbed for a notification.
   "vars": {
     "NOTIFY_FROM": "Harvous forms <forms@send.harvous.com>",
-    "NOTIFY_TO": "derek@harvous.com"
+    "NOTIFY_TO": "derek@harvous.com",
+    // Each submission is also forwarded into the app's church request queue. The secret is
+    // (wrangler secret put HARVOUS_INTAKE_SECRET), the same value as the app's
+    // HARVOUS_SITE_INTAKE_SECRET; without it nothing is forwarded. Staging forwards nothing.
+    "HARVOUS_INTAKE_URL": "https://app.harvous.com/api/church-applications/intake"
   },
 
   "observability": {
