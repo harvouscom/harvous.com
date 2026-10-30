@@ -43,6 +43,46 @@ Or render locally only:
 npm run render
 ```
 
+## Narration in Derek's voice
+
+Voiceover comes from Derek's ElevenLabs clone ("Derek", Multilingual v2). That
+model stays closest to his voice; v3 and v4 come out too bubbly.
+
+1. Put an ElevenLabs API key in `video/.env` (gitignored):
+
+   ```bash
+   ELEVENLABS_API_KEY=...
+   ```
+
+2. Write the script as `narration/<name>.json`. Use one scene per line of
+   voiceover, written the way Derek talks: short sentences, "So…", "which I
+   think is pretty neat." See [`narration/example.json`](narration/example.json).
+
+3. Generate the audio:
+
+   ```bash
+   npm run narrate -- <name>              # only new or edited lines spend credits
+   npm run narrate -- <name> --redo intro # new take of one line
+   npm run narrate -- <name> --dry-run    # preview what would be generated
+   ```
+
+   This writes `footage/narration/<name>/<scene>.mp3` and a `manifest.json` with
+   each line's duration. Neighboring lines are sent along with each request, so
+   intonation carries across cuts.
+
+4. Audition it in Studio (`npm run dev` → **NarrationPreview**). Set the
+   `script` prop to `<name>`.
+
+5. Use it in a composition. Load the manifest in `calculateMetadata` with
+   `loadNarration(name)`, then render `<NarrationTrack manifest={manifest} />`.
+   `placeNarration()` gives each line's start frame if you want to sync visuals
+   to it. Both helpers are in [`src/narration.tsx`](src/narration.tsx).
+
+If a line sounds flat, `--redo` it before you touch the settings, because takes
+vary. To change the delivery for a whole script, add `"voiceSettings"` to its
+JSON (for example `{ "stability": 0.3 }`). The defaults are in
+`scripts/narrate.mjs`.
+
 ## Editing the cut
 
 Timeline lives in [`src/clips.ts`](src/clips.ts). Adjust `startSec` / `endSec` (source seconds) and chapter `label`s. Duration recalculates automatically.
