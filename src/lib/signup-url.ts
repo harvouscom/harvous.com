@@ -5,7 +5,9 @@
  * this site whose whole point is what happens *after* the click, and so the one that cannot be
  * checked by looking at this page alone. Unset (every real build) it is production.
  */
-const APP_ORIGIN = import.meta.env.PUBLIC_APP_ORIGIN ?? "https://app.harvous.com";
+// `?.` because plain-Node scripts (generate-og-cards.mjs) import data files that import this,
+// and outside Astro `import.meta.env` is undefined.
+const APP_ORIGIN = import.meta.env?.PUBLIC_APP_ORIGIN ?? "https://app.harvous.com";
 
 /** App signup base URL for marketing CTAs. */
 export const APP_SIGN_UP_URL = "https://app.harvous.com/sign-up";
@@ -19,6 +21,13 @@ export const APP_SIGN_UP_URL = "https://app.harvous.com/sign-up";
  * script reads it before React loads, so the shell paints without a redirect through sign-in.
  */
 export const APP_TRY_URL = `${APP_ORIGIN}/read/today?try=1`;
+
+/**
+ * "Bring your church to Harvous" — the app's church start page. Signed out it explains and sends
+ * the visitor through sign-up and back; signed in it opens Settings › My Church, where they pick
+ * their church and send a request a Harvous admin approves.
+ */
+export const APP_CHURCH_START_URL = `${APP_ORIGIN}/churches/start`;
 
 export type SignupAttributionParams = {
   /** Audience page slug, e.g. `daily-readers`. */

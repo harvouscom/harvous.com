@@ -248,7 +248,7 @@ export const NOW_UPDATED = "2026-10-15";
 export const NOW_WORKING_ON: { title: string; body: string }[] = [
   {
     title: "Harvous for churches, taking shape",
-    body: "Join links, ministries, scheduled posts, and a leader kit a pastor can hand to a group. Church plans are invite-only for now.",
+    body: "Join links, ministries, scheduled posts, and a leader kit a pastor can hand to a group. Each church starts on a 30-day pilot, set up with them.",
   },
   {
     title: "Review exercises that teach",

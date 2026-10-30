@@ -10,6 +10,7 @@
  *   roles   — the staff roster, a volunteer's one room (switch), approval for teachers' posts
  *   join    — a printed join code being scanned, and the person connected
  *   review  — a question from a ministry (answer it), and the count staff see
+ *   service — picking your service, the ministries that meet during it, and the count staff see
  *   sees    — the counts a church gets, and what it never sees
  * A section without one is a full-width line of text.
  *
@@ -21,6 +22,7 @@ import FeatureChip from "./FeatureChip.astro";
 import { inlineMdLinksToHtml } from "../../lib/inline-md-links.ts";
 import type { ForAudienceFeatureLink, ForAudienceSection } from "../../lib/for-audiences-data.ts";
 import { stageMesh } from "../../lib/next/content.ts";
+import { fathomCta } from "../../lib/fathom-events.ts";
 
 interface Props {
   sections: ForAudienceSection[];
@@ -95,7 +97,7 @@ const plans = {
           {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
           {section.feature && features[section.feature] && <FeatureChip feature={features[section.feature]} />}
           {section.ctaHref && section.ctaLabel && (
-            <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref}>{section.ctaLabel}</a></p>
+            <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref} data-fathom-track={fathomCta.churchStart}>{section.ctaLabel}</a></p>
           )}
         </div>
 
@@ -252,6 +254,26 @@ const plans = {
             </div>
           )}
 
+          {section.visual === "service" && (
+            <div class="aui aui-card svc" data-scene="service" role="group" aria-label="Example: picking the service you go to">
+              <p class="aui-label svc__label">Your service</p>
+              {[
+                ["Sundays at 9:00 AM", "Blended", true],
+                ["Sundays at 11:00 AM", "Contemporary", false],
+                ["Wednesdays at 7:00 PM", "Evening", false],
+              ].map(([time, label, mine]) => (
+                <div class:list={["aui-row svc__row", mine && "is-mine"]}>
+                  <span class="aui-tile"><AppIcon name={mine ? "circle-check" : "clock"} /></span>
+                  <span><span class="aui-title">{time}</span><span class="aui-sub">{label}</span></span>
+                  {mine && <span class="svc__tag">Your service</span>}
+                </div>
+              ))}
+              <p class="aui-label svc__label">During your 9:00 AM service</p>
+              <p class="svc__chips"><span>Kids</span><span>Youth</span></p>
+              <p class="svc__quiet"><AppIcon name="bell-slash" /> Notifications wait until 10:30</p>
+            </div>
+          )}
+
           {section.visual === "sees" && (
             <div class="aui aui-card sees" data-scene="sees" role="group" aria-label="What a church can and can't see">
               <p class="sees__h">Grace Church <span>this month</span></p>
@@ -283,6 +305,9 @@ const plans = {
       <div class="chs__note" data-reveal>
         <h2 class="chs__h">{section.heading}</h2>
         {section.paragraphs.map((p) => <p set:html={inlineMdLinksToHtml(p)} />)}
+        {section.ctaHref && section.ctaLabel && (
+          <p class="chs__cta"><a class="nx-btn nx-btn--accent" href={section.ctaHref} data-fathom-track={fathomCta.churchStart}>{section.ctaLabel}</a></p>
+        )}
       </div>
     )}{section.visual === "join" && afterJoin && <Fragment set:html={afterJoin} />}</>);
   })}
@@ -609,6 +634,16 @@ const plans = {
   .rev__count[hidden] { display: none; }
 
   /* ── What a church sees ───────────────────────────────────────────────── */
+  .svc { padding: 14px 16px; font-size: 14px; box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
+  .svc__label { margin: 4px 0 6px 2px !important; font-size: 12.5px !important; }
+  .svc__label + .svc__row { margin-top: 0; }
+  .svc__row { padding: 7px 4px !important; }
+  .svc__row.is-mine :global(.aui-tile) { color: #fff; background: var(--pds-bg-accent-button, var(--pds-accent)); }
+  .svc__tag { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: var(--pds-text-secondary); background: var(--pds-bg-track); white-space: nowrap; }
+  .svc__row ~ .svc__label { margin-top: 14px !important; }
+  .svc__chips { display: flex; gap: 6px; margin: 0 0 12px 2px; }
+  .svc__chips span { padding: 4px 10px; border-radius: 999px; font-size: 12.5px; background: var(--pds-bg-track); }
+  .svc__quiet { display: flex; align-items: center; gap: 6px; margin: 0 0 0 2px; font-size: 12.5px; color: var(--pds-text-secondary); }
   .sees { padding: 14px 16px; font-size: 14px; box-shadow: var(--pds-shadow-popover), 0 24px 48px -24px rgba(15, 23, 42, 0.35) !important; }
   .sees__h { display: flex; justify-content: space-between; margin: 0; font-weight: 600; }
   .sees__h span { font-weight: 400; font-size: 12px; color: var(--pds-text-tertiary); }

@@ -22,6 +22,7 @@ import ChurchScenes from "../../components/next/ChurchScenes.astro";
 import StudyScenes from "../../components/next/StudyScenes.astro";
 import HeresMyChurchCard from "../../components/next/HeresMyChurchCard.astro";
 import { fathomCta } from "../../lib/fathom-events.ts";
+import { APP_CHURCH_START_URL } from "../../lib/signup-url.ts";
 import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
 import {
@@ -124,7 +125,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
 ---
 
 <NextLayout
-  stickySecondary={audience.interestForm ? { label: "Share interest", href: "#interest", track: fathomCta.churchInterestSticky } : undefined}
+  stickySecondary={audience.interestForm ? { label: "Bring your church", href: APP_CHURCH_START_URL, track: fathomCta.churchStart } : undefined}
   title={audience.seoTitle}
   description={audience.seoDescription}
   ogImage={ogCard(`for-${audience.slug}`)}
@@ -167,9 +168,9 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
               <p class="nx-kicker">For churches</p>
               <p>
                 Churches keep a teaching plan for each ministry and share it with the people connected
-                to them. If that fits your church, tell me about it.
+                to them, on a 30-day pilot set up with you.
               </p>
-              <a class="nx-link" href="/for/churches/#interest">Share church interest →</a>
+              <a class="nx-link" href="/for/churches/">Bring your church to Harvous →</a>
             </aside>
           </div>
         )}
@@ -193,9 +194,9 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
           <p class="nx-kicker">For churches</p>
           <p>
             Churches keep a teaching plan for each ministry and share it with the people connected
-            to them. If that fits your church, tell me about it.
+            to them, on a 30-day pilot set up with you.
           </p>
-          <a class="nx-link" href="/for/churches/#interest">Share church interest →</a>
+          <a class="nx-link" href="/for/churches/">Bring your church to Harvous →</a>
         </aside>
       )}
     </section>
