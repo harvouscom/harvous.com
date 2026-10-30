@@ -77,8 +77,12 @@ import ChurchInterestForm from "./ChurchInterestForm.astro";
   .ci-dialog__body :global(section),
   .ci-dialog__body :global(form) {
     max-width: none;
-    margin: 0;
+    margin-inline: 0;
     padding-inline: 0;
+  }
+  /* Sides only: the form keeps its own top margin, the space between the intro and the fields. */
+  .ci-dialog__body :global(section) {
+    margin-block: 0;
   }
   .ci-dialog__body :global(.frame-divider) {
     padding-block: 0;
