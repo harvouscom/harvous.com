@@ -36,7 +36,9 @@ import ChurchInterestForm from "./ChurchInterestForm.astro";
       event.preventDefault();
       open();
     });
-    dialog.querySelector("[data-church-interest-close]")?.addEventListener("click", () => dialog.close());
+    dialog.querySelectorAll("[data-church-interest-close]").forEach((button) =>
+      button.addEventListener("click", () => dialog.close()),
+    );
     // A click on the backdrop (the dialog element itself, outside its box) closes it.
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) dialog.close();
@@ -75,12 +77,24 @@ import ChurchInterestForm from "./ChurchInterestForm.astro";
   .ci-dialog__body :global(section),
   .ci-dialog__body :global(form) {
     max-width: none;
-    margin: 0;
+    margin-inline: 0;
     padding-inline: 0;
+  }
+  /* Sides only: the form keeps its own top margin, the space between the intro and the fields. */
+  .ci-dialog__body :global(section) {
+    margin-block: 0;
   }
   .ci-dialog__body :global(.frame-divider) {
     padding-block: 0;
     border: 0;
+  }
+  /* The form's own section padding is for the page, not a modal: with it, the pinned footer
+     floated above a band of empty space once scrolled to the end. The footer is the bottom. */
+  .ci-dialog__body {
+    padding-bottom: 0;
+  }
+  .ci-dialog__body :global(.church-interest-form__inner) {
+    padding-bottom: 0;
   }
   /* No hairline above a form that already has a card's edge around it. */
   .ci-dialog__body :global(.frame-divider)::before {
@@ -90,6 +104,17 @@ import ChurchInterestForm from "./ChurchInterestForm.astro";
   .ci-dialog :global([data-reveal]) {
     opacity: 1 !important;
     transform: none !important;
+  }
+  /* The form's footer pins to the bottom of the modal, full width, like an app sheet's. */
+  .ci-dialog__body :global(.church-interest-form__actions) {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    margin: 1.5rem calc(-1 * clamp(1.5rem, 4vw, 2.5rem)) 0;
+    padding: 12px clamp(1.5rem, 4vw, 2.5rem) 14px;
+    border-top: 0.5px solid var(--pds-border-control);
+    background: color-mix(in oklab, var(--color-paper) 92%, transparent);
+    backdrop-filter: blur(10px);
   }
   .ci-dialog__close {
     position: sticky;
