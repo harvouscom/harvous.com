@@ -469,7 +469,7 @@ const faqs = page.faqs ?? [];
   @media (min-width: 52rem) { .cn-studio { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
   .cn-studio__stage {
     display: grid; place-items: center;
-    min-height: clamp(22rem, 40vw, 28rem);
+    aspect-ratio: 1;
     border-radius: var(--nx-radius-scene);
     background: radial-gradient(60% 60% at 50% 50%, color-mix(in oklab, var(--pds-thread-yellow) 45%, transparent), transparent 75%), var(--color-warm);
   }
