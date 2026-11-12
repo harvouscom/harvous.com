@@ -40,6 +40,19 @@ const siteOrigin = Astro.site ?? "https://harvous.com";
 const canonical = new URL(Astro.url.pathname, siteOrigin).toString();
 const ogImageUrl = new URL(ogImage, siteOrigin).toString();
 const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+
+/*
+  Cloudflare Web Analytics, installed by hand. The harvous.com zone used to
+  auto-inject the beacon on every host, child notebook sites included, which
+  the child privacy notice rules out ("no optional analytics"). The zone is
+  now on "Enable with JS Snippet installation", so only pages that carry this
+  snippet count. Pages about child notebooks leave it out, in case they are
+  ever served on a child-facing path. The token is public.
+*/
+const NO_WEB_ANALYTICS = ["/privacy/children/", "/add-ons/family/child-notebooks/"];
+const pathWithSlash = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const loadsWebAnalytics = !NO_WEB_ANALYTICS.some((prefix) => pathWithSlash.startsWith(prefix));
+const CF_WEB_ANALYTICS = `<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d2db6aa964194538bb28c9a577fd7f82"}'></script><!-- End Cloudflare Web Analytics -->`;
 ---
 
 <!doctype html>
@@ -131,6 +144,7 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     }
 
     <script src="https://cdn.usefathom.com/script.js" data-site="UOIPAZGI" defer></script>
+    {loadsWebAnalytics && <Fragment set:html={CF_WEB_ANALYTICS} />}
     <slot name="head" />
   </head>
   <body>
