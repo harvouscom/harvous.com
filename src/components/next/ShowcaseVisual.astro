@@ -654,7 +654,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
       <p class="sv__label sv__label--in">My Family · 4 of 6</p>
       {[
         ["D", "is-me", "Derek", "Organizer"],
-        ["S", "is-a", "Sarah", "Parent/Guardian"],
+        ["M", "is-a", "Monique", "Parent/Guardian"],
         ["G", "is-b", "Grandma Ruth", "Adult"],
         ["E", "is-kid", "Ellie", "Child"],
       ].map(([who, cls, nm, role]) => (
@@ -680,7 +680,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
     <div class="aui-card sv__card sv__pad">
       <p class="sv__head"><span class="aui-tile sv__tile--mint"><AppIcon name="people-roof" /></span><span><b>Family Space</b><small>Everyone in the family can add to it</small></span></p>
       {[
-        ["S", "is-a", "Dinner question: why was Jesus asleep in the storm?", "Mark 4:38"],
+        ["M", "is-a", "Dinner question: why was Jesus asleep in the storm?", "Mark 4:38"],
         ["R", "is-b", "The one I pray over each of you.", "Psalm 121"],
         ["E", "is-kid", "We read the first chapter in the car. Naomi is so sad.", "Ruth 1"],
       ].map(([who, cls, text, ref]) => (
@@ -922,9 +922,11 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
     background: var(--face);
     color: oklch(from var(--face) calc(l * 0.58) min(calc(c * 3.5), 0.2) h);
   }
-  .sv__face.is-a { --face: var(--pds-thread-pink); }
-  .sv__face.is-b { --face: var(--pds-thread-blue); }
-  .sv__face.is-me { --face: var(--pds-thread-purple); }
+  /* One color per person, wherever they appear: Monique (and Mom) purple,
+     Derek orange, Grandma Ruth green, Ellie pink. */
+  .sv__face.is-a { --face: var(--pds-thread-purple); }
+  .sv__face.is-b { --face: var(--pds-thread-green); }
+  .sv__face.is-me { --face: var(--pds-thread-orange); }
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-color-scheme="light"])) .sv__face { color: rgba(255, 255, 255, 0.96); }
   }
@@ -1189,7 +1191,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__key span { display: inline-flex; align-items: center; gap: 5px; }
   .sv__key .sv__cell { width: 10px; height: 10px; border-radius: 3px; }
   /* Family */
-  .sv__face.is-kid { --face: var(--pds-thread-green); }
+  .sv__face.is-kid { --face: var(--pds-thread-pink); }
   .sv__who { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
   .sv__who .sv__face { width: 22px; height: 22px; font-size: 10px; }
   .sv :global(.aui-row.sv__member) { padding-block: 6px; }
