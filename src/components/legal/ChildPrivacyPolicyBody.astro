@@ -1,0 +1,293 @@
+---
+/**
+ * The children's privacy policy text: parent-managed notebooks for children
+ * under 13. Edit the wording here; the date lives in lib/legal.ts.
+ *
+ * It has to agree with the in-app parent notice (harvous repo,
+ * spa/src/pages/family/ChildPrivacyNotice.tsx, CHILD_NOTICE_VERSION below)
+ * and cover docs/privacy/CHILD_PRIVACY_PUBLICATION_CHECKLIST.md. A change
+ * that touches what we collect, use or share is a material change: bump the
+ * notice version in the app, which pauses notebooks until parents agree again.
+ *
+ * Bracketed placeholders (.lg-placeholder) are facts still to be supplied
+ * and checked by counsel. None may remain when this page is published.
+ */
+import { CHILD_NOTICE_VERSION } from "../../lib/legal.ts";
+
+const SUPPORT_EMAIL = "derek@harvous.com";
+---
+
+<div class="prose-letter space-y-8">
+  <div>
+    <h2>Who this policy is for</h2>
+    <p>
+      Harvous is a Bible study notes app run by Testament Made LLC ("we," "us"). Most Harvous
+      accounts are for people 13 and older. This policy covers one exception: a notebook that a
+      parent or legal guardian in the United States sets up and manages for a child under 13.
+    </p>
+    <p>
+      It explains what we collect from and about your child, why, who can see it, how long we keep
+      it, and what you can do about it. Our <a href="/privacy/">main privacy policy</a> covers your
+      own Harvous account. Where the two differ for your child's notebook, this one applies.
+    </p>
+    <p>
+      Child notebooks are available only in the United States. You'll see a short version of this
+      policy in Harvous before you agree to anything (notice version {CHILD_NOTICE_VERSION}). The
+      two say the same thing.
+    </p>
+  </div>
+
+  <div>
+    <h2>Who to contact</h2>
+    <p>
+      Testament Made LLC operates Harvous and is responsible for your child's information. For any
+      question or request about your child's notebook, reach us at:
+    </p>
+    <ul>
+      <li>Email: <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></li>
+      <li>Mail: Testament Made LLC, <span class="lg-placeholder">[Placeholder: mailing address]</span></li>
+      <li>Phone: <span class="lg-placeholder">[Placeholder: telephone number]</span></li>
+    </ul>
+  </div>
+
+  <div>
+    <h2>The companies that help us run it</h2>
+    <p>
+      These service providers handle information on our behalf, only to run and protect the
+      notebook. None of them may use your child's information for their own purposes.
+    </p>
+    <ul>
+      <li><strong>Fly.io</strong> hosts the notebook service.</li>
+      <li>
+        <strong>Cloudflare</strong> delivers the notebook's pages and protects it from abuse. Like
+        any website host, it sees technical information such as IP addresses.
+      </li>
+      <li><strong>Supabase</strong> stores the notebook's data and its backups.</li>
+      <li>
+        <strong>Clerk</strong> handles your sign-in to your own Harvous account. Your child does
+        not get a Clerk account.
+      </li>
+      <li>
+        <strong>Kids Web Services (KWS)</strong>, run by Epic Games, checks that you are an adult
+        before you can set up a notebook. More on that below.
+      </li>
+    </ul>
+    <p>
+      <span class="lg-placeholder">[Placeholder: confirm each provider's contract covers child data, and whether KWS's own verification processors need to be named here.]</span>
+    </p>
+  </div>
+
+  <div>
+    <h2>What we collect, and when</h2>
+    <p>
+      <strong>Before you agree.</strong> We collect nothing about your child. To start, we use your
+      own Harvous account and email address. When you ask to set up a notebook, we create a
+      verification request and send KWS your account email, your language, and that you're in the
+      US. KWS checks that you're an adult. Depending on the method you pick, KWS may ask you for a
+      payment card or identifying details, such as a Social Security number. We don't receive
+      those details. We get only the result. KWS may remember that you're verified (it calls this
+      AgeGraph) under its own privacy policy.
+    </p>
+    <p>
+      <strong>When you agree.</strong> After verification, you confirm that you are the child's
+      parent or legal guardian, that they're under 13, and that you live in the US. You agree to
+      the notice and give a first name or nickname for the notebook. We store that name, your
+      confirmations, a link to your account, and a record of your consent: which version of the
+      notice you agreed to, and when.
+    </p>
+    <p>
+      <strong>While your child uses the notebook.</strong> We save what your child makes and
+      chooses, so you both can come back to it:
+    </p>
+    <ul>
+      <li>notes, folders, tags and Threads, with their Scripture and resource references;</li>
+      <li>Family Bible readings you share, and the thoughts your child writes on them;</li>
+      <li>My Bible highlights and verse stickers;</li>
+      <li>
+        Look back progress: which notes and verses come back, when, and how each answer went;
+      </li>
+      <li>
+        notebook preferences, such as the cover, light or dark mode, text size, and sound and
+        motion;
+      </li>
+      <li>the ministry channels you've approved, and the permissions you've set;</li>
+      <li>the last time the notebook was used.</li>
+    </ul>
+    <p>
+      We don't ask for, and the notebook has no place for, your child's email address, phone
+      number, full birth date, photo, or home address. Notes are plain text, with no uploads.
+    </p>
+    <p>
+      <strong>Automatically.</strong> Opening the notebook sends technical information, such as an
+      IP address and browser details, to deliver pages and keep the service secure. Temporary
+      sign-in information lets your child open the notebook. The link you make works once and
+      expires after five minutes, and a session ends after eight hours.
+    </p>
+  </div>
+
+  <div>
+    <h2>How we use it</h2>
+    <p>Only to run the notebook for your child and you:</p>
+    <ul>
+      <li>to create and manage the notebook, and to show you and your child what's in it;</li>
+      <li>to search your child's own notes and readings;</li>
+      <li>
+        to choose what Look back shows next (Look back's progress is used for nothing else);
+      </li>
+      <li>to find notebooks that have gone unused, so we can delete them;</li>
+      <li>to keep the notebook working, secure, and free of abuse.</li>
+    </ul>
+  </div>
+
+  <div>
+    <h2>What we never do</h2>
+    <ul>
+      <li>We don't show ads in a child's notebook or use your child's information for advertising.</li>
+      <li>We don't sell or rent your child's information.</li>
+      <li>We don't track your child across sites or build a profile to target them.</li>
+      <li>
+        We don't run optional analytics or session recording on the notebook. Optional analytics in
+        your own account don't receive your child's notebook or its content.
+      </li>
+      <li>
+        Nothing in a child's notebook is public. There's no public sharing, no direct messages, no
+        way to find other children, and no purchases.
+      </li>
+      <li>
+        We don't send your child's information to AI services, and AI connectors aren't available
+        for child notebooks.
+      </li>
+    </ul>
+    <p>
+      We share your child's information only with the providers listed above, to run the notebook,
+      or where the law requires it or it's needed to protect someone's safety or the security of
+      the service. You can agree to the notebook without agreeing to any other sharing, because we
+      don't ask for any.
+    </p>
+  </div>
+
+  <div>
+    <h2>Who can see what</h2>
+    <ul>
+      <li><strong>You</strong> can read and export everything in your child's notebook.</li>
+      <li>
+        <strong>Family Bible thoughts</strong> are seen by your child and you, the parent managing
+        the notebook. Removing a shared reading deletes its thoughts.
+      </li>
+      <li>
+        <strong>Verse stickers</strong> are private to your child in the app, but they're included
+        when you export the notebook.
+      </li>
+      <li>
+        <strong>Ministry leaders and other members</strong> can't read your child's notebook or
+        find their profile. If you approve a ministry channel you follow, your child can read it,
+        but can't post or reply. Their name never appears in its member list. If you leave the
+        channel or remove your approval, their access ends.
+      </li>
+      <li><strong>No one else</strong> sees your child's notebook. Nothing in it is public.</li>
+    </ul>
+    <p>
+      <span class="lg-placeholder">[Placeholder: when, if ever, Testament Made staff may open a child's notebook, such as to fix a problem a parent reports.]</span>
+    </p>
+  </div>
+
+  <div>
+    <h2>How we keep it safe</h2>
+    <p>
+      The child notebook runs on its own web address, apart from adult Harvous, and only our server
+      can read its data. Sign-in links are single-use and short-lived, and they stay out of server
+      logs. Your child can't open adult Harvous from the notebook.
+    </p>
+  </div>
+
+  <div>
+    <h2>Your rights as a parent</h2>
+    <p>You can, at any time:</p>
+    <ul>
+      <li><strong>Review</strong> your child's notes, readings, and thoughts.</li>
+      <li>
+        <strong>Export</strong> the notebook as a readable text file or as a full backup file. Your
+        child can ask for an export from their notebook, but you choose it and download it.
+      </li>
+      <li><strong>End sessions</strong>, so the notebook has to be opened again with a new link.</li>
+      <li><strong>Remove access</strong> to any ministry channel you approved.</li>
+      <li>
+        <strong>Withdraw consent.</strong> Your child's access stops right away, and we stop
+        collecting anything new. We keep the notebook for 30 days so you can export it, then delete
+        it. A withdrawn notebook can't be turned back on.
+      </li>
+      <li><strong>Delete</strong> the notebook and everything in it, straight away.</li>
+    </ul>
+    <p>
+      Do all of this in Harvous: sign in, open My Family, then Child notebooks, at
+      <a href="https://app.harvous.com/settings/child-accounts">app.harvous.com/settings/child-accounts</a>.
+      You can also email, write, or call us using the details above. Before we act on a request
+      made outside Harvous, we'll check that it really comes from the parent who manages the
+      notebook.
+      <span class="lg-placeholder">[Placeholder: how we verify a request made by email, mail, or phone.]</span>
+    </p>
+    <p>
+      <span class="lg-placeholder">[Placeholder: what we do if someone else says they are the child's parent or legal guardian, or two guardians disagree.]</span>
+    </p>
+  </div>
+
+  <div>
+    <h2>How long we keep it</h2>
+    <ul>
+      <li>
+        <strong>A verification request</strong> you don't finish expires after seven days. No
+        notebook exists at that point.
+      </li>
+      <li><strong>A sign-in link</strong> lasts five minutes. <strong>A session</strong> lasts eight hours.</li>
+      <li>
+        <strong>An active notebook</strong> and its consent record are kept while the notebook is in
+        use.
+      </li>
+      <li>
+        <strong>A notebook no one has used for a year</strong> is deleted automatically.
+      </li>
+      <li><strong>A withdrawn notebook</strong> is deleted after 30 days.</li>
+      <li>
+        <strong>A deleted notebook</strong> is removed with everything in it: notes, readings,
+        thoughts, highlights, stickers, Look back progress, preferences, sessions, approvals, and the
+        consent history.
+      </li>
+    </ul>
+    <p>
+      Deleted information may stay in restricted database backups until those backups expire,
+      <span class="lg-placeholder">[Placeholder: backup retention period]</span>. If we ever have to
+      restore a backup, we first remove any notebook that was deleted or withdrawn after it was
+      made. Security and hosting logs, which hold technical information like IP addresses, are kept
+      for <span class="lg-placeholder">[Placeholder: log retention period]</span>.
+    </p>
+    <p>
+      You must delete your child's notebooks before you can delete your own Harvous account.
+    </p>
+  </div>
+
+  <div>
+    <h2>When this policy changes</h2>
+    <p>
+      If we change what we collect from children, how we use it, or who we share it with, we'll
+      ask you to agree again first. Your child's notebook pauses until you read the new notice and
+      agree on that notebook's page in My Family. Until then, nothing new is collected. We keep a
+      history of each agreement (the version and the date), which you can see in My Family and in
+      your export.
+    </p>
+    <p>
+      For smaller changes, like clearer wording or new contact details, we'll update this page and
+      its date.
+    </p>
+  </div>
+</div>
+
+<style>
+  /* Facts still to be supplied before publication. None may ship. */
+  .lg-placeholder {
+    padding: 0.05em 0.3em;
+    border-radius: 0.3em;
+    background: color-mix(in oklab, var(--color-peach) 45%, var(--color-paper));
+    color: var(--color-peach-ink);
+    font-weight: 600;
+  }
+</style>

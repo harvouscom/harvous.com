@@ -1,0 +1,28 @@
+---
+/**
+ * /privacy/children/ — the children's privacy policy for parent-managed
+ * notebooks (under 13, US only). Its own page rather than a section of
+ * /privacy/ so the app's HARVOUS_CHILD_PRIVACY_URL and the KWS review get
+ * one stable, clearly labelled link, and so parents don't have to sort the
+ * adult account's analytics and AI connector terms from their child's.
+ *
+ * A draft (lib/draft-pages.ts) until counsel signs off: noindex, out of the
+ * sitemap, and stripped from production builds.
+ */
+import LegalPage from "../../components/next/LegalPage.astro";
+import ChildPrivacyPolicyBody from "../../components/legal/ChildPrivacyPolicyBody.astro";
+import { CHILD_PRIVACY_UPDATED } from "../../lib/legal.ts";
+import { isDraftPageSlug } from "../../lib/draft-pages.ts";
+---
+
+<LegalPage
+  doc="privacy"
+  title="Children's Privacy Policy — Harvous"
+  description="How Harvous handles information in notebooks that parents set up for children under 13."
+  heading="Children's Privacy"
+  updated={CHILD_PRIVACY_UPDATED}
+  summary="The short version: nothing about your child is collected until you agree, nothing is public, there are no ads or tracking, and you can see, export, or delete it all whenever you like."
+  draft={isDraftPageSlug("privacy/children")}
+>
+  <ChildPrivacyPolicyBody />
+</LegalPage>
