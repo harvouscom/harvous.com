@@ -649,7 +649,11 @@ const faqs = page.faqs ?? [];
   .cn-kws-open:hover :global(svg) { color: var(--color-ink); }
   .cn-kws-open:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 4px; }
   .cn-kws {
+    /* The CSS reset zeroes a dialog's margin; auto puts it back in the middle. */
+    margin: auto;
     width: min(30rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
     padding: clamp(1.25rem, 4vw, 1.75rem);
     border: 0; border-radius: 1.5rem;
     color: var(--color-ink); background: var(--color-paper);
