@@ -504,6 +504,13 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
       body: "Child notebooks run in the browser, for families in the United States, for now.",
     },
   ],
+  faqs: [
+    {
+      question: "Can families outside the US use child notebooks?",
+      answer:
+        "Not yet. Child notebooks are for families in the United States for now, because the rules for children's information differ from country to country. We plan to add more countries as we can do it properly. Harvous accounts for people 13 and older work everywhere.",
+    },
+  ],
   relatedIds: [],
   relatedHeading: "",
   relatedLead: "",

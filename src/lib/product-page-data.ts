@@ -44,6 +44,13 @@ export type ProductShowcase = {
   label: string;
 };
 
+/** A question answered on the page itself, also sent as FAQPage structured data. */
+export type ProductFaq = {
+  question: string;
+  /** Plain text: shown as one paragraph and used as-is in the JSON-LD. */
+  answer: string;
+};
+
 export type ProductPage = {
   kind: "feature" | "addon";
   slug: string;
@@ -68,6 +75,8 @@ export type ProductPage = {
   /** A step-by-step walkthrough; replaces `sections` and `showcases` on the page when present. */
   steps?: ProductStep[];
   moments: ProductMoment[];
+  /** Page-specific questions, under the moments. Unlike the FAQ collection, these follow the page's own draft state. */
+  faqs?: ProductFaq[];
   relatedIds: string[];
   compareSlugs?: string[];
   relatedHeading: string;
@@ -215,6 +224,18 @@ export function buildAddonJsonLd(page: ProductPage) {
         category: "add-on",
         offeredBy: { "@type": "Organization", name: "Testament Made LLC", url: SITE },
       },
+      ...(page.faqs?.length
+        ? [
+            {
+              "@type": "FAQPage",
+              mainEntity: page.faqs.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: { "@type": "Answer", text: f.answer },
+              })),
+            },
+          ]
+        : []),
     ],
   };
 }
