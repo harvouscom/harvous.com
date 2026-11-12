@@ -20,9 +20,12 @@
  * the site root and its own draft entry ("next") removed. Empty for now;
  * the next page built ahead of its launch goes here the same way.
  *
- * `add-ons/family/child-notebooks` waits on child enrollment opening. A
- * nested slug works the same way: the strip removes only that folder, and
- * /add-ons/family/ stays.
+ * `privacy/children`, the children's privacy policy, went live on
+ * November 12, 2026. A nested slug works here too: the strip removes only
+ * that folder (dist/privacy/children/) and leaves /privacy/ alone.
+ *
+ * `add-ons/family/child-notebooks` waits on child enrollment opening; the
+ * strip removes only that folder, and /add-ons/family/ stays.
  */
 export const DRAFT_PAGE_SLUGS = ["add-ons/family/child-notebooks"] as const as readonly string[];
 
