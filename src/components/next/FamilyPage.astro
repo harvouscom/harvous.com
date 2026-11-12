@@ -1,0 +1,282 @@
+---
+/**
+ * FamilyPage — /add-ons/family/. Laid out like the child notebooks page (a
+ * hero stage, a bento of what you share, what stays private, then the
+ * details), in the site's own calm style rather than the kids' one.
+ *
+ * Copy says "Harvous Plus" in full, never "one Plus" (it reads like a phone
+ * plan). Page data (SEO, hero, closing) is the "family" entry in
+ * lib/addons-data.ts. The child notebooks card shows only where that page
+ * exists (lib/draft-pages.ts).
+ */
+import NextLayout from "../../layouts/NextLayout.astro";
+import ClosingCall from "./ClosingCall.astro";
+import ShowcaseVisual from "./ShowcaseVisual.astro";
+import AppIcon from "./app/AppIcon.astro";
+import { ogCard } from "../../lib/og-card.ts";
+import { draftPageIsReachable } from "../../lib/draft-pages.ts";
+import { buildAddonJsonLd, type ProductPage } from "../../lib/product-page-data.ts";
+import { fathomSignup } from "../../lib/fathom-events.ts";
+
+interface Props {
+  page: ProductPage;
+}
+const { page } = Astro.props;
+const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks");
+
+---
+
+<NextLayout
+  title={page.seoTitle}
+  description={page.seoDescription}
+  ogImage={ogCard(`addon-${page.slug}`)}
+  jsonLd={buildAddonJsonLd(page)}
+>
+  <article class="fp">
+    {/* ── Hero ── */}
+    <header class="nx-wrap fp-hero">
+      <nav class="fp-crumb" aria-label="Breadcrumb">
+        <a class="fp-crumb__back" href="/pricing/">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+          Pricing
+        </a>
+        <span class="fp-crumb__here" aria-current="page"><AppIcon name="people-roof" /> Family</span>
+      </nav>
+      <h1 class="nx-display fp-hero__title">{page.heroTitle}</h1>
+      <p class="nx-lead fp-hero__lead">{page.heroLead}</p>
+      <p class="fp-hero__acts">
+        <a class="nx-btn nx-btn--accent" href={page.closingHref} data-fathom-track={fathomSignup.addonDetail(page.slug)}>Get Harvous Plus</a>
+        <a class="nx-btn nx-btn--ghost" href="#together">See what you share</a>
+      </p>
+
+      <div class="fp-stage nx-mesh nx-mesh--mint">
+        <div class="fp-stage__pair">
+          <div class="fp-stage__main"><ShowcaseVisual name="family-members" label="Settings › My Family listing four people with their roles: Organizer, Parent/Guardian, Adult and Child" /></div>
+          <div class="fp-stage__side"><ShowcaseVisual name="family-progress" label="A child's progress card showing last active, chapters this month with the books, and a note count" /></div>
+        </div>
+      </div>
+    </header>
+
+    {/* ── The household ── */}
+    <section class="nx-wrap fp-split" aria-labelledby="fp-house-title">
+      <div>
+        <h2 id="fp-house-title" class="nx-title">Your whole household, on Harvous Plus.</h2>
+        <p class="fp-p">
+          Start a family from Settings › My Family and invite up to five more people. Everyone you
+          add gets Harvous Plus at no extra cost: unlimited history, Review exercises and Connector.
+        </p>
+        <p class="fp-p">
+          Family is included with <a href="/pricing/">Harvous Plus</a>, $6 a month or $36 a year.
+          Shared spaces for groups stay with the person who pays.
+        </p>
+      </div>
+      <ul class="fp-roles" role="list">
+        <li><b>Organizer</b> Started the family and manages it.</li>
+        <li><b>Parent or guardian</b> Invites people and sees how a child is doing.</li>
+        <li><b>Adult</b> Shares the space and Plus. Their study stays theirs.</li>
+        <li><b>Child</b> 13 or older, with their own private study.</li>
+      </ul>
+    </section>
+
+    {/* ── Together ── */}
+    <section id="together" class="nx-wrap fp-together" aria-labelledby="fp-together-title">
+      <div class="fp-head">
+        <h2 id="fp-together-title" class="nx-title">What you share.</h2>
+        <p class="nx-lead">A place to study together, beside everyone's own notes. Nothing moves into it unless someone puts it there.</p>
+      </div>
+      <ul class="fp-grid" role="list">
+        <li class="fp-card fp-card--wide" data-tone="mint" data-reveal>
+          <div class="fp-card__stage"><ShowcaseVisual name="family-space" label="The Family Space with three notes: a dinner question on Mark 4:38, a prayer on Psalm 121, and a thought on Ruth 1" /></div>
+          <div class="fp-card__text">
+            <h3>A Family Space</h3>
+            <p>Threads and notes everyone can add to: the passage from dinner, a question from the car, the book you're reading as a house.</p>
+          </div>
+        </li>
+        <li class="fp-card" data-tone="cream" data-reveal>
+          <div class="fp-card__stage fp-card__stage--top"><ShowcaseVisual name="family-our-bible" label="Our Bible, showing the family has been in nine books, grouped by section, with no chapters or names" /></div>
+          <div class="fp-card__text">
+            <h3>Our Bible</h3>
+            <p>Which books the family has been in, together. Never chapters, never who. Each person turns it on.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    {/* ── Private ── */}
+    <section class="nx-wrap fp-split fp-private" aria-labelledby="fp-private-title">
+      <div class="fp-private__stage nx-mesh nx-mesh--sky" data-reveal="scale">
+        <ShowcaseVisual name="family-sees" label="What a parent sees for Ellie: last active, chapters and books, and how many notes. Never her notes, highlights, searches or Review." />
+      </div>
+      <div>
+        <h2 id="fp-private-title" class="nx-title">Progress for parents, privacy for everyone.</h2>
+        <p class="fp-p">
+          A parent or guardian can see when a child was last in Harvous, how many chapters they've
+          read and which books, and how many notes they've written. The child sees the same numbers
+          about themselves, so nothing is watched in secret. Adults' study is their own.
+        </p>
+        <p class="fp-p">A teen can ask to become an adult in the family, and anyone can leave any time.</p>
+      </div>
+    </section>
+
+    {/* ── Child notebooks, once that page is out ── */}
+    {showChildNotebooks && (
+      <section class="nx-wrap fp-kids" aria-labelledby="fp-kids-title">
+        <a class="fp-kids__card" href="/add-ons/family/child-notebooks/">
+          <span class="fp-kids__book" aria-hidden="true"><AppIcon name="star" /></span>
+          <span class="fp-kids__text">
+            <h2 id="fp-kids-title">Child notebooks, for kids under 13</h2>
+            <span>Set up a private notebook for a younger child: their own notes, a Family Bible to read together, and you in charge of what they see. On the web, in the US.</span>
+          </span>
+          <span class="fp-kids__go">See child notebooks <span aria-hidden="true">→</span></span>
+        </a>
+      </section>
+    )}
+
+    {/* ── Good to know ── */}
+    <section class="nx-wrap fp-facts" aria-label="Good to know">
+      <div class="fp-fact">
+        <span class="fp-fact__icon"><AppIcon name="link" /></span>
+        <h3>Invites that expire</h3>
+        <p>Each invite is a single-use link, good for seven days.</p>
+      </div>
+      <div class="fp-fact">
+        <span class="fp-fact__icon"><AppIcon name="user-group" /></span>
+        <h3>Up to six people</h3>
+        <p>You and five more, with no extra charge for the family.</p>
+      </div>
+      <div class="fp-fact">
+        <span class="fp-fact__icon"><AppIcon name="globe" /></span>
+        <h3>On the web for now</h3>
+        <p>Start a family at app.harvous.com. The apps come later.</p>
+      </div>
+    </section>
+  </article>
+
+  <ClosingCall
+    title={page.closingHeading}
+    lead={page.closingLead}
+    href={page.closingHref}
+    label={page.closingLabel}
+    external
+    fathomTrack={fathomSignup.addonDetail(page.slug)}
+    secondaryHref="/pricing/"
+    secondaryLabel="See all pricing"
+  />
+</NextLayout>
+
+<style>
+  [data-tone="mint"] { --t: var(--color-mint); }
+  [data-tone="sky"] { --t: var(--color-sky); }
+  [data-tone="cream"] { --t: var(--color-cream); }
+
+  /* ── Hero ── */
+  .fp-hero { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  .fp-crumb {
+    display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem;
+    padding: 0.25rem; border-radius: 999px; background: var(--color-warm); font-size: 0.875rem; font-weight: 500;
+  }
+  .fp-crumb__back { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem 0.35rem 0.55rem; border-radius: 999px; color: var(--color-ink-soft); text-decoration: none; }
+  .fp-crumb__back:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-ink) 7%, transparent); }
+  .fp-crumb__back svg { width: 0.85rem; height: 0.85rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .fp-crumb__here {
+    display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem 0.35rem 0.7rem; border-radius: 999px; font-weight: 600;
+    color: color-mix(in oklab, var(--study-dock-accent-mintGreen) var(--ink-on-tint, 50%), var(--color-ink));
+    background: color-mix(in oklab, var(--study-dock-accent-mintGreen) 16%, var(--color-paper));
+  }
+  .fp-crumb__here :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .fp-hero__title { margin: 1.5rem auto 0; max-width: 16ch; }
+  .fp-hero__lead { margin: 1.25rem auto 0; max-width: 34rem; }
+  .fp-hero__acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin: 2rem 0 0; }
+
+  .fp-stage {
+    max-width: 60rem;
+    margin: clamp(2.5rem, 6vw, 4rem) auto 0;
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(1rem, 4vw, 3rem) 0;
+    border-radius: var(--nx-radius-scene);
+    text-align: left;
+  }
+  .fp-stage__pair { position: relative; display: flex; justify-content: center; gap: 1.25rem; align-items: flex-end; }
+  .fp-stage__main { width: min(26rem, 100%); margin-bottom: -1px; }
+  .fp-stage__main :global(.aui-card) { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .fp-stage__side { width: 18rem; margin-bottom: clamp(1.5rem, 4vw, 2.5rem); transform: rotate(2deg); }
+  @media (max-width: 52rem) { .fp-stage__side { display: none; } }
+
+  /* ── Shared bits ── */
+  .fp-p { margin: 1rem 0 0; max-width: 34rem; font-size: 1.0625rem; line-height: 1.6; color: var(--color-ink-soft); text-wrap: pretty; }
+  .fp-p a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .fp-head { max-width: 44rem; margin: 0 auto; text-align: center; }
+  .fp-head .nx-lead { margin: 1rem auto 0; }
+  .fp-split { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; padding-top: var(--nx-section); }
+  @media (min-width: 52rem) { .fp-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+  /* ── Roles ── */
+  .fp-roles { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+  .fp-roles li {
+    padding: 1rem 1.2rem; border-radius: 1.1rem; background: var(--color-warm);
+    font-size: 0.975rem; line-height: 1.5; color: var(--color-ink-soft);
+  }
+  .fp-roles b { display: block; font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; color: var(--color-ink); }
+
+  /* ── Together: a bento ── */
+  .fp-together { padding-top: var(--nx-section); }
+  .fp-grid { display: grid; gap: 1rem; margin: clamp(2rem, 5vw, 3rem) 0 0; padding: 0; list-style: none; }
+  @media (min-width: 52rem) {
+    .fp-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .fp-card { grid-column: span 2; }
+    .fp-card--wide { grid-column: span 3; }
+  }
+  .fp-card { display: flex; flex-direction: column; padding: 0.5rem; border-radius: 1.6rem; background: color-mix(in srgb, var(--t) 22%, var(--color-paper)); }
+  .fp-card__stage {
+    display: flex; align-items: flex-end; justify-content: center;
+    height: 21rem; padding: 1.75rem 1.25rem 0; overflow: hidden; border-radius: 1.15rem;
+    background: color-mix(in srgb, var(--t) 60%, var(--color-paper));
+  }
+  .fp-card__stage > :global(*) { margin-bottom: -2rem; transition: transform 450ms var(--nx-ease); }
+  .fp-card:hover .fp-card__stage > :global(*) { transform: translateY(-6px); }
+  /* A tall piece starts at its top, with the floor cutting the bottom. */
+  .fp-card__stage--top { align-items: flex-start; }
+  .fp-card__stage--top > :global(*) { margin-bottom: 0; }
+  .fp-card__text { padding: 1.1rem 1rem 1rem; }
+  .fp-card h3 { margin: 0; font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; color: var(--color-ink); }
+  .fp-card p { margin: 0.4rem 0 0; font-size: 0.975rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
+
+  /* ── Private ── */
+  .fp-private__stage { display: grid; place-items: center; padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem); border-radius: var(--nx-radius-scene); }
+  @media (min-width: 52rem) { .fp-private > :first-child { order: 0; } }
+
+  /* ── Child notebooks ── */
+  .fp-kids { padding-top: var(--nx-section); }
+  .fp-kids__card {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem 1.5rem; align-items: center;
+    padding: clamp(1.25rem, 3vw, 2rem); border-radius: 1.6rem; text-decoration: none;
+    background: color-mix(in srgb, var(--color-sky) 26%, var(--color-paper));
+    transition: background-color 200ms ease;
+  }
+  .fp-kids__card:hover { background: color-mix(in srgb, var(--color-sky) 36%, var(--color-paper)); }
+  @media (min-width: 52rem) { .fp-kids__card { grid-template-columns: auto minmax(0, 1fr) auto; } }
+  .fp-kids__book {
+    display: grid; place-items: center; width: 4.5rem; height: 5.5rem;
+    border-left: 8px solid oklch(from var(--pds-thread-blue) 0.52 calc(c * 1.7) h);
+    border-radius: 3px 10px 10px 3px; color: #fff;
+    background: oklch(from var(--pds-thread-blue) 0.66 calc(c * 1.7) h);
+    box-shadow: 0 12px 24px -12px rgba(15, 23, 42, 0.5); transform: rotate(-4deg);
+  }
+  .fp-kids__book :global(svg) { width: 1.6rem; height: 1.6rem; }
+  .fp-kids__text h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.3rem, 2.4vw, 1.6rem); font-weight: 600; letter-spacing: -0.02em; color: var(--color-ink); }
+  .fp-kids__text span { display: block; margin-top: 0.4rem; max-width: 40rem; line-height: 1.55; color: var(--color-ink-soft); }
+  .fp-kids__go { grid-column: 1 / -1; font-weight: 500; color: var(--color-accent); }
+  @media (min-width: 52rem) { .fp-kids__go { grid-column: auto; } }
+
+  /* ── Good to know ── */
+  .fp-facts { display: grid; gap: 1rem; padding-top: clamp(3rem, 8vw, 5rem); padding-bottom: clamp(2rem, 5vw, 3rem); }
+  @media (min-width: 44rem) { .fp-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .fp-fact { padding: 1.4rem; border-radius: 1.4rem; background: var(--color-warm); }
+  .fp-fact__icon {
+    display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 0.8rem;
+    color: color-mix(in oklab, var(--study-dock-accent-mintGreen) var(--ink-on-tint, 50%), var(--color-ink));
+    background: color-mix(in oklab, var(--study-dock-accent-mintGreen) 16%, var(--color-paper));
+  }
+  .fp-fact__icon :global(svg) { width: 1rem; height: 1rem; }
+  .fp-fact h3 { margin: 1rem 0 0; font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.015em; color: var(--color-ink); }
+  .fp-fact p { margin: 0.35rem 0 0; font-size: 0.95rem; line-height: 1.55; color: var(--color-ink-soft); }
+</style>

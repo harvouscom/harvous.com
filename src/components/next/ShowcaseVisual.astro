@@ -676,6 +676,38 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
     </div>
   )}
 
+  {name === "family-space" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="aui-tile sv__tile--mint"><AppIcon name="people-roof" /></span><span><b>Family Space</b><small>Everyone in the family can add to it</small></span></p>
+      {[
+        ["S", "is-a", "Dinner question: why was Jesus asleep in the storm?", "Mark 4:38"],
+        ["R", "is-b", "The one I pray over each of you.", "Psalm 121"],
+        ["E", "is-kid", "We read the first chapter in the car. Naomi is so sad.", "Ruth 1"],
+      ].map(([who, cls, text, ref]) => (
+        <div class="sv__post">
+          <span class:list={["sv__face", cls]}>{who}</span>
+          <span><span class="sv__post-t">{text}</span><span class="aui-pill">{ref}</span></span>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {name === "family-sees" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="sv__face is-kid">E</span><span><b>What you see for Ellie</b><small>She sees the same</small></span></p>
+      <div class="sv__sees">
+        <div>
+          <p class="sv__sees-h">Shown</p>
+          {["Last active", "Chapters and books", "How many notes"].map((t) => <p class="sv__sees-row is-yes"><AppIcon name="check" /> {t}</p>)}
+        </div>
+        <div>
+          <p class="sv__sees-h">Never</p>
+          {["Her notes", "Highlights", "Searches", "Review"].map((t) => <p class="sv__sees-row"><AppIcon name="lock" /> {t}</p>)}
+        </div>
+      </div>
+    </div>
+  )}
+
   {name === "family-our-bible" && (
     <div class="aui-card sv__card sv__pad">
       <p class="sv__vhead"><b>Our Bible</b><span class="sv__chip">My Family</span></p>
@@ -799,6 +831,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__pop { width: 82%; margin: -22px -8px 0 auto; position: relative; }
   .sv__hero .sv__label { padding: 11px 13px 0; }
   .sv__quote { padding: 0 14px 12px 50px; font-size: 13px; line-height: 1.5; font-style: italic; color: var(--pds-text-secondary); }
+  .sv__tile--mint { color: color-mix(in oklab, var(--pds-highlight-mint-green) 55%, var(--pds-text-primary)) !important; background: color-mix(in srgb, var(--pds-highlight-mint-green) 16%, var(--pds-bg-main)) !important; }
   .sv__tile--violet { color: var(--pds-highlight-violet) !important; background: color-mix(in srgb, var(--pds-highlight-violet) 16%, var(--pds-bg-main)) !important; }
   /* Threads are neutral in the app (secondary glyph, no colored tile) — match it. */
   .sv__tile--thread { color: var(--pds-text-secondary) !important; }
@@ -1172,4 +1205,11 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__sheet { display: flex; gap: 6px; margin-top: 14px !important; padding: 8px; border-radius: 12px; background: var(--pds-bg-chip); }
   .sv__sheet span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; color: var(--pds-text-secondary); background: var(--pds-bg-main); }
   .sv__sheet :global(svg) { width: 13px; height: 13px; }
+  /* Family: what a parent sees, and what never leaves a child's study. */
+  .sv__sees { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .sv__sees > div { padding: 10px 12px; border-radius: 10px; background: var(--pds-bg-chip); }
+  .sv__sees-h { margin-bottom: 6px !important; font-size: 12px; font-weight: 600; color: var(--pds-text-secondary); }
+  .sv__sees-row { display: flex; align-items: center; gap: 6px; padding: 3px 0; font-size: 13px; color: var(--pds-text-primary); }
+  .sv__sees-row :global(svg) { width: 11px; height: 11px; color: var(--pds-text-tertiary); }
+  .sv__sees-row.is-yes :global(svg) { color: color-mix(in oklab, var(--pds-highlight-mint-green) 55%, var(--pds-text-primary)); }
 </style>

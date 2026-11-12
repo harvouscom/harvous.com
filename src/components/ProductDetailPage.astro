@@ -71,10 +71,6 @@ const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
 const faqs = page.faqs ?? [];
 /* Anchor from the question: "Can families outside the US…?" → faq-can-families-outside-the-us. */
 const faqId = (q: string) => `faq-${q.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").split("-").slice(0, 6).join("-")}`;
-/* Family links to child notebooks only where that page exists: while it is a
-   draft, production has neither (lib/draft-pages.ts). */
-const showChildBridge =
-  page.kind === "addon" && page.slug === "family" && draftPageIsReachable("add-ons/family/child-notebooks");
 const draftSlug = page.href.replace(/^\/|\/$/g, "");
 const isDraft = isDraftPageSlug(draftSlug);
 /* A walkthrough replaces the prose sections and the single showcase row. */
@@ -142,17 +138,6 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
           teaching plan for each ministry too, on a 30-day pilot set up with you.
         </p>
         <a class="nx-link" href="/for/churches/#interest">Bring your church to Harvous →</a>
-      </aside>
-    )}
-
-    {showChildBridge && (
-      <aside class="nx-wrap pd-bridge" data-reveal>
-        <p class="nx-kicker">For children under 13</p>
-        <p>
-          A parent can set up a private notebook for a younger child: their own notes, a Family Bible
-          to read together, and you in charge of what they see. On the web, in the US.
-        </p>
-        <a class="nx-link" href="/add-ons/family/child-notebooks/">See child notebooks →</a>
       </aside>
     )}
 
