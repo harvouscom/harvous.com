@@ -119,7 +119,7 @@ const DOCS = [
     text-wrap: pretty;
   }
   .lg-doc :global(strong) { color: var(--color-ink); font-weight: 600; }
-  /* Lists: a dot per item in the divider gray, hung outside the text so wrapped
+  /* Lists: a dot per item, a step darker than the divider gray, hung outside the text so wrapped
      lines align with the first. The reset strips native markers. */
   .lg-doc :global(ul) {
     margin: 0.9rem 0 0;
@@ -141,7 +141,7 @@ const DOCS = [
     width: 0.4rem;
     height: 0.4rem;
     border-radius: 999px;
-    background: var(--color-rule);
+    background: color-mix(in oklab, var(--color-rule), var(--color-ink-faint) 40%);
   }
   .lg-doc :global(li + li) { margin-top: 0.5rem; }
   .lg-doc :global(a:not(.nx-btn)) {
