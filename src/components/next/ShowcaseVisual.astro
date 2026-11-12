@@ -737,19 +737,14 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
 
   {name === "child-family-bible" && (
     <div class="aui-card sv__card sv__pad">
-      <p class="sv__label">Family Bible · Read together</p>
+      <p class="sv__fb-top"><span class="sv__label sv__fb-label">Family Bible · Read together</span><span class="sv__fb-shared"><span class="sv__face is-a">M</span> Shared by Mom</span></p>
       <p class="sv__ref">Psalm 23 <span class="aui-tr">NLT</span></p>
-      <p class="sv__verse"><sup>1</sup><mark class="sv__hl">The Lord is my shepherd; I have all that I need.</mark></p>
-      {[
-        ["E", "is-kid", "I like that I have all I need. Even on bad days?"],
-        ["M", "is-a", "Even then. What do you think a shepherd does all day?"],
-      ].map(([who, cls, text]) => (
-        <div class="sv__post">
-          <span class:list={["sv__face", cls]}>{who}</span>
-          <span class="sv__post-t">{text}</span>
-        </div>
-      ))}
-      <p class="sv__foot"><AppIcon name="lock" /> Only Ellie and Mom see these thoughts.</p>
+      <p class="sv__verse sv__fb-verse"><sup>1</sup><span class="sv__hl sv__hl--family">The Lord is my shepherd; I have all that I need.</span><span class="sv__fb-count"><AppIcon name="comment" /> 2</span></p>
+      <div class="sv__fbchat">
+        <p class="sv__bub" data-who="kid"><span class="sv__face is-kid">E</span><span>I like that I have all I need. Even on bad days?</span></p>
+        <p class="sv__bub" data-who="mom"><span>Even then. What do you think a shepherd does all day?</span><span class="sv__face is-a">M</span></p>
+      </div>
+      <p class="sv__fb-reply"><span>Write back to Mom…</span><AppIcon name="paper-plane" /></p>
     </div>
   )}
 
@@ -766,17 +761,19 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   {name === "child-verse-sticker" && (
     <div class="aui-card sv__card sv__pad">
       <p class="sv__label">My Bible · Psalm 23 <span class="aui-tr">NLT</span></p>
+      <p class="sv__sheet" aria-hidden="true">
+        {[["heart", "pink", true], ["star", "yellow"], ["dove", "blue"], ["rainbow", "purple"], ["seedling", "green"], ["crown", "orange"]].map(([icon, c, on]) => (
+          <span class:list={["sv__dsticker", on && "is-on"]} data-c={c}><AppIcon name={icon as string} /></span>
+        ))}
+      </p>
       <div class="sv__stickered">
-        <p class="sv__verse"><sup>1</sup>The Lord is my shepherd; I have all that I need.</p>
-        <span class="sv__vsticker" style="--tilt:-8deg"><AppIcon name="heart" /></span>
+        <p class="sv__verse"><sup>1</sup><span class="sv__hl sv__hl--pink">The Lord is my shepherd; I have all that I need.</span></p>
+        <span class="sv__dsticker sv__vsticker" data-c="pink" style="--tilt:-9deg"><AppIcon name="heart" /></span>
       </div>
       <div class="sv__stickered">
         <p class="sv__verse"><sup>2</sup>He lets me rest in green meadows; he leads me beside peaceful streams.</p>
-        <span class="sv__vsticker" style="--tilt:7deg"><AppIcon name="seedling" /></span>
+        <span class="sv__dsticker sv__vsticker" data-c="green" style="--tilt:8deg"><AppIcon name="seedling" /></span>
       </div>
-      <p class="sv__sheet">
-        {["sun", "fish", "dove", "rainbow", "crown", "star"].map((s) => <span><AppIcon name={s} /></span>)}
-      </p>
     </div>
   )}
 
@@ -1203,25 +1200,51 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   /* Child notebooks: the notebook's cover tile and an in-card head. */
   .sv__head--in { padding: 12px 13px 6px; }
   .sv :global(.aui-tile.sv__cover) { color: #fff; background: #2f9e73; }
-  /* My Bible: die-cut stickers in the verse's right margin, and the sheet they come from. */
-  .sv__stickered { position: relative; padding-right: 44px; }
-  .sv__vsticker {
-    position: absolute; top: 4px; right: 0;
-    display: grid; place-items: center; width: 32px; height: 32px;
-    border-radius: 10px; border: 2px solid var(--pds-bg-page);
-    color: color-mix(in oklab, var(--pds-thread-pink) 60%, var(--pds-text-primary));
-    background: color-mix(in oklab, var(--pds-thread-pink) 55%, var(--pds-bg-page));
-    box-shadow: 0 0 0 1px var(--pds-border-soft, var(--pds-border)), 0 2px 5px color-mix(in oklab, var(--pds-text-primary) 16%, transparent);
-    transform: rotate(var(--tilt));
+  /* My Bible: bright die-cut stickers (white border in both themes, like
+     real stickers), the sheet they come from, and the ones on verses. */
+  .sv__dsticker {
+    --c: var(--pds-thread-blue);
+    display: grid; place-items: center; width: 34px; height: 34px;
+    border: 2.5px solid #fff; border-radius: 10px;
+    color: oklch(from var(--c) 0.46 calc(c * 2) h);
+    background: oklch(from var(--c) 0.88 calc(c * 1.4) h);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08), 0 4px 10px -3px rgba(15, 23, 42, 0.35);
   }
-  .sv__stickered + .sv__stickered .sv__vsticker {
-    color: color-mix(in oklab, var(--pds-thread-green) 60%, var(--pds-text-primary));
-    background: color-mix(in oklab, var(--pds-thread-green) 55%, var(--pds-bg-page));
-  }
-  .sv__vsticker :global(svg) { width: 14px; height: 14px; }
-  .sv__sheet { display: flex; gap: 6px; margin-top: 14px !important; padding: 8px; border-radius: 12px; background: var(--pds-bg-chip); }
-  .sv__sheet span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; color: var(--pds-text-secondary); background: var(--pds-bg-main); }
-  .sv__sheet :global(svg) { width: 13px; height: 13px; }
+  .sv__dsticker[data-c="pink"] { --c: var(--pds-thread-pink); }
+  .sv__dsticker[data-c="yellow"] { --c: var(--pds-thread-yellow); }
+  .sv__dsticker[data-c="blue"] { --c: var(--pds-thread-blue); }
+  .sv__dsticker[data-c="purple"] { --c: var(--pds-thread-purple); }
+  .sv__dsticker[data-c="green"] { --c: var(--pds-thread-green); }
+  .sv__dsticker[data-c="orange"] { --c: var(--pds-thread-orange); }
+  .sv__dsticker :global(svg) { width: 15px; height: 15px; }
+  .sv__sheet { display: flex; justify-content: space-between; gap: 6px; margin: 10px 0 6px !important; padding: 10px; border-radius: 14px; background: var(--pds-bg-chip); }
+  .sv__sheet .sv__dsticker:nth-child(odd) { transform: rotate(-4deg); }
+  .sv__sheet .sv__dsticker:nth-child(even) { transform: rotate(4deg); }
+  .sv__sheet .sv__dsticker.is-on { transform: translateY(-4px) rotate(-8deg) scale(1.12); box-shadow: 0 0 0 2px var(--pds-text-primary), 0 8px 14px -4px rgba(15, 23, 42, 0.45); }
+  .sv__stickered { position: relative; min-height: 48px; padding: 6px 54px 6px 0; }
+  .sv__stickered .sv__verse { margin-top: 0 !important; }
+  .sv__vsticker { position: absolute; top: 6px; right: 4px; width: 40px; height: 40px; border-radius: 12px; transform: rotate(var(--tilt)); }
+  .sv__vsticker :global(svg) { width: 18px; height: 18px; }
+  .sv__hl.sv__hl--pink { background: color-mix(in srgb, var(--pds-highlight-coral-rose) 30%, transparent); box-shadow: inset 0 -2px 0 var(--pds-highlight-coral-rose); }
+
+  /* Family Bible: who shared it, the verse they're talking about, and the talk. */
+  .sv__fb-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .sv__fb-label { margin: 0 !important; }
+  .sv__fb-shared { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px 2px 3px; border-radius: 999px; font-size: 11.5px; font-weight: 500; color: var(--pds-text-primary); background: var(--pds-bg-chip); white-space: nowrap; }
+  .sv__fb-shared .sv__face { width: 18px; height: 18px; font-size: 9px; }
+  .sv__fb-verse { position: relative; }
+  .sv__hl.sv__hl--family { background: color-mix(in srgb, var(--pds-highlight-warm-amber) 40%, transparent); box-shadow: inset 0 -2px 0 var(--pds-highlight-warm-amber); }
+  .sv__fb-count { display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; padding: 1px 7px; border-radius: 999px; vertical-align: 2px; font-size: 11px; font-weight: 600; color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__fb-count :global(svg) { width: 9px; height: 9px; }
+  .sv__fbchat { display: grid; gap: 8px; margin-top: 12px; }
+  .sv__bub { display: flex; align-items: flex-end; gap: 7px; margin: 0; }
+  .sv__bub > span:not(.sv__face) { max-width: 78%; padding: 8px 11px; font-size: 13px; line-height: 1.45; color: var(--pds-text-primary); }
+  .sv__bub[data-who="kid"] > span:not(.sv__face) { border-radius: 14px 14px 14px 4px; background: color-mix(in oklab, var(--pds-thread-pink) 55%, var(--pds-bg-main)); }
+  .sv__bub[data-who="mom"] { justify-content: flex-end; }
+  .sv__bub[data-who="mom"] > span:not(.sv__face) { border-radius: 14px 14px 4px 14px; background: color-mix(in oklab, var(--pds-thread-purple) 50%, var(--pds-bg-main)); }
+  .sv__bub .sv__face { flex: none; width: 22px; height: 22px; font-size: 10px; }
+  .sv__fb-reply { display: flex; align-items: center; justify-content: space-between; margin-top: 12px !important; padding: 8px 12px; border-radius: 999px; font-size: 12.5px; color: var(--pds-text-tertiary); box-shadow: inset 0 0 0 1px var(--pds-border); }
+  .sv__fb-reply :global(svg) { width: 12px; height: 12px; color: var(--pds-accent); }
   /* Family: what a parent sees, and what never leaves a child's study. */
   .sv__sees { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
   .sv__sees > div { padding: 10px 12px; border-radius: 10px; background: var(--pds-bg-chip); }
