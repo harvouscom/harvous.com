@@ -348,6 +348,36 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   moments: [],
   faqs: [
     {
+      question: "Does my child need an email address or a phone?",
+      answer:
+        "No. A first name or nickname is all we ask for. Your child opens the notebook with a one-time link you make, which works for five minutes, or you hand over your own device in child mode. A session ends after eight hours.",
+    },
+    {
+      question: "Can I read what my child writes?",
+      answer:
+        "Yes. You can read your child's notes any time and download a copy, either as a readable text file or as a full backup. Verse stickers stay private to your child in the app and come to you only in the full backup.",
+    },
+    {
+      question: "Who else can see my child's notebook?",
+      answer:
+        "Only you. Family Bible thoughts are seen by your child and you. If you approve a kids ministry channel, your child can read it, but ministry leaders can't see their notes or their profile. Nothing in a child notebook is public.",
+    },
+    {
+      question: "What happens when my child turns 13?",
+      answer:
+        "Nothing changes on its own. The notebook stays yours to manage. From 13, your child can have their own Harvous account and join your family, though moving a notebook into a new account isn't available yet.",
+    },
+    {
+      question: "How do I stop or delete a notebook?",
+      answer:
+        "From the notebook's page in Settings › My Family. Withdrawing your permission stops your child's access right away, and the notebook is deleted 30 days later, so you have time to download it. You can also delete it straight away. A notebook no one uses for a year is deleted automatically.",
+    },
+    {
+      question: "Is there an app for kids?",
+      answer:
+        "Child notebooks run in the web browser, on a computer, tablet or phone. There's nothing to install.",
+    },
+    {
       question: "Can families outside the US use child notebooks?",
       answer:
         "Not yet. Child notebooks are for families in the United States for now, because the rules for children's information differ from country to country. We plan to add more countries as we can do it properly. Harvous accounts for people 13 and older work everywhere.",
