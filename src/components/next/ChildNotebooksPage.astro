@@ -381,7 +381,7 @@ const faqs = page.faqs ?? [];
     justify-content: center;
     width: clamp(13rem, 26vw, 17rem);
     aspect-ratio: 4 / 5;
-    padding: 1.4rem 1.2rem 1.6rem 1.6rem;
+    padding: 0; /* the sticker sits dead center on the face (the spine is the border) */
     border-left: 14px solid oklch(from var(--cover) calc(l - 0.12) c h);
     border-radius: 5px 18px 18px 5px;
     background: var(--ink);
@@ -405,7 +405,7 @@ const faqs = page.faqs ?? [];
   .cn-cover[data-pattern="gingham"]::before { background-image: repeating-linear-gradient(90deg, var(--pds-on-accent) 0 6px, transparent 6px 12px), repeating-linear-gradient(0deg, var(--pds-on-accent) 0 6px, transparent 6px 12px); }
   .cn-cover--hero { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-4deg); }
   @media (max-width: 40rem) {
-    .cn-cover--hero { width: 10.5rem; padding: 1rem 0.8rem 1.1rem 1.1rem; border-left-width: 10px; }
+    .cn-cover--hero { width: 10.5rem; border-left-width: 10px; }
     .cn-cover--hero .cn-cover__emblem { width: 4.25rem; border-width: 3px; border-radius: 1rem; }
   }
 
