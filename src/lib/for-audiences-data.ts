@@ -897,7 +897,7 @@ const audiences: ForAudience[] = [
     featuresHeading: "What a family needs from Harvous",
     featuresLead: "Family for the household, plus the threads, scripture pills and highlights everyone uses on their own.",
     compareSlugs: ["youversion"],
-    useCaseSlugs: ["family-reading", "small-group"],
+    useCaseSlugs: ["small-group"],
   },
   {
     slug: "bible-app-users",
