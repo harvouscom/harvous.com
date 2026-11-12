@@ -169,28 +169,28 @@ const faqs = page.faqs ?? [];
         <p class="nx-lead">Real notes and real Scripture, sized for a younger reader. Every tap is a big one.</p>
       </div>
       <ul class="cn-grid" role="list">
-        <li class="cn-card cn-card--wide" data-tone="green" data-reveal>
+        <li class="cn-card" data-tone="green" data-reveal>
           <div class="cn-card__stage"><ShowcaseVisual name="child-notebook-home" label="Ellie's notebook with three notes: What I want to remember, A little kindness, and A question for Sunday" /></div>
           <div class="cn-card__text">
             <h3>A place that's theirs</h3>
             <p>Notes with folders, tags and Threads, and Scripture they can tap to read.</p>
           </div>
         </li>
-        <li class="cn-card" data-tone="blue" data-reveal>
+        <li class="cn-card cn-card--wide" data-tone="blue" data-reveal>
           <div class="cn-card__stage"><ShowcaseVisual name="child-family-bible" label="Psalm 23 shared in Family Bible, with a thought from Ellie on verse 1 and a reply from Mom" /></div>
           <div class="cn-card__text">
             <h3>Read a chapter together</h3>
             <p>You share it in Family Bible. They say what they think about a verse, and you answer right there.</p>
           </div>
         </li>
-        <li class="cn-card" data-tone="purple" data-reveal>
+        <li class="cn-card cn-card--wide" data-tone="purple" data-reveal>
           <div class="cn-card__stage"><ShowcaseVisual name="child-verse-sticker" label="Psalm 23 in My Bible with a heart sticker beside verse 1 and a seedling beside verse 2" /></div>
           <div class="cn-card__text">
             <h3>Stickers on the verses they love</h3>
             <p>In My Bible they can highlight a verse and stick something next to it. Those stay theirs.</p>
           </div>
         </li>
-        <li class="cn-card cn-card--wide" data-tone="yellow" data-reveal>
+        <li class="cn-card" data-tone="yellow" data-reveal>
           <div class="cn-card__stage"><ShowcaseVisual name="child-look-back" label="A Look back question: fill in the missing word in Psalm 23:3 from three word tiles" /></div>
           <div class="cn-card__text">
             <h3>What they marked comes back</h3>
@@ -538,6 +538,11 @@ const faqs = page.faqs ?? [];
   }
   .cn-card__stage > :global(*) { margin-bottom: -2rem; transition: transform 450ms var(--nx-ease); }
   .cn-card:hover .cn-card__stage > :global(*) { transform: translateY(-6px); }
+  /* The two features worth showing off get the wide cards, drawn larger. */
+  @media (min-width: 52rem) {
+    .cn-card--wide .cn-card__stage { height: 22rem; }
+    .cn-card--wide .cn-card__stage > :global(.sv) { max-width: 30rem; zoom: 1.12; }
+  }
   .cn-card__text { padding: 1.1rem 1rem 1rem; }
   .cn-card h3 { margin: 0; font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; color: var(--color-ink); }
   .cn-card p { margin: 0.4rem 0 0; font-size: 0.975rem; line-height: 1.55; color: var(--color-ink-soft); text-wrap: pretty; }
