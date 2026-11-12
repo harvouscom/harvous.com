@@ -54,7 +54,8 @@ const SUPPORT_EMAIL = "derek@harvous.com";
     <h2>The companies that help us run it</h2>
     <p>
       These service providers handle information on our behalf, only to run and protect the
-      notebook. None of them may use your child's information for their own purposes.
+      notebook. None of them may use your child's information for their own purposes. We don't
+      disclose your child's information to third parties, so there's nothing separate to agree to.
     </p>
     <ul>
       <li><strong>Fly.io</strong> hosts the notebook service.</li>
@@ -87,6 +88,7 @@ const SUPPORT_EMAIL = "derek@harvous.com";
       payment card or identifying details, such as a Social Security number. We don't receive
       those details. We get only the result. KWS may remember that you're verified (it calls this
       AgeGraph) under its own privacy policy.
+      If you don't agree, we won't create a notebook or collect anything from your child.
     </p>
     <p>
       <strong>When you agree.</strong> After verification, you confirm that you are the child's
@@ -121,7 +123,9 @@ const SUPPORT_EMAIL = "derek@harvous.com";
       <strong>Automatically.</strong> Opening the notebook sends technical information, such as an
       IP address and browser details, to deliver pages and keep the service secure. Temporary
       sign-in information lets your child open the notebook. The link you make works once and
-      expires after five minutes, and a session ends after eight hours.
+      expires after five minutes, and a session ends after eight hours. IP addresses and the
+      session token are persistent identifiers. We use them only to deliver the notebook and keep
+      it secure, never to contact your child, build a profile, or advertise.
     </p>
   </div>
 
@@ -233,32 +237,68 @@ const SUPPORT_EMAIL = "derek@harvous.com";
 
   <div>
     <h2>How long we keep it</h2>
-    <ul>
-      <li>
-        <strong>A verification request</strong> you don't finish expires after seven days. No
-        notebook exists at that point.
-      </li>
-      <li><strong>A sign-in link</strong> lasts five minutes. <strong>A session</strong> lasts eight hours.</li>
-      <li>
-        <strong>An active notebook</strong> and its consent record are kept while the notebook is in
-        use.
-      </li>
-      <li>
-        <strong>A notebook no one has used for a year</strong> is deleted automatically.
-      </li>
-      <li><strong>A withdrawn notebook</strong> is deleted after 30 days.</li>
-      <li>
-        <strong>A deleted notebook</strong> is removed with everything in it: notes, readings,
-        thoughts, highlights, stickers, Look back progress, preferences, sessions, approvals, and the
-        consent history.
-      </li>
-    </ul>
     <p>
-      Deleted information may stay in restricted database backups until those backups expire,
-      <span class="lg-placeholder">[Placeholder: backup retention period]</span>. If we ever have to
-      restore a backup, we first remove any notebook that was deleted or withdrawn after it was
-      made. Security and hosting logs, which hold technical information like IP addresses, are kept
-      for <span class="lg-placeholder">[Placeholder: log retention period]</span>.
+      We keep each kind of information only as long as the notebook needs it, and nothing is kept
+      forever.
+    </p>
+    <table class="lg-table">
+      <thead>
+        <tr>
+          <th scope="col">Information</th>
+          <th scope="col">Why we collect it</th>
+          <th scope="col">Why we keep it</th>
+          <th scope="col">When it's deleted</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Name or nickname, consent record, consent history</th>
+          <td data-label="Why we collect it">To create the notebook and show you agreed</td>
+          <td data-label="Why we keep it">Needed while the notebook exists</td>
+          <td data-label="When it's deleted">With the notebook</td>
+        </tr>
+        <tr>
+          <th scope="row">Notes, readings, thoughts, highlights, stickers, preferences</th>
+          <td data-label="Why we collect it">They are the notebook</td>
+          <td data-label="Why we keep it">So your child and you can come back to them</td>
+          <td data-label="When it's deleted">When you delete them, 30 days after you withdraw consent, or after a year unused</td>
+        </tr>
+        <tr>
+          <th scope="row">Look back progress</th>
+          <td data-label="Why we collect it">To choose what to show next</td>
+          <td data-label="Why we keep it">Spacing depends on what came before</td>
+          <td data-label="When it's deleted">With the notebook</td>
+        </tr>
+        <tr>
+          <th scope="row">Sessions and sign-in links</th>
+          <td data-label="Why we collect it">To open the notebook</td>
+          <td data-label="Why we keep it">Only while it's open</td>
+          <td data-label="When it's deleted">Links after five minutes, sessions after eight hours</td>
+        </tr>
+        <tr>
+          <th scope="row">Verification requests</th>
+          <td data-label="Why we collect it">To confirm you're an adult</td>
+          <td data-label="Why we keep it">Until you finish setting up</td>
+          <td data-label="When it's deleted">After seven days, if unfinished</td>
+        </tr>
+        <tr>
+          <th scope="row">Database backups</th>
+          <td data-label="Why we collect it">To recover from a failure</td>
+          <td data-label="Why we keep it">Disaster recovery</td>
+          <td data-label="When it's deleted"><span class="lg-placeholder">[Placeholder: backup window. Review found daily backups kept 7 days, so deleted data can stay up to about 8 days.]</span></td>
+        </tr>
+        <tr>
+          <th scope="row">Hosting and security logs, including IP addresses</th>
+          <td data-label="Why we collect it">To deliver the notebook and keep it secure</td>
+          <td data-label="Why we keep it">To look into abuse</td>
+          <td data-label="When it's deleted"><span class="lg-placeholder">[Placeholder: log retention. Review found up to 7 days.]</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      A deleted notebook is removed with everything in it, including the consent history. If we
+      ever have to restore a backup, we first remove any notebook that was deleted or withdrawn
+      after the backup was made.
     </p>
     <p>
       You must delete your child's notebooks before you can delete your own Harvous account.
@@ -289,5 +329,46 @@ const SUPPORT_EMAIL = "derek@harvous.com";
     background: color-mix(in oklab, var(--color-peach) 45%, var(--color-paper));
     color: var(--color-peach-ink);
     font-weight: 600;
+  }
+
+  /* The retention table: four columns on wide screens, one card per row on
+     a phone, where each cell shows its column name. */
+  .lg-table {
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 1rem;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--color-ink-soft);
+  }
+  .lg-table th,
+  .lg-table td {
+    padding: 0.6rem 0.75rem 0.6rem 0;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid var(--color-rule);
+  }
+  .lg-table thead th {
+    border-top: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-ink-faint);
+  }
+  .lg-table tbody th { font-weight: 600; color: var(--color-ink); }
+  @media (max-width: 40rem) {
+    .lg-table thead { display: none; }
+    .lg-table tr { display: block; padding: 0.75rem 0; border-top: 1px solid var(--color-rule); }
+    .lg-table th,
+    .lg-table td { display: block; padding: 0.15rem 0; border: 0; }
+    .lg-table td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-ink-faint);
+    }
+    .lg-table td + td { margin-top: 0.4rem; }
   }
 </style>
