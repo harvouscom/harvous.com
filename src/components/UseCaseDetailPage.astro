@@ -394,7 +394,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     height: 1.5rem;
     border-radius: 0.45rem;
     background: var(--color-paper);
-    color: var(--ink);
+    color: color-mix(in oklab, var(--ink) var(--ink-on-tint), var(--color-ink));
   }
   .ud-row__mark :global(svg) { width: 0.75rem; height: 0.75rem; }
   .ud-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }

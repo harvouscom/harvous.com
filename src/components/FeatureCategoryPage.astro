@@ -208,7 +208,7 @@ const jsonLd = {
     border-radius: 999px;
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--cat-ink);
+    color: color-mix(in oklab, var(--cat-ink) var(--ink-on-tint), var(--color-ink));
     background: color-mix(in oklab, var(--cat-ink) 16%, var(--color-paper));
   }
   .fc-title { margin: 1.25rem auto 0; max-width: 20ch; font-size: clamp(2.5rem, 6vw, 4.5rem); }
@@ -254,7 +254,7 @@ const jsonLd = {
     width: 2rem;
     height: 2rem;
     border-radius: 0.6rem;
-    color: var(--cat-ink);
+    color: color-mix(in oklab, var(--cat-ink) var(--ink-on-tint), var(--color-ink));
     background: color-mix(in oklab, var(--cat-ink) 14%, var(--color-paper));
   }
   .fc-moment__tile :global(svg) { width: 0.9rem; height: 0.9rem; }
