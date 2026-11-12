@@ -3,10 +3,12 @@
  * /add-ons/family/child-notebooks/ — parent-managed notebooks for children
  * under 13, a part of Family. Its data lives beside Family's in
  * lib/addons-data.ts but outside ADDON_PAGES, so [slug].astro doesn't build it.
+ * It has its own design (components/next/ChildNotebooksPage.astro), not the
+ * shared add-on template.
  * A draft page until child enrollment opens (lib/draft-pages.ts).
  */
-import ProductDetailPage from "../../../components/ProductDetailPage.astro";
+import ChildNotebooksPage from "../../../components/next/ChildNotebooksPage.astro";
 import { CHILD_NOTEBOOKS_PAGE } from "../../../lib/addons-data.ts";
 ---
 
-<ProductDetailPage page={CHILD_NOTEBOOKS_PAGE} />
+<ChildNotebooksPage page={CHILD_NOTEBOOKS_PAGE} />

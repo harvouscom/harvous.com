@@ -398,7 +398,8 @@ const ADDON_PAGES: AddonPage[] = [
  *
  * A draft page (lib/draft-pages.ts) until child enrollment opens. Every claim
  * here has to match the app (docs/CHILD_ACCOUNTS.md) and the children's
- * privacy policy at /privacy/children/.
+ * privacy policy at /privacy/children/. This object holds the page's SEO,
+ * hero, questions and closing; its body copy lives in ChildNotebooksPage.astro.
  */
 export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   kind: "addon",
@@ -417,93 +418,10 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   heroTitle: "A notebook for your child.",
   heroLead:
     "Their own private place to write about what they read and wonder. You set it up, and you stay in charge.",
-  sections: [
-    {
-      heading: "Set up by you, in three steps",
-      paragraphs: [
-        "From Settings › My Family, confirm you're an adult (Kids Web Services checks this for us), read how we protect your child, then give permission and name the notebook. A first name or nickname is all we ask for. No email, phone number or password for your child.",
-        "Child notebooks are included with [Harvous Plus](/pricing/). To open the notebook, you make a one-time link or hand over your device in child mode.",
-      ],
-    },
-    {
-      heading: "Reading, chosen together",
-      paragraphs: [
-        "Share a chapter in Family Bible, and you both read it and talk about any verse. Kids get translations written for young readers (ERV, CEV and NLV), plus any others you add.",
-        "If your church's kids ministry shares its reading on Harvous, you can let your child read it. Channels are read-only, and ministry leaders can't see your child's notes or profile.",
-      ],
-    },
-    {
-      heading: "Private, with you in charge",
-      paragraphs: [
-        "You can read your child's notes and download a copy any time. End their sessions, withdraw your permission, or delete the notebook whenever you want.",
-        "There's no public sharing, no messages, no ads, no purchases and no AI. How we handle your child's information is in our [children's privacy policy](/privacy/children/).",
-      ],
-    },
-  ],
-  showcases: [
-    {
-      eyebrow: "My notebook",
-      title: "A place that's theirs",
-      color: "mint",
-      body: [
-        "Notes with folders, tags and Threads, and Scripture they can tap to read. They pick the cover, too.",
-      ],
-      visual: "child-notebook-home",
-      label: "Ellie's notebook with three notes: What I want to remember, A little kindness, and A question for Sunday",
-    },
-    {
-      eyebrow: "Family Bible",
-      title: "Read a chapter, talk about a verse",
-      color: "sky",
-      body: [
-        "You share the chapter. Your child highlights a verse and says what they think, and you answer right there. Only the two of you see it.",
-      ],
-      visual: "child-family-bible",
-      label: "Psalm 23 shared in Family Bible, with a thought from Ellie on verse 1 and a reply from Mom",
-    },
-    {
-      eyebrow: "Look back",
-      title: "What they marked comes back",
-      color: "amber",
-      body: [
-        "A few notes and verses a day, asked with taps: pick the missing word, put verses in order, find what changed. No typing, no score.",
-      ],
-      visual: "child-look-back",
-      label: "A Look back question: fill in the missing word in Psalm 23:3 from three word tiles",
-    },
-    {
-      eyebrow: "For parents",
-      title: "Everything in one place",
-      color: "violet",
-      body: [
-        "Choose translations and shared chapters, approve ministry reading, read and download notes, and manage privacy, all from the notebook's page in My Family.",
-      ],
-      visual: "child-parent-manage",
-      label: "Manage Ellie's notebook: Family Bible, Ministry, Notes, and Privacy and sessions, with End all sessions",
-    },
-  ],
-  moments: [
-    {
-      icon: "fa7-solid:star",
-      heading: "Highlights and verse stickers",
-      body: "In My Bible, your child can highlight verses and put stickers on them. Those stay theirs, and come to you only in a full backup download.",
-    },
-    {
-      icon: "fa7-solid:palette",
-      heading: "A cover they choose",
-      body: "Color, pattern, pages and a sticker on the front. They can change it any time.",
-    },
-    {
-      icon: "fa7-solid:tablet-screen-button",
-      heading: "Shared devices work too",
-      body: "Hand over your device in child mode. When they're done, “I'm all done” gives it back to you or closes the notebook.",
-    },
-    {
-      icon: "fa7-solid:globe",
-      heading: "On the web, in the US",
-      body: "Child notebooks run in the browser, for families in the United States, for now.",
-    },
-  ],
+  /* The page draws its own sections (components/next/ChildNotebooksPage.astro). */
+  sections: [],
+  showcases: [],
+  moments: [],
   faqs: [
     {
       question: "Can families outside the US use child notebooks?",

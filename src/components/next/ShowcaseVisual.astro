@@ -731,6 +731,23 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
     </div>
   )}
 
+  {name === "child-verse-sticker" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">My Bible · Psalm 23 <span class="aui-tr">NLT</span></p>
+      <div class="sv__stickered">
+        <p class="sv__verse"><sup>1</sup>The Lord is my shepherd; I have all that I need.</p>
+        <span class="sv__vsticker" style="--tilt:-8deg"><AppIcon name="heart" /></span>
+      </div>
+      <div class="sv__stickered">
+        <p class="sv__verse"><sup>2</sup>He lets me rest in green meadows; he leads me beside peaceful streams.</p>
+        <span class="sv__vsticker" style="--tilt:7deg"><AppIcon name="seedling" /></span>
+      </div>
+      <p class="sv__sheet">
+        {["sun", "fish", "dove", "rainbow", "crown", "star"].map((s) => <span><AppIcon name={s} /></span>)}
+      </p>
+    </div>
+  )}
+
   {name === "child-parent-manage" && (
     <div class="aui-card sv__card">
       <p class="sv__label sv__label--in">Manage Ellie's notebook</p>
@@ -1136,4 +1153,23 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   /* Child notebooks: the notebook's cover tile and an in-card head. */
   .sv__head--in { padding: 12px 13px 6px; }
   .sv :global(.aui-tile.sv__cover) { color: #fff; background: #2f9e73; }
+  /* My Bible: die-cut stickers in the verse's right margin, and the sheet they come from. */
+  .sv__stickered { position: relative; padding-right: 44px; }
+  .sv__vsticker {
+    position: absolute; top: 4px; right: 0;
+    display: grid; place-items: center; width: 32px; height: 32px;
+    border-radius: 10px; border: 2px solid var(--pds-bg-page);
+    color: color-mix(in oklab, var(--pds-thread-pink) 60%, var(--pds-text-primary));
+    background: color-mix(in oklab, var(--pds-thread-pink) 55%, var(--pds-bg-page));
+    box-shadow: 0 0 0 1px var(--pds-border-soft, var(--pds-border)), 0 2px 5px color-mix(in oklab, var(--pds-text-primary) 16%, transparent);
+    transform: rotate(var(--tilt));
+  }
+  .sv__stickered + .sv__stickered .sv__vsticker {
+    color: color-mix(in oklab, var(--pds-thread-green) 60%, var(--pds-text-primary));
+    background: color-mix(in oklab, var(--pds-thread-green) 55%, var(--pds-bg-page));
+  }
+  .sv__vsticker :global(svg) { width: 14px; height: 14px; }
+  .sv__sheet { display: flex; gap: 6px; margin-top: 14px !important; padding: 8px; border-radius: 12px; background: var(--pds-bg-chip); }
+  .sv__sheet span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; color: var(--pds-text-secondary); background: var(--pds-bg-main); }
+  .sv__sheet :global(svg) { width: 13px; height: 13px; }
 </style>
