@@ -3,10 +3,10 @@ export const PRIVACY_UPDATED = "October 3, 2026";
 export const TERMS_UPDATED = "June 30, 2025";
 
 /**
- * Children's privacy policy (/privacy/children/). Set the real date when
- * counsel signs off and the page leaves DRAFT_PAGE_SLUGS.
+ * Children's privacy policy (/privacy/children/). Update it with every
+ * change to the policy; a material change also needs a new in-app notice version.
  */
-export const CHILD_PRIVACY_UPDATED = "[set on publication]";
+export const CHILD_PRIVACY_UPDATED = "November 12, 2026";
 
 /**
  * The in-app parent notice this policy matches (CHILD_NOTICE_VERSION in the
