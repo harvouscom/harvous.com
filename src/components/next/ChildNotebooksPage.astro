@@ -206,7 +206,7 @@ const faqs = page.faqs ?? [];
         <h2 id="cn-parents-title" class="nx-title">You're in charge.</h2>
         <p class="cn-p">You set it up from Settings › My Family, and it stays yours to manage.</p>
         <ol class="cn-steps">
-          <li><b>Confirm you're an adult.</b> Kids Web Services checks this for us.</li>
+          <li><b>Confirm you're an adult.</b> <button type="button" class="cn-kws-open" data-cn-kws-open aria-haspopup="dialog">Kids Web Services <AppIcon name="circle-info" /></button> checks this for us.</li>
           <li><b>See how we protect them.</b> One short page, before anything is saved.</li>
           <li><b>Give permission and name it.</b> A first name or nickname is all we ask for.</li>
         </ol>
@@ -270,6 +270,28 @@ const faqs = page.faqs ?? [];
     )}
   </article>
 
+  <dialog class="cn-kws" data-cn-kws aria-labelledby="cn-kws-title">
+    <div class="cn-kws__head">
+      <span class="cn-kws__icon" aria-hidden="true"><AppIcon name="shield-halved" /></span>
+      <h2 id="cn-kws-title">What is Kids Web Services?</h2>
+      <button type="button" class="cn-kws__close" data-cn-kws-close aria-label="Close"><AppIcon name="xmark" /></button>
+    </div>
+    <p>
+      Kids Web Services (KWS) is a service from Epic Games that checks a parent is an adult before a
+      child's account is set up. Harvous uses it so we don't have to collect those details ourselves.
+    </p>
+    <ul class="cn-kws__list">
+      <li><AppIcon name="envelope" /><span><b>A link by email.</b> When you start a notebook, KWS emails the address on your Harvous account.</span></li>
+      <li><AppIcon name="id-card" /><span><b>You pick how to verify.</b> Depending on the method, KWS may ask for a payment card or identifying details, such as a Social Security number.</span></li>
+      <li><AppIcon name="eye-slash" /><span><b>We only get the answer.</b> Harvous never sees those details, just whether you're verified.</span></li>
+      <li><AppIcon name="hand"/><span><b>Verifying isn't permission.</b> Afterward you still read how we protect your child, and agree yourself.</span></li>
+    </ul>
+    <p class="cn-kws__fine">
+      KWS may remember that you're verified, so it's quicker next time, under its own privacy policy.
+      More in our <a href="/privacy/children/">children's privacy policy</a>.
+    </p>
+  </dialog>
+
   <ClosingCall
     title={page.closingHeading}
     lead={page.closingLead}
@@ -283,6 +305,15 @@ const faqs = page.faqs ?? [];
 </NextLayout>
 
 <script>
+  /* Kids Web Services: a short explainer in a dialog. */
+  const kws = document.querySelector<HTMLDialogElement>("[data-cn-kws]");
+  document.querySelector("[data-cn-kws-open]")?.addEventListener("click", () => kws?.showModal());
+  kws?.querySelector("[data-cn-kws-close]")?.addEventListener("click", () => kws.close());
+  /* A click on the backdrop (outside the box) closes it too. */
+  kws?.addEventListener("click", (event) => {
+    if (event.target === kws) kws.close();
+  });
+
   /* The cover studio: each button sets one thing on the cover. */
   for (const studio of document.querySelectorAll<HTMLElement>(".cn-studio")) {
     const cover = studio.querySelector<HTMLElement>("[data-cn-cover]");
@@ -607,4 +638,46 @@ const faqs = page.faqs ?? [];
   .cn-faq { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: var(--nx-section); padding-bottom: clamp(2rem, 5vw, 3rem); }
   .cn-faq__title { font-size: clamp(1.75rem, 3.5vw, 2.4rem); }
   .cn-faq__list { margin-top: 1rem; border-bottom: 1px solid var(--color-rule); }
+
+  /* ── Kids Web Services explainer ── */
+  .cn-kws-open {
+    display: inline-flex; align-items: center; gap: 0.3rem; padding: 0; border: 0; background: none; cursor: pointer;
+    font: inherit; color: var(--color-ink);
+    text-decoration: underline dotted; text-decoration-thickness: 1.5px; text-underline-offset: 3px;
+  }
+  .cn-kws-open :global(svg) { width: 0.85rem; height: 0.85rem; color: var(--color-ink-faint); }
+  .cn-kws-open:hover :global(svg) { color: var(--color-ink); }
+  .cn-kws-open:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 4px; }
+  .cn-kws {
+    width: min(30rem, calc(100vw - 2rem));
+    padding: clamp(1.25rem, 4vw, 1.75rem);
+    border: 0; border-radius: 1.5rem;
+    color: var(--color-ink); background: var(--color-paper);
+    box-shadow: 0 30px 80px -20px rgba(15, 23, 42, 0.5), 0 0 0 1px var(--color-rule);
+  }
+  .cn-kws::backdrop { background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(4px); }
+  .cn-kws[open] { animation: cn-kws-in 260ms var(--nx-ease); }
+  @keyframes cn-kws-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
+  @media (prefers-reduced-motion: reduce) { .cn-kws[open] { animation: none; } }
+  .cn-kws__head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.75rem; align-items: center; }
+  .cn-kws__icon {
+    display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 0.8rem;
+    color: oklch(from var(--pds-thread-blue) 0.46 calc(c * 2) h);
+    background: color-mix(in oklab, var(--pds-thread-blue) 55%, var(--color-paper));
+  }
+  .cn-kws__icon :global(svg) { width: 1.05rem; height: 1.05rem; }
+  .cn-kws h2 { margin: 0; font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; }
+  .cn-kws__close {
+    display: grid; place-items: center; width: 2.25rem; height: 2.25rem; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+    color: var(--color-ink-soft); background: color-mix(in srgb, var(--color-ink) 6%, transparent);
+  }
+  .cn-kws__close:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-ink) 10%, transparent); }
+  .cn-kws__close :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .cn-kws > p { margin: 1rem 0 0; line-height: 1.6; color: var(--color-ink-soft); }
+  .cn-kws__list { display: grid; gap: 0.75rem; margin: 1.1rem 0 0; padding: 1rem; list-style: none; border-radius: 1rem; background: var(--color-warm); }
+  .cn-kws__list li { display: grid; grid-template-columns: 1.1rem minmax(0, 1fr); gap: 0.7rem; font-size: 0.95rem; line-height: 1.5; color: var(--color-ink-soft); }
+  .cn-kws__list li :global(svg) { width: 0.95rem; height: 0.95rem; margin-top: 0.25rem; color: var(--color-ink-faint); }
+  .cn-kws__list b { color: var(--color-ink); font-weight: 600; }
+  .cn-kws__fine { font-size: 0.9rem; }
+  .cn-kws__fine a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 </style>
