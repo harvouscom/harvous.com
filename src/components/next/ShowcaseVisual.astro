@@ -26,6 +26,11 @@ const MAP_SECTIONS: [string, number, number][] = [
   ["Law", 5, 1], ["History", 12, 0], ["Wisdom", 5, 2], ["Major prophets", 5, 1], ["Minor prophets", 12, 0],
   ["Gospels", 4, 4], ["Acts", 1, 1], ["Paul's letters", 13, 2], ["General letters", 8, 1], ["Revelation", 1, 0],
 ];
+/* Our Bible: the family's books by section (books only, never chapters or who). */
+const OUR_BIBLE_SECTIONS: [string, number, number][] = [
+  ["Law", 5, 1], ["History", 12, 1], ["Wisdom", 5, 2], ["Major prophets", 5, 0], ["Minor prophets", 12, 0],
+  ["Gospels", 4, 3], ["Acts", 1, 1], ["Paul's letters", 13, 1], ["General letters", 8, 0], ["Revelation", 1, 0],
+];
 const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
 ---
 
@@ -670,6 +675,72 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
       <p class="sv__foot"><AppIcon name="lock" /> Her notes, highlights and searches stay hers.</p>
     </div>
   )}
+
+  {name === "family-our-bible" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__vhead"><b>Our Bible</b><span class="sv__chip">My Family</span></p>
+      <p class="sv__shelf-t">The family has been in 9 books.</p>
+      <div class="sv__sections">
+        {OUR_BIBLE_SECTIONS.map(([label, books, been]) => (
+          <div class:list={["sv__section", label === "Gospels" && "is-on"]}>
+            <span class="sv__section-t">{label}</span>
+            <span class="sv__section-dots">{Array.from({ length: books }, (_, i) => <i class:list={[i < been && "is-been"]}></i>)}</span>
+            <span class="sv__section-n">{been > 0 ? `${been}/${books}` : ""}</span>
+          </div>
+        ))}
+      </div>
+      <p class="sv__foot"><AppIcon name="lock" /> Books only. Never chapters, never who.</p>
+    </div>
+  )}
+
+  {name === "child-notebook-home" && (
+    <div class="aui-card sv__card">
+      <p class="sv__head sv__head--in"><span class="aui-tile sv__cover"><AppIcon name="star" /></span><span><b>Ellie's notebook</b><small>My notebook · 3 notes</small></span></p>
+      <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="pen-to-square" /></span><span><span class="aui-title">What I want to remember</span><span class="aui-sub">Bible reading<i>·</i>Psalm 23</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="pen-to-square" /></span><span><span class="aui-title">A little kindness</span><span class="aui-sub">Kindness</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="pen-to-square" /></span><span><span class="aui-title">A question for Sunday</span><span class="aui-sub">Sunday notes</span></span><span></span></div>
+      <p class="sv__foot sv__foot--in"><AppIcon name="lock" /> Your notebook is just for you and your parent.</p>
+    </div>
+  )}
+
+  {name === "child-family-bible" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Family Bible · Read together</p>
+      <p class="sv__ref">Psalm 23 <span class="aui-tr">NLT</span></p>
+      <p class="sv__verse"><sup>1</sup><mark class="sv__hl">The Lord is my shepherd; I have all that I need.</mark></p>
+      {[
+        ["E", "is-kid", "I like that I have all I need. Even on bad days?"],
+        ["M", "is-a", "Even then. What do you think a shepherd does all day?"],
+      ].map(([who, cls, text]) => (
+        <div class="sv__post">
+          <span class:list={["sv__face", cls]}>{who}</span>
+          <span class="sv__post-t">{text}</span>
+        </div>
+      ))}
+      <p class="sv__foot"><AppIcon name="lock" /> Only Ellie and Mom see these thoughts.</p>
+    </div>
+  )}
+
+  {name === "child-look-back" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Look back · Fill in the blank <span class="sv__dots sv__dots--inline"><i class="is-on"></i><i class="is-on"></i><i></i><i></i><i></i></span></p>
+      <p class="sv__verse">He renews my strength. He guides me along right <span class="sv__gapline"></span>, bringing honor to his name.</p>
+      <p class="sv__refline"><span class="aui-pill">Psalm 23:3 <span class="aui-tr">NLT</span></span></p>
+      <p class="sv__tiles"><span>roads</span><span class="is-on">paths</span><span>ways</span></p>
+      <p class="sv__foot"><AppIcon name="clock-rotate-left" /> What you marked comes back when it's time to look again.</p>
+    </div>
+  )}
+
+  {name === "child-parent-manage" && (
+    <div class="aui-card sv__card">
+      <p class="sv__label sv__label--in">Manage Ellie's notebook</p>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="book-bible" /></span><span><span class="aui-title">Family Bible</span><span class="aui-sub">3 translations<i>·</i>Psalm 23 shared</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="church" /></span><span><span class="aui-title">Ministry</span><span class="aui-sub">Kids ministry<i>·</i>read-only</span></span><span></span></div>
+      <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="file-lines" /></span><span><span class="aui-title">Notes</span><span class="aui-sub">Read them<i>·</i>download a copy</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="shield-halved" /></span><span><span class="aui-title">Privacy and sessions</span><span class="aui-sub">Consent history<i>·</i>withdraw or delete</span></span><span></span></div>
+      <p class="sv__row sv__row--menu"><AppIcon name="right-from-bracket" /> End all sessions</p>
+    </div>
+  )}
 </div>
 
 <style>
@@ -1061,4 +1132,8 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__stats p { display: grid; gap: 1px; padding: 8px 10px; border-radius: 10px; background: var(--pds-bg-chip); }
   .sv__stats b { font-family: var(--pds-font-display); font-size: 20px; font-weight: 600; color: var(--pds-text-primary); }
   .sv__stats span { font-size: 11.5px; color: var(--pds-text-secondary); }
+
+  /* Child notebooks: the notebook's cover tile and an in-card head. */
+  .sv__head--in { padding: 12px 13px 6px; }
+  .sv :global(.aui-tile.sv__cover) { color: #fff; background: #2f9e73; }
 </style>

@@ -19,8 +19,12 @@
  * site so the two could be compared) cut over — its pages were promoted to
  * the site root and its own draft entry ("next") removed. Empty for now;
  * the next page built ahead of its launch goes here the same way.
+ *
+ * `add-ons/family/child-notebooks` waits on child enrollment opening. A
+ * nested slug works the same way: the strip removes only that folder, and
+ * /add-ons/family/ stays.
  */
-export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = ["add-ons/family/child-notebooks"] as const as readonly string[];
 
 /**
  * Whether links to a draft page should render — i.e. whether the page will be

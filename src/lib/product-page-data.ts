@@ -59,6 +59,8 @@ export type ProductPage = {
   image?: string;
   comingSoon?: boolean;
   comingSoonLine?: string;
+  /** Where the breadcrumb's back link goes, when not the category or pricing. */
+  back?: { href: string; label: string };
   heroTitle: string;
   heroLead: string;
   sections: ProductSection[];

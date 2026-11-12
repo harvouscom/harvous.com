@@ -63,10 +63,14 @@ const posts =
 const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJsonLd(page);
 // An add-on that sits in a tour category's grid (Connector in Find) links back there.
 const category = getCategoryForFeature(page.slug);
-const backHref = category?.href ?? (page.kind === "feature" ? "/tour/" : "/pricing/");
-const backLabel = category?.title ?? (page.kind === "feature" ? "The tour" : "Pricing");
+const backHref = page.back?.href ?? category?.href ?? (page.kind === "feature" ? "/tour/" : "/pricing/");
+const backLabel = page.back?.label ?? category?.title ?? (page.kind === "feature" ? "The tour" : "Pricing");
 const fathomTrack = page.kind === "feature" ? fathomTry.featureDetail(page.slug) : fathomSignup.addonDetail(page.slug);
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
+/* Family links to child notebooks only where that page exists: while it is a
+   draft, production has neither (lib/draft-pages.ts). */
+const showChildBridge =
+  page.kind === "addon" && page.slug === "family" && draftPageIsReachable("add-ons/family/child-notebooks");
 const draftSlug = page.href.replace(/^\/|\/$/g, "");
 const isDraft = isDraftPageSlug(draftSlug);
 /* A walkthrough replaces the prose sections and the single showcase row. */
@@ -134,6 +138,17 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
           teaching plan for each ministry too, on a 30-day pilot set up with you.
         </p>
         <a class="nx-link" href="/for/churches/#interest">Bring your church to Harvous →</a>
+      </aside>
+    )}
+
+    {showChildBridge && (
+      <aside class="nx-wrap pd-bridge" data-reveal>
+        <p class="nx-kicker">For children under 13</p>
+        <p>
+          A parent can set up a private notebook for a younger child: their own notes, a Family Bible
+          to read together, and you in charge of what they see. On the web, in the US.
+        </p>
+        <a class="nx-link" href="/add-ons/family/child-notebooks/">See child notebooks →</a>
       </aside>
     )}
 
