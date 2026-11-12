@@ -39,23 +39,25 @@ const COLORS = [
   { id: "yellow", label: "Sun" },
 ] as const;
 const PATTERNS = [
-  { id: "plain", label: "Plain" },
+  { id: "plain", label: "Simple" },
   { id: "dots", label: "Dots" },
   { id: "stripes", label: "Stripes" },
-  { id: "gingham", label: "Gingham" },
+  { id: "gingham", label: "Checks" },
 ] as const;
+/* The cover studio's own sticker set (offeredSymbols in the app), in its
+   order; "initial" is the child's first letter. Verse stickers in My Bible
+   have a few more (sun, sailboat…), but those aren't cover choices. */
 const STICKERS = [
+  { id: "initial", label: "My initial" },
+  { id: "cross", label: "Cross" },
+  { id: "heart", label: "Heart" },
   { id: "star", label: "Star" },
   { id: "rainbow", label: "Rainbow" },
   { id: "fish", label: "Fish" },
   { id: "dove", label: "Dove" },
-  { id: "sun", label: "Sun" },
-  { id: "heart", label: "Heart" },
   { id: "crown", label: "Crown" },
-  { id: "sailboat", label: "Sailboat" },
-  { id: "seedling", label: "Seedling" },
-  { id: "anchor", label: "Anchor" },
 ] as const;
+const FIRST = "star";
 
 /* Stickers scattered around the hero's notebook: [icon, color, top, left, tilt]. */
 const SCATTER: [string, string, string, string, number][] = [
@@ -97,7 +99,7 @@ const faqs = page.faqs ?? [];
         <a class="nx-btn nx-btn--ghost" href="#make-it-theirs">Decorate one</a>
       </p>
 
-      <div class="cn-desk" role="img" aria-label="A blue gingham notebook with a star sticker in the middle of the cover, surrounded by die-cut stickers: a rainbow, a fish, a sun, a dove, a heart and a crown">
+      <div class="cn-desk" role="img" aria-label="A blue notebook with a checked pattern with a star sticker in the middle of the cover, surrounded by die-cut stickers: a rainbow, a fish, a sun, a dove, a heart and a crown">
         {SCATTER.map(([icon, color, top, left, tilt]) => (
           <span class="cn-sticker cn-sticker--float" data-color={color} style={`top:${top};left:${left};--tilt:${tilt}deg`}>
             <AppIcon name={icon} />
@@ -115,8 +117,8 @@ const faqs = page.faqs ?? [];
       <div class="cn-studio__stage">
         <div class="cn-cover" data-color="green" data-pattern="dots" data-cn-cover>
           <span class="cn-cover__emblem">
-            {STICKERS.map((s, i) => (
-              <span data-cn-emblem={s.id} hidden={i !== 0}><AppIcon name={s.id} /></span>
+            {STICKERS.map((s) => (
+              <span data-cn-emblem={s.id} hidden={s.id !== FIRST}>{s.id === "initial" ? <b class="cn-initial">E</b> : <AppIcon name={s.id} />}</span>
             ))}
           </span>
         </div>
@@ -149,9 +151,9 @@ const faqs = page.faqs ?? [];
         <fieldset class="cn-pick">
           <legend>Sticker</legend>
           <div class="cn-pick__row cn-pick__row--stickers">
-            {STICKERS.map((s, i) => (
-              <button type="button" class="cn-sticker cn-sticker--pick" data-cn-set="sticker" data-value={s.id} aria-pressed={i === 0 ? "true" : "false"} aria-label={s.label} title={s.label}>
-                <AppIcon name={s.id} />
+            {STICKERS.map((s) => (
+              <button type="button" class="cn-sticker cn-sticker--pick" data-cn-set="sticker" data-value={s.id} aria-pressed={s.id === FIRST ? "true" : "false"} aria-label={s.label} title={s.label}>
+                {s.id === "initial" ? <b class="cn-initial">E</b> : <AppIcon name={s.id} />}
               </button>
             ))}
           </div>
@@ -420,6 +422,10 @@ const faqs = page.faqs ?? [];
     transform: rotate(6deg);
   }
   .cn-cover__emblem > span { display: grid; place-items: center; width: 100%; height: 100%; }
+  /* "My initial": the child's first letter, set like the app's cover emblem. */
+  .cn-initial { font-family: var(--font-display); font-weight: 600; line-height: 1; }
+  .cn-cover__emblem .cn-initial { font-size: clamp(2.2rem, 4vw, 2.8rem); }
+  .cn-sticker--pick .cn-initial { font-size: 1.1rem; }
   .cn-cover__emblem :global(svg) { width: 46%; height: 46%; }
   .cn-cover__emblem > [hidden] { display: none; }
   .cn-cover.is-stuck .cn-cover__emblem { animation: cn-stick 420ms cubic-bezier(0.2, 0.9, 0.3, 1.3); }
