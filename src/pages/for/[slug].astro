@@ -135,14 +135,14 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
 >
   <article style={`--aud-ink: ${audience.ink};`}>
     <header class="nx-wrap fa-intro">
-      <a class="fa-back" href="/for/">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
-        Who it's for
-      </a>
-      <p class="fa-badges">
-        <span class="fa-badge">{audience.title}</span>
+      <nav class="fa-crumb" aria-label="Breadcrumb">
+        <a class="fa-back" href="/for/">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+          Who it's for
+        </a>
+        <span class="fa-badge" aria-current="page"><Icon name={audience.icon} /> {audience.title}</span>
         {status && <span class="fa-badge fa-badge--status">{status}</span>}
-      </p>
+      </nav>
       <h1 class="nx-display fa-title">{audience.heroTitle}</h1>
       <p class="nx-lead fa-lead">{audience.heroLead}</p>
     </header>
@@ -304,32 +304,37 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
     padding-top: clamp(7.5rem, 15vw, 10rem);
     text-align: center;
   }
+  /* Where it lives and what it is, in one capsule, like the add-on pages. */
+  .fa-crumb {
+    display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem;
+    padding: 0.25rem; border-radius: 999px; background: var(--color-warm); font-size: 0.875rem; font-weight: 500;
+  }
   .fa-back {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    gap: 0.3rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.55rem;
     border-radius: 999px;
-    background: var(--color-warm);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-ink);
+    color: var(--color-ink-soft);
     text-decoration: none;
   }
-  .fa-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .fa-back:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-ink) 7%, transparent); }
   .fa-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-  .fa-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.75rem 0 0; }
   .fa-badge {
-    padding: 0.3rem 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem 0.35rem 0.7rem;
     border-radius: 999px;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--aud-ink);
     background: color-mix(in oklab, var(--aud-ink) 14%, var(--color-paper));
   }
   .fa-badge--status { color: var(--color-ink-soft); background: var(--color-warm); }
-  .fa-title { margin: 1.25rem auto 0; max-width: 16ch; font-size: clamp(2.5rem, 6vw, 4.75rem); }
+  .fa-badge :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .fa-title { margin: 1.5rem auto 0; max-width: 16ch; font-size: clamp(2.5rem, 6vw, 4.75rem); }
   .fa-lead { margin: 1.5rem auto 0; }
 
   /* The audience's own sky, wide, with its mark on a paper tile. */
