@@ -912,8 +912,23 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__post { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; margin-top: 12px; padding-top: 12px; box-shadow: inset 0 0.5px 0 var(--pds-border); font-size: 13px; line-height: 1.45; }
   .sv__post-t { display: block; margin-bottom: 5px; color: var(--pds-text-primary); }
   .sv__post :global(.aui-pill) { font-size: 11.5px; }
-  .sv__face { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 700; color: #fff; }
-  .sv__face.is-a { background: #e07a5f; } .sv__face.is-b { background: #3d8bd9; } .sv__face.is-me { background: #6b7280; }
+  /* Member initials, the way the app draws them (SharedSpaceMemberAvatar):
+     a pale tint of the person's color with the initial in a deeper shade of
+     the same hue; in dark mode the tint deepens and the initial goes white. */
+  .sv__face {
+    --face: var(--pds-thread-blue);
+    display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    background: var(--face);
+    color: oklch(from var(--face) calc(l * 0.58) min(calc(c * 3.5), 0.2) h);
+  }
+  .sv__face.is-a { --face: var(--pds-thread-pink); }
+  .sv__face.is-b { --face: var(--pds-thread-blue); }
+  .sv__face.is-me { --face: var(--pds-thread-purple); }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-color-scheme="light"])) .sv__face { color: rgba(255, 255, 255, 0.96); }
+  }
+  :global(:root[data-color-scheme="dark"]) .sv__face { color: rgba(255, 255, 255, 0.96); }
 
   /* Reminders: a lock-screen notification, and the rhythm it runs on. */
   /* An iPhone lock screen, cropped: wallpaper, status bar, the date over a big
@@ -1174,7 +1189,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__key span { display: inline-flex; align-items: center; gap: 5px; }
   .sv__key .sv__cell { width: 10px; height: 10px; border-radius: 3px; }
   /* Family */
-  .sv__face.is-kid { background: #2f9e73; }
+  .sv__face.is-kid { --face: var(--pds-thread-green); }
   .sv__who { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
   .sv__who .sv__face { width: 22px; height: 22px; font-size: 10px; }
   .sv :global(.aui-row.sv__member) { padding-block: 6px; }
