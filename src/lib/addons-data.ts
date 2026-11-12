@@ -373,6 +373,11 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
         "From the notebook's page in Settings › My Family. Withdrawing your permission stops your child's access right away, and the notebook is deleted 30 days later, so you have time to download it. You can also delete it straight away. A notebook no one uses for a year is deleted automatically.",
     },
     {
+      question: "Do child notebooks count toward Family's six people?",
+      answer:
+        "No. Family covers up to six people with their own Harvous accounts. Child notebooks are separate: each parent with Harvous Plus can set up to six of them.",
+    },
+    {
       question: "Is there an app for kids?",
       answer:
         "Child notebooks run in the web browser, on a computer, tablet or phone. There's nothing to install.",
