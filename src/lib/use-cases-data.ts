@@ -171,6 +171,66 @@ const useCases: UseCase[] = [
     testimonialId: "teaella",
   },
   {
+    slug: "family-reading",
+    href: "/use-cases/family-reading/",
+    title: "Reading together as a family",
+    carouselTitle: "Family reading",
+    tagline: "A Family Space for what you read at home, and everyone's own study kept private.",
+    icon: "fa7-solid:people-roof",
+    ink: "var(--study-dock-accent-mintGreen)",
+    image: "/images/auth-hero/ai_bg_053.webp",
+    seoTitle: "Reading the Bible together as a family — Harvous",
+    seoDescription:
+      "Keep what your family reads together: a shared Family Space for the passage from dinner and the question from the car, with everyone's own study kept private. Family is included with Harvous Plus.",
+    heroTitle: "Read the Bible together at home.",
+    closingTitle: "Give the household somewhere to keep it.",
+    heroLead:
+      "The passage at dinner, the question someone asks in the car, the book you're working through as a house. Those conversations are some of the best Bible reading a family does, and most of it is gone by the next morning.",
+    sections: [
+      {
+        heading: "A Family Space for what you read together",
+        paragraphs: [
+          "[Family](/add-ons/family/) gives your household a shared space everyone can write in. Start a thread for the book you're reading, add the verse from dinner, and let whoever had the question write it down.",
+          "Everyone's own notes stay theirs. Nothing moves into the Family Space unless someone puts it there.",
+        ],
+      },
+      {
+        heading: "Everyone in, on Harvous Plus",
+        paragraphs: [
+          "Family is included with [Harvous Plus](/pricing/). Invite up to five more people, and each of them gets Plus too: unlimited history, Review exercises and Connector.",
+          "A parent can see how a child is doing, in counts: when they were last in, which books, how many notes. Never the notes themselves.",
+        ],
+      },
+    ],
+    moments: [
+      {
+        icon: "fa7-solid:people-roof",
+        heading: "One space for the house",
+        body: "Threads and notes everyone in the family can add to, beside each person's own study.",
+      },
+      {
+        icon: "fa7-solid:book-bible",
+        heading: "Our Bible",
+        body: "See which books the family has been in together. Never chapters, never who.",
+      },
+      {
+        icon: "fa7-solid:chart-simple",
+        heading: "Progress, not contents",
+        body: "Parents see last active, chapters and a note count. Children see the same numbers about themselves.",
+      },
+      {
+        icon: "fa7-solid:lock",
+        heading: "Private study stays private",
+        body: "Adults' study is their own, and anyone can leave the family any time.",
+      },
+    ],
+    featureIds: ["family", "threads", "scripture-pills", "highlights"],
+    featuresHeading: "What family reading needs from Harvous",
+    featuresLead: "Family for the household, plus the threads, scripture pills and highlights everyone already uses on their own.",
+    compareSlugs: ["youversion"],
+    relatedUseCaseSlugs: ["small-group", "daily-journal"],
+  },
+  {
     slug: "sermon-prep",
     href: "/use-cases/sermon-prep/",
     title: "Sermon prep",

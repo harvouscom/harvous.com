@@ -292,7 +292,7 @@ const ADDON_PAGES: AddonPage[] = [
       "Family sharing is included with Harvous Plus: cover up to five more people, study together in a shared Family Space, and see a child's progress without ever seeing their notes.",
     icon: "fa7-solid:people-roof",
     ink: "var(--study-dock-accent-mintGreen)",
-    image: "/images/auth-hero/ai_bg_046.webp",
+    image: "/images/auth-hero/ai_bg_058.webp",
     comingSoon: false,
     heroTitle: "Study together as a family.",
     heroLead:
@@ -337,7 +337,7 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
     "Give a child under 13 their own private place to write about what they read and wonder. You set it up, choose what they read, and stay in charge. Included with Harvous Plus, on the web in the US.",
   icon: "fa7-solid:book-open-reader",
   ink: "var(--study-dock-accent-mintGreen)",
-  image: "/images/auth-hero/ai_bg_046.webp",
+  image: "/images/auth-hero/ai_bg_053.webp",
   comingSoon: false,
   heroTitle: "A notebook for your child.",
   heroLead:

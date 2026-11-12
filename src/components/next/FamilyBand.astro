@@ -1,0 +1,76 @@
+---
+/**
+ * FamilyBand — Family on the home page, after the bento: the household on
+ * Harvous Plus, the Family Space, and what stays private, beside the My
+ * Family and Family Space pieces. Points to the Family page and the families
+ * audience page. The child notebooks line shows only where that page exists
+ * (lib/draft-pages.ts).
+ */
+import ShowcaseVisual from "./ShowcaseVisual.astro";
+import AppIcon from "./app/AppIcon.astro";
+import { draftPageIsReachable } from "../../lib/draft-pages.ts";
+
+const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks");
+---
+
+<section class="nx-section fband" aria-labelledby="fband-title">
+  <div class="nx-wrap fband__inner">
+    <div class="fband__text" data-reveal>
+      <p class="fband__label"><AppIcon name="people-roof" /> Family</p>
+      <h2 id="fband-title" class="nx-title">Bring the household along.</h2>
+      <p class="nx-lead">
+        Harvous Plus covers up to six people at home, with a Family Space everyone can write in.
+        Each person's own study stays theirs, and a parent sees progress, never notes.
+      </p>
+      {showChildNotebooks && (
+        <p class="fband__kids">
+          Younger than 13? <a href="/add-ons/family/child-notebooks/">Child notebooks</a> give them a
+          private place of their own, with you in charge.
+        </p>
+      )}
+      <p class="fband__acts">
+        <a class="nx-btn nx-btn--ghost" href="/add-ons/family/">See Family</a>
+        <a class="nx-link" href="/for/families/">Harvous for families →</a>
+      </p>
+    </div>
+    <div class="fband__stage nx-mesh nx-mesh--mint" data-reveal="scale">
+      <div class="fband__a"><ShowcaseVisual name="family-members" label="Settings › My Family listing four people with their roles: Organizer, Parent/Guardian, Adult and Child" /></div>
+      <div class="fband__b"><ShowcaseVisual name="family-space" label="The Family Space with three notes: a dinner question on Mark 4:38, a prayer on Psalm 121, and a thought on Ruth 1" /></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fband { padding-top: 0; }
+  .fband__inner { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  @media (min-width: 56rem) { .fband__inner { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+  .fband__label {
+    display: inline-flex; align-items: center; gap: 0.4rem; margin: 0;
+    padding: 0.35rem 0.85rem 0.35rem 0.7rem; border-radius: 999px;
+    font-size: 0.875rem; font-weight: 600;
+    color: color-mix(in oklab, var(--study-dock-accent-mintGreen) var(--ink-on-tint, 50%), var(--color-ink));
+    background: color-mix(in oklab, var(--study-dock-accent-mintGreen) 16%, var(--color-paper));
+  }
+  .fband__label :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .fband__text .nx-title { margin: 1rem 0 0; max-width: 14ch; }
+  .fband__text .nx-lead { margin: 1rem 0 0; max-width: 34rem; }
+  .fband__kids { margin: 1rem 0 0; max-width: 34rem; line-height: 1.55; color: var(--color-ink-soft); }
+  .fband__kids a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .fband__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin: 1.75rem 0 0; }
+
+  .fband__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: clamp(22rem, 40vw, 28rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: var(--nx-radius-scene);
+  }
+  .fband__a { width: min(22rem, 100%); transform: translateX(-12%) rotate(-1.5deg); }
+  .fband__b { position: absolute; right: 6%; bottom: 8%; width: min(19rem, 70%); transform: rotate(2deg); }
+  @media (max-width: 40rem) {
+    .fband__stage { display: block; }
+    .fband__a { transform: none; }
+    .fband__b { position: static; width: 100%; margin-top: 1rem; transform: none; }
+  }
+</style>

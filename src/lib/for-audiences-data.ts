@@ -845,6 +845,61 @@ const audiences: ForAudience[] = [
     testimonialId: "joschua",
   },
   {
+    slug: "families",
+    href: "/for/families/",
+    title: "Families",
+    tagline: "Read the Bible together at home, and keep what you find.",
+    icon: "fa7-solid:people-roof",
+    ink: "var(--study-dock-accent-mintGreen)",
+    image: "/images/auth-hero/ai_bg_058.webp",
+    seoTitle: "For families — read the Bible together in Harvous",
+    seoDescription:
+      "Harvous Plus covers your whole household: a Family Space to study in together, Our Bible to see where you've been, and a parent view that shows progress, never notes.",
+    heroTitle: "For families who read the Bible together.",
+    heroLead:
+      "Dinner-table questions, a chapter before bed, a book you're working through as a house. Harvous gives your family one place to keep it, and keeps everyone's own study their own.",
+    sections: [
+      {
+        heading: "Bring everyone in",
+        visual: "family-members",
+        feature: "family",
+        paragraphs: [
+          "Start a family from Settings › My Family and invite up to five more people. Everyone you add gets Harvous Plus at no extra cost.",
+        ],
+      },
+      {
+        heading: "A Family Space for what you read together",
+        visual: "family-space",
+        feature: "family",
+        paragraphs: [
+          "Threads and notes everyone can add to: the passage from dinner, the question from the car, the book you're reading as a house. Each person's own notes stay theirs.",
+        ],
+      },
+      {
+        heading: "See where you've been",
+        visual: "family-our-bible",
+        feature: "family",
+        paragraphs: [
+          "Our Bible shows which books the family has been in, together. Never chapters, never who, and each person turns it on.",
+        ],
+      },
+      {
+        heading: "Progress for parents, privacy for everyone",
+        visual: "family-sees",
+        feature: "family",
+        paragraphs: [
+          "A parent sees when a child was last in, which books and how many notes. Never the notes, highlights, searches or Review. The child sees the same numbers.",
+        ],
+      },
+    ],
+    moments: [],
+    featureIds: ["family", "threads", "scripture-pills", "highlights"],
+    featuresHeading: "What a family needs from Harvous",
+    featuresLead: "Family for the household, plus the threads, scripture pills and highlights everyone uses on their own.",
+    compareSlugs: ["youversion"],
+    useCaseSlugs: ["family-reading", "small-group"],
+  },
+  {
     slug: "bible-app-users",
     href: "/for/bible-app-users/",
     title: "Bible app users",
