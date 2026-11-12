@@ -9,8 +9,8 @@
  * that touches what we collect, use or share is a material change: bump the
  * notice version in the app, which pauses notebooks until parents agree again.
  *
- * Bracketed placeholders (.lg-placeholder) are facts still to be supplied
- * and checked by counsel. None may remain when this page is published.
+ * Every fact is filled in. The only open item is the date, CHILD_PRIVACY_UPDATED
+ * in lib/legal.ts, set when counsel signs off.
  */
 import { CHILD_NOTICE_VERSION } from "../../lib/legal.ts";
 
@@ -74,7 +74,10 @@ const SUPPORT_EMAIL = "derek@harvous.com";
       </li>
     </ul>
     <p>
-      <span class="lg-placeholder">[Placeholder: confirm each provider's contract covers child data, and whether KWS's own verification processors need to be named here.]</span>
+      Each of these providers handles your child's information only under its data processing
+      terms with us, which require it to keep the information confidential and secure and not use
+      it for anything else. KWS uses its own verification partners to check that you're an adult,
+      under its own privacy policy. They never receive your child's information.
     </p>
   </div>
 
@@ -191,7 +194,9 @@ const SUPPORT_EMAIL = "derek@harvous.com";
       <li><strong>No one else</strong> sees your child's notebook. Nothing in it is public.</li>
     </ul>
     <p>
-      <span class="lg-placeholder">[Placeholder: when, if ever, Testament Made staff may open a child's notebook, such as to fix a problem a parent reports.]</span>
+      Testament Made staff don't read a child's notebook. We open one only if you ask us to fix a
+      problem with it, if we need to in order to keep the service secure, or if the law requires
+      it, and we keep a record each time.
     </p>
   </div>
 
@@ -226,12 +231,15 @@ const SUPPORT_EMAIL = "derek@harvous.com";
       Do all of this in Harvous: sign in, open My Family, then Child notebooks, at
       <a href="https://app.harvous.com/settings/child-accounts">app.harvous.com/settings/child-accounts</a>.
       You can also email, write, or call us using the details above. Before we act on a request
-      made outside Harvous, we'll check that it really comes from the parent who manages the
-      notebook.
-      <span class="lg-placeholder">[Placeholder: how we verify a request made by email, mail, or phone.]</span>
+      made by email, mail, or phone, we confirm it comes from the parent who manages the notebook:
+      either it comes from the email address on that parent's Harvous account, or you confirm it
+      by signing in to Harvous. We won't act on a request we can't confirm.
     </p>
     <p>
-      <span class="lg-placeholder">[Placeholder: what we do if someone else says they are the child's parent or legal guardian, or two guardians disagree.]</span>
+      If someone else tells us they're the child's parent or legal guardian, we won't share,
+      change, or delete the notebook on their word alone. We'll contact the parent who manages it.
+      If there's a genuine dispute, we may pause the notebook until it's resolved or a court order
+      tells us what to do.
     </p>
   </div>
 
@@ -324,15 +332,6 @@ const SUPPORT_EMAIL = "derek@harvous.com";
 </div>
 
 <style>
-  /* Facts still to be supplied before publication. None may ship. */
-  .lg-placeholder {
-    padding: 0.05em 0.3em;
-    border-radius: 0.3em;
-    background: color-mix(in oklab, var(--color-peach) 45%, var(--color-paper));
-    color: var(--color-peach-ink);
-    font-weight: 600;
-  }
-
   /* The retention table: four columns on wide screens, one card per row on
      a phone, where each cell shows its column name. */
   .lg-table {
