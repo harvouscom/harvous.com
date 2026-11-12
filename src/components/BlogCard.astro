@@ -74,12 +74,12 @@ const href = `/blog/${slug}`;
       <div class="grid gap-4 p-6 md:grid-cols-[1.1fr_0.9fr] md:gap-8 md:p-8 md:items-start">
         <div>
           <div class="flex flex-wrap items-center gap-2 text-xs text-[var(--color-ink-faint)]">
-            <span class="inline-flex items-center gap-1.5 font-semibold uppercase tracking-[0.12em]">
+            <span class="inline-flex items-center gap-1.5 font-semibold">
               <Icon name={icon} class="h-3 w-3" aria-hidden="true" />
               {label}
             </span>
             {draft && (
-              <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
+              <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[12px] font-semibold text-[var(--color-paper)]">
                 Draft
               </span>
             )}
@@ -116,12 +116,12 @@ const href = `/blog/${slug}`;
       </div>
       <div class="min-w-0 flex flex-col justify-start pt-0.5">
         <div class="flex flex-wrap items-center gap-2">
-          <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">
+          <span class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[var(--color-ink-faint)]">
             <Icon name={icon} class="h-3 w-3" aria-hidden="true" />
             {label}
           </span>
           {draft && (
-            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
+            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[12px] font-semibold text-[var(--color-paper)]">
               Draft
             </span>
           )}
@@ -155,7 +155,7 @@ const href = `/blog/${slug}`;
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-center gap-2 text-xs text-[var(--color-ink-faint)]">
           {draft && (
-            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
+            <span class="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[12px] font-semibold text-[var(--color-paper)]">
               Draft
             </span>
           )}
@@ -177,12 +177,12 @@ const href = `/blog/${slug}`;
       data-blog-category={category}
     >
       <div class="flex flex-wrap items-center gap-3">
-        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-ink-faint)]">
+        <span class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[var(--color-ink-faint)]">
           <Icon name={icon} class="h-3.5 w-3.5" aria-hidden="true" />
           {label}
         </span>
         {draft && (
-          <span class="rounded-full bg-[var(--color-ink)] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-paper)]">
+          <span class="rounded-full bg-[var(--color-ink)] px-2.5 py-1 text-[12px] font-semibold text-[var(--color-paper)]">
             Draft
           </span>
         )}
