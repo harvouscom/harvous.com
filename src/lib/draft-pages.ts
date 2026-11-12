@@ -20,12 +20,11 @@
  * the site root and its own draft entry ("next") removed. Empty for now;
  * the next page built ahead of its launch goes here the same way.
  *
- * `privacy/children` is the children's privacy policy, waiting on counsel.
- * A nested slug works the same way: the strip removes dist/privacy/children/
- * and leaves /privacy/ alone. It leaves this list when counsel signs off,
- * before child enrollment opens.
+ * `privacy/children`, the children's privacy policy, went live on
+ * November 12, 2026. A nested slug works here too: the strip removes only
+ * that folder (dist/privacy/children/) and leaves /privacy/ alone.
  */
-export const DRAFT_PAGE_SLUGS = ["privacy/children"] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
 /**
  * Whether links to a draft page should render — i.e. whether the page will be
