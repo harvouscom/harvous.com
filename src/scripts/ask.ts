@@ -17,9 +17,40 @@ function bind(root: HTMLElement) {
   const answer = root.querySelector<HTMLElement>("[data-ask-answer]");
   const text = root.querySelector<HTMLElement>("[data-ask-text]");
   const src = root.querySelector<HTMLElement>("[data-ask-src]");
-  if (!form || !input || !answer || !text || !src) return;
+  const go = root.querySelector<HTMLButtonElement>("[data-ask-go]");
+  if (!form || !input || !answer || !text || !src || !go) return;
 
   let ctrl: AbortController | null = null;
+  /** The question the answer on screen belongs to. */
+  let asked = "";
+
+  /* With an answer showing, the button is an X that clears it. Typing a
+     different question turns it back into the arrow. */
+  const setResult = (on: boolean) => {
+    root.classList.toggle("has-result", on);
+    go.setAttribute("aria-label", on ? "Clear the answer" : "Ask");
+  };
+  const reset = () => {
+    ctrl?.abort();
+    ctrl = null;
+    asked = "";
+    input.value = "";
+    text.textContent = "";
+    src.replaceChildren();
+    src.hidden = true;
+    answer.hidden = true;
+    root.classList.remove("is-busy");
+    setResult(false);
+    input.focus();
+  };
+  go.addEventListener("click", (event) => {
+    if (!root.classList.contains("has-result")) return;
+    event.preventDefault();
+    reset();
+  });
+  input.addEventListener("input", () => {
+    if (root.classList.contains("has-result") && input.value.trim() !== asked) setResult(false);
+  });
 
   const showSources = (list: Source[]) => {
     src.replaceChildren(
@@ -46,6 +77,8 @@ function bind(root: HTMLElement) {
     answer.hidden = false;
     text.textContent = "";
     showSources([]);
+    asked = q;
+    setResult(true);
 
     if (SECRET.test(q)) {
       text.textContent = "That looks like a key or password, so I didn't send it anywhere. Please don't paste secrets into websites, this one included.";

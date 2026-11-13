@@ -34,7 +34,10 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
         autocomplete="off"
         spellcheck="false"
       />
-      <button class="ask__go" type="submit" aria-label="Ask"><AppIcon name="arrow-up" /></button>
+      <button class="ask__go" type="submit" aria-label="Ask" data-ask-go>
+        <span class="ask__go-ask"><AppIcon name="arrow-up" /></span>
+        <span class="ask__go-clear"><AppIcon name="xmark" /></span>
+      </button>
     </label>
   </form>
   <div class="ask__tray">
@@ -110,6 +113,12 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
     color: #fff; background: var(--accent-btn-bg, var(--color-accent));
   }
   .ask__go :global(svg) { width: 0.9rem; height: 0.9rem; }
+  /* The arrow asks; once there's an answer it turns into an X that clears it. */
+  .ask__go > span { grid-area: 1 / 1; display: grid; place-items: center; transition: opacity 150ms ease, transform 150ms ease; }
+  .ask__go-clear { opacity: 0; transform: rotate(-90deg); }
+  .ask:global(.has-result) .ask__go-ask { opacity: 0; transform: rotate(90deg); }
+  .ask:global(.has-result) .ask__go-clear { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .ask__go > span { transition: none; } }
   .ask__go:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
   .ask__answer { padding: 1rem 1.25rem 0; text-align: left; }
