@@ -20,7 +20,10 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
 <div class:list={["ask", className]} data-ask>
   <form class="ask__form" role="search" data-ask-form>
     <label class="ask__field">
-      <span class="ask__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="ask__mark" aria-hidden="true">
+        <span class="ask__spark"><AppIcon name="wand-magic-sparkles" /></span>
+        <span class="ask__dots"><i></i><i></i><i></i></span>
+      </span>
       <input
         name="q"
         type="text"
@@ -40,7 +43,6 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
       <p class="ask__src" data-ask-src hidden></p>
     </div>
     <p class="ask__note">
-      <AppIcon name="wand-magic-sparkles" />
       <span>AI answers from our pages. Not sure? <a href="mailto:derek@harvous.com">Email Derek</a>.</span>
     </p>
   </div>
@@ -77,34 +79,26 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
     transition: box-shadow 150ms ease;
   }
   .ask__field:focus-within { box-shadow: 0 0 0 2px var(--color-accent); }
-  /* The app's three loading dots (loading-dots.css in the app: a wave that
-     lifts along the row, then rests), in the accent. At rest the wave passes
-     slowly now and then; while an answer is coming the dots cycle steadily. */
-  .ask__dots { flex: none; display: inline-flex; align-items: center; gap: 3px; height: 1rem; color: var(--color-accent); }
-  .ask__dots i {
-    display: block; width: 5px; height: 5px; border-radius: 50%; background: currentColor;
-    opacity: 0.4;
-    animation: ask-wave 4.5s cubic-bezier(0.32, 0.72, 0.24, 1) infinite;
-  }
-  .ask__dots i:nth-child(2) { animation-delay: 0.14s; }
-  .ask__dots i:nth-child(3) { animation-delay: 0.28s; }
+  /* At rest, a small sparkle (this field answers with AI). While an answer
+     is on its way, the app's three loading dots take its place and hop in
+     turn, so the motion only ever means "working". */
+  .ask__mark { flex: none; display: grid; place-items: center; width: 1.4rem; height: 1rem; color: var(--color-accent); }
+  .ask__mark > * { grid-area: 1 / 1; display: inline-flex; align-items: center; transition: opacity 150ms ease; }
+  .ask__spark :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .ask__dots { gap: 3px; opacity: 0; }
+  .ask:global(.is-busy) .ask__spark { opacity: 0; }
+  .ask:global(.is-busy) .ask__dots { opacity: 1; }
+  .ask__dots i { display: block; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.35; }
   .ask:global(.is-busy) .ask__dots i { animation: ask-wave-busy 0.9s ease-in-out infinite; }
   .ask:global(.is-busy) .ask__dots i:nth-child(2) { animation-delay: 0.15s; }
   .ask:global(.is-busy) .ask__dots i:nth-child(3) { animation-delay: 0.3s; }
-  /* Rest for most of the cycle, then one lift along the row. */
-  @keyframes ask-wave {
-    0%, 22%, 100% { opacity: 0.4; transform: translateY(0); }
-    11% { opacity: 1; transform: translateY(-1.5px); }
-  }
-  /* While searching: a steady typing cycle, each dot hopping in turn with
-     no rest, so it reads as working rather than idling. */
   @keyframes ask-wave-busy {
     0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
     30% { opacity: 1; transform: translateY(-3px); }
   }
-  /* Held still and bright, as the app does. */
+  /* Reduced motion: the dots still replace the sparkle, held still and bright. */
   @media (prefers-reduced-motion: reduce) {
-    .ask__dots i, .ask:global(.is-busy) .ask__dots i { animation: none; opacity: 0.75; transform: none; }
+    .ask:global(.is-busy) .ask__dots i { animation: none; opacity: 0.75; }
   }
   .ask__field input {
     flex: 1; min-width: 0; padding: 0; border: 0; outline: 0; background: none;
