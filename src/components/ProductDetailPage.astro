@@ -13,6 +13,7 @@ import ReviewScenes from "./next/ReviewScenes.astro";
 import FeatureWalkthrough from "./next/FeatureWalkthrough.astro";
 import ShowcaseVisual from "./next/ShowcaseVisual.astro";
 import ComparePreview from "./next/ComparePreview.astro";
+import FaqItem from "./FaqItem.astro";
 import BlogNextCard from "./next/BlogNextCard.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
@@ -63,10 +64,13 @@ const posts =
 const jsonLd = page.kind === "feature" ? buildFeatureJsonLd(page) : buildAddonJsonLd(page);
 // An add-on that sits in a tour category's grid (Connector in Find) links back there.
 const category = getCategoryForFeature(page.slug);
-const backHref = category?.href ?? (page.kind === "feature" ? "/tour/" : "/pricing/");
-const backLabel = category?.title ?? (page.kind === "feature" ? "The tour" : "Pricing");
+const backHref = page.back?.href ?? category?.href ?? (page.kind === "feature" ? "/tour/" : "/pricing/");
+const backLabel = page.back?.label ?? category?.title ?? (page.kind === "feature" ? "The tour" : "Pricing");
 const fathomTrack = page.kind === "feature" ? fathomTry.featureDetail(page.slug) : fathomSignup.addonDetail(page.slug);
 const showChurchBridge = page.kind === "addon" && page.slug === "shared-spaces";
+const faqs = page.faqs ?? [];
+/* Anchor from the question: "Can families outside the US…?" → faq-can-families-outside-the-us. */
+const faqId = (q: string) => `faq-${q.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").split("-").slice(0, 6).join("-")}`;
 const draftSlug = page.href.replace(/^\/|\/$/g, "");
 const isDraft = isDraftPageSlug(draftSlug);
 /* A walkthrough replaces the prose sections and the single showcase row. */
@@ -151,6 +155,19 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
             </li>
           ))}
         </ul>
+      </section>
+    )}
+
+    {faqs.length > 0 && (
+      <section class="nx-wrap pd-sec pd-faq" aria-labelledby="faq-title">
+        <h2 id="faq-title" class="pd-h2 pd-h2--sec">Questions</h2>
+        <div class="pd-faq__list">
+          {faqs.map((f) => (
+            <FaqItem id={faqId(f.question)} question={f.question}>
+              <p>{f.answer}</p>
+            </FaqItem>
+          ))}
+        </div>
       </section>
     )}
 
@@ -317,6 +334,8 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
   .pd-h2--sec { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 600; letter-spacing: -0.03em; }
   .pd-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
 
+  .pd-faq { max-width: calc(40rem + 2 * var(--nx-gutter)); }
+  .pd-faq__list { margin-top: 1rem; border-bottom: 1px solid var(--color-rule); }
   .pd-moments {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

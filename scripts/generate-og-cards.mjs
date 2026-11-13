@@ -46,7 +46,7 @@ import { launchChrome, publicUrl } from "./lib/chrome.mjs";
 const { getCompareSeoPagesForBuild } = await import("../src/lib/compare-seo-pages.ts");
 const { getCompareEntries, compareIconPng } = await import("../src/lib/compare-data.ts");
 const { getFeatureCategories } = await import("../src/lib/feature-categories-data.ts");
-const { getAddonPages } = await import("../src/lib/addons-data.ts");
+const { getAddonPages, CHILD_NOTEBOOKS_PAGE } = await import("../src/lib/addons-data.ts");
 const { getUseCases, getUseCaseDisplayTitle } = await import("../src/lib/use-cases-data.ts");
 const { getAudiences } = await import("../src/lib/for-audiences-data.ts");
 const { getDiscoverListings, discoverListingIcon, discoverListingInk, discoverTopicArt, DISCOVER_KIND_NOUN } = await import("../src/lib/discover-data.ts");
@@ -145,7 +145,9 @@ const features = [
 
 const addons = getAddonPages()
   .filter((a) => !a.draft)
-  .map((a) => ({ name: `addon-${a.slug}`, kicker: "Harvous Plus", title: a.title, icon: a.icon, path: `/add-ons/${a.slug}/` }));
+  .map((a) => ({ name: `addon-${a.slug}`, kicker: "Harvous Plus", title: a.title, icon: a.icon, path: `/add-ons/${a.slug}/` }))
+  /* Child notebooks lives under Family, outside the add-on list. */
+  .concat({ name: `addon-${CHILD_NOTEBOOKS_PAGE.slug}`, kicker: "Harvous Plus", title: CHILD_NOTEBOOKS_PAGE.title, icon: CHILD_NOTEBOOKS_PAGE.icon, path: CHILD_NOTEBOOKS_PAGE.href });
 
 /** Use cases and audiences: their own sky and ink, as their pages open. */
 const useCases = getUseCases().map((u) => ({
