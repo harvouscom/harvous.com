@@ -111,7 +111,7 @@ const isInline = variant === "inline";
     /* CTAButton size="lg" is px-5 py-3 with no border on the primary variant,
        so its box is 48px. Give the border back its 2px here or this sits a
        hair taller than the button beside it. */
-    padding: calc(0.75rem - 1px) 1.25rem;
+    padding: calc(0.75rem - 1px) 1.25rem calc(0.75rem - 1px) 1.5rem;
     border-radius: 999px;
     border: 1px solid var(--color-rule);
     background: var(--color-card);
