@@ -53,12 +53,13 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
 <style>
   .ask { width: 100%; max-width: 40rem; }
   .ask__form { position: relative; z-index: 1; }
-  /* A tray tucked behind the field, a little narrower, peeking out below it
-     with its own rounded bottom: the answer and the note live in it. */
+  /* A tray behind the field, peeking out below it: the answer and the note
+     live in it. It starts at the pill's midline and is exactly as wide, so
+     its sides leave the pill at the tips of its rounded ends. */
   .ask__tray {
-    margin: -1.625rem 1rem 0;
+    margin: -1.625rem 0 0;
     padding-top: 1.625rem;
-    border-radius: 0 0 1.25rem 1.25rem;
+    border-radius: 0 0 1.5rem 1.5rem;
     background: color-mix(in srgb, var(--color-ink) 5%, var(--color-paper));
     box-shadow: inset 0 0 0 1px var(--color-rule);
   }
@@ -109,7 +110,7 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
   .ask__go :global(svg) { width: 0.9rem; height: 0.9rem; }
   .ask__go:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
-  .ask__answer { padding: 1rem 1.1rem 0; text-align: left; }
+  .ask__answer { padding: 1rem 1.25rem 0; text-align: left; }
   .ask__text { margin: 0; line-height: 1.6; color: var(--color-ink); white-space: pre-wrap; }
   .ask__text:empty::before { content: "Thinking…"; color: var(--color-ink-faint); }
   .ask__src { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0 0; }
@@ -123,7 +124,7 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
   .ask__src :global(a:hover) { box-shadow: 0 0 0 1px var(--color-ink-faint); }
   .ask__note {
     display: flex; align-items: center; gap: 0.45rem;
-    margin: 0; padding: 0.65rem 1.1rem 0.75rem;
+    margin: 0; padding: 0.7rem 1.25rem 0.8rem;
     font-size: 0.8125rem; line-height: 1.45; color: var(--color-ink-faint); text-align: left;
   }
   .ask__note :global(svg) { flex: none; width: 0.8rem; height: 0.8rem; }
