@@ -81,7 +81,7 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
 ---
 
 <NextLayout title={page.seoTitle} description={page.seoDescription} ogImage={ogImage} noindex={isDraft} jsonLd={jsonLd}>
-  <article style={`--pd-ink: ${page.ink}; --pd-ink-fg: ${page.inkFg ?? page.ink};`}>
+  <article style={`--pd-ink: ${page.ink}; --pd-ink-fg: ${page.inkFg ?? `color-mix(in oklab, ${page.ink} var(--ink-on-tint), var(--color-ink))`};`}>
     <header class="nx-wrap pd-intro">
       {/* One row: where it lives (a back link) and what it is (icon + name). */}
       <nav class="pd-crumb" aria-label="Breadcrumb">
