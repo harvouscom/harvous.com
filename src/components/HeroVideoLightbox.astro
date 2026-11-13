@@ -16,9 +16,14 @@ interface Props {
    * it), for when the video is someone showing you around rather than a demo.
    */
   avatar?: string;
+  /**
+   * A WebVTT file of the narration. A narrated video gets one: it's how a
+   * viewer with the sound off, or who can't hear it, follows along.
+   */
+  captions?: string;
 }
 
-const { src, label = "Watch the 5 min tour", variant = "overlay", avatar } = Astro.props;
+const { src, label = "Watch the 5 min tour", variant = "overlay", avatar, captions } = Astro.props;
 const isInline = variant === "inline";
 ---
 
@@ -71,6 +76,7 @@ const isInline = variant === "inline";
         data-hero-video-player
       >
         <source src={src} type="video/mp4" />
+        {captions && <track kind="captions" src={captions} srclang="en" label="English" default />}
       </video>
     </div>
   </div>
@@ -321,7 +327,7 @@ const isInline = variant === "inline";
 
 <script>
   import Plyr from "plyr";
-  import { PLYR_OPTIONS } from "../lib/plyr-options.ts";
+  import { withCaptions } from "../lib/plyr-options.ts";
 
   type PlyrInstance = InstanceType<typeof Plyr>;
 
@@ -349,7 +355,7 @@ const isInline = variant === "inline";
       if (player) return player;
       // Shared with DiscoverVideoEmbed — see src/lib/plyr-options.ts for why
       // these do not live inline in two files.
-      player = new Plyr(video, PLYR_OPTIONS as unknown as Plyr.Options);
+      player = new Plyr(video, withCaptions(video) as unknown as Plyr.Options);
       return player;
     };
 

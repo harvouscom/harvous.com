@@ -1,0 +1,85 @@
+{
+  "name": "intro",
+  "voiceId": "nJgXo5hbA7d35DqQrrdg",
+  "modelId": "eleven_multilingual_v2",
+  "scenes": [
+    {
+      "id": "open-saved",
+      "file": "narration/intro/open-saved.mp3",
+      "durationSec": 4.133152,
+      "hash": "48884254e948b10e"
+    },
+    {
+      "id": "open-scattered",
+      "file": "narration/intro/open-scattered.mp3",
+      "durationSec": 1.486077,
+      "hash": "ca8cdfa4e089331e"
+    },
+    {
+      "id": "why-made",
+      "file": "narration/intro/why-made.mp3",
+      "durationSec": 5.01551,
+      "hash": "e7c4c4a82667deba"
+    },
+    {
+      "id": "home",
+      "file": "narration/intro/home.mp3",
+      "durationSec": 8.637823,
+      "hash": "6e8eae9bc25a0cb9"
+    },
+    {
+      "id": "scripture",
+      "file": "narration/intro/scripture.mp3",
+      "durationSec": 6.408707,
+      "hash": "e724f7f5a937478b"
+    },
+    {
+      "id": "dock",
+      "file": "narration/intro/dock.mp3",
+      "durationSec": 15.882449,
+      "hash": "51c29558066b1c2c"
+    },
+    {
+      "id": "reader",
+      "file": "narration/intro/reader.mp3",
+      "durationSec": 8.452063,
+      "hash": "baaa7d993873e4ed"
+    },
+    {
+      "id": "organize",
+      "file": "narration/intro/organize.mp3",
+      "durationSec": 6.640907,
+      "hash": "d983574c856c5a63"
+    },
+    {
+      "id": "threads",
+      "file": "narration/intro/threads.mp3",
+      "durationSec": 11.006259,
+      "hash": "bfb67742cc6dd8f6"
+    },
+    {
+      "id": "threads-walk",
+      "file": "narration/intro/threads-walk.mp3",
+      "durationSec": 4.133152,
+      "hash": "b01dab58cd51b04e"
+    },
+    {
+      "id": "review",
+      "file": "narration/intro/review.mp3",
+      "durationSec": 7.848345,
+      "hash": "fcbef76d4dd60d21"
+    },
+    {
+      "id": "close-name",
+      "file": "narration/intro/close-name.mp3",
+      "durationSec": 11.749297,
+      "hash": "b7cbfe92331a3f96"
+    },
+    {
+      "id": "close-weekly",
+      "file": "narration/intro/close-weekly.mp3",
+      "durationSec": 9.055782,
+      "hash": "a4ea2d6391b738ce"
+    }
+  ]
+}

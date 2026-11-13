@@ -71,12 +71,15 @@ import { backdropSrc } from "../../lib/next/content.ts";
         remembers
       </span>
     </h1>
-    {/* The Harvous 3 walkthrough (R2, via the Worker — see wrangler.jsonc). */}
+    {/* Derek's narrated intro (R2, via the Worker — see wrangler.jsonc). Made in
+        video/ (HarvousIntro); the captions are a static file in public/. */}
     <div class="hero__watch">
       <HeroVideoLightbox
-        src="/harvous-3-walkthrough.mp4"
-        label="Watch the 4-minute walkthrough"
+        src="/harvous-intro.mp4"
+        captions="/harvous-intro.vtt"
+        label="Watch the 2-minute intro"
         variant="inline"
+        avatar="/derek-avatar.webp"
       />
     </div>
   </div>
