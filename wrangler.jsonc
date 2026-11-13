@@ -102,6 +102,14 @@
     "HARVOUS_INTAKE_URL": "https://app.harvous.com/api/church-applications/intake"
   },
 
+  // "Ask a question about Harvous" (cloudflare/ask.ts): Workers AI answers from
+  // the site's own words, and a few questions a minute per visitor. The
+  // namespace id is any number unique to this account's rate limits.
+  "ai": { "binding": "AI" },
+  "ratelimits": [
+    { "name": "ASK_LIMIT", "namespace_id": "4101", "simple": { "limit": 10, "period": 60 } }
+  ],
+
   "observability": {
     "enabled": true
   },
@@ -142,6 +150,13 @@
           "binding": "MEDIA",
           "bucket_name": "harvous-com-media"
         }
+      ],
+
+      // Not inherited either. Its own rate-limit namespace, so staging tests
+      // never use up production's.
+      "ai": { "binding": "AI" },
+      "ratelimits": [
+        { "name": "ASK_LIMIT", "namespace_id": "4102", "simple": { "limit": 10, "period": 60 } }
       ]
     }
   }

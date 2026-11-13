@@ -16,7 +16,7 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 - Reminders: an optional web push, at a rhythm you choose — Sunday and midweek, or every day — carrying the day's verse or the chapter you left, opening straight to it and pausing itself when it goes unopened
 - Review (Harvous Plus): answer a question about your own notes from memory, then say how it went — no AI-written questions, no score
 - Connector (Harvous Plus): let Claude, ChatGPT, or another AI app you choose read your notes — read-only, locked notes stay locked
-- Family (Harvous Plus): one Plus covers up to five more people in your household, with a shared Family Space and a parent view that shows a child's progress, never their notes
+- Family (Harvous Plus): Harvous Plus covers up to five more people in your household, with a shared Family Space and a parent view that shows a child's progress, never their notes
 - Search from the top middle finds anything you have saved
 - Shared Spaces, threads, and folders that organize themselves around what you study — hosting a space is Plus, joining is always free
 
