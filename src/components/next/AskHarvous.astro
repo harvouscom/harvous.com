@@ -39,7 +39,8 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
     <p class="ask__src" data-ask-src hidden></p>
   </div>
   <p class="ask__note">
-    Answered by AI from this site's own pages. Not sure? <a href="mailto:derek@harvous.com">Email Derek</a>.
+    <AppIcon name="wand-magic-sparkles" />
+    <span>Answered by AI from this site's own pages. Not sure? <a href="mailto:derek@harvous.com">Email Derek</a>.</span>
   </p>
 </div>
 
@@ -48,7 +49,15 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
 </script>
 
 <style>
-  .ask { width: 100%; max-width: 40rem; }
+  /* One card: the field sits on top, and a tinted card peeks out below it
+     holding the answer and the note about where answers come from. Its
+     radius matches the pill's, so the field's ends sit flush. */
+  .ask {
+    width: 100%; max-width: 40rem;
+    border-radius: 1.65rem;
+    background: color-mix(in srgb, var(--color-ink) 5%, var(--color-paper));
+    box-shadow: inset 0 0 0 1px var(--color-rule);
+  }
   .ask__field {
     display: flex; align-items: center; gap: 0.7rem;
     min-height: 3.25rem; padding: 0.35rem 0.4rem 0.35rem 1.1rem;
@@ -74,11 +83,7 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
   .ask__go :global(svg) { width: 0.9rem; height: 0.9rem; }
   .ask__go:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
-  .ask__answer {
-    margin-top: 0.75rem; padding: 1rem 1.15rem;
-    border-radius: 1.1rem; background: var(--color-warm);
-    text-align: left;
-  }
+  .ask__answer { padding: 1rem 1.25rem 0; text-align: left; }
   .ask__text { margin: 0; line-height: 1.6; color: var(--color-ink); white-space: pre-wrap; }
   .ask__text:empty::before { content: "Thinking…"; color: var(--color-ink-faint); }
   .ask__src { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0 0; }
@@ -87,7 +92,14 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
     font-size: 0.875rem; font-weight: 500; color: var(--color-ink); text-decoration: none;
     background: var(--color-paper); box-shadow: 0 0 0 1px var(--color-rule);
   }
+  /* A rule between the answer and the note, once there is an answer. */
+  .ask__answer:not([hidden]) + .ask__note { margin-top: 1rem; box-shadow: inset 0 1px 0 var(--color-rule); }
   .ask__src :global(a:hover) { box-shadow: 0 0 0 1px var(--color-ink-faint); }
-  .ask__note { margin: 0.6rem 0 0 1.1rem; font-size: 0.8125rem; color: var(--color-ink-faint); text-align: left; }
+  .ask__note {
+    display: flex; align-items: center; gap: 0.45rem;
+    margin: 0; padding: 0.7rem 1.25rem 0.8rem;
+    font-size: 0.8125rem; line-height: 1.45; color: var(--color-ink-faint); text-align: left;
+  }
+  .ask__note :global(svg) { flex: none; width: 0.8rem; height: 0.8rem; }
   .ask__note a { color: var(--color-ink-soft); text-decoration: underline; text-underline-offset: 2px; }
 </style>
