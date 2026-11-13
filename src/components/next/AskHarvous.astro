@@ -1,0 +1,143 @@
+---
+/**
+ * AskHarvous — "Ask a question about Harvous". A field that streams a short
+ * answer from /api/ask (cloudflare/ask.ts: Workers AI, from this site's own
+ * words), with links to the pages it came from. Says plainly that AI wrote it.
+ *
+ * Behaviour is in src/scripts/ask.ts, bound to every [data-ask] on the page.
+ * Not for legal pages or anything child-facing.
+ */
+import AppIcon from "./app/AppIcon.astro";
+
+interface Props {
+  /** Placeholder, e.g. "Ask about Family". */
+  placeholder?: string;
+  class?: string;
+}
+const { placeholder = "Ask a question about Harvous", class: className } = Astro.props;
+---
+
+<div class:list={["ask", className]} data-ask>
+  <form class="ask__form" role="search" data-ask-form>
+    <label class="ask__field">
+      <span class="ask__mark" aria-hidden="true">
+        <span class="ask__spark"><AppIcon name="wand-magic-sparkles" /></span>
+        <span class="ask__dots"><i></i><i></i><i></i></span>
+      </span>
+      <input
+        name="q"
+        type="text"
+        enterkeyhint="send"
+        placeholder={placeholder}
+        aria-label={placeholder}
+        maxlength="280"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="ask__go" type="submit" aria-label="Ask" data-ask-go>
+        <span class="ask__go-ask"><AppIcon name="arrow-up" /></span>
+        <span class="ask__go-clear"><AppIcon name="xmark" /></span>
+      </button>
+    </label>
+  </form>
+  <div class="ask__tray">
+    <div class="ask__answer" data-ask-answer hidden>
+      <p class="ask__text" data-ask-text aria-live="polite"></p>
+      <p class="ask__src" data-ask-src hidden></p>
+    </div>
+    <p class="ask__note">
+      <span>AI answers from our pages. Not sure? <a href="mailto:derek@harvous.com">Email Derek</a>.</span>
+    </p>
+  </div>
+</div>
+
+<script>
+  import "../../scripts/ask.ts";
+</script>
+
+<style>
+  /* One solid outline color for the pill and the tray. The divider gray is
+     see-through, so where the two outlines overlap at the pill's tips it
+     stacked into a darker spot; this is the same gray, made opaque. */
+  .ask { --ask-ring: color-mix(in srgb, var(--color-ink) 10%, var(--color-paper)); width: 100%; max-width: 40rem; }
+  .ask__form { position: relative; z-index: 1; }
+  /* A tray behind the field, peeking out below it: the answer and the note
+     live in it. It starts at the pill's midline and is exactly as wide, so
+     its sides leave the pill at the tips of its rounded ends. */
+  .ask__tray {
+    margin: -1.625rem 0 0;
+    padding-top: 1.625rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+    background: color-mix(in srgb, var(--color-ink) 5%, var(--color-paper));
+    /* The same ring as the pill, drawn just outside the edge, so the two
+       outlines are one line where the tray leaves the pill. */
+    box-shadow: 0 0 0 1px var(--ask-ring);
+  }
+  .ask__field {
+    display: flex; align-items: center; gap: 0.7rem;
+    min-height: 3.25rem; padding: 0.35rem 0.4rem 0.35rem 1.1rem;
+    border-radius: 999px;
+    background: var(--color-paper);
+    box-shadow: 0 0 0 1px var(--ask-ring);
+    transition: box-shadow 150ms ease;
+  }
+  .ask__field:focus-within { box-shadow: 0 0 0 2px var(--color-accent); }
+  /* At rest, a small sparkle (this field answers with AI). While an answer
+     is on its way, the app's three loading dots take its place and hop in
+     turn, so the motion only ever means "working". */
+  .ask__mark { flex: none; display: grid; place-items: center; width: 1.4rem; height: 1rem; color: var(--color-accent); }
+  .ask__mark > * { grid-area: 1 / 1; display: inline-flex; align-items: center; transition: opacity 150ms ease; }
+  .ask__spark :global(svg) { width: 0.9rem; height: 0.9rem; }
+  .ask__dots { gap: 3px; opacity: 0; }
+  .ask:global(.is-busy) .ask__spark { opacity: 0; }
+  .ask:global(.is-busy) .ask__dots { opacity: 1; }
+  .ask__dots i { display: block; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.35; }
+  .ask:global(.is-busy) .ask__dots i { animation: ask-wave-busy 0.9s ease-in-out infinite; }
+  .ask:global(.is-busy) .ask__dots i:nth-child(2) { animation-delay: 0.15s; }
+  .ask:global(.is-busy) .ask__dots i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes ask-wave-busy {
+    0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-3px); }
+  }
+  /* Reduced motion: the dots still replace the sparkle, held still and bright. */
+  @media (prefers-reduced-motion: reduce) {
+    .ask:global(.is-busy) .ask__dots i { animation: none; opacity: 0.75; }
+  }
+  .ask__field input {
+    flex: 1; min-width: 0; padding: 0; border: 0; outline: 0; background: none;
+    font: inherit; font-size: 1rem; color: var(--color-ink);
+  }
+  .ask__field input::placeholder { color: var(--color-ink-faint); }
+  .ask__go {
+    flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+    color: #fff; background: var(--accent-btn-bg, var(--color-accent));
+  }
+  .ask__go :global(svg) { width: 0.9rem; height: 0.9rem; }
+  /* The arrow asks; once there's an answer it turns into an X that clears it. */
+  .ask__go > span { grid-area: 1 / 1; display: grid; place-items: center; transition: opacity 150ms ease, transform 150ms ease; }
+  .ask__go-clear { opacity: 0; transform: rotate(-90deg); }
+  .ask:global(.has-result) .ask__go-ask { opacity: 0; transform: rotate(90deg); }
+  .ask:global(.has-result) .ask__go-clear { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .ask__go > span { transition: none; } }
+  .ask__go:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  .ask__answer { padding: 1rem 1.25rem 0; text-align: left; }
+  .ask__text { margin: 0; line-height: 1.6; color: var(--color-ink); white-space: pre-wrap; }
+  .ask__text:empty::before { content: "Thinking…"; color: var(--color-ink-faint); }
+  .ask__src { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0 0; }
+  .ask__src :global(a) {
+    display: inline-flex; align-items: center; padding: 0.3rem 0.75rem; border-radius: 999px;
+    font-size: 0.875rem; font-weight: 500; color: var(--color-ink); text-decoration: none;
+    background: var(--color-paper); box-shadow: 0 0 0 1px var(--color-rule);
+  }
+  /* A rule between the answer and the note, once there is an answer. */
+  .ask__answer:not([hidden]) + .ask__note { margin-top: 1rem; box-shadow: inset 0 1px 0 var(--color-rule); }
+  .ask__src :global(a:hover) { box-shadow: 0 0 0 1px var(--color-ink-faint); }
+  .ask__note {
+    display: flex; align-items: center; gap: 0.45rem;
+    margin: 0; padding: 0.7rem 1.25rem 0.8rem;
+    font-size: 0.8125rem; line-height: 1.45; color: var(--color-ink-faint); text-align: left;
+  }
+  .ask__note :global(svg) { flex: none; width: 0.8rem; height: 0.8rem; }
+  .ask__note a { color: var(--color-ink-soft); text-decoration: underline; text-underline-offset: 2px; }
+</style>

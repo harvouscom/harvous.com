@@ -9,6 +9,7 @@
  * full answer there.
  */
 import { getFaqEntries, faqAnchorId, SUPPORT_EMAIL } from "../../lib/faq";
+import AskHarvous from "./AskHarvous.astro";
 
 /** What people ask before they start: cost, privacy, and whether they have to sign up. */
 const IDS = ["pricing", "privacy", "try-without-account"];
@@ -26,6 +27,7 @@ const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A question
         <a class="nx-link" href="/faq/">All the FAQs →</a>
         <a class="qa__mail" href={mailto}>or email Derek</a>
       </p>
+      <AskHarvous class="qa__ask" />
     </div>
     <ul class="qa__list" role="list" data-reveal="stagger">
       {rows.map((e) => (
@@ -96,4 +98,5 @@ const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("A question
     .qa__a { grid-row: auto; }
     .qa__chev { grid-row: auto; grid-column: auto; }
   }
+  .qa__head :global(.qa__ask) { margin-top: 1.5rem; }
 </style>

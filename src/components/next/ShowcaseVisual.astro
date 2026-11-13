@@ -26,6 +26,11 @@ const MAP_SECTIONS: [string, number, number][] = [
   ["Law", 5, 1], ["History", 12, 0], ["Wisdom", 5, 2], ["Major prophets", 5, 1], ["Minor prophets", 12, 0],
   ["Gospels", 4, 4], ["Acts", 1, 1], ["Paul's letters", 13, 2], ["General letters", 8, 1], ["Revelation", 1, 0],
 ];
+/* Our Bible: the family's books by section (books only, never chapters or who). */
+const OUR_BIBLE_SECTIONS: [string, number, number][] = [
+  ["Law", 5, 1], ["History", 12, 1], ["Wisdom", 5, 2], ["Major prophets", 5, 0], ["Minor prophets", 12, 0],
+  ["Gospels", 4, 3], ["Acts", 1, 1], ["Paul's letters", 13, 1], ["General letters", 8, 0], ["Revelation", 1, 0],
+];
 const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
 ---
 
@@ -649,7 +654,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
       <p class="sv__label sv__label--in">My Family · 4 of 6</p>
       {[
         ["D", "is-me", "Derek", "Organizer"],
-        ["S", "is-a", "Sarah", "Parent/Guardian"],
+        ["M", "is-a", "Monique", "Parent/Guardian"],
         ["G", "is-b", "Grandma Ruth", "Adult"],
         ["E", "is-kid", "Ellie", "Child"],
       ].map(([who, cls, nm, role]) => (
@@ -668,6 +673,118 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
       </div>
       <p class="sv__refline"><span class="aui-pill">Mark</span><span class="aui-pill">Psalms</span><span class="aui-pill">Ruth</span></p>
       <p class="sv__foot"><AppIcon name="lock" /> Her notes, highlights and searches stay hers.</p>
+    </div>
+  )}
+
+  {name === "family-space" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="aui-tile sv__tile--mint"><AppIcon name="people-roof" /></span><span><b>Family Space</b><small>Everyone in the family can add to it</small></span></p>
+      {[
+        ["M", "is-a", "Dinner question: why was Jesus asleep in the storm?", "Mark 4:38"],
+        ["R", "is-b", "The one I pray over each of you.", "Psalm 121"],
+        ["E", "is-kid", "We read the first chapter in the car. Naomi is so sad.", "Ruth 1"],
+      ].map(([who, cls, text, ref]) => (
+        <div class="sv__post">
+          <span class:list={["sv__face", cls]}>{who}</span>
+          <span><span class="sv__post-t">{text}</span><span class="aui-pill">{ref}</span></span>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {name === "family-sees" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__head"><span class="sv__face is-kid">E</span><span><b>What you see for Ellie</b><small>She sees the same</small></span></p>
+      <div class="sv__sees">
+        <div>
+          <p class="sv__sees-h">Shown</p>
+          {["Last active", "Chapters and books", "How many notes"].map((t) => <p class="sv__sees-row is-yes"><AppIcon name="check" /> {t}</p>)}
+        </div>
+        <div>
+          <p class="sv__sees-h">Never</p>
+          {["Her notes", "Highlights", "Searches", "Review"].map((t) => <p class="sv__sees-row"><AppIcon name="lock" /> {t}</p>)}
+        </div>
+      </div>
+    </div>
+  )}
+
+  {name === "family-our-bible" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__vhead"><b>Our Bible</b><span class="sv__chip">My Family</span></p>
+      <p class="sv__shelf-t">The family has been in 9 books.</p>
+      <div class="sv__sections">
+        {OUR_BIBLE_SECTIONS.map(([label, books, been]) => (
+          <div class:list={["sv__section", label === "Gospels" && "is-on"]}>
+            <span class="sv__section-t">{label}</span>
+            <span class="sv__section-dots">{Array.from({ length: books }, (_, i) => <i class:list={[i < been && "is-been"]}></i>)}</span>
+            <span class="sv__section-n">{been > 0 ? `${been}/${books}` : ""}</span>
+          </div>
+        ))}
+      </div>
+      <p class="sv__foot"><AppIcon name="lock" /> Books only. Never chapters, never who.</p>
+    </div>
+  )}
+
+  {name === "child-notebook-home" && (
+    <div class="aui-card sv__card">
+      <p class="sv__head sv__head--in"><span class="aui-tile sv__cover"><AppIcon name="star" /></span><span><b>Ellie's notebook</b><small>My notebook · 3 notes</small></span></p>
+      <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="pen-to-square" /></span><span><span class="aui-title">What I want to remember</span><span class="aui-sub">Bible reading<i>·</i>Psalm 23</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="pen-to-square" /></span><span><span class="aui-title">A little kindness</span><span class="aui-sub">Kindness</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="pen-to-square" /></span><span><span class="aui-title">A question for Sunday</span><span class="aui-sub">Sunday notes</span></span><span></span></div>
+      <p class="sv__foot sv__foot--in"><AppIcon name="lock" /> Your notebook is just for you and your parent.</p>
+    </div>
+  )}
+
+  {name === "child-family-bible" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__fb-top"><span class="sv__label sv__fb-label">Family Bible · Read together</span><span class="sv__fb-shared"><span class="sv__face is-a">M</span> Shared by Mom</span></p>
+      <p class="sv__ref">Psalm 23 <span class="aui-tr">NLT</span></p>
+      <p class="sv__verse sv__fb-verse"><sup>1</sup><span class="sv__hl sv__hl--family">The Lord is my shepherd; I have all that I need.</span><span class="sv__fb-count"><AppIcon name="comment" /> 2</span></p>
+      <div class="sv__fbchat">
+        <p class="sv__bub" data-who="kid"><span class="sv__face is-kid">E</span><span>I like that I have all I need. Even on bad days?</span></p>
+        <p class="sv__bub" data-who="mom"><span>Even then. What do you think a shepherd does all day?</span><span class="sv__face is-a">M</span></p>
+      </div>
+      <p class="sv__fb-reply"><span>Write back to Mom…</span><AppIcon name="paper-plane" /></p>
+    </div>
+  )}
+
+  {name === "child-look-back" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">Look back · Fill in the blank <span class="sv__dots sv__dots--inline"><i class="is-on"></i><i class="is-on"></i><i></i><i></i><i></i></span></p>
+      <p class="sv__verse">He renews my strength. He guides me along right <span class="sv__gapline"></span>, bringing honor to his name.</p>
+      <p class="sv__refline"><span class="aui-pill">Psalm 23:3 <span class="aui-tr">NLT</span></span></p>
+      <p class="sv__tiles"><span>roads</span><span class="is-on">paths</span><span>ways</span></p>
+      <p class="sv__foot"><AppIcon name="clock-rotate-left" /> What you marked comes back when it's time to look again.</p>
+    </div>
+  )}
+
+  {name === "child-verse-sticker" && (
+    <div class="aui-card sv__card sv__pad">
+      <p class="sv__label">My Bible · Psalm 23 <span class="aui-tr">NLT</span></p>
+      <p class="sv__sheet" aria-hidden="true">
+        {[["heart", "pink", true], ["star", "yellow"], ["dove", "blue"], ["rainbow", "purple"], ["seedling", "green"], ["crown", "orange"]].map(([icon, c, on]) => (
+          <span class:list={["sv__dsticker", on && "is-on"]} data-c={c}><AppIcon name={icon as string} /></span>
+        ))}
+      </p>
+      <div class="sv__stickered">
+        <p class="sv__verse"><sup>1</sup><span class="sv__hl sv__hl--pink">The Lord is my shepherd; I have all that I need.</span></p>
+        <span class="sv__dsticker sv__vsticker" data-c="pink" style="--tilt:-9deg"><AppIcon name="heart" /></span>
+      </div>
+      <div class="sv__stickered">
+        <p class="sv__verse"><sup>2</sup>He lets me rest in green meadows; he leads me beside peaceful streams.</p>
+        <span class="sv__dsticker sv__vsticker" data-c="green" style="--tilt:8deg"><AppIcon name="seedling" /></span>
+      </div>
+    </div>
+  )}
+
+  {name === "child-parent-manage" && (
+    <div class="aui-card sv__card">
+      <p class="sv__label sv__label--in">Manage Ellie's notebook</p>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="book-bible" /></span><span><span class="aui-title">Family Bible</span><span class="aui-sub">3 translations<i>·</i>Psalm 23 shared</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="church" /></span><span><span class="aui-title">Ministry</span><span class="aui-sub">Kids ministry<i>·</i>read-only</span></span><span></span></div>
+      <div class="aui-row is-on"><span class="aui-tile"><AppIcon name="file-lines" /></span><span><span class="aui-title">Notes</span><span class="aui-sub">Read them<i>·</i>download a copy</span></span><span></span></div>
+      <div class="aui-row"><span class="aui-tile"><AppIcon name="shield-halved" /></span><span><span class="aui-title">Privacy and sessions</span><span class="aui-sub">Consent history<i>·</i>withdraw or delete</span></span><span></span></div>
+      <p class="sv__row sv__row--menu"><AppIcon name="right-from-bracket" /> End all sessions</p>
     </div>
   )}
 </div>
@@ -711,6 +828,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__pop { width: 82%; margin: -22px -8px 0 auto; position: relative; }
   .sv__hero .sv__label { padding: 11px 13px 0; }
   .sv__quote { padding: 0 14px 12px 50px; font-size: 13px; line-height: 1.5; font-style: italic; color: var(--pds-text-secondary); }
+  .sv__tile--mint { color: color-mix(in oklab, var(--pds-highlight-mint-green) 55%, var(--pds-text-primary)) !important; background: color-mix(in srgb, var(--pds-highlight-mint-green) 16%, var(--pds-bg-main)) !important; }
   .sv__tile--violet { color: var(--pds-highlight-violet) !important; background: color-mix(in srgb, var(--pds-highlight-violet) 16%, var(--pds-bg-main)) !important; }
   /* Threads are neutral in the app (secondary glyph, no colored tile) — match it. */
   .sv__tile--thread { color: var(--pds-text-secondary) !important; }
@@ -791,8 +909,25 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__post { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; margin-top: 12px; padding-top: 12px; box-shadow: inset 0 0.5px 0 var(--pds-border); font-size: 13px; line-height: 1.45; }
   .sv__post-t { display: block; margin-bottom: 5px; color: var(--pds-text-primary); }
   .sv__post :global(.aui-pill) { font-size: 11.5px; }
-  .sv__face { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 700; color: #fff; }
-  .sv__face.is-a { background: #e07a5f; } .sv__face.is-b { background: #3d8bd9; } .sv__face.is-me { background: #6b7280; }
+  /* Member initials, the way the app draws them (SharedSpaceMemberAvatar):
+     a pale tint of the person's color with the initial in a deeper shade of
+     the same hue; in dark mode the tint deepens and the initial goes white. */
+  .sv__face {
+    --face: var(--pds-thread-blue);
+    display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    background: var(--face);
+    color: oklch(from var(--face) calc(l * 0.58) min(calc(c * 3.5), 0.2) h);
+  }
+  /* One color per person, wherever they appear: Monique (and Mom) purple,
+     Derek orange, Grandma Ruth green, Ellie pink. */
+  .sv__face.is-a { --face: var(--pds-thread-purple); }
+  .sv__face.is-b { --face: var(--pds-thread-green); }
+  .sv__face.is-me { --face: var(--pds-thread-orange); }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-color-scheme="light"])) .sv__face { color: rgba(255, 255, 255, 0.96); }
+  }
+  :global(:root[data-color-scheme="dark"]) .sv__face { color: rgba(255, 255, 255, 0.96); }
 
   /* Reminders: a lock-screen notification, and the rhythm it runs on. */
   /* An iPhone lock screen, cropped: wallpaper, status bar, the date over a big
@@ -1053,7 +1188,7 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__key span { display: inline-flex; align-items: center; gap: 5px; }
   .sv__key .sv__cell { width: 10px; height: 10px; border-radius: 3px; }
   /* Family */
-  .sv__face.is-kid { background: #2f9e73; }
+  .sv__face.is-kid { --face: var(--pds-thread-pink); }
   .sv__who { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
   .sv__who .sv__face { width: 22px; height: 22px; font-size: 10px; }
   .sv :global(.aui-row.sv__member) { padding-block: 6px; }
@@ -1061,4 +1196,60 @@ const JOHN = [3, 2, 3, 1, 1, 2, 0, 1, 0, 2, 3, 0, 1, 3, 3, 2, 3, 0, 0, 0, 0];
   .sv__stats p { display: grid; gap: 1px; padding: 8px 10px; border-radius: 10px; background: var(--pds-bg-chip); }
   .sv__stats b { font-family: var(--pds-font-display); font-size: 20px; font-weight: 600; color: var(--pds-text-primary); }
   .sv__stats span { font-size: 11.5px; color: var(--pds-text-secondary); }
+
+  /* Child notebooks: the notebook's cover tile and an in-card head. */
+  .sv__head--in { padding: 12px 13px 6px; }
+  .sv :global(.aui-tile.sv__cover) { color: #fff; background: #2f9e73; }
+  /* My Bible: bright die-cut stickers (white border in both themes, like
+     real stickers), the sheet they come from, and the ones on verses. */
+  .sv__dsticker {
+    --c: var(--pds-thread-blue);
+    display: grid; place-items: center; width: 34px; height: 34px;
+    border: 2.5px solid #fff; border-radius: 10px;
+    color: oklch(from var(--c) 0.46 calc(c * 2) h);
+    background: oklch(from var(--c) 0.88 calc(c * 1.4) h);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08), 0 4px 10px -3px rgba(15, 23, 42, 0.35);
+  }
+  .sv__dsticker[data-c="pink"] { --c: var(--pds-thread-pink); }
+  .sv__dsticker[data-c="yellow"] { --c: var(--pds-thread-yellow); }
+  .sv__dsticker[data-c="blue"] { --c: var(--pds-thread-blue); }
+  .sv__dsticker[data-c="purple"] { --c: var(--pds-thread-purple); }
+  .sv__dsticker[data-c="green"] { --c: var(--pds-thread-green); }
+  .sv__dsticker[data-c="orange"] { --c: var(--pds-thread-orange); }
+  .sv__dsticker :global(svg) { width: 15px; height: 15px; }
+  .sv__sheet { display: flex; justify-content: space-between; gap: 6px; margin: 10px 0 6px !important; padding: 10px; border-radius: 14px; background: var(--pds-bg-chip); }
+  .sv__sheet .sv__dsticker:nth-child(odd) { transform: rotate(-4deg); }
+  .sv__sheet .sv__dsticker:nth-child(even) { transform: rotate(4deg); }
+  .sv__sheet .sv__dsticker.is-on { transform: translateY(-4px) rotate(-8deg) scale(1.12); box-shadow: 0 0 0 2px var(--pds-text-primary), 0 8px 14px -4px rgba(15, 23, 42, 0.45); }
+  .sv__stickered { position: relative; min-height: 48px; padding: 6px 54px 6px 0; }
+  .sv__stickered .sv__verse { margin-top: 0 !important; }
+  .sv__vsticker { position: absolute; top: 6px; right: 4px; width: 40px; height: 40px; border-radius: 12px; transform: rotate(var(--tilt)); }
+  .sv__vsticker :global(svg) { width: 18px; height: 18px; }
+  .sv__hl.sv__hl--pink { background: color-mix(in srgb, var(--pds-highlight-coral-rose) 30%, transparent); box-shadow: inset 0 -2px 0 var(--pds-highlight-coral-rose); }
+
+  /* Family Bible: who shared it, the verse they're talking about, and the talk. */
+  .sv__fb-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .sv__fb-label { margin: 0 !important; }
+  .sv__fb-shared { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px 2px 3px; border-radius: 999px; font-size: 11.5px; font-weight: 500; color: var(--pds-text-primary); background: var(--pds-bg-chip); white-space: nowrap; }
+  .sv__fb-shared .sv__face { width: 18px; height: 18px; font-size: 9px; }
+  .sv__fb-verse { position: relative; }
+  .sv__hl.sv__hl--family { background: color-mix(in srgb, var(--pds-highlight-warm-amber) 40%, transparent); box-shadow: inset 0 -2px 0 var(--pds-highlight-warm-amber); }
+  .sv__fb-count { display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; padding: 1px 7px; border-radius: 999px; vertical-align: 2px; font-size: 11px; font-weight: 600; color: var(--pds-on-accent); background: var(--pds-accent); }
+  .sv__fb-count :global(svg) { width: 9px; height: 9px; }
+  .sv__fbchat { display: grid; gap: 8px; margin-top: 12px; }
+  .sv__bub { display: flex; align-items: flex-end; gap: 7px; margin: 0; }
+  .sv__bub > span:not(.sv__face) { max-width: 78%; padding: 8px 11px; font-size: 13px; line-height: 1.45; color: var(--pds-text-primary); }
+  .sv__bub[data-who="kid"] > span:not(.sv__face) { border-radius: 14px 14px 14px 4px; background: color-mix(in oklab, var(--pds-thread-pink) 55%, var(--pds-bg-main)); }
+  .sv__bub[data-who="mom"] { justify-content: flex-end; }
+  .sv__bub[data-who="mom"] > span:not(.sv__face) { border-radius: 14px 14px 4px 14px; background: color-mix(in oklab, var(--pds-thread-purple) 50%, var(--pds-bg-main)); }
+  .sv__bub .sv__face { flex: none; width: 22px; height: 22px; font-size: 10px; }
+  .sv__fb-reply { display: flex; align-items: center; justify-content: space-between; margin-top: 12px !important; padding: 8px 12px; border-radius: 999px; font-size: 12.5px; color: var(--pds-text-tertiary); box-shadow: inset 0 0 0 1px var(--pds-border); }
+  .sv__fb-reply :global(svg) { width: 12px; height: 12px; color: var(--pds-accent); }
+  /* Family: what a parent sees, and what never leaves a child's study. */
+  .sv__sees { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .sv__sees > div { padding: 10px 12px; border-radius: 10px; background: var(--pds-bg-chip); }
+  .sv__sees-h { margin-bottom: 6px !important; font-size: 12px; font-weight: 600; color: var(--pds-text-secondary); }
+  .sv__sees-row { display: flex; align-items: center; gap: 6px; padding: 3px 0; font-size: 13px; color: var(--pds-text-primary); }
+  .sv__sees-row :global(svg) { width: 11px; height: 11px; color: var(--pds-text-tertiary); }
+  .sv__sees-row.is-yes :global(svg) { color: color-mix(in oklab, var(--pds-highlight-mint-green) 55%, var(--pds-text-primary)); }
 </style>
