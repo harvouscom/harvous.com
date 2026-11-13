@@ -271,7 +271,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     border-radius: 999px;
     font-size: 0.875rem;
     font-weight: 600;
-    color: color-mix(in oklab, var(--uc-ink) 60%, var(--color-ink));
+    color: color-mix(in oklab, var(--uc-ink) var(--ink-on-tint), var(--color-ink));
     background: color-mix(in oklab, var(--uc-ink) 14%, var(--color-paper));
   }
   .ud-badge--soon { color: var(--color-ink-soft); background: var(--color-warm); }
@@ -297,7 +297,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     height: clamp(4rem, 8vw, 5.5rem);
     border-radius: 28%;
     background: var(--color-paper);
-    color: color-mix(in oklab, var(--uc-ink) 70%, var(--color-ink));
+    color: color-mix(in oklab, var(--uc-ink) var(--ink-on-tint), var(--color-ink));
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 24px 48px -20px rgba(15, 23, 42, 0.45);
   }
   .ud-sky__icon :global(svg) { width: 42%; height: 42%; }
@@ -342,7 +342,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     width: 2rem;
     height: 2rem;
     border-radius: 0.6rem;
-    color: color-mix(in oklab, var(--uc-ink) 65%, var(--color-ink));
+    color: color-mix(in oklab, var(--uc-ink) var(--ink-on-tint), var(--color-ink));
     background: color-mix(in oklab, var(--uc-ink) 14%, var(--color-paper));
   }
   .ud-moment__tile :global(svg) { width: 0.9rem; height: 0.9rem; }
@@ -399,7 +399,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     height: 1.5rem;
     border-radius: 0.45rem;
     background: var(--color-paper);
-    color: var(--ink);
+    color: color-mix(in oklab, var(--ink) var(--ink-on-tint), var(--color-ink));
   }
   .ud-row__mark :global(svg) { width: 0.75rem; height: 0.75rem; }
   .ud-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }

@@ -51,7 +51,7 @@ export const PRODUCT_GRID_ITEMS: ComingSoonGridItem[] = [
     id: "family",
     icon: "fa7-solid:people-roof",
     title: "Family",
-    desc: "One Plus for your household, a shared Family Space, and a parent view that shows progress, never notes. Included with Harvous Plus.",
+    desc: "Your whole household on Harvous Plus, a shared Family Space, and a parent view that shows progress, never notes.",
     href: "/add-ons/family/",
     comingSoon: false,
   },

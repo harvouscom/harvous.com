@@ -1,0 +1,115 @@
+---
+/**
+ * FamilyBand — Family on the home page, after the bento: the household on
+ * Harvous Plus, the Family Space, and what stays private, beside the My
+ * Family and Family Space pieces. Points to the Family page and the families
+ * audience page. The child notebooks line shows only where that page exists
+ * (lib/draft-pages.ts).
+ */
+import ShowcaseVisual from "./ShowcaseVisual.astro";
+import AppIcon from "./app/AppIcon.astro";
+import { draftPageIsReachable } from "../../lib/draft-pages.ts";
+
+const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks");
+---
+
+<section class="nx-section fband" aria-labelledby="fband-title">
+  <div class="nx-wrap fband__inner">
+    <div class="fband__text" data-reveal>
+      <p class="fband__label"><AppIcon name="people-roof" /> Family</p>
+      <h2 id="fband-title" class="nx-title">Bring the household along.</h2>
+      <p class="nx-lead">
+        Harvous Plus covers up to six people at home, with a Family Space everyone can write in.
+        Each person's own study stays theirs, and a parent sees progress, never notes.
+      </p>
+      <p class="fband__acts">
+        <a class="nx-btn nx-btn--ghost" href="/add-ons/family/">See Family</a>
+        <a class="nx-link" href="/for/families/">Harvous for families →</a>
+      </p>
+      {showChildNotebooks && (
+        <a class="fband__kids" href="/add-ons/family/child-notebooks/">
+          <span class="fband__kids-art" aria-hidden="true">
+            <span class="fband__kids-book"><AppIcon name="star" /></span>
+            <span class="fband__kids-sticker"><AppIcon name="heart" /></span>
+          </span>
+          <span class="fband__kids-text">
+            <b>Younger than 13? <span class="fband__kids-soon">Coming soon</span></b>
+            <span>Child notebooks will give them a private place of their own, with you in charge.</span>
+          </span>
+          <span class="fband__kids-go" aria-hidden="true">→</span>
+        </a>
+      )}
+    </div>
+    <div class="fband__stage nx-mesh nx-mesh--mint" data-reveal="scale">
+      <div class="fband__a"><ShowcaseVisual name="family-members" label="Settings › My Family listing four people with their roles: Organizer, Parent/Guardian, Adult and Child" /></div>
+      <div class="fband__b"><ShowcaseVisual name="family-space" label="The Family Space with three notes: a dinner question on Mark 4:38, a prayer on Psalm 121, and a thought on Ruth 1" /></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fband { padding-top: 0; }
+  .fband__inner { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  @media (min-width: 56rem) { .fband__inner { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+  .fband__label {
+    display: inline-flex; align-items: center; gap: 0.4rem; margin: 0;
+    padding: 0.35rem 0.85rem 0.35rem 0.7rem; border-radius: 999px;
+    font-size: 0.875rem; font-weight: 600;
+    color: color-mix(in oklab, var(--study-dock-accent-mintGreen) var(--ink-on-tint, 50%), var(--color-ink));
+    background: color-mix(in oklab, var(--study-dock-accent-mintGreen) 16%, var(--color-paper));
+  }
+  .fband__label :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .fband__text .nx-title { margin: 1rem 0 0; max-width: 14ch; }
+  .fband__text .nx-lead { margin: 1rem 0 0; max-width: 34rem; }
+  /* Child notebooks, as a callout with that page's washes and notebook. */
+  .fband__kids {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 1rem; align-items: center;
+    max-width: 34rem; margin: 1.75rem 0 0; padding: 1rem 1.25rem 1rem 1rem;
+    border-radius: 1.25rem; text-decoration: none; color: var(--color-ink);
+    background:
+      radial-gradient(50% 120% at 0% 0%, color-mix(in oklab, var(--pds-thread-pink) 50%, transparent), transparent 70%),
+      radial-gradient(45% 120% at 100% 100%, color-mix(in oklab, var(--pds-thread-yellow) 55%, transparent), transparent 70%),
+      color-mix(in oklab, var(--pds-thread-blue) 24%, var(--color-paper));
+    transition: transform 300ms var(--nx-ease);
+  }
+  .fband__kids:hover { transform: translateY(-2px); }
+  .fband__kids-art { position: relative; margin: 0.15rem 0.6rem 0.15rem 0.2rem; }
+  .fband__kids-book {
+    display: grid; place-items: center; width: 2.6rem; height: 3.2rem;
+    border-left: 5px solid oklch(from var(--pds-thread-blue) 0.54 calc(c * 1.7) h);
+    border-radius: 2px 7px 7px 2px; color: #fff;
+    background: oklch(from var(--pds-thread-blue) 0.66 calc(c * 1.7) h);
+    box-shadow: 0 8px 16px -8px rgba(15, 23, 42, 0.55); transform: rotate(-5deg);
+  }
+  .fband__kids-book :global(svg) { width: 1rem; height: 1rem; }
+  .fband__kids-sticker {
+    position: absolute; right: -0.75rem; bottom: -0.35rem;
+    display: grid; place-items: center; width: 1.5rem; aspect-ratio: 1;
+    border: 2px solid #fff; border-radius: 0.45rem;
+    color: oklch(from var(--pds-thread-yellow) 0.48 calc(c * 2) h);
+    background: oklch(from var(--pds-thread-yellow) 0.9 calc(c * 1.3) h);
+    box-shadow: 0 4px 8px -3px rgba(15, 23, 42, 0.35); transform: rotate(10deg);
+  }
+  .fband__kids-sticker :global(svg) { width: 0.7rem; height: 0.7rem; }
+  .fband__kids-text b { display: block; font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+  .fband__kids-text span { display: block; margin-top: 0.15rem; font-size: 0.95rem; line-height: 1.5; color: var(--color-ink-soft); }
+  .fband__kids-go { font-size: 1.1rem; color: var(--color-ink-soft); }
+  .fband__kids-soon { display: inline-block; margin-left: 0.35rem; padding: 0.1rem 0.5rem; border-radius: 999px; vertical-align: 0.1em; font-family: var(--font-body, inherit); font-size: 0.75rem; font-weight: 500; letter-spacing: 0; color: var(--color-ink-soft); background: color-mix(in srgb, var(--color-ink) 7%, transparent); }
+  .fband__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin: 1.75rem 0 0; }
+
+  .fband__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: clamp(22rem, 40vw, 28rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: var(--nx-radius-scene);
+  }
+  .fband__a { width: min(22rem, 100%); transform: translateX(-12%) rotate(-1.5deg); }
+  .fband__b { position: absolute; right: 6%; bottom: 8%; width: min(19rem, 70%); transform: rotate(2deg); }
+  @media (max-width: 40rem) {
+    .fband__stage { display: block; }
+    .fband__a { transform: none; }
+    .fband__b { position: static; width: 100%; margin-top: 1rem; transform: none; }
+  }
+</style>

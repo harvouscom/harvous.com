@@ -33,7 +33,7 @@ const SUPPORT_EMAIL = "derek@harvous.com";
     <p>
       Child notebooks are available only in the United States. You'll see a short version of this
       policy in Harvous before you agree to anything (notice version {CHILD_NOTICE_VERSION}). The
-      two say the same thing.
+      in-app notice summarizes this policy; this policy has the full details.
     </p>
   </div>
 
@@ -55,7 +55,8 @@ const SUPPORT_EMAIL = "derek@harvous.com";
     <p>
       These service providers handle information on our behalf, only to run and protect the
       notebook. None of them may use your child's information for their own purposes. We don't disclose your child's information to third parties, except where
-      the law requires it or to protect someone's safety, so there is nothing separate to agree to.
+      the law requires it or to protect someone's safety or the security of the service, so there
+      is nothing separate to agree to.
     </p>
     <ul>
       <li><strong>Fly.io</strong> hosts the notebook service.</li>
@@ -68,16 +69,17 @@ const SUPPORT_EMAIL = "derek@harvous.com";
         <strong>Clerk</strong> handles your sign-in to your own Harvous account. Your child does
         not get a Clerk account.
       </li>
-      <li>
-        <strong>Kids Web Services (KWS)</strong>, run by Epic Games, checks that you are an adult
-        before you can set up a notebook. More on that below.
-      </li>
     </ul>
     <p>
       Each of these providers handles your child's information only under its data processing
       terms with us, which require it to keep the information confidential and secure and not use
-      it for anything else. KWS uses its own verification partners to check that you're an adult,
-      under its own privacy policy. They never receive your child's information.
+      it for anything else.
+    </p>
+    <p>
+      <strong>Kids Web Services (KWS)</strong>, run by Epic Games, is separate: it handles only
+      your email address, country and language, to check that you're an adult before you set up a
+      notebook. KWS uses its own verification partners to do that, under its own privacy policy.
+      Neither KWS nor its partners ever receive your child's information. More on that below.
     </p>
   </div>
 
@@ -205,7 +207,8 @@ const SUPPORT_EMAIL = "derek@harvous.com";
     <p>
       The child notebook runs on its own web address, apart from adult Harvous, and only our server
       can read its data. Sign-in links are single-use and short-lived, and they stay out of server
-      logs. Your child can't open adult Harvous from the notebook.
+      logs. Your child can't get into your Harvous account from the notebook. When they hand it back
+      to you, any adult session is signed out first.
     </p>
   </div>
 
@@ -215,8 +218,10 @@ const SUPPORT_EMAIL = "derek@harvous.com";
     <ul>
       <li><strong>Review</strong> your child's notes, readings, and thoughts.</li>
       <li>
-        <strong>Export</strong> the notebook as a readable text file or as a full backup file. Your
-        child can ask for an export from their notebook, but you choose it and download it.
+        <strong>Export</strong> the notebook as a readable text file or as a full backup file. The
+        backup includes notes, readings, thoughts, highlights, stickers, and Look back's current
+        progress for each note and verse. Your child can ask for an export from their notebook, but
+        you choose it and download it.
       </li>
       <li><strong>End sessions</strong>, so the notebook has to be opened again with a new link.</li>
       <li><strong>Remove access</strong> to any ministry channel you approved.</li>
@@ -262,32 +267,38 @@ const SUPPORT_EMAIL = "derek@harvous.com";
         <tr>
           <th scope="row">Name or nickname, consent record, consent history</th>
           <td data-label="Why we collect it">To create the notebook and show you agreed</td>
-          <td data-label="Why we keep it">Needed while the notebook exists</td>
-          <td data-label="When it's deleted">With the notebook</td>
+          <td data-label="Why we keep it">Needed while the notebook is in use</td>
+          <td data-label="When it's deleted">With the notebook, or after a year with no use</td>
         </tr>
         <tr>
           <th scope="row">Notes, readings, thoughts, highlights, stickers, preferences</th>
           <td data-label="Why we collect it">They are the notebook</td>
           <td data-label="Why we keep it">So your child and you can come back to them</td>
-          <td data-label="When it's deleted">When you delete them, 30 days after you withdraw consent, or after a year unused</td>
+          <td data-label="When it's deleted">When you delete the notebook, 30 days after you withdraw consent, or after a year with no use. Highlights and stickers can also be removed one at a time.</td>
         </tr>
         <tr>
           <th scope="row">Look back progress</th>
           <td data-label="Why we collect it">To choose what to show next</td>
-          <td data-label="Why we keep it">Spacing depends on what came before</td>
+          <td data-label="Why we keep it">Spacing depends on what came before, while the notebook is in use</td>
+          <td data-label="When it's deleted">With the notebook, or after a year with no use</td>
+        </tr>
+        <tr>
+          <th scope="row">The last time the notebook was used</th>
+          <td data-label="Why we collect it">To find notebooks no one uses</td>
+          <td data-label="Why we keep it">So an unused notebook is deleted after a year</td>
           <td data-label="When it's deleted">With the notebook</td>
         </tr>
         <tr>
           <th scope="row">Sessions and sign-in links</th>
           <td data-label="Why we collect it">To open the notebook</td>
           <td data-label="Why we keep it">Only while it's open</td>
-          <td data-label="When it's deleted">Links after five minutes, sessions after eight hours</td>
+          <td data-label="When it's deleted">A sign-in link stops working after five minutes and a session after eight hours; expired records are cleared daily</td>
         </tr>
         <tr>
           <th scope="row">Verification requests</th>
           <td data-label="Why we collect it">To confirm you're an adult</td>
-          <td data-label="Why we keep it">Until you finish setting up</td>
-          <td data-label="When it's deleted">After seven days, if unfinished</td>
+          <td data-label="Why we keep it">An unfinished request, until you finish setting up. A finished one, as proof of your consent</td>
+          <td data-label="When it's deleted">After seven days, if unfinished. A finished one is deleted with the notebook</td>
         </tr>
         <tr>
           <th scope="row">Database backups</th>
@@ -303,6 +314,11 @@ const SUPPORT_EMAIL = "derek@harvous.com";
         </tr>
       </tbody>
     </table>
+    <p>
+      When you finish verifying, we keep the result with the notebook as proof of your consent: a
+      one-way coded form of your email address and KWS's reference number. It's deleted with the
+      notebook.
+    </p>
     <p>
       A deleted notebook is removed with everything in it, including the consent history. Deleted
       information may stay in restricted database backups for up to 8 days, until those backups

@@ -1,10 +1,11 @@
 /**
  * Cloudflare Worker in front of the static site.
  *
- * Almost nothing runs here. The site is 493 prerendered pages served from
- * Workers static assets; the Worker exists for the one path that needs a
- * server — the church directory typeahead, which holds the Here's My Church
- * partner key.
+ * Almost nothing runs here. The site is prerendered pages served from
+ * Workers static assets; the Worker exists for the few paths that need a
+ * server: the church directory typeahead (it holds the Here's My Church
+ * partner key), church interest submissions, video from R2, and
+ * "Ask a question about Harvous" (Workers AI, cloudflare/ask.ts).
  *
  * Everything else is handed to `env.ASSETS`, which runs the full asset
  * pipeline: `_redirects` (public/_redirects), `_headers`, directory-index
@@ -14,6 +15,7 @@
  * @see wrangler.jsonc — assets config and `run_worker_first`
  */
 import { handleChurchSearch } from '../src/lib/church-search.ts';
+import { handleAsk, type AskEnv } from './ask.ts';
 import { parseChurchInterest } from '../src/lib/church-interest.ts';
 import { forwardChurchInterest, readForwardConfig } from '../src/lib/church-interest-forward.ts';
 import {
@@ -68,6 +70,10 @@ type Env = {
   HERESMYCHURCH_API_BASE?: string;
   HERESMYCHURCH_ANON_KEY?: string;
   HERESMYCHURCH_PARTNER_API_KEY?: string;
+  /** Workers AI, for /api/ask. */
+  AI?: AskEnv['AI'];
+  /** Rate limit for /api/ask. */
+  ASK_LIMIT?: AskEnv['ASK_LIMIT'];
 };
 
 /** Trailing slash tolerated so a hand-typed URL behaves like the one the form sends. */
@@ -301,6 +307,10 @@ export default {
     const media = mediaKey(pathname);
     if (media) {
       return serveMedia(request, env, media);
+    }
+
+    if (pathname === '/api/ask' || pathname === '/api/ask/') {
+      return handleAsk(request, env, ctx);
     }
 
     if (isChurchSearch(pathname)) {
