@@ -220,14 +220,16 @@ article:has(> .color-band:last-child) + .frame-divider::before {
   --tint-blue: color-mix(in oklab, var(--color-accent) 14%, var(--color-paper));
 }
 
-/* Text selection matches the marker highlight */
+/* Text selection matches the marker highlight. The highlight stays pale
+   yellow in both themes, so the text on it is always dark: --color-ink
+   turns light in dark mode, which left selected text light on yellow. */
 ::selection {
   background: var(--color-highlight);
-  color: var(--color-ink);
+  color: #16171c;
 }
 ::-moz-selection {
   background: var(--color-highlight);
-  color: var(--color-ink);
+  color: #16171c;
 }
 
 /* Marker highlight — Campsite/Fizzy inline color accent */
