@@ -6,6 +6,7 @@
  * study this way, the features it leans on, related ways to study, Discover
  * listings filed under it, a Compare preview, a quote, posts, the close.
  */
+import SoonBadge from "./next/SoonBadge.astro";
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import UseCaseCard from "./next/UseCaseCard.astro";
@@ -18,7 +19,7 @@ import { Icon } from "astro-icon/components";
 import { getCollection, getEntry, render } from "astro:content";
 import { getCompareBySlug } from "../lib/compare-data.ts";
 import { getUseCaseBySlug, getUseCaseDisplayTitle, type UseCase } from "../lib/use-cases-data.ts";
-import { getComingSoonGridItem, SOON_LABEL } from "../lib/coming-soon-grid.ts";
+import { getComingSoonGridItem } from "../lib/coming-soon-grid.ts";
 import { getAudiencesForUseCase } from "../lib/for-audiences-data.ts";
 import { FEATURE_ICONS } from "../lib/feature-icons.ts";
 import { hasDetailContent } from "../lib/product-page-data.ts";
@@ -92,7 +93,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
           Use cases
         </a>
         <span class="ud-badge" aria-current="page"><Icon name={useCase.icon} /> {title}</span>
-        {useCase.comingSoon && <span class="ud-badge ud-badge--soon">{useCase.comingSoonLine ?? SOON_LABEL}</span>}
+        {useCase.comingSoon && <SoonBadge size="crumb" label={useCase.comingSoonLine} />}
       </nav>
       <h1 class="nx-display ud-title">{useCase.heroTitle}</h1>
       <p class="nx-lead ud-lead">{useCase.heroLead}</p>
@@ -171,7 +172,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
                   <span class="ud-row__text">
                     <span class="ud-row__title">
                       {f.title}
-                      {f.soon && <span class="ud-row__soon">{SOON_LABEL}</span>}
+                      {f.soon && <SoonBadge />}
                     </span>
                     <span class="ud-row__desc">{f.desc}</span>
                   </span>
@@ -274,7 +275,6 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     color: color-mix(in oklab, var(--uc-ink) var(--ink-on-tint), var(--color-ink));
     background: color-mix(in oklab, var(--uc-ink) 14%, var(--color-paper));
   }
-  .ud-badge--soon { color: var(--color-ink-soft); background: var(--color-warm); }
   .ud-badge :global(svg) { width: 0.95rem; height: 0.95rem; }
   .ud-title { margin: 1.5rem auto 0; max-width: 20ch; font-size: clamp(2.25rem, 5vw, 3.75rem); }
   .ud-lead { margin: 1.5rem auto 0; }
@@ -404,7 +404,6 @@ const Quote = quote ? (await render(quote)).Content : undefined;
   .ud-row__mark :global(svg) { width: 0.75rem; height: 0.75rem; }
   .ud-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }
   .ud-row__title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; font-weight: 600; color: var(--color-ink); }
-  .ud-row__soon { padding: 0.05rem 0.5rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; color: var(--color-ink-soft); background: var(--color-warm); }
   .ud-row__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
   .ud-row__chev {
     flex: none;

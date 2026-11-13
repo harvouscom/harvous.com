@@ -13,6 +13,7 @@
  *
  * Page data (SEO, FAQ, closing) is CHILD_NOTEBOOKS_PAGE in lib/addons-data.ts.
  */
+import SoonBadge from "./SoonBadge.astro";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "./ClosingCall.astro";
 import ShowcaseVisual from "./ShowcaseVisual.astro";
@@ -91,7 +92,7 @@ const faqs = page.faqs ?? [];
           Family
         </a>
         <span class="cn-crumb__here" aria-current="page"><AppIcon name="book-open-reader" /> Child notebooks</span>
-        {page.comingSoon && <span class="cn-crumb__soon">{page.comingSoonLine}</span>}
+        {page.comingSoon && <SoonBadge size="crumb" label={page.comingSoonLine} />}
       </nav>
       <h1 class="nx-display cn-hero__title">{page.heroTitle}</h1>
       <p class="nx-lead cn-hero__lead">{page.heroLead}</p>
@@ -379,7 +380,6 @@ const faqs = page.faqs ?? [];
   }
   .cn-crumb__here :global(svg) { width: 0.95rem; height: 0.95rem; }
   /* The site's quiet "not yet" label (as on add-on pages): neutral, no dot. */
-  .cn-crumb__soon { padding: 0.35rem 0.85rem 0.35rem 0.4rem; border-radius: 999px; font-size: 0.875rem; color: var(--color-ink-soft); }
   .cn-hero__title { margin: 1.5rem auto 0; max-width: 14ch; }
   .cn-hero__lead { margin: 1.25rem auto 0; max-width: 34rem; }
   .cn-hero__acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin: 2rem 0 0; }
