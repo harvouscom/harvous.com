@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
+    "dev:worker": "KEEP_DRAFT_PAGES=1 astro build && wrangler dev --port 8788 --ip 127.0.0.1",
     "start": "astro dev",
     "cf:dev": "npm run build && wrangler dev",
     "cf:deploy": "npm run build && wrangler deploy",
