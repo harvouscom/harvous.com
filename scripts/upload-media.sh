@@ -17,7 +17,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BUCKET="harvous-com-media"
 # Anything not listed in MEDIA_KEYS in the Worker is unreachable, so keep the
 # two in step.
-FILES=(touring-harvous-short.mp4 harvous-3-walkthrough.mp4)
+FILES=(touring-harvous-short.mp4 harvous-3-walkthrough.mp4 harvous-intro.mp4)
 
 # --remote is what makes wrangler talk to the real bucket rather than local state.
 TARGET="--remote"
