@@ -14,6 +14,7 @@ import FeatureWalkthrough from "./next/FeatureWalkthrough.astro";
 import ShowcaseVisual from "./next/ShowcaseVisual.astro";
 import ComparePreview from "./next/ComparePreview.astro";
 import FaqItem from "./FaqItem.astro";
+import AskHarvous from "./next/AskHarvous.astro";
 import BlogNextCard from "./next/BlogNextCard.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
@@ -160,7 +161,11 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
 
     {faqs.length > 0 && (
       <section class="nx-wrap pd-sec pd-faq" aria-labelledby="faq-title">
-        <h2 id="faq-title" class="pd-h2 pd-h2--sec">Questions</h2>
+        <div class="pd-faq__side">
+          <h2 id="faq-title" class="pd-h2 pd-h2--sec">Questions</h2>
+          <p class="pd-faq__lead">The common ones are here. Ask anything else below.</p>
+          <AskHarvous class="pd-faq__ask" placeholder={`Ask about ${page.title}`} />
+        </div>
         <div class="pd-faq__list">
           {faqs.map((f) => (
             <FaqItem id={faqId(f.question)} question={f.question}>
@@ -334,8 +339,19 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
   .pd-h2--sec { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 600; letter-spacing: -0.03em; }
   .pd-sec__lead { max-width: 40rem; margin: 0.6rem 0 0; color: var(--color-ink-soft); text-wrap: pretty; }
 
-  .pd-faq { max-width: calc(40rem + 2 * var(--nx-gutter)); }
-  .pd-faq__list { margin-top: 1rem; border-bottom: 1px solid var(--color-rule); }
+  /* Two columns, like the homepage's quick answers: the heading and the ask
+     box stay in view on the left while the questions run down the right. */
+  .pd-faq { max-width: calc(64rem + 2 * var(--nx-gutter)); display: grid; gap: 1.5rem; }
+  @media (min-width: 52rem) {
+    .pd-faq { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(2.5rem, 6vw, 5rem); align-items: start; }
+    .pd-faq__side { position: sticky; top: 6rem; }
+  }
+  .pd-faq__lead { margin: 0.75rem 0 0; max-width: 24rem; line-height: 1.55; color: var(--color-ink-soft); }
+  .pd-faq__lead a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .pd-faq :global(.pd-faq__ask) { margin-top: 1.25rem; }
+  .pd-faq__list { border-bottom: 1px solid var(--color-rule); }
+  .pd-faq__list :global(.faq:first-child) { border-top: 0; }
+  @media (max-width: 51.99rem) { .pd-faq__list :global(.faq:first-child) { border-top: 1px solid var(--color-rule); } }
   .pd-moments {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

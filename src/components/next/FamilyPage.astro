@@ -13,6 +13,7 @@ import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "./ClosingCall.astro";
 import ShowcaseVisual from "./ShowcaseVisual.astro";
 import AppIcon from "./app/AppIcon.astro";
+import AskHarvous from "./AskHarvous.astro";
 import { ogCard } from "../../lib/og-card.ts";
 import { draftPageIsReachable } from "../../lib/draft-pages.ts";
 import { buildAddonJsonLd, type ProductPage } from "../../lib/product-page-data.ts";
@@ -137,6 +138,10 @@ const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks"
     )}
 
     {/* ── Good to know ── */}
+    <section class="nx-wrap fp-ask" aria-label="Ask about Family">
+      <AskHarvous placeholder="Ask about Family" />
+    </section>
+
     <section class="nx-wrap fp-facts" aria-label="Good to know">
       <div class="fp-fact">
         <span class="fp-fact__icon"><AppIcon name="link" /></span>
@@ -303,4 +308,5 @@ const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks"
   .fp-fact__icon :global(svg) { width: 1rem; height: 1rem; }
   .fp-fact h3 { margin: 1rem 0 0; font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.015em; color: var(--color-ink); }
   .fp-fact p { margin: 0.35rem 0 0; font-size: 0.95rem; line-height: 1.55; color: var(--color-ink-soft); }
+  .fp-ask { display: grid; justify-items: center; padding-top: var(--nx-section); }
 </style>

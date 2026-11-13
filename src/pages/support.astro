@@ -8,6 +8,7 @@
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import FaqItem from "../components/FaqItem.astro";
+import AskHarvous from "../components/next/AskHarvous.astro";
 import AppIcon from "../components/next/app/AppIcon.astro";
 import { render } from "astro:content";
 import { buildFaqPageJsonLd, faqAnchorId, getFaqEntries } from "../lib/faq";
@@ -85,6 +86,10 @@ const faqs = await Promise.all(entries.map(async (entry) => ({ entry, Content: (
   </section>
 
   {faqs.length > 0 && (
+    <section class="nx-wrap sp-ask" aria-label="Ask a question">
+      <AskHarvous />
+    </section>
+
     <section class="nx-wrap sp-faq" aria-labelledby="sp-faq-title">
       <div class="sp-faq__head">
         <h2 id="sp-faq-title" class="sp-h2">Common questions</h2>
@@ -251,4 +256,5 @@ const faqs = await Promise.all(entries.map(async (entry) => ({ entry, Content: (
   .sp-faq__list { margin-top: 1rem; border-bottom: 1px solid var(--color-rule); }
   /* Links in answers: ink, not the accent blue. */
   .sp-faq__list :global(.faq__answer a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .sp-ask { max-width: calc(40rem + 2 * var(--nx-gutter)); padding-top: clamp(2.5rem, 6vw, 3.5rem); }
 </style>
