@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T19:07:31.230Z",
+  "generatedAt": "2026-11-13T16:38:35.856Z",
   "version": "shader-v17",
   "pool": "public/images/auth-hero only",
   "policy": "category tone packs + light/dark mood; content-shaped forms",
@@ -272,7 +272,7 @@
       },
       "spot": "/blog-thumbs/look-it-up-without-leaving-the-note-spot.webp",
       "feat": "/blog-thumbs/look-it-up-without-leaving-the-note-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "notes-first-vs-ai-that-studies-for-you": {
       "category": "how-we-think",
@@ -387,7 +387,7 @@
       },
       "spot": "/blog-thumbs/read-it-twice-side-by-side-spot.webp",
       "feat": "/blog-thumbs/read-it-twice-side-by-side-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "remembering-is-the-point": {
       "category": "how-we-think",
@@ -433,7 +433,7 @@
       },
       "spot": "/blog-thumbs/review-that-asks-what-you-wrote-spot.webp",
       "feat": "/blog-thumbs/review-that-asks-what-you-wrote-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "sermon-series-to-small-group-follow-up": {
       "category": "teaching",
@@ -457,6 +457,52 @@
       "spot": "/blog-thumbs/sermon-series-to-small-group-follow-up-spot.webp",
       "feat": "/blog-thumbs/sermon-series-to-small-group-follow-up-feat.webp",
       "skipped": true
+    },
+    "set-up-a-child-notebook": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "streak",
+      "source": "ai_bg_053.webp",
+      "sourceMean": 234,
+      "pack": [
+        "ai_bg_075.webp",
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
+      },
+      "spot": "/blog-thumbs/set-up-a-child-notebook-spot.webp",
+      "feat": "/blog-thumbs/set-up-a-child-notebook-feat.webp",
+      "skipped": false
+    },
+    "start-a-family-in-harvous": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "bars",
+      "source": "ai_bg_075.webp",
+      "sourceMean": 237,
+      "pack": [
+        "ai_bg_075.webp",
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
+      },
+      "spot": "/blog-thumbs/start-a-family-in-harvous-spot.webp",
+      "feat": "/blog-thumbs/start-a-family-in-harvous-feat.webp",
+      "skipped": false
     },
     "start-reading-in-harvous": {
       "category": "using-harvous",
@@ -502,7 +548,7 @@
       },
       "spot": "/blog-thumbs/start-the-fall-with-a-shape-spot.webp",
       "feat": "/blog-thumbs/start-the-fall-with-a-shape-feat.webp",
-      "skipped": false
+      "skipped": true
     },
     "start-with-scripture-pills": {
       "category": "using-harvous",
@@ -756,6 +802,29 @@
       "spot": "/blog-thumbs/what-church-education-systems-need-spot.webp",
       "feat": "/blog-thumbs/what-church-education-systems-need-feat.webp",
       "skipped": true
+    },
+    "what-parents-can-and-cant-see": {
+      "category": "using-harvous",
+      "mood": "light",
+      "shape": "bars",
+      "source": "ai_bg_075.webp",
+      "sourceMean": 237,
+      "pack": [
+        "ai_bg_075.webp",
+        "ai_bg_053.webp",
+        "ai_bg_051.webp",
+        "ai_bg_045.webp",
+        "ai_bg_072.webp",
+        "ai_bg_050.webp"
+      ],
+      "grade": {
+        "a": "#3d4454",
+        "b": "#c8ccd4",
+        "c": "#f4f5f7"
+      },
+      "spot": "/blog-thumbs/what-parents-can-and-cant-see-spot.webp",
+      "feat": "/blog-thumbs/what-parents-can-and-cant-see-feat.webp",
+      "skipped": false
     },
     "what-proverbs-25-2-taught-me": {
       "category": "how-we-think",

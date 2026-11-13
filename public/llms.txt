@@ -16,7 +16,8 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 - Reminders: an optional web push, at a rhythm you choose — Sunday and midweek, or every day — carrying the day's verse or the chapter you left, opening straight to it and pausing itself when it goes unopened
 - Review (Harvous Plus): answer a question about your own notes from memory, then say how it went — no AI-written questions, no score
 - Connector (Harvous Plus): let Claude, ChatGPT, or another AI app you choose read your notes — read-only, locked notes stay locked
-- Family (Harvous Plus): Harvous Plus covers up to five more people in your household, with a shared Family Space and a parent view that shows a child's progress, never their notes
+- Family (Harvous Plus): Harvous Plus covers up to five more people in your household, with a shared Family Space and a parent view that shows a teen's progress (13 and up), never their notes
+- Child notebooks (coming soon): parent-managed notebooks for children under 13, in the United States only, set up with verified parent consent; included with Harvous Plus, on the web
 - Search from the top middle finds anything you have saved
 - Shared Spaces, threads, and folders that organize themselves around what you study — hosting a space is Plus, joining is always free
 
@@ -32,6 +33,13 @@ Harvous is a notes app first, not built around sermon transcription or AI-genera
 - Release Notes: https://harvous.com/release-notes/
 - Connector (use your study in Claude and ChatGPT): https://harvous.com/add-ons/connector/
 - Family (share Plus with your household): https://harvous.com/add-ons/family/
+- Child notebooks (coming soon; under 13, US only): https://harvous.com/add-ons/family/child-notebooks/
+- Children's privacy policy: https://harvous.com/privacy/children/
+- For families: https://harvous.com/for/families/
+- Best family Bible study apps (guide): https://harvous.com/compare/best-family-bible-study-apps/
+- Start a family in Harvous: https://harvous.com/blog/start-a-family-in-harvous/
+- What parents can and can't see: https://harvous.com/blog/what-parents-can-and-cant-see/
+- Setting up a child notebook (coming soon): https://harvous.com/blog/set-up-a-child-notebook/
 - Catholic Bible: https://harvous.com/features/catholic-bible/
 - My Bible: https://harvous.com/features/my-bible/
 - Sign up: https://app.harvous.com/
@@ -81,6 +89,7 @@ Hub: https://harvous.com/blog/
 - https://harvous.com/compare/logos-alternative/
 - https://harvous.com/compare/obsidian-alternative/
 - https://harvous.com/compare/notion-alternative/
+- https://harvous.com/compare/best-family-bible-study-apps/
 - https://harvous.com/compare/apple-notes-alternative/
 - https://harvous.com/compare/bible-note-alternative/
 - https://harvous.com/compare/bible-notes-alternative/

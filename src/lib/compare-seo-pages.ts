@@ -47,6 +47,18 @@ type CompareSeoPageBase = {
    * Defaults depend on whether Harvous is ranked #1.
    */
   honestNote?: string;
+  /**
+   * Per-pick “Best for” lines that replace the app’s general one, keyed by slug
+   * (`"harvous"` included). For guides about a narrower job than the app’s main
+   * one — the family guide says what each app offers a household.
+   */
+  pickNotes?: Record<string, string>;
+  /** Per-pick intro lines, keyed by slug, for the same reason. */
+  pickIntros?: Record<string, string>;
+  /** Replaces the default “At a glance” rows on a category guide. */
+  decisionRows?: { label: string; harvous: string; others: string }[];
+  /** Replaces the default closing call. */
+  closing?: { title: string; lead: string };
 };
 
 export type CompareCategorySeoPage = CompareSeoPageBase & {
@@ -92,6 +104,7 @@ const CATEGORY_HARVOUS_TYPE: Record<string, string> = {
   "best-bible-study-note-templates": "Bible Notes",
   "best-linked-bible-notes-apps": "General Notes",
   "best-bible-highlight-apps": "Bible Notes",
+  "best-family-bible-study-apps": "Group Study",
 };
 
 /** Alternatives whose target type isn’t the right Harvous lane (e.g. group guides targeting Notion/Docs). */
@@ -1195,6 +1208,66 @@ const SEO_PAGES: CompareSeoPage[] = [
       },
     ],
   },
+  {
+    /*
+      Family guide (Nov 2026). Every line about another app comes from
+      data/compare-family.json, checked 2026-11-13 with sources; re-check
+      before editing. No "only app" claims: Hallow has a family plan and
+      Kids Profiles, Dwell a family plan. Child notebooks stay "Coming soon",
+      with the US and under-13 limits, until enrollment opens.
+    */
+    kind: "category",
+    slug: "best-family-bible-study-apps",
+    guideLabel: "Best family Bible study apps",
+    guideDescription: "Apps a household can share, and what each does for kids and teens",
+    seoTitle: "Best family Bible study apps (2026) — Harvous",
+    seoDescription:
+      "Compare family Bible study apps: Harvous, YouVersion, Hallow, Dwell and Bible Memory. Family plans, a space to study together, and what parents of kids and teens can see.",
+    h1: "Best family Bible study apps",
+    lead: "Apps a household can share. What each one covers, who it’s for, and what a parent sees of a child’s study.",
+    pickSlugs: ["harvous", "youversion", "hallow", "dwell", "bible-memory"],
+    pickIntros: {
+      harvous: "Bible study notes for the whole household: a Family Space you share, and everyone’s own study kept theirs.",
+    },
+    pickNotes: {
+      harvous:
+        "Families who write about what they read. Harvous Plus covers you and up to five more, with a Family Space you all add to. Teens 13 and up keep their notes private: a parent sees progress, never content. Notebooks for children under 13, in the US with verified parent consent, are coming soon.",
+      youversion:
+        "Reading plans together, for free. A parent can add a child’s profile to their own account, and Bible App for Kids is a separate app for ages 6–8.",
+      hallow:
+        "Catholic families who pray together. The Friends & Family plan covers up to six people, and Kids Profiles sit inside a parent’s account.",
+      dwell:
+        "Listening to Scripture as a household. The family plan covers up to six accounts.",
+      "bible-memory":
+        "Memorizing verses as a family. The top tier includes family accounts, each with its own progress.",
+    },
+    decisionRows: [
+      { label: "Family plan", harvous: "In Harvous Plus: you and up to 5 more", others: "Hallow and Dwell: up to 6; YouVersion is free" },
+      { label: "A place to study together", harvous: "A Family Space everyone adds to", others: "Usually shared plans or nothing" },
+      { label: "Teens", harvous: "13+: parents see progress, never notes", others: "Usually an ordinary account" },
+      { label: "Under 13", harvous: "Coming soon: parent-managed notebooks, US only, verified consent", others: "Kids profiles or kids apps in some" },
+    ],
+    closing: {
+      title: "Read the Bible together at home.",
+      lead: "Harvous is free for your own study. Harvous Plus adds a Family Space for up to six people, and everyone’s own notes stay theirs.",
+    },
+    honestNote:
+      "We built Harvous, so of course we care how this list reads. We put it first because it’s the one here built around writing what you read, together and on your own. If your family mostly listens, prays or memorizes, the apps below may suit you better.",
+    whenToChoose: [
+      {
+        heading: "Choose Harvous if…",
+        body: "Your family talks about what you read and wants somewhere to keep it: a Family Space for what you read together, private notes for everyone, and a progress view for parents of teens that never shows the notes. See [Family](/add-ons/family/) and [child notebooks](/add-ons/family/child-notebooks/) (coming soon, US only).",
+      },
+      {
+        heading: "Choose YouVersion if…",
+        body: "You want free reading plans you can do together, and a separate Bible app for young children.",
+      },
+      {
+        heading: "Choose Hallow if…",
+        body: "You’re a Catholic family looking for guided prayer and audio, with profiles for the kids.",
+      },
+    ],
+  },
 ];
 
 function harvousPick(competitorType = "Bible Notes"): ComparePick {
@@ -1280,6 +1353,15 @@ export function resolvePickSlugs(slugs: string[], competitorType = "Bible Notes"
   }
 
   return picks;
+}
+
+/** Apply a guide’s per-pick “Best for” lines and intros (`pickNotes`, `pickIntros`). */
+export function applyPickNotes(page: CompareSeoPage, picks: ComparePick[]): ComparePick[] {
+  return picks.map((p) => ({
+    ...p,
+    idealFor: page.pickNotes?.[p.slug] ?? p.idealFor,
+    intro: page.pickIntros?.[p.slug] ?? p.intro,
+  }));
 }
 
 /** “Side note” copy for a guide, based on rank + optional override. */

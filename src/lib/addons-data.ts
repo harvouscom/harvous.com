@@ -332,7 +332,7 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   back: { href: "/add-ons/family/", label: "Family" },
   title: "Child notebooks",
   tagline: "A private notebook for a child under 13, set up and managed by you.",
-  seoTitle: "Child notebooks — a Bible notebook for kids under 13 | Harvous Plus",
+  seoTitle: "Child notebooks — a kids Bible journal for under-13s, managed by parents | Harvous Plus",
   seoDescription:
     "Coming soon: give a child under 13 their own private place to write about what they read and wonder. You set it up, choose what they read, and stay in charge. Included with Harvous Plus, on the web in the US.",
   icon: "fa7-solid:book-open-reader",

@@ -1,0 +1,85 @@
+{
+  "youversion": {
+    "plan": "Free, so there’s no plan to share",
+    "kids": "A parent can add a child’s profile to their own account; Bible App for Kids is a separate app for ages 6–8",
+    "sources": [
+      "https://bible.com/privacy (last modified 2025-11-16)",
+      "https://apps.apple.com/us/app/bible-app-for-kids/id668692393"
+    ],
+    "checked": "2026-11-13",
+    "notes": "A 2020 K-LOVE article said Bible App for Kids sent parents weekly progress updates; could not confirm it is current, so not claimed either way."
+  },
+  "hallow": {
+    "plan": "Friends & Family plan: up to 6 people, $119.99/yr",
+    "kids": "Kids Profiles inside a parent’s account, behind a Parent PIN (US English)",
+    "sources": [
+      "https://help.hallow.com/en/articles/8792339-friends-family-plan-faq (2026-08-26)",
+      "https://hallow.com/family-plans/",
+      "https://help.hallow.com/en/articles/15925276-kids-profiles-overview-faq (2026-08-13)",
+      "https://hallow.com/privacy-policy (effective 2026-07-17)"
+    ],
+    "checked": "2026-11-13",
+    "notes": "Closest competitor. Privacy policy says under-13s need verifiable parental consent. Parents see a kid profile by switching into it; no progress-only view found."
+  },
+  "dwell": {
+    "plan": "Family plan: up to 6 accounts, $109.99/yr or $17.99/mo",
+    "kids": "No child accounts listed",
+    "sources": [
+      "https://dwellapp.io/pricing/family",
+      "https://help.dwellapp.io/article/144-how-do-i-share-my-family-plan",
+      "https://dwellapp.io/privacy (undated)"
+    ],
+    "checked": "2026-11-13"
+  },
+  "logos": {
+    "plan": "No — each license is for one person",
+    "kids": "No accounts under 13; a parent accepts the terms for an older minor",
+    "sources": [
+      "https://www.logos.com/terms (2026-05-01)",
+      "https://www.logos.com/privacy/secondary-ed (2026-06-01)"
+    ],
+    "checked": "2026-11-13"
+  },
+  "glorify": {
+    "plan": "None listed",
+    "kids": "Not meant for children under 13",
+    "sources": [
+      "https://glorify.global/app/privacy-policy (v2.0, 2026-07-14)",
+      "https://www.glorify.global/app/terms-conditions (2026-07-28)"
+    ],
+    "checked": "2026-11-13"
+  },
+  "abide": {
+    "plan": "None listed",
+    "kids": "18 and up, or a parent signing up for a minor",
+    "sources": [
+      "https://help.abide.com/hc/en-us/categories/360000918233-Subscriptions-and-billing",
+      "https://abide.com/privacy (undated)"
+    ],
+    "checked": "2026-11-13"
+  },
+  "bibleproject": {
+    "plan": "Free, so there’s no plan to share",
+    "kids": "Not directed at children; no kids accounts listed",
+    "sources": ["https://bibleproject.com/privacy/ (updated 2025-10)"],
+    "checked": "2026-11-13"
+  },
+  "bible-memory": {
+    "plan": "Top tier includes unlimited family accounts",
+    "kids": "Each family member keeps their own progress",
+    "sources": ["https://biblememory.com/app"],
+    "checked": "2026-11-13"
+  },
+  "obsidian": {
+    "plan": "No — licensed per person",
+    "kids": "Adults only (age of majority)",
+    "sources": ["https://obsidian.md/terms (2025-02-20)"],
+    "checked": "2026-11-13"
+  },
+  "notion": {
+    "plan": "No family plan; workspaces can be shared",
+    "kids": "Not directed at children",
+    "sources": ["https://www.notion.com/trust/privacy-policy (effective 2025-04-10)"],
+    "checked": "2026-11-13"
+  }
+}
