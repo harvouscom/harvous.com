@@ -4,8 +4,8 @@
  * step (StudyScenes, ChurchScenes) to the feature that step leans on. Wears the
  * audience's ink (`--aud-ink`) when there is one.
  */
+import SoonBadge from "./SoonBadge.astro";
 import type { ForAudienceFeatureLink } from "../../lib/for-audiences-data.ts";
-import { SOON_LABEL } from "../../lib/coming-soon-grid.ts";
 
 interface Props {
   feature: ForAudienceFeatureLink;
@@ -18,7 +18,7 @@ const Tag = feature.href ? "a" : "span";
   <Tag class="fchip__in" href={feature.href}>
     <span class="fchip__k">Feature</span>
     {feature.title}
-    {feature.soon && <span class="fchip__soon">{SOON_LABEL}</span>}
+    {feature.soon && <SoonBadge />}
     {feature.href && <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" /></svg>}
   </Tag>
 </p>
@@ -48,7 +48,6 @@ const Tag = feature.href ? "a" : "span";
     color: var(--color-paper);
     background: color-mix(in srgb, var(--aud-ink, var(--color-ink)) 70%, var(--color-ink));
   }
-  .fchip__soon { font-size: 0.75rem; color: var(--color-ink-faint); }
   .fchip svg { width: 0.7rem; height: 0.7rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms ease; }
   a.fchip__in:hover svg { transform: translateX(2px); }
 </style>

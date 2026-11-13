@@ -6,6 +6,7 @@
  * audience page. The child notebooks line shows only where that page exists
  * (lib/draft-pages.ts).
  */
+import SoonBadge from "./SoonBadge.astro";
 import ShowcaseVisual from "./ShowcaseVisual.astro";
 import AppIcon from "./app/AppIcon.astro";
 import { draftPageIsReachable } from "../../lib/draft-pages.ts";
@@ -33,8 +34,8 @@ const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks"
             <span class="fband__kids-sticker"><AppIcon name="heart" /></span>
           </span>
           <span class="fband__kids-text">
-            <b>Younger than 13? <span class="fband__kids-soon">Coming soon</span></b>
-            <span>Child notebooks will give them a private place of their own, with you in charge.</span>
+            <b>Child notebooks <SoonBadge label="Coming soon" /></b>
+            <span>For kids under 13: a private place of their own, with you in charge.</span>
           </span>
           <span class="fband__kids-go" aria-hidden="true">→</span>
         </a>

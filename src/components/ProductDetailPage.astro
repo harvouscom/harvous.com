@@ -5,6 +5,7 @@
  * back link and "works well with" rail point at its category; an add-on's
  * point at pricing and close on the Plus upgrade instead of the free try.
  */
+import SoonBadge from "./next/SoonBadge.astro";
 import NextLayout from "../layouts/NextLayout.astro";
 import { ogCard } from "../lib/og-card.ts";
 import ClosingCall from "./next/ClosingCall.astro";
@@ -27,7 +28,6 @@ import { buildAddonJsonLd, buildFeatureJsonLd, hasDetailContent } from "../lib/p
 import { getRelatedBlogPosts, includeBlogDrafts, isBlogPostListed } from "../lib/blog.ts";
 import { fathomSignup, fathomTry, fathomCompare } from "../lib/fathom-events.ts";
 import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
-import { SOON_LABEL } from "../lib/coming-soon-grid.ts";
 import { stageMesh } from "../lib/next/content.ts";
 
 interface Props {
@@ -93,7 +93,7 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
           <span class="pd-crumb__icon" aria-hidden="true"><Icon name={page.icon} /></span>
           {page.title}
         </span>
-        {page.comingSoon && <span class="pd-crumb__soon">{page.comingSoonLine ?? SOON_LABEL}</span>}
+        {page.comingSoon && <SoonBadge size="crumb" label={page.comingSoonLine} />}
       </nav>
       <h1 class="nx-display pd-title">{page.heroTitle}</h1>
       <p class="nx-lead pd-lead">{page.heroLead}</p>
@@ -290,7 +290,6 @@ const ogImage = ogCard(page.kind === "feature" ? `feature-${page.slug}` : `addon
   }
   .pd-crumb__icon { display: inline-grid; place-items: center; }
   .pd-crumb__icon :global(svg) { width: 0.95rem; height: 0.95rem; }
-  .pd-crumb__soon { padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.8125rem; color: var(--color-ink-soft); }
   /* Full display size; titles are written to fit two lines (about 44 characters). */
   .pd-title { margin: 1.5rem auto 0; max-width: 22ch; font-size: clamp(2.5rem, 6vw, 4.5rem); text-wrap: balance; }
   .pd-lead { max-width: 32rem; margin: 1.25rem auto 0; }

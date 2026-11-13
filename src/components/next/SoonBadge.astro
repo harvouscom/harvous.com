@@ -1,0 +1,49 @@
+---
+/**
+ * The one "not live yet" badge on the site: a small, quiet pill beside a title, a row or a crumb.
+ *
+ * It used to be styled by hand in nine places, at nine sizes, and one of them (the Family band's
+ * child notebooks card) inherited `display: block` from its parent and stretched into a bar.
+ * This keeps its own display, size and colour whatever it sits inside. The tint is translucent
+ * ink, so it reads on paper, warm sections and the tinted cards alike.
+ *
+ * `size="crumb"` matches the breadcrumb pills at the top of detail pages.
+ */
+import { SOON_LABEL } from "../../lib/coming-soon-grid.ts";
+
+interface Props {
+  label?: string | null;
+  size?: "inline" | "crumb";
+}
+
+const { label, size = "inline" } = Astro.props;
+---
+
+<span class:list={["soon-badge", size === "crumb" && "soon-badge--crumb"]}>{label ?? SOON_LABEL}</span>
+
+<style>
+  .soon-badge {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    vertical-align: 0.15em;
+    margin: 0;
+    padding: 0.12rem 0.55rem;
+    border-radius: 999px;
+    font-family: var(--font-body, var(--font-sans, inherit));
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    color: var(--color-ink-soft);
+    background: color-mix(in srgb, var(--color-ink) 7%, transparent);
+  }
+  .soon-badge--crumb {
+    vertical-align: middle;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+</style>

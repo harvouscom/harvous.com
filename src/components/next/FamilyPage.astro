@@ -9,6 +9,7 @@
  * lib/addons-data.ts. The child notebooks card shows only where that page
  * exists (lib/draft-pages.ts).
  */
+import SoonBadge from "./SoonBadge.astro";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "./ClosingCall.astro";
 import ShowcaseVisual from "./ShowcaseVisual.astro";
@@ -129,7 +130,7 @@ const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks"
             <span class="fp-kids__sticker" style="--c: var(--pds-thread-yellow); --tilt: 10deg; bottom: -0.5rem; right: -1.2rem;"><AppIcon name="heart" /></span>
           </span>
           <span class="fp-kids__text">
-            <h2 id="fp-kids-title">Child notebooks, for kids under 13 <span class="fp-kids__soon">Coming soon</span></h2>
+            <h2 id="fp-kids-title">Child notebooks, for kids under 13 <SoonBadge label="Coming soon" /></h2>
             <span>Set up a private notebook for a younger child: their own notes, a Family Bible to read together, and you in charge of what they see. On the web, in the US.</span>
           </span>
           <span class="fp-kids__go">See child notebooks <span aria-hidden="true">→</span></span>
@@ -292,7 +293,6 @@ const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks"
   .fp-kids__sticker :global(svg) { width: 45%; height: 45%; }
   .fp-kids__text h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.3rem, 2.4vw, 1.6rem); font-weight: 600; letter-spacing: -0.02em; color: var(--color-ink); }
   .fp-kids__text span { display: block; margin-top: 0.4rem; max-width: 40rem; line-height: 1.55; color: var(--color-ink-soft); }
-  .fp-kids__soon { display: inline-block; margin-left: 0.4rem; padding: 0.15rem 0.6rem; border-radius: 999px; vertical-align: 0.2em; font-family: var(--font-body, inherit); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0; color: var(--color-ink-soft); background: color-mix(in srgb, var(--color-ink) 6%, transparent); }
   .fp-kids__go { grid-column: 1 / -1; font-weight: 500; color: var(--color-accent); }
   @media (min-width: 52rem) { .fp-kids__go { grid-column: auto; } }
 
