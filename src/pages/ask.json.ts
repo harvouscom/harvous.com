@@ -19,7 +19,14 @@ import { getAudiences } from "../lib/for-audiences-data.ts";
 import { FREE_PLAN, PLUS_PLAN } from "../lib/pricing-data.ts";
 import { draftPageIsReachable } from "../lib/draft-pages.ts";
 
-export type AskDoc = { id: string; title: string; href: string; text: string };
+export type AskDoc = {
+  id: string;
+  title: string;
+  href: string;
+  text: string;
+  /** For a page that isn't available yet: the line every answer drawn from it opens with. */
+  soon?: string;
+};
 
 /** Markdown links to their labels, and whitespace evened out. */
 const plain = (s: string) => s.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/\s+/g, " ").trim();
@@ -30,12 +37,17 @@ type Moment = { heading: string; body: string };
 const sectionsText = (sections: Section[] = []) => sections.map((s) => `${s.heading}. ${s.paragraphs.join(" ")}`).join(" ");
 const momentsText = (moments: Moment[] = []) => moments.map((m) => `${m.heading}: ${m.body}`).join(" ");
 
+/** What a page that isn't available yet says first, so answers never offer it as if it were. */
+const COMING_SOON = "COMING SOON: not available yet, and there's nothing to set up or sign up for yet.";
+
 function productDoc(page: ProductPage): AskDoc {
   return {
     id: `page-${page.slug}`,
-    title: page.title,
+    title: page.comingSoon ? `${page.title} (coming soon)` : page.title,
     href: page.href,
+    ...(page.comingSoon ? { soon: `${page.title} ${/s$/.test(page.title) ? "are" : "is"} coming soon and ${/s$/.test(page.title) ? "aren't" : "isn't"} available yet.` } : {}),
     text: join(
+      page.comingSoon && COMING_SOON,
       page.tagline,
       page.heroLead,
       sectionsText(page.sections),

@@ -14,7 +14,7 @@
  * sources, and a line saying so.
  */
 
-type AskDoc = { id: string; title: string; href: string; text: string };
+type AskDoc = { id: string; title: string; href: string; text: string; soon?: string };
 type Knowledge = { app: string; line: string; email: string; voice: string; version: string; docs: AskDoc[]; llms: string };
 
 export type AskEnv = {
@@ -29,7 +29,7 @@ type Ctx = { waitUntil(promise: Promise<unknown>): void };
 const MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
 const MAX_Q = 280;
 /** Bump when the prompt or the ranking changes, so cached answers start over. */
-const PROMPT_VERSION = 3;
+const PROMPT_VERSION = 6;
 /** How many docs go to the model as context, and how many show as links. */
 const CONTEXT_DOCS = 6;
 const LINK_DOCS = 2;
@@ -142,7 +142,7 @@ export async function handleAsk(request: Request, env: AskEnv, ctx: Ctx): Promis
   // A few questions a minute per visitor; the cache below still answers repeats for free.
   const ip = request.headers.get('cf-connecting-ip') || 'unknown';
 
-  // Repeat questions come from the cache.
+  // Repeat questions come from the cache (with the coming-soon line, if any, already in it).
   const key = new Request(`https://ask.cache/harvous/${site.version}/p${PROMPT_VERSION}/${encodeURIComponent(q.toLowerCase())}`);
   const cache = (caches as unknown as { default: Cache }).default;
   const hit = await cache.match(key);
@@ -152,6 +152,11 @@ export async function handleAsk(request: Request, env: AskEnv, ctx: Ctx): Promis
   if (env.ASK_LIMIT && !(await env.ASK_LIMIT.limit({ key: ip })).success) {
     return say(sources, "That's a lot of questions at once. Give it a minute, or look through the FAQ.");
   }
+
+  /* When the best match is something not available yet, the answer opens with
+     a fixed line saying so; the model is told not to repeat it. A model can't
+     be trusted to remember that on every small detail question. */
+  const soon = ranked[0]?.d.soon ?? '';
 
   const contextDocs = (ranked.length ? ranked.slice(0, CONTEXT_DOCS).map((x) => x.d) : site.docs.filter((d) => d.href.startsWith('/faq/')))
     .map((d) => `## ${d.title} (${d.href})\n${d.text}`)
@@ -164,6 +169,8 @@ export async function handleAsk(request: Request, env: AskEnv, ctx: Ctx): Promis
     `Voice: ${site.voice}`,
     `Never answer questions about the Bible, theology, doctrine or what a passage means, even briefly, and don't suggest emailing about them. Reply with two sentences like: "That's one to take to Scripture itself, and I can only help with ${site.app}. ${site.app} is a good place to write down what you find as you study it."`,
     `If the question has nothing to do with ${site.app} or the Bible, reply with one short, friendly sentence that steers back to what ${site.app} does. Don't suggest other websites.`,
+    'Some sections are marked COMING SOON: they are not available yet. Never say they can be used now, and never give steps to set them up or sign up for them.',
+    ...(soon ? [`Your answer will be shown right after this sentence: "${soon}" Don't repeat it; continue from it, in the future tense.`] : []),
     'Never ask for, repeat or store passwords, keys or personal details.',
     `\nCONTEXT\n\n${contextDocs}\n\nMORE ABOUT ${site.app.toUpperCase()}:\n${site.llms}`,
   ].join('\n');
@@ -191,6 +198,10 @@ export async function handleAsk(request: Request, env: AskEnv, ctx: Ctx): Promis
   const out = new ReadableStream({
     async start(c) {
       c.enqueue(enc.encode(sse('sources', sources)));
+      if (soon) {
+        full += `${soon} `;
+        c.enqueue(enc.encode(sse('t', { t: `${soon} ` })));
+      }
       const reader = ai.getReader();
       for (;;) {
         const { value, done } = await reader.read();
