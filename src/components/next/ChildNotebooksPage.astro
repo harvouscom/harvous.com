@@ -22,7 +22,6 @@ import AskHarvous from "./AskHarvous.astro";
 import { ogCard } from "../../lib/og-card.ts";
 import { isDraftPageSlug } from "../../lib/draft-pages.ts";
 import { buildAddonJsonLd, type ProductPage } from "../../lib/product-page-data.ts";
-import { fathomSignup } from "../../lib/fathom-events.ts";
 
 interface Props {
   page: ProductPage;
@@ -92,11 +91,12 @@ const faqs = page.faqs ?? [];
           Family
         </a>
         <span class="cn-crumb__here" aria-current="page"><AppIcon name="book-open-reader" /> Child notebooks</span>
+        {page.comingSoon && <span class="cn-crumb__soon">{page.comingSoonLine}</span>}
       </nav>
       <h1 class="nx-display cn-hero__title">{page.heroTitle}</h1>
       <p class="nx-lead cn-hero__lead">{page.heroLead}</p>
       <p class="cn-hero__acts">
-        <a class="nx-btn nx-btn--accent" href={page.closingHref} data-fathom-track={fathomSignup.addonDetail(page.slug)}>Get Harvous Plus</a>
+        {/* Nothing to start yet: setup opens when child notebooks launch. */}
         <a class="nx-btn nx-btn--ghost" href="#make-it-theirs">Decorate one</a>
       </p>
 
@@ -205,7 +205,7 @@ const faqs = page.faqs ?? [];
     <section class="nx-wrap cn-parents" aria-labelledby="cn-parents-title">
       <div class="cn-parents__text">
         <h2 id="cn-parents-title" class="nx-title">You're in charge.</h2>
-        <p class="cn-p">You set it up from Settings › My Family, and it stays yours to manage.</p>
+        <p class="cn-p">You'll set it up from Settings › My Family, and it stays yours to manage.</p>
         <ol class="cn-steps">
           <li><b>Confirm you're an adult.</b> <button type="button" class="cn-kws-open" data-cn-kws-open aria-haspopup="dialog">Kids Web Services <AppIcon name="circle-info" /></button> checks this for us.</li>
           <li><b>See how we protect them.</b> One short page, before anything is saved.</li>
@@ -302,10 +302,6 @@ const faqs = page.faqs ?? [];
     lead={page.closingLead}
     href={page.closingHref}
     label={page.closingLabel}
-    external
-    fathomTrack={fathomSignup.addonDetail(page.slug)}
-    secondaryHref="/add-ons/family/"
-    secondaryLabel="More about Family"
   />
 </NextLayout>
 
@@ -382,6 +378,8 @@ const faqs = page.faqs ?? [];
     background: color-mix(in oklab, var(--study-dock-accent-mintGreen) 16%, var(--color-paper));
   }
   .cn-crumb__here :global(svg) { width: 0.95rem; height: 0.95rem; }
+  /* The site's quiet "not yet" label (as on add-on pages): neutral, no dot. */
+  .cn-crumb__soon { padding: 0.35rem 0.85rem 0.35rem 0.4rem; border-radius: 999px; font-size: 0.875rem; color: var(--color-ink-soft); }
   .cn-hero__title { margin: 1.5rem auto 0; max-width: 14ch; }
   .cn-hero__lead { margin: 1.25rem auto 0; max-width: 34rem; }
   .cn-hero__acts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin: 2rem 0 0; }

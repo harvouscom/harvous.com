@@ -334,14 +334,16 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   tagline: "A private notebook for a child under 13, set up and managed by you.",
   seoTitle: "Child notebooks — a Bible notebook for kids under 13 | Harvous Plus",
   seoDescription:
-    "Give a child under 13 their own private place to write about what they read and wonder. You set it up, choose what they read, and stay in charge. Included with Harvous Plus, on the web in the US.",
+    "Coming soon: give a child under 13 their own private place to write about what they read and wonder. You set it up, choose what they read, and stay in charge. Included with Harvous Plus, on the web in the US.",
   icon: "fa7-solid:book-open-reader",
   ink: "var(--study-dock-accent-mintGreen)",
   image: "/images/auth-hero/ai_bg_053.webp",
-  comingSoon: false,
+  /* Live as a preview while KWS Production is reviewed; setup isn't open yet. */
+  comingSoon: true,
+  comingSoonLine: "Coming soon",
   heroTitle: "A notebook for your child.",
   heroLead:
-    "Their own private place to write about what they read and wonder. You set it up, and you stay in charge.",
+    "Their own private place to write about what they read and wonder. You'll set it up, and you stay in charge.",
   /* The page draws its own sections (components/next/ChildNotebooksPage.astro). */
   sections: [],
   showcases: [],
@@ -391,11 +393,11 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   relatedIds: [],
   relatedHeading: "",
   relatedLead: "",
-  closingHeading: "Give them a place to wonder.",
+  closingHeading: "Coming soon.",
   closingLead:
-    "Get Harvous Plus, then start from Settings › My Family. Child notebooks are on the web, for families in the US.",
-  closingHref: APP_UPGRADE_URL,
-  closingLabel: "Get Harvous Plus",
+    "Child notebooks are on their way, for families in the US. Family is already included with Harvous Plus.",
+  closingHref: "/add-ons/family/",
+  closingLabel: "See Family",
   draft: false,
 };
 

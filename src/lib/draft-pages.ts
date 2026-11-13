@@ -24,10 +24,11 @@
  * November 12, 2026. A nested slug works here too: the strip removes only
  * that folder (dist/privacy/children/) and leaves /privacy/ alone.
  *
- * `add-ons/family/child-notebooks` waits on child enrollment opening; the
- * strip removes only that folder, and /add-ons/family/ stays.
+ * `add-ons/family/child-notebooks` went live on November 12, 2026 as a
+ * "Coming soon" preview (comingSoon in CHILD_NOTEBOOKS_PAGE) while KWS
+ * Production is reviewed; setup opens in the app separately.
  */
-export const DRAFT_PAGE_SLUGS = ["add-ons/family/child-notebooks"] as const as readonly string[];
+export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
 /**
  * Whether links to a draft page should render — i.e. whether the page will be

@@ -12,4 +12,4 @@ export const CHILD_PRIVACY_UPDATED = "November 12, 2026";
  * The in-app parent notice this policy matches (CHILD_NOTICE_VERSION in the
  * app's shared/child-notebook.ts). Change both together.
  */
-export const CHILD_NOTICE_VERSION = "2026-11-12.2";
+export const CHILD_NOTICE_VERSION = "2026-11-12.3";
