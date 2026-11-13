@@ -51,7 +51,10 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
 </script>
 
 <style>
-  .ask { width: 100%; max-width: 40rem; }
+  /* One solid outline color for the pill and the tray. The divider gray is
+     see-through, so where the two outlines overlap at the pill's tips it
+     stacked into a darker spot; this is the same gray, made opaque. */
+  .ask { --ask-ring: color-mix(in srgb, var(--color-ink) 10%, var(--color-paper)); width: 100%; max-width: 40rem; }
   .ask__form { position: relative; z-index: 1; }
   /* A tray behind the field, peeking out below it: the answer and the note
      live in it. It starts at the pill's midline and is exactly as wide, so
@@ -63,17 +66,17 @@ const { placeholder = "Ask a question about Harvous", class: className } = Astro
     background: color-mix(in srgb, var(--color-ink) 5%, var(--color-paper));
     /* The same ring as the pill, drawn just outside the edge, so the two
        outlines are one line where the tray leaves the pill. */
-    box-shadow: 0 0 0 1px var(--color-rule);
+    box-shadow: 0 0 0 1px var(--ask-ring);
   }
   .ask__field {
     display: flex; align-items: center; gap: 0.7rem;
     min-height: 3.25rem; padding: 0.35rem 0.4rem 0.35rem 1.1rem;
     border-radius: 999px;
     background: var(--color-paper);
-    box-shadow: 0 0 0 1px var(--color-rule), 0 10px 30px -18px rgba(15, 23, 42, 0.35);
+    box-shadow: 0 0 0 1px var(--ask-ring);
     transition: box-shadow 150ms ease;
   }
-  .ask__field:focus-within { box-shadow: 0 0 0 2px var(--color-accent), 0 10px 30px -18px rgba(15, 23, 42, 0.35); }
+  .ask__field:focus-within { box-shadow: 0 0 0 2px var(--color-accent); }
   /* The app's three loading dots (loading-dots.css in the app: a wave that
      lifts along the row, then rests), in the accent. At rest the wave passes
      slowly now and then; while an answer is coming it runs at the app's pace. */
