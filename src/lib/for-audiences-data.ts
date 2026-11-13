@@ -852,7 +852,7 @@ const audiences: ForAudience[] = [
     icon: "fa7-solid:people-roof",
     ink: "var(--study-dock-accent-mintGreen)",
     image: "/images/auth-hero/ai_bg_058.webp",
-    seoTitle: "For families — read the Bible together in Harvous",
+    seoTitle: "Family Bible study app — read the Bible together in Harvous",
     seoDescription:
       "Harvous Plus covers your whole household: a Family Space to study in together, Our Bible to see where you've been, and a parent view that shows progress, never notes.",
     heroTitle: "For families who read the Bible together.",
@@ -896,7 +896,7 @@ const audiences: ForAudience[] = [
     featureIds: ["family", "threads", "scripture-pills", "highlights"],
     featuresHeading: "What a family needs from Harvous",
     featuresLead: "Family for the household, plus the threads, scripture pills and highlights everyone uses on their own.",
-    compareSlugs: ["youversion"],
+    compareSlugs: ["youversion", "hallow", "dwell"],
     useCaseSlugs: ["small-group"],
   },
   {
