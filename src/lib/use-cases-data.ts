@@ -424,13 +424,13 @@ const useCases: UseCase[] = [
     href: "/use-cases/small-group/",
     title: "Group study",
     carouselTitle: "Group study",
-    tagline: "Shared Spaces keep next week picking up where this discussion left off.",
+    tagline: "Shared Spaces for your group, and My Family for the people at home. Next week picks up where you left off.",
     icon: "fa7-solid:user-group",
     ink: "var(--study-dock-accent-coralRose)",
     image: "/images/auth-hero/ai_bg_045.webp",
     seoTitle: "Group study — Harvous",
     seoDescription:
-      "Lead your group. Harvous Shared Spaces let your whole group add notes to the same threads — so what you discover together doesn't disappear. Hosting is Harvous Plus; joining is free.",
+      "Lead your group, or read together at home. Harvous Shared Spaces let your whole group add notes to the same threads, and My Family gives your household a Family Space of its own, so what you discover together doesn't disappear.",
     heroTitle: "Keep what the group builds.",
     closingTitle: "Give the group somewhere to keep it.",
     heroLead:
@@ -441,6 +441,13 @@ const useCases: UseCase[] = [
         paragraphs: [
           "[Shared Spaces](/add-ons/shared-spaces/) let a whole group study in the same threads — questions, discoveries, and scripture references that live beyond the hour you meet. Hosting is included with [Harvous Plus](/pricing/); joining a space is always free.",
           "If your whole church teaches on Harvous — a plan per ministry, a series that holds its weeks, a room a volunteer can lead — [see how it works for churches](/for/churches/).",
+        ],
+      },
+      {
+        heading: "Studying at home? My Family",
+        paragraphs: [
+          "If your group is your household, [My Family](/add-ons/family/) gives it a Family Space everyone can write in: the passage from dinner, the question from the car, the book you're reading as a house. Harvous Plus covers up to six people at home, and everyone's own study stays theirs.",
+          "A parent sees how a child is doing in counts, never the notes themselves. [More for families](/for/families/).",
         ],
       },
       {
@@ -472,7 +479,7 @@ const useCases: UseCase[] = [
         body: "Your own notes on the passage — the prep, the things you wanted to say, the questions you almost asked — stay in your personal space. The group only sees what you add to the shared one.",
       },
     ],
-    featureIds: ["shared-spaces", "threads", "scripture-pills", "note-templates"],
+    featureIds: ["shared-spaces", "family", "threads", "scripture-pills", "note-templates"],
     featuresHeading: "What group study needs from Harvous",
     featuresLead:
       "Shared Spaces for the room, plus threads, scripture pills, and note templates for the prep leaders already do.",
