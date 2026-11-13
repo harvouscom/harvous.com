@@ -1,5 +1,6 @@
 ---
 import ProductDetailPage from "../../components/ProductDetailPage.astro";
+import FamilyPage from "../../components/next/FamilyPage.astro";
 import { getAddonPages } from "../../lib/addons-data.ts";
 
 export function getStaticPaths() {
@@ -14,4 +15,5 @@ export function getStaticPaths() {
 const { page } = Astro.props;
 ---
 
-<ProductDetailPage page={page} />
+{/* Family has its own layout, like child notebooks beside it. */}
+{page.slug === "family" ? <FamilyPage page={page} /> : <ProductDetailPage page={page} />}

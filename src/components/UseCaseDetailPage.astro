@@ -86,14 +86,14 @@ const Quote = quote ? (await render(quote)).Content : undefined;
 >
   <article style={`--uc-ink: ${useCase.ink};`}>
     <header class="nx-wrap ud-intro">
-      <a class="ud-back" href="/use-cases/">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
-        Use cases
-      </a>
-      <p class="ud-badges">
-        <span class="ud-badge">{title}</span>
+      <nav class="ud-crumb" aria-label="Breadcrumb">
+        <a class="ud-back" href="/use-cases/">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+          Use cases
+        </a>
+        <span class="ud-badge" aria-current="page"><Icon name={useCase.icon} /> {title}</span>
         {useCase.comingSoon && <span class="ud-badge ud-badge--soon">{useCase.comingSoonLine ?? SOON_LABEL}</span>}
-      </p>
+      </nav>
       <h1 class="nx-display ud-title">{useCase.heroTitle}</h1>
       <p class="nx-lead ud-lead">{useCase.heroLead}</p>
     </header>
@@ -246,32 +246,37 @@ const Quote = quote ? (await render(quote)).Content : undefined;
 
 <style>
   .ud-intro { padding-top: clamp(7.5rem, 15vw, 10rem); text-align: center; }
+  /* Where it lives and what it is, in one capsule, like the add-on pages. */
+  .ud-crumb {
+    display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem;
+    padding: 0.25rem; border-radius: 999px; background: var(--color-warm); font-size: 0.875rem; font-weight: 500;
+  }
   .ud-back {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+    gap: 0.3rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.55rem;
     border-radius: 999px;
-    background: var(--color-warm);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-ink);
+    color: var(--color-ink-soft);
     text-decoration: none;
   }
-  .ud-back:hover { background: color-mix(in srgb, var(--color-ink) 8%, transparent); }
+  .ud-back:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-ink) 7%, transparent); }
   .ud-back svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-  .ud-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 1.75rem 0 0; }
   .ud-badge {
-    padding: 0.3rem 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem 0.35rem 0.7rem;
     border-radius: 999px;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: color-mix(in oklab, var(--uc-ink) 60%, var(--color-ink));
+    color: color-mix(in oklab, var(--uc-ink) var(--ink-on-tint), var(--color-ink));
     background: color-mix(in oklab, var(--uc-ink) 14%, var(--color-paper));
   }
   .ud-badge--soon { color: var(--color-ink-soft); background: var(--color-warm); }
-  .ud-title { margin: 1.25rem auto 0; max-width: 20ch; font-size: clamp(2.25rem, 5vw, 3.75rem); }
+  .ud-badge :global(svg) { width: 0.95rem; height: 0.95rem; }
+  .ud-title { margin: 1.5rem auto 0; max-width: 20ch; font-size: clamp(2.25rem, 5vw, 3.75rem); }
   .ud-lead { margin: 1.5rem auto 0; }
 
   .ud-sky { margin: clamp(2.5rem, 6vw, 4rem) auto 0; }
@@ -292,7 +297,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     height: clamp(4rem, 8vw, 5.5rem);
     border-radius: 28%;
     background: var(--color-paper);
-    color: color-mix(in oklab, var(--uc-ink) 70%, var(--color-ink));
+    color: color-mix(in oklab, var(--uc-ink) var(--ink-on-tint), var(--color-ink));
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 24px 48px -20px rgba(15, 23, 42, 0.45);
   }
   .ud-sky__icon :global(svg) { width: 42%; height: 42%; }
@@ -337,7 +342,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     width: 2rem;
     height: 2rem;
     border-radius: 0.6rem;
-    color: color-mix(in oklab, var(--uc-ink) 65%, var(--color-ink));
+    color: color-mix(in oklab, var(--uc-ink) var(--ink-on-tint), var(--color-ink));
     background: color-mix(in oklab, var(--uc-ink) 14%, var(--color-paper));
   }
   .ud-moment__tile :global(svg) { width: 0.9rem; height: 0.9rem; }
@@ -394,7 +399,7 @@ const Quote = quote ? (await render(quote)).Content : undefined;
     height: 1.5rem;
     border-radius: 0.45rem;
     background: var(--color-paper);
-    color: var(--ink);
+    color: color-mix(in oklab, var(--ink) var(--ink-on-tint), var(--color-ink));
   }
   .ud-row__mark :global(svg) { width: 0.75rem; height: 0.75rem; }
   .ud-row__text { display: flex; flex: 1; flex-direction: column; gap: 0.1rem; min-width: 0; }

@@ -66,11 +66,11 @@
   text-wrap: balance;
 }
 
+/* A small label above a heading. Sentence case, never all caps: it is a
+   word or two in the site's voice, not a shouted category. */
 .nx-kicker {
-  font-size: 0.72rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--color-ink-faint);
 }
 

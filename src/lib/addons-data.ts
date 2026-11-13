@@ -286,85 +286,21 @@ const ADDON_PAGES: AddonPage[] = [
     slug: "family",
     href: "/add-ons/family/",
     title: "Family",
-    tagline: "One Harvous Plus for your household, a Family Space to study in together, and a parent view that shows progress, never notes.",
+    tagline: "Harvous Plus for your whole household, a Family Space to study in together, and a parent view that shows progress, never notes.",
     seoTitle: "Family — share Harvous Plus with your household | Harvous Plus",
     seoDescription:
       "Family sharing is included with Harvous Plus: cover up to five more people, study together in a shared Family Space, and see a child's progress without ever seeing their notes.",
     icon: "fa7-solid:people-roof",
     ink: "var(--study-dock-accent-mintGreen)",
-    image: "/images/auth-hero/ai_bg_046.webp",
+    image: "/images/auth-hero/ai_bg_058.webp",
     comingSoon: false,
     heroTitle: "Study together as a family.",
     heroLead:
-      "One Plus covers your household, with a Family Space everyone can write in.",
-    sections: [
-      {
-        heading: "One Plus covers the house",
-        paragraphs: [
-          "Start a family from Settings › My Family and invite up to five more people. Everyone you add gets Harvous Plus at no extra cost: unlimited history, Review exercises and Connector. Shared spaces for groups stay with the person who pays.",
-          "Family sharing is included with [Harvous Plus](/pricing/) ($6/mo or $36/yr). Invites are single-use links that expire after seven days.",
-        ],
-      },
-      {
-        heading: "A Family Space for what you read together",
-        paragraphs: [
-          "Every family gets a Family Space that everyone in it can write in: the passage from dinner, a question someone asked in the car, the thread you are reading through as a house.",
-          "Everything else stays where it was. Each person's own notes are theirs, and nothing moves into the Family Space unless they put it there.",
-        ],
-      },
-      {
-        heading: "Progress for parents, privacy for everyone",
-        paragraphs: [
-          "A parent or guardian can see when a child was last in Harvous, how many chapters they have been in and which books, and how many notes they have written. Never the notes themselves, their highlights, their searches or their Review.",
-          "The child sees exactly the same numbers about themselves, so nothing is watched in secret. Children are 13 and older, can ask to become an adult in the family, and can leave any time.",
-        ],
-      },
-    ],
-    showcases: [
-      {
-        eyebrow: "My Family",
-        title: "Everyone, and what they can do",
-        color: "mint",
-        body: [
-          "The Organizer started the family. A Parent/Guardian can invite people and see a child's progress. An Adult shares the space and the plan, and their study stays private. A Child is 13 or older.",
-        ],
-        visual: "family-members",
-        label: "Settings › My Family listing four people with their roles: Organizer, Parent/Guardian, Adult and Child",
-      },
-      {
-        eyebrow: "Progress",
-        title: "Counts, not contents",
-        color: "sky",
-        reverse: true,
-        body: [
-          "Last active, chapters and books, and how many notes. That's the whole view, for the parent and for the child.",
-        ],
-        visual: "family-progress",
-        label: "A child's progress card showing last active, chapters this month with the books, and a note count",
-      },
-    ],
-    moments: [
-      {
-        icon: "fa7-solid:people-roof",
-        heading: "Up to six people",
-        body: "You and five more, all on one Harvous Plus. No extra charge for the family.",
-      },
-      {
-        icon: "fa7-solid:book-bible",
-        heading: "A shared Family Space",
-        body: "Threads and notes everyone in the family can add to, next to each person's own study.",
-      },
-      {
-        icon: "fa7-solid:chart-simple",
-        heading: "A parent view that stays out of the notes",
-        body: "Last active, chapters, books and a note count. Never notes, highlights, searches or Review.",
-      },
-      {
-        icon: "fa7-solid:lock",
-        heading: "Private study stays private",
-        body: "Adults' study is their own. Children see the same numbers their parents see, and can leave any time.",
-      },
-    ],
+      "Harvous Plus covers your whole household, with a Family Space everyone can write in and everyone's own study kept private.",
+    /* The page draws its own sections (components/next/FamilyPage.astro). */
+    sections: [],
+    showcases: [],
+    moments: [],
     relatedIds: ["shared-spaces", "review-exercises", "connector"],
     relatedHeading: "Harvous free + what's next",
     relatedLead:
@@ -377,6 +313,93 @@ const ADDON_PAGES: AddonPage[] = [
     draft: false,
   },
 ];
+
+/**
+ * Child notebooks: parent-managed notebooks for children under 13, a part of
+ * Family at /add-ons/family/child-notebooks/. Kept out of ADDON_PAGES so it
+ * never lands in add-on lists, rails, FAQ link checks or [slug].astro's
+ * paths; src/pages/add-ons/family/child-notebooks.astro renders it.
+ *
+ * A draft page (lib/draft-pages.ts) until child enrollment opens. Every claim
+ * here has to match the app (docs/CHILD_ACCOUNTS.md) and the children's
+ * privacy policy at /privacy/children/. This object holds the page's SEO,
+ * hero, questions and closing; its body copy lives in ChildNotebooksPage.astro.
+ */
+export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
+  kind: "addon",
+  slug: "child-notebooks",
+  href: "/add-ons/family/child-notebooks/",
+  back: { href: "/add-ons/family/", label: "Family" },
+  title: "Child notebooks",
+  tagline: "A private notebook for a child under 13, set up and managed by you.",
+  seoTitle: "Child notebooks — a Bible notebook for kids under 13 | Harvous Plus",
+  seoDescription:
+    "Coming soon: give a child under 13 their own private place to write about what they read and wonder. You set it up, choose what they read, and stay in charge. Included with Harvous Plus, on the web in the US.",
+  icon: "fa7-solid:book-open-reader",
+  ink: "var(--study-dock-accent-mintGreen)",
+  image: "/images/auth-hero/ai_bg_053.webp",
+  /* Live as a preview while KWS Production is reviewed; setup isn't open yet. */
+  comingSoon: true,
+  comingSoonLine: "Coming soon",
+  heroTitle: "A notebook for your child.",
+  heroLead:
+    "Their own private place to write about what they read and wonder. You'll set it up, and you stay in charge.",
+  /* The page draws its own sections (components/next/ChildNotebooksPage.astro). */
+  sections: [],
+  showcases: [],
+  moments: [],
+  faqs: [
+    {
+      question: "Does my child need an email address or a phone?",
+      answer:
+        "No. A first name or nickname is all we ask for. Your child opens the notebook with a one-time link you make, which works for five minutes, or you hand over your own device in child mode. A session ends after eight hours.",
+    },
+    {
+      question: "Can I read what my child writes?",
+      answer:
+        "Yes. You can read your child's notes any time and download a copy, either as a readable text file or as a full backup. Verse stickers stay private to your child in the app and come to you only in the full backup.",
+    },
+    {
+      question: "Who else can see my child's notebook?",
+      answer:
+        "Only you. Family Bible thoughts are seen by your child and you. If you approve a kids ministry channel, your child can read it, but ministry leaders can't see their notes or their profile. Nothing in a child notebook is public.",
+    },
+    {
+      question: "What happens when my child turns 13?",
+      answer:
+        "Nothing changes on its own. The notebook stays yours to manage. From 13, your child can have their own Harvous account and join your family, though moving a notebook into a new account isn't available yet.",
+    },
+    {
+      question: "How do I stop or delete a notebook?",
+      answer:
+        "From the notebook's page in Settings › My Family. Withdrawing your permission stops your child's access right away, and the notebook is deleted 30 days later, so you have time to download it. You can also delete it straight away. A notebook no one uses for a year is deleted automatically.",
+    },
+    {
+      question: "Do child notebooks count toward Family's six people?",
+      answer:
+        "No. Family covers up to six people with their own Harvous accounts. Child notebooks are separate: each parent with Harvous Plus can set up to six of them.",
+    },
+    {
+      question: "Is there an app for kids?",
+      answer:
+        "Child notebooks run in the web browser, on a computer, tablet or phone. There's nothing to install.",
+    },
+    {
+      question: "Can families outside the US use child notebooks?",
+      answer:
+        "Not yet. Child notebooks are for families in the United States for now, because the rules for children's information differ from country to country. We plan to add more countries as we can do it properly. Harvous accounts for people 13 and older work everywhere.",
+    },
+  ],
+  relatedIds: [],
+  relatedHeading: "",
+  relatedLead: "",
+  closingHeading: "Coming soon.",
+  closingLead:
+    "Child notebooks are on their way, for families in the US. Family is already included with Harvous Plus.",
+  closingHref: "/add-ons/family/",
+  closingLabel: "See Family",
+  draft: false,
+};
 
 export function getAddonPages(): AddonPage[] {
   return ADDON_PAGES;
