@@ -10,18 +10,23 @@
     "@remotion/fonts": "^4.0.500",
     "@remotion/media": "^4.0.500",
     "@remotion/tailwind-v4": "4.0.500",
+    "@remotion/zod-types": "^4.0.500",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.500",
-    "tailwindcss": "4.0.0"
+    "tailwindcss": "4.0.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@remotion/eslint-config-flat": "4.0.500",
     "@types/node": "^26.1.2",
     "@types/react": "19.2.7",
     "@types/web": "0.0.166",
+    "cuelume": "^0.2.4",
     "eslint": "9.19.0",
+    "playwright": "^1.58.2",
     "prettier": "3.8.1",
+    "tsx": "^4.23.15",
     "typescript": "5.9.3"
   },
   "scripts": {
@@ -31,7 +36,19 @@
     "render:site": "remotion render HarvousTour out/tour-full.mp4 --codec=h264 && ../scripts/compress-tour-video.sh out/tour-full.mp4 ../media/touring-harvous-short.mp4",
     "narrate": "node --env-file-if-exists=.env scripts/narrate.mjs",
     "upgrade": "remotion upgrade",
-    "lint": "eslint src && tsc"
+    "lint": "eslint src && tsc && tsc -p capture",
+    "intro:login": "tsx capture/login.ts",
+    "intro:capture": "tsx capture/run.ts",
+    "intro:probe": "tsx capture/probe.ts",
+    "intro:prep": "node scripts/intro-prep.mjs",
+    "intro:ambience": "node --env-file-if-exists=.env scripts/ambience.mjs",
+    "intro:captions": "node --env-file-if-exists=.env --import tsx scripts/captions.ts",
+    "intro:draft": "remotion render HarvousIntro out/intro-draft.mp4 --codec=h264 --scale=0.5",
+    "intro:render": "bash scripts/render-intro.sh",
+    "intro:timing": "node --import tsx scripts/intro-timing.ts",
+    "intro:music": "node --env-file-if-exists=.env --import tsx scripts/music.ts",
+    "intro:app-sounds": "node --import tsx scripts/app-sounds.ts",
+    "intro:stumbles": "node --import tsx scripts/stumbles.ts"
   },
   "sideEffects": [
     "*.css"

@@ -5,3 +5,9 @@ dist
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# Intro capture: the signed-in Chrome profile is Derek's live session, and
+# raw takes are re-shootable from capture/scenes, so neither is committed.
+capture/.profile
+footage/intro/takes
+footage/intro/assets

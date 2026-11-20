@@ -1,0 +1,107 @@
+{
+  "positive_global_styles": [
+    "atmospheric ambient soundscape, like a calm focus app",
+    "slowly evolving warm analog pads and soft drones",
+    "airy shimmering textures, distant gentle swells",
+    "64 BPM pulse felt rather than heard, major key, peaceful and hopeful",
+    "steady, spacious, sits quietly underneath a spoken voice"
+  ],
+  "negative_global_styles": [
+    "piano",
+    "strings",
+    "orchestra",
+    "classical",
+    "drums",
+    "percussion",
+    "beat",
+    "vocals",
+    "melody",
+    "guitar",
+    "sudden changes"
+  ],
+  "sections": [
+    {
+      "section_name": "open",
+      "positive_local_styles": [
+        "sparse, a single soft pad slowly opening up, lots of air",
+        "quiet, intimate"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 7500,
+      "lines": []
+    },
+    {
+      "section_name": "home",
+      "positive_local_styles": [
+        "warm pads arrive gently on the downbeat, a soft glow",
+        "morning light"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 17813,
+      "lines": []
+    },
+    {
+      "section_name": "scripture",
+      "positive_local_styles": [
+        "a light shimmering texture joins, a little brighter"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 15000,
+      "lines": []
+    },
+    {
+      "section_name": "dock",
+      "positive_local_styles": [
+        "the pad deepens and widens, unhurried, curious"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 23438,
+      "lines": []
+    },
+    {
+      "section_name": "reader",
+      "positive_local_styles": [
+        "settled and warm, a soft swell at the start, then calm"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 12187,
+      "lines": []
+    },
+    {
+      "section_name": "organize",
+      "positive_local_styles": [
+        "lighter, gentle movement in the texture"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 13125,
+      "lines": []
+    },
+    {
+      "section_name": "threads",
+      "positive_local_styles": [
+        "continuing, soft and connected"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 20625,
+      "lines": []
+    },
+    {
+      "section_name": "review",
+      "positive_local_styles": [
+        "a quiet lift, slightly brighter, a gentle sense of return"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 11250,
+      "lines": []
+    },
+    {
+      "section_name": "close",
+      "positive_local_styles": [
+        "resolving, opening up, warm and full, then slowly thinning out and fading to near silence at the end"
+      ],
+      "negative_local_styles": [],
+      "duration_ms": 26010,
+      "lines": []
+    }
+  ]
+}

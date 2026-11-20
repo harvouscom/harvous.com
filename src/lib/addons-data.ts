@@ -334,13 +334,10 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   tagline: "A private notebook for a child under 13, set up and managed by you.",
   seoTitle: "Child notebooks — a kids Bible journal for under-13s, managed by parents | Harvous Plus",
   seoDescription:
-    "Coming soon: give a child under 13 their own private place to write about what they read and wonder. You set it up, choose what they read, and stay in charge. Included with Harvous Plus, on the web in the US.",
+    "Give a child under 13 their own private place to write about what they read and wonder. You set it up, choose what they read, and stay in charge. Included with Harvous Plus, on the web in the US.",
   icon: "fa7-solid:book-open-reader",
   ink: "var(--study-dock-accent-mintGreen)",
   image: "/images/auth-hero/ai_bg_053.webp",
-  /* Live as a preview while KWS Production is reviewed; setup isn't open yet. */
-  comingSoon: true,
-  comingSoonLine: "Coming soon",
   heroTitle: "A notebook for your child.",
   heroLead:
     "Their own private place to write about what they read and wonder. You'll set it up, and you stay in charge.",
@@ -367,7 +364,7 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
     {
       question: "What happens when my child turns 13?",
       answer:
-        "Nothing changes on its own. The notebook stays yours to manage. From 13, your child can have their own Harvous account and join your family, though moving a notebook into a new account isn't available yet.",
+        "Nothing changes on its own. The notebook stays yours to manage until you're ready. Then, from My Family, you can move it into your teen's own Harvous account: their notes, folders, Threads, highlights and stickers go with them. After the move the notebook is theirs, and you no longer see what they write.",
     },
     {
       question: "How do I stop or delete a notebook?",
@@ -393,11 +390,11 @@ export const CHILD_NOTEBOOKS_PAGE: AddonPage = {
   relatedIds: [],
   relatedHeading: "",
   relatedLead: "",
-  closingHeading: "Coming soon.",
+  closingHeading: "Set one up in My Family.",
   closingLead:
-    "Child notebooks are on their way, for families in the US. Family is already included with Harvous Plus.",
-  closingHref: "/add-ons/family/",
-  closingLabel: "See Family",
+    "Child notebooks are included with Harvous Plus, for families in the US. Start a family, then add a notebook from Invite someone.",
+  closingHref: "https://app.harvous.com/settings/family",
+  closingLabel: "Open My Family",
   draft: false,
 };
 

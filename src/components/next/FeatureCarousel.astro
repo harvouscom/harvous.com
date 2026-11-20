@@ -6,8 +6,8 @@
  * The row starts on the page's content column and runs off the right edge so
  * the next card peeks in, the same mechanics as the homepage UseCaseRow.
  */
+import SoonBadge from "./SoonBadge.astro";
 import ShowcaseVisual from "./ShowcaseVisual.astro";
-import { SOON_LABEL } from "../../lib/coming-soon-grid.ts";
 import { stageMesh } from "../../lib/next/content.ts";
 
 export type FeatureCarouselItem = {
@@ -58,7 +58,7 @@ const id = `fcar-${Math.random().toString(36).slice(2, 8)}`;
             <span class="fcar__words">
               <span class="fcar__title">
                 {f.title}
-                {f.soon && <span class="fcar__soon">{SOON_LABEL}</span>}
+                {f.soon && <SoonBadge />}
               </span>
               <span class="fcar__desc">{f.desc}</span>
               {f.href && <span class="fcar__go">Explore →</span>}
@@ -146,7 +146,6 @@ const id = `fcar-${Math.random().toString(36).slice(2, 8)}`;
 
   .fcar__words { display: flex; flex: 1; flex-direction: column; gap: 0.35rem; padding: 1.1rem 1.25rem 1.25rem; }
   .fcar__title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.5rem; font-weight: 600; font-size: 1.0625rem; color: var(--color-ink); }
-  .fcar__soon { padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.6875rem; font-weight: 600; color: var(--color-ink-soft); background: var(--color-warm); }
   .fcar__desc { font-size: 0.9375rem; line-height: 1.5; color: var(--color-ink-soft); text-wrap: pretty; }
   .fcar__go { margin-top: auto; padding-top: 0.6rem; font-size: 0.875rem; font-weight: 500; color: var(--color-accent); }
 </style>

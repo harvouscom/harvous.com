@@ -107,7 +107,7 @@ const SUCCESS_PATH = '/for/churches/?submitted=1#interest';
  * router answers before it, and `not_found_handling` means even an unmatched
  * path gets the 404 page rather than falling through.
  */
-const MEDIA_KEYS = new Set(['touring-harvous-short.mp4', 'harvous-3-walkthrough.mp4']);
+const MEDIA_KEYS = new Set(['touring-harvous-short.mp4', 'harvous-3-walkthrough.mp4', 'harvous-intro.mp4']);
 
 function mediaKey(pathname: string): string | null {
   const key = pathname.slice(1);

@@ -1,0 +1,57 @@
+{
+  "scenes": [
+    {
+      "id": "open-saved",
+      "text": "Since 2016, when I got saved, I've been studying the Bible."
+    },
+    {
+      "id": "open-scattered",
+      "text": "And it was all scattered."
+    },
+    {
+      "id": "why-made",
+      "text": "So I made one. Harvous is the app I've been wanting."
+    },
+    {
+      "id": "home",
+      "text": "Every day starts here. There's a passage waiting, and whatever I was in the middle of, so I can pick right back up. On my laptop, or on my phone."
+    },
+    {
+      "id": "scripture",
+      "text": "When I write, Harvous knows Scripture. I type a reference, and it becomes the verse, right there in my note."
+    },
+    {
+      "id": "dock",
+      "text": "Tap a reference, and the passage opens right on the page, and stays put as I scroll. Cross-references are a tap away. So is every note I've written on it. And if a word catches me, the dictionary's right there."
+    },
+    {
+      "id": "reader",
+      "text": "And when I open the Bible, those same notes sit in the margin, beside the verses they're about. Over time, it becomes my own study Bible."
+    },
+    {
+      "id": "organize",
+      "text": "I never have to file anything. Harvous tags my notes, and sorts them into folders, on its own."
+    },
+    {
+      "id": "threads",
+      "text": "And threads are mine. I pull one theme together, across weeks of study, like everything I've been learning about the Holy Spirit. I can share the whole thread with a link."
+    },
+    {
+      "id": "threads-walk",
+      "text": "And each note links to the others, so I can walk the whole line of thinking."
+    },
+    {
+      "id": "review",
+      "text": "And the part I care about most. Harvous brings my study back, so it actually sticks. Not just what I read, but what I wrote about it."
+    },
+    {
+      "id": "close-name",
+      "text": "It's named after Proverbs 25:2. Studying the Bible is searching. Harvous is the place where the search settles into something you can come back to.",
+      "say": "It's named after Proverbs twenty-five, two. Studying the Bible is searching. Harvous is the place where the search settles into something you can come back to."
+    },
+    {
+      "id": "close-weekly",
+      "text": "I build it on my own, a little every week. If that sounds like what you've been looking for, I'd love for you to try it. And if it isn't there yet, write me, and tell me why."
+    }
+  ]
+}

@@ -37,3 +37,21 @@ export const PLYR_OPTIONS = {
      have promised to send people back to them. */
   youtube: { noCookie: true, rel: 0, modestbranding: 1, iv_load_policy: 3 },
 } as const;
+
+/**
+ * The same options, plus a captions button when the video carries a captions
+ * track. Without a track the button would do nothing, so videos that have none
+ * keep exactly the controls above. Off by default: the intro already shows its
+ * words on screen, so the track is there for whoever wants it, not on top.
+ */
+export const withCaptions = (video: HTMLVideoElement) => {
+  if (!video.querySelector('track[kind="captions"]')) return PLYR_OPTIONS;
+  const controls = [...PLYR_OPTIONS.controls];
+  controls.splice(controls.indexOf("settings"), 0, "captions");
+  return {
+    ...PLYR_OPTIONS,
+    controls,
+    settings: ["captions", ...PLYR_OPTIONS.settings],
+    captions: { active: false, language: "en", update: false },
+  };
+};

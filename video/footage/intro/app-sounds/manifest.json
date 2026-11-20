@@ -1,0 +1,14 @@
+{
+  "nav.open": "intro/app-sounds/nav.open.wav",
+  "nav.close": "intro/app-sounds/nav.close.wav",
+  "nav.forward": "intro/app-sounds/nav.forward.wav",
+  "nav.drillIn": "intro/app-sounds/nav.drillIn.wav",
+  "nav.select": "intro/app-sounds/nav.select.wav",
+  "nav.toggle": "intro/app-sounds/nav.toggle.wav",
+  "dock.open": "intro/app-sounds/dock.open.wav",
+  "dock.close": "intro/app-sounds/dock.close.wav",
+  "panel.open": "intro/app-sounds/panel.open.wav",
+  "panel.close": "intro/app-sounds/panel.close.wav",
+  "highlight.created": "intro/app-sounds/highlight.created.wav",
+  "organize.filed": "intro/app-sounds/organize.filed.wav"
+}

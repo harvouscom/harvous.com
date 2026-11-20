@@ -128,7 +128,7 @@ export default defineConfig({
     */
     server: {
       proxy: Object.fromEntries(
-        ["/harvous-3-walkthrough.mp4", "/touring-harvous-short.mp4"].map((path) => [
+        ["/harvous-3-walkthrough.mp4", "/touring-harvous-short.mp4", "/harvous-intro.mp4"].map((path) => [
           path,
           { target: "https://harvous.com", changeOrigin: true },
         ])

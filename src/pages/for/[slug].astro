@@ -10,6 +10,7 @@
  * A page with no `visual` sections falls back to a column of prose, the
  * moments grid, and the feature list at the end.
  */
+import SoonBadge from "../../components/next/SoonBadge.astro";
 import NextLayout from "../../layouts/NextLayout.astro";
 import { ogCard } from "../../lib/og-card.ts";
 import UseCaseCard from "../../components/next/UseCaseCard.astro";
@@ -245,7 +246,7 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
                   <span class="fa-feature__text">
                     <span class="fa-feature__title">
                       {f.title}
-                      {f.soon && <span class="fa-feature__soon">{SOON_LABEL}</span>}
+                      {f.soon && <SoonBadge />}
                     </span>
                     <span class="fa-feature__desc">{f.desc}</span>
                   </span>
@@ -491,14 +492,6 @@ const status = audience.statusLine ?? (audience.comingSoon ? audience.comingSoon
     gap: 0.3rem 0.5rem;
     font-weight: 600;
     color: var(--color-ink);
-  }
-  .fa-feature__soon {
-    padding: 0.05rem 0.5rem;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--color-ink-soft);
-    background: var(--color-warm);
   }
   .fa-feature__desc { font-size: 0.9rem; line-height: 1.45; color: var(--color-ink-soft); text-wrap: pretty; }
   .fa-feature__chev {

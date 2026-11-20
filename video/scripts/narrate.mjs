@@ -78,7 +78,9 @@ const hashOf = (text) =>
     .slice(0, 16);
 
 const plan = script.scenes.map((scene, i) => {
-  const hash = hashOf(scene.text);
+  // `say` is how a line is spoken when that differs from how it reads
+  // ("Proverbs twenty-five two" for "Proverbs 25:2"); captions keep `text`.
+  const hash = hashOf(scene.say ?? scene.text);
   const file = `narration/${name}/${scene.id}.mp3`;
   const prior = previousById.get(scene.id);
   const fresh =
@@ -115,18 +117,19 @@ for (const { scene, i, hash, file, prior, fresh } of plan) {
     scenes.push(prior);
     continue;
   }
-  // Neighboring lines let the model carry intonation across scene cuts.
+  // The previous line lets the model carry intonation across scene cuts.
   const res = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`,
     {
       method: "POST",
       headers: { "xi-api-key": apiKey, "content-type": "application/json" },
       body: JSON.stringify({
-        text: scene.text,
+        text: scene.say ?? scene.text,
         model_id: modelId,
         voice_settings: voiceSettings,
-        previous_text: script.scenes[i - 1]?.text,
-        next_text: script.scenes[i + 1]?.text,
+        // Only the line before, for intonation. Sending the next line as well
+        // made the model start saying it at the end of this clip.
+        previous_text: script.scenes[i - 1]?.say ?? script.scenes[i - 1]?.text,
       }),
     },
   );
