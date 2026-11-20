@@ -25,8 +25,8 @@
  * that folder (dist/privacy/children/) and leaves /privacy/ alone.
  *
  * `add-ons/family/child-notebooks` went live on November 12, 2026 as a
- * "Coming soon" preview (comingSoon in CHILD_NOTEBOOKS_PAGE) while KWS
- * Production is reviewed; setup opens in the app separately.
+ * "Coming soon" preview while KWS Production was reviewed, and opened for
+ * setup on November 20, 2026.
  */
 export const DRAFT_PAGE_SLUGS = [] as const as readonly string[];
 
