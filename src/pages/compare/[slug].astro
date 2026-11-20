@@ -9,6 +9,7 @@ import {
   buildAlternativeJsonLd,
   isCompareSeoPageDraft,
   harvousTypeForSeoPage,
+  applyPickNotes,
   type ComparePick,
   type CompareSeoPage,
 } from "../../lib/compare-seo-pages.ts";
@@ -74,7 +75,7 @@ if (props.kind === "vs") {
 } else {
   seoPage = props.page;
   seoNoindex = isCompareSeoPageDraft(seoPage);
-  seoPicks = resolvePickSlugs(seoPage.pickSlugs, harvousTypeForSeoPage(seoPage));
+  seoPicks = applyPickNotes(seoPage, resolvePickSlugs(seoPage.pickSlugs, harvousTypeForSeoPage(seoPage)));
   if (seoPage.kind === "category") {
     seoJsonLd = buildCategoryJsonLd(seoPage, seoPicks);
   } else {

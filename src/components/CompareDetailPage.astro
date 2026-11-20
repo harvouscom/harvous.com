@@ -14,6 +14,7 @@ import { withHarvousRef } from "../lib/outbound.ts";
 import { getGuidesForCompareSlug } from "../lib/compare-seo-pages.ts";
 import { composeCompareIntro, featureLabel, getCompareCtaHeading, getHarvousPosition } from "../lib/compare-harvous-positioning.ts";
 import { getCompareAngle } from "../lib/compare-app-angles.ts";
+import { familyRowsFor } from "../lib/compare-family.ts";
 import CompareStatus from "./next/CompareStatus.astro";
 import { backdropForImage } from "../lib/next/icon-backdrop.ts";
 import { backdropSrc } from "../lib/next/content.ts";
@@ -33,12 +34,19 @@ const chooseThem = angle?.chooseThem ?? entry.idealFor;
 const chooseHarvous = angle?.chooseHarvous ?? position.chooseIf;
 const harvousIsnt = angle?.harvousIsnt ?? position.tradeoff;
 const together = angle?.together ?? entry.worksBestAlongside;
-const rows = angle?.table ?? [
+const baseRows = angle?.table ?? [
   { label: "Best at", harvous: position.bestAt, them: entry.bestAt },
   { label: "Primary use", harvous: position.primaryUse, them: entry.primaryUse },
   ...position.tableRows.map((r) => ({ label: r.label, harvous: r.harvous, them: r.competitorHint })),
   { label: "Ideal for", harvous: position.idealFor, them: entry.idealFor },
 ];
+/* Family rows only for apps whose family offer was checked (data/compare-family.json),
+   placed before "Ideal for" so that row still closes the table. */
+const familyRows = familyRowsFor(entry.slug);
+const lastRow = baseRows[baseRows.length - 1];
+const rows = lastRow?.label === "Ideal for"
+  ? [...baseRows.slice(0, -1), ...familyRows, lastRow]
+  : [...baseRows, ...familyRows];
 const description = angle?.seoDescription ?? entry.seoDescription;
 const ctaHeading = getCompareCtaHeading(entry.name, entry.competitorType);
 

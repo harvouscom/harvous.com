@@ -16,6 +16,7 @@ import type { CompareSeoPage, ComparePick } from "../lib/compare-seo-pages.ts";
 import { getHonestNoteForPage } from "../lib/compare-seo-pages.ts";
 import { fathomTry } from "../lib/fathom-events.ts";
 import { buildTryUrl } from "../lib/signup-url.ts";
+import { inlineMdLinksToHtml } from "../lib/inline-md-links.ts";
 
 interface Props {
   page: CompareSeoPage;
@@ -28,12 +29,13 @@ const { page, picks, target, jsonLd, noindex = false } = Astro.props;
 const honestNote = getHonestNoteForPage(page, picks);
 const others = picks.filter((p) => !p.isHarvous);
 
-const decisionRows = [
+const defaultDecisionRows = [
   { label: "Built-in Bible reader", harvous: "Yes — shares highlights and notes with the page", others: "Varies — readers yes, notes apps no" },
   { label: "Sermon transcription", harvous: "No", others: "Some Bible Notes apps yes; general notes no" },
   { label: "Scripture-linked notes", harvous: "Yes — pills, highlights, threads, @ mentions", others: "Dedicated apps yes; general notes DIY" },
   { label: "Price", harvous: "Free for personal study", others: "Varies — many free tiers, Logos paid" },
 ];
+const decisionRows = page.decisionRows ?? defaultDecisionRows;
 ---
 
 <NextLayout ogImage={ogCard(`compare-${page.slug}`)} title={page.seoTitle} description={page.seoDescription} noindex={noindex} jsonLd={jsonLd}>
@@ -116,7 +118,7 @@ const decisionRows = [
           {page.whenToChoose.map((b, i) => (
             <li class:list={["cg-path", i === 0 && "cg-path--harvous"]}>
               <h4>{b.heading}</h4>
-              <p>{b.body}</p>
+              <p set:html={inlineMdLinksToHtml(b.body)} />
             </li>
           ))}
         </ul>
@@ -126,7 +128,7 @@ const decisionRows = [
         {page.whenToChoose.map((b) => (
           <div>
             <h2 class="cg-h2 cg-h2--sm">{b.heading}</h2>
-            <p>{b.body}</p>
+            <p set:html={inlineMdLinksToHtml(b.body)} />
           </div>
         ))}
       </section>
@@ -143,8 +145,8 @@ const decisionRows = [
     />
   ) : (
     <ClosingCall
-      title="Try a notes-first Bible study app."
-      lead="Harvous is free for personal study — unlimited notes, scripture pills, highlights, threads, and @ mentions."
+      title={page.closing?.title ?? "Try a notes-first Bible study app."}
+      lead={page.closing?.lead ?? "Harvous is free for personal study — unlimited notes, scripture pills, highlights, threads, and @ mentions."}
       fathomTrack={fathomTry.compareDetail(page.slug)}
     />
   )}

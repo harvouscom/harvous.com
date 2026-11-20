@@ -447,7 +447,7 @@ const useCases: UseCase[] = [
         heading: "Studying at home? My Family",
         paragraphs: [
           "If your group is your household, [My Family](/add-ons/family/) gives it a Family Space everyone can write in: the passage from dinner, the question from the car, the book you're reading as a house. Harvous Plus covers up to six people at home, and everyone's own study stays theirs.",
-          "A parent sees how a child is doing in counts, never the notes themselves. [More for families](/for/families/).",
+          "A parent sees how a teen is doing in counts, never the notes themselves. [More for families](/for/families/), or see [how family Bible study apps compare](/compare/best-family-bible-study-apps/).",
         ],
       },
       {
