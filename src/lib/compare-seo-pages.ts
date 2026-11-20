@@ -1213,8 +1213,8 @@ const SEO_PAGES: CompareSeoPage[] = [
       Family guide (Nov 2026). Every line about another app comes from
       data/compare-family.json, checked 2026-11-13 with sources; re-check
       before editing. No "only app" claims: Hallow has a family plan and
-      Kids Profiles, Dwell a family plan. Child notebooks stay "Coming soon",
-      with the US and under-13 limits, until enrollment opens.
+      Kids Profiles, Dwell a family plan. Child notebooks are open (Nov 20,
+      2026); keep the US and under-13 limits wherever they are named.
     */
     kind: "category",
     slug: "best-family-bible-study-apps",
@@ -1231,7 +1231,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     },
     pickNotes: {
       harvous:
-        "Families who write about what they read. Harvous Plus covers you and up to five more, with a Family Space you all add to. Teens 13 and up keep their notes private: a parent sees progress, never content. Notebooks for children under 13, in the US with verified parent consent, are coming soon.",
+        "Families who write about what they read. Harvous Plus covers you and up to five more, with a Family Space you all add to. Teens 13 and up keep their notes private: a parent sees progress, never content. Children under 13 in the US get their own notebook, which a parent sets up with verified consent and manages.",
       youversion:
         "Reading plans together, for free. A parent can add a child’s profile to their own account, and Bible App for Kids is a separate app for ages 6–8.",
       hallow:
@@ -1245,7 +1245,7 @@ const SEO_PAGES: CompareSeoPage[] = [
       { label: "Family plan", harvous: "In Harvous Plus: you and up to 5 more", others: "Hallow and Dwell: up to 6; YouVersion is free" },
       { label: "A place to study together", harvous: "A Family Space everyone adds to", others: "Usually shared plans or nothing" },
       { label: "Teens", harvous: "13+: parents see progress, never notes", others: "Usually an ordinary account" },
-      { label: "Under 13", harvous: "Coming soon: parent-managed notebooks, US only, verified consent", others: "Kids profiles or kids apps in some" },
+      { label: "Under 13", harvous: "Parent-managed notebooks, US only, verified consent", others: "Kids profiles or kids apps in some" },
     ],
     closing: {
       title: "Read the Bible together at home.",
@@ -1256,7 +1256,7 @@ const SEO_PAGES: CompareSeoPage[] = [
     whenToChoose: [
       {
         heading: "Choose Harvous if…",
-        body: "Your family talks about what you read and wants somewhere to keep it: a Family Space for what you read together, private notes for everyone, and a progress view for parents of teens that never shows the notes. See [Family](/add-ons/family/) and [child notebooks](/add-ons/family/child-notebooks/) (coming soon, US only).",
+        body: "Your family talks about what you read and wants somewhere to keep it: a Family Space for what you read together, private notes for everyone, and a progress view for parents of teens that never shows the notes. See [Family](/add-ons/family/) and [child notebooks](/add-ons/family/child-notebooks/) (US only).",
       },
       {
         heading: "Choose YouVersion if…",

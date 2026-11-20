@@ -11,9 +11,8 @@
  * The Harvous side is fixed (HARVOUS_FAMILY below) and must match the app:
  * Family is in Harvous Plus, covers the organizer and up to five more people,
  * and is on the web for now. Teens 13 and up share counts, never content.
- * Child notebooks (under 13, US only, verified parent consent) are
- * "Coming soon" until enrollment opens — keep that wording, and keep the US
- * and under-13 limits wherever they are named.
+ * Child notebooks (under 13, US only, verified parent consent) opened on
+ * November 20, 2026 — keep the US and under-13 limits wherever they are named.
  */
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -32,7 +31,7 @@ export type CompareFamilyEntry = {
 
 export const HARVOUS_FAMILY = {
   plan: "Plus covers you and up to 5 more, with a Family Space you share",
-  kids: "Teens 13+ share progress, never notes. Notebooks for under-13s in the US, with verified parent consent: coming soon",
+  kids: "Teens 13+ share progress, never notes. Notebooks for under-13s in the US, with verified parent consent",
 } as const;
 
 export const FAMILY_ROW_LABELS = { plan: "Family plan", kids: "Kids and teens" } as const;
