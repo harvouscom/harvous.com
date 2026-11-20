@@ -9,7 +9,6 @@
  * lib/addons-data.ts. The child notebooks card shows only where that page
  * exists (lib/draft-pages.ts).
  */
-import SoonBadge from "./SoonBadge.astro";
 import NextLayout from "../../layouts/NextLayout.astro";
 import ClosingCall from "./ClosingCall.astro";
 import ShowcaseVisual from "./ShowcaseVisual.astro";
@@ -130,7 +129,7 @@ const showChildNotebooks = draftPageIsReachable("add-ons/family/child-notebooks"
             <span class="fp-kids__sticker" style="--c: var(--pds-thread-yellow); --tilt: 10deg; bottom: -0.5rem; right: -1.2rem;"><AppIcon name="heart" /></span>
           </span>
           <span class="fp-kids__text">
-            <h2 id="fp-kids-title">Child notebooks, for kids under 13 <SoonBadge label="Coming soon" /></h2>
+            <h2 id="fp-kids-title">Child notebooks, for kids under 13</h2>
             <span>Set up a private notebook for a younger child: their own notes, a Family Bible to read together, and you in charge of what they see. On the web, in the US.</span>
           </span>
           <span class="fp-kids__go">See child notebooks <span aria-hidden="true">→</span></span>
