@@ -122,16 +122,30 @@ export const BENTO_TONES = {
 
 export type BentoTone = keyof typeof BENTO_TONES;
 
-/** One feature on a card: its name (the small label), a line about it, its icon. */
-export type BentoFeature = { label: string; title: string; icon: BlockIconName; plus?: boolean };
+/**
+ * One feature on a card: its name (the small label), a line about it, its
+ * icon, and a tag beside the name where the site gives one.
+ */
+export type BentoFeature = {
+  label: string;
+  title: string;
+  icon: BlockIconName;
+  tag?: "Plus" | "Coming soon";
+  /** The card it arrives on (an index into `slots`). The first one per slot needs none. */
+  slot?: number;
+  /** A word in the close's narration: the feature arrives just as it's said. */
+  say?: string;
+};
 
 export type Bento = {
   /** The cards, in reading order; wide ones span two columns of four. */
   slots: { tone: BentoTone; wide?: boolean }[];
-  /** The first one per slot shows first; the rest arrive one card at a time. */
+  /**
+   * The first one per slot shows first; the rest arrive one card at a time,
+   * in order. A feature the narration names arrives as it's said; the others
+   * spread evenly between those moments.
+   */
   features: BentoFeature[];
-  /** Which card takes each arriving feature, cycled. */
-  order: number[];
 };
 
 export type Beat = {
@@ -149,8 +163,12 @@ export type Beat = {
   /** Seconds held after the last line. */
   padSec?: number;
   take?: string;
-  /** Where the take starts playing: a mark, minus `lead` seconds. */
-  from?: { mark: string; lead?: number };
+  /**
+   * Where the take starts playing: a mark, minus `lead` seconds. With
+   * `voice`, the mark is where the scene started the first line
+   * (capture/voice.ts), and the lead is worked out so the line starts on it.
+   */
+  from?: { mark: string; lead?: number; voice?: boolean };
   /** Take playback speed; >1 tightens long stretches like typing. */
   rate?: number;
   /** Pauses and speed changes along the take. */
@@ -201,7 +219,7 @@ export const BEATS: Beat[] = [
     from: { mark: "greeting", lead: 0.9 },
     phoneTake: "home-phone",
     phoneFrom: { mark: "greeting", lead: 0.6 },
-    phoneAt: { vo: "home", frac: 0.8 },
+    phoneAt: { vo: "home", frac: 0.62 },
     vo: ["why-made", "home"],
     padSec: 0.6,
     // Today's passage is a whole card: crop in on it (greeting above, Pick up below).
@@ -214,13 +232,15 @@ export const BEATS: Beat[] = [
     enter: "rise",
     motion: "drift",
     take: "scripture-desktop",
-    from: { mark: "new-note", lead: 1.6 },
-    rate: 2,
-    until: { mark: "pill", offset: 1.6 },
-    vo: ["scripture"],
-    zooms: [{ at: { mark: "typing", offset: 0.2 }, target: "pill", scale: 1.75 }],
-    notes: [{ kind: "loupe", anchor: "pill", at: { mark: "pill", offset: 0.15 }, dur: 2.4, zoom: 2.4, radius: 175 }],
-    sounds: [{ click: 0, cue: "nav.select" }],
+    // Shot paced to the voice: the line is finishing as the window rises, and
+    // the reference is typed so the pill forms on "becomes".
+    from: { mark: "vo", voice: true },
+    until: { mark: "pill", offset: 1.4 },
+    // Typing ran a little slower than the scene planned, so the line starts
+    // that much later against the footage: the pill forms on "becomes".
+    vo: [{ id: "scripture", at: { mark: "vo", offset: 1.7 } }],
+    zooms: [{ at: { mark: "reference", offset: -0.3 }, target: "pill", scale: 1.6, move: 1.4 }],
+    notes: [{ kind: "loupe", anchor: "pill", at: { mark: "pill", offset: 0.15 }, dur: 2.2, zoom: 2.4, radius: 175 }],
     zoomOn: "pill",
     marker: { title: "Scripture in notes", icon: "book-bible", category: "read", tier: 32 },
   },
@@ -231,16 +251,19 @@ export const BEATS: Beat[] = [
     zoomOn: "pill",
     motion: "swirl",
     take: "dock-desktop",
-    from: { mark: "pill", lead: 0.9 },
-    rate: 1.2,
-    until: { mark: "open-reader", offset: 1.2 },
+    // Shot paced to the voice: the take plays at its own speed from where the
+    // line starts, and each tap lands on its word.
+    from: { mark: "vo", voice: true },
+    // Ends on the dictionary as the line finishes; the frosted handover
+    // carries it into the reader (the walk there was seconds of silence).
+    until: { mark: "dictionary", offset: 1.9 },
     vo: ["dock"],
-    // Spots read off the take's frames. The first crop takes in the dock's
-    // lower half: "Related passages", then "Your notes" arriving beneath it.
-    // The second moves onto the dictionary card (Moses).
+    // Two slow crops, centred on what the scene anchored: the dock's lower half
+    // (Related passages, then your notes arriving beneath), then the dictionary card.
     zooms: [
-      { at: { mark: "xrefs", offset: 0.2 }, target: "xrefs", mode: "crop", point: [720, 690], scale: 1.85 },
-      { at: { mark: "dictionary", offset: 0.25 }, target: "dictionary", mode: "crop", point: [842, 668], scale: 1.7, hold: 3.4 },
+      { at: { mark: "xrefs", offset: 0.1 }, target: "xrefs", mode: "crop", scale: 1.5, move: 1.5 },
+      // The Moses card, read off the take's frames (its anchor box is wider than the card).
+      { at: { mark: "dictionary", offset: 0.2 }, target: "dictionary", mode: "crop", point: [840, 640], scale: 1.45, move: 1.5 },
     ],
     sounds: [
       { click: 0, cue: "nav.select" },
@@ -250,15 +273,6 @@ export const BEATS: Beat[] = [
       { click: 4, cue: "nav.select" },
       { click: 5, cue: "nav.select" },
     ],
-    features: {
-      from: { mark: "held", offset: 0.2 },
-      until: { mark: "open-reader", offset: -0.6 },
-      items: [
-        { label: "Cross-references", icon: "link", tier: 42, at: { mark: "xrefs" } },
-        { label: "Your notes on it", icon: "note-sticky", tier: 32, at: { mark: "your-notes" } },
-        { label: "Dictionary", icon: "lines-leaning", tier: 24, at: { mark: "dictionary" } },
-      ],
-    },
     marker: { title: "The scripture dock", icon: "book-bible", category: "read", tier: 24 },
   },
   {
@@ -267,18 +281,18 @@ export const BEATS: Beat[] = [
     enter: "frosted",
     motion: "swirl",
     take: "reader-desktop",
-    from: { mark: "chapter", lead: 0.4 },
-    rate: 1.2,
-    until: { mark: "highlighted", offset: 1.6 },
+    // Shot paced to the voice: the margin on "margin", a gentle scroll on
+    // "beside", the verse highlighted by "my own study Bible".
+    from: { mark: "vo", voice: true },
+    until: { mark: "highlighted", offset: -0.5 },
     vo: ["reader"],
-    // The margin notes are the faint rules beside verses 1–8 (x≈400–420 in the
-    // take): crop in on them with the verses they sit beside, and put a glass
-    // right on the rules.
+    // The margin notes are faint rules just left of the verses: crop in on
+    // them with the verses beside them, and put a glass right on the rules.
     zooms: [
-      { at: { mark: "margin", offset: -0.3 }, target: "margin", mode: "crop", point: [600, 440], scale: 1.65, hold: 3 },
-      { at: { mark: "verse-actions", offset: -0.4 }, target: "verse-actions", scale: 1.6 },
+      { at: { mark: "margin", offset: -0.2 }, target: "margin", mode: "crop", scale: 1.55, move: 1.5, until: { mark: "verse-actions", offset: -1.3 } },
+      { at: { mark: "verse-actions", offset: -0.2 }, target: "verse-actions", mode: "crop", scale: 1.5, move: 1.4 },
     ],
-    notes: [{ kind: "loupe", anchor: "margin", at: { mark: "margin", offset: 0.7 }, dur: 2.2, point: [416, 330], zoom: 2.6, radius: 150 }],
+    notes: [{ kind: "loupe", anchor: "margin", at: { mark: "margin", offset: 0.6 }, dur: 2.2, focus: [-0.04, 0.5], zoom: 2.6, radius: 150 }],
     sounds: [
       { click: 0, cue: "nav.select" },
       { click: 1, cue: "highlight.created" },
@@ -292,13 +306,18 @@ export const BEATS: Beat[] = [
     enter: "rise",
     motion: "drift",
     take: "organize-desktop",
-    from: { mark: "tags", lead: 1.4 },
-    rate: 1.3,
-    until: { mark: "folder-open", offset: 1.4 },
-    vo: ["organize"],
+    // Shot paced to the voice: the tags on "tags", the folders on "folders".
+    // The three taps to the folders take longer than the line gives them, so
+    // the line starts a second after the scene began it (the tags show just
+    // before "tags", the folders within half a second of "folders").
+    from: { mark: "vo", voice: true },
+    until: { mark: "done" },
+    vo: [{ id: "organize", at: { mark: "vo", offset: 1 } }],
     zooms: [
-      { at: { mark: "tags", offset: -0.2 }, target: "tags", mode: "crop", point: [1290, 592], scale: 2, hold: 2.8 },
-      { at: { mark: "folders", offset: 0.1 }, target: "folders", mode: "crop", point: [720, 330], scale: 1.5 },
+      // The line gives the folders about two seconds after "tags", so the
+      // Library opens beside the tags: one crop takes in both.
+      { at: { mark: "tags", offset: 0.1 }, target: "tags", mode: "crop", point: [1100, 470], scale: 1.45, move: 1.5 },
+      { at: { mark: "folders", offset: 0.1 }, target: "folders", mode: "crop", point: [720, 330], scale: 1.5, move: 1.5 },
     ],
     sounds: [
       { click: 0, cue: "nav.select" },
@@ -315,24 +334,15 @@ export const BEATS: Beat[] = [
     enter: "frosted",
     motion: "tide",
     take: "threads-desktop",
-    // The Threads list → the Holy Spirit thread → Share → into a note → its Thread links.
-    from: { mark: "threads", lead: 0.8 },
-    pace: [
-      // The thread's notes wait while the voice gets to "share" (the cursor is at rest here).
-      { at: { mark: "thread-open", offset: 0.6 }, hold: 4.2 },
-      // Into a note and its details: only getting somewhere, so quicker.
-      { at: { mark: "share", offset: 1.2 }, rate: 2 },
-      // Hold on the links while the last line plays (before the cursor walks on).
-      { at: { mark: "links", offset: 1.4 }, hold: 12 },
-    ],
-    until: { mark: "links", offset: 1.3 },
-    vo: ["threads", { id: "threads-walk", at: { mark: "links", offset: -0.2 } }],
+    // Shot paced to the voice: the Threads list → the Holy Spirit thread on
+    // "theme" → reading down its notes → Share on "share" → into a note → its
+    // Thread links, where the second line starts.
+    from: { mark: "vo", voice: true },
+    until: { mark: "done" },
+    vo: ["threads", { id: "threads-walk", at: { mark: "walk" } }],
     zooms: [
-      { at: { mark: "threads", offset: -0.3 }, target: "thread", mode: "crop", point: [720, 165], scale: 1.8 },
-      { at: { mark: "thread-open", offset: -0.1 }, target: "thread-notes", mode: "crop", point: [720, 330], scale: 1.5 },
-      // A slow drift down the thread's notes ("across weeks of study") to the Share button.
-      { at: { mark: "thread-open", offset: 1.4 }, target: "thread-notes", mode: "crop", point: [720, 560], scale: 1.5, move: 3.2, until: { mark: "share", offset: 1.1 } },
-      { at: { mark: "links", offset: -0.3 }, target: "thread-links", mode: "crop", point: [1288, 590], scale: 2.1 },
+      { at: { mark: "thread-open", offset: -0.1 }, target: "thread-notes", mode: "crop", scale: 1.35, move: 1.5, until: { mark: "note-open", offset: -0.4 } },
+      { at: { mark: "links", offset: 0.1 }, target: "thread-links", mode: "crop", scale: 1.8, move: 1.6 },
     ],
     sounds: [
       { click: 3, cue: "nav.drillIn" },
@@ -371,7 +381,7 @@ export const BEATS: Beat[] = [
     // the homepage's, opening on the chapters you just saw, then trading them,
     // one card at a time, for everything else. No end card; the site around
     // the player says the rest. Words are the site's where it has them.
-    vo: ["close-name", "close-weekly"],
+    vo: ["close-more", "close-end"],
     padSec: 2.6,
     bento: {
       slots: [
@@ -383,31 +393,33 @@ export const BEATS: Beat[] = [
         { tone: "pink", wide: true },
       ],
       features: [
-        // What the video walked through.
+        // What the video walked through: on screen for "That's how I study, most days."
         { label: "Threads", title: "One line of thinking, even across months.", icon: "arrow-right-arrow-left" },
         { label: "Today", title: "A passage waiting every day.", icon: "calendar-day" },
         { label: "Scripture in notes", title: "Type a reference, get the verse.", icon: "book-bible" },
-        { label: "Review exercises", title: "Answer from memory.", icon: "clock-rotate-left", plus: true },
+        { label: "Review exercises", title: "Answer from memory.", icon: "clock-rotate-left", tag: "Plus" },
         { label: "Sorted for you", title: "Tags and folders, made for you.", icon: "folder-tree" },
         { label: "Your study Bible", title: "Your notes in the margin, beside the verses.", icon: "book-open" },
-        // And the rest.
-        { label: "Cross-references", title: "Related passages, a tap away.", icon: "link" },
-        { label: "Templates", title: "Start with a shape.", icon: "list-check" },
-        { label: "Compare translations", title: "Two versions, lined up honestly.", icon: "table-columns" },
-        { label: "Shared spaces", title: "A room for your group.", icon: "user-group", plus: true },
-        { label: "Highlights", title: "Highlight a phrase, leave a note.", icon: "highlighter" },
-        { label: "Easton's dictionary", title: "Names and terms, in place.", icon: "lines-leaning" },
-        { label: "Suggestions", title: "What's worth revisiting, brought back.", icon: "lightbulb" },
-        { label: "My Bible", title: "Where you've been in Scripture.", icon: "book-atlas" },
-        { label: "Connector", title: "Ask your AI about your study.", icon: "puzzle-piece", plus: true },
-        { label: "Catholic Bible", title: "All 73 books and the daily Gospel.", icon: "cross" },
-        { label: "Search", title: "Find anything you've written.", icon: "magnifying-glass" },
-        { label: "Reminders", title: "An optional nudge, with the verse.", icon: "bell" },
-        { label: "Discover", title: "A good place to start.", icon: "newspaper" },
-        { label: "Offline & sync", title: "Keeps working without a signal.", icon: "arrows-rotate" },
-        { label: "Scan a page", title: "A printed page becomes a note.", icon: "camera" },
+        // "And there's more": each one arrives as Derek names it.
+        { label: "Cross-references", title: "Related passages, a tap away.", icon: "link", slot: 2 },
+        { label: "Templates", title: "Start with a shape.", icon: "list-check", slot: 4, say: "templates" },
+        { label: "Compare translations", title: "Two versions, lined up honestly.", icon: "table-columns", slot: 0, say: "translations" },
+        { label: "Shared spaces", title: "A room for your group.", icon: "user-group", tag: "Plus", slot: 1, say: "space" },
+        { label: "Family", title: "Room for up to six of you.", icon: "people-roof", tag: "Plus", slot: 5, say: "family" },
+        { label: "Child notebooks", title: "Their own notebook, for kids under 13.", icon: "book-open", slot: 3, say: "notebooks" },
+        { label: "Churches", title: "Taking shape for your church.", icon: "church", tag: "Coming soon", slot: 0, say: "churches" },
+        // The rest, while Derek says where things stand. Family and Churches
+        // hold the wide cards; the four small ones keep trading.
+        { label: "Easton's dictionary", title: "Names and terms, in place.", icon: "lines-leaning", slot: 2 },
+        { label: "Highlights", title: "Highlight a phrase, leave a note.", icon: "highlighter", slot: 4 },
+        { label: "Catholic Bible", title: "All 73 books and the daily Gospel.", icon: "cross", slot: 1 },
+        { label: "Search", title: "Find anything you've written.", icon: "magnifying-glass", slot: 3 },
+        { label: "Suggestions", title: "What's worth revisiting, brought back.", icon: "lightbulb", slot: 2 },
+        { label: "Reminders", title: "An optional nudge, with the verse.", icon: "bell", slot: 4 },
+        { label: "Connector", title: "Ask your AI about your study.", icon: "puzzle-piece", tag: "Plus", slot: 1 },
+        { label: "Offline & sync", title: "Keeps working without a signal.", icon: "arrows-rotate", slot: 3 },
+        { label: "Scan a page", title: "A printed page becomes a note.", icon: "camera", slot: 2 },
       ],
-      order: [2, 4, 0, 5, 1, 3],
     },
   },
 ];

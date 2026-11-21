@@ -16,6 +16,8 @@ export type VoLine = {
   file: string | null;
   /** Scribe's word timings (from `npm run intro:captions`); empty until then. */
   heard: HeardWord[];
+  /** Seconds into the clip where the last word has died away (measured from the audio). */
+  soundEnd?: number;
 };
 
 export type Ambience = { beds: string[]; birds: string[] };
@@ -57,9 +59,9 @@ export const loadIntroData = async (): Promise<IntroData> => {
   await Promise.all(
     script.scenes.map(async (line) => {
       const audio = made.get(line.id);
-      const words = audio ? await getJson<{ words: HeardWord[] }>(`narration/intro/${line.id}.words.json`) : null;
+      const words = audio ? await getJson<{ words: HeardWord[]; soundEnd?: number }>(`narration/intro/${line.id}.words.json`) : null;
       vo[line.id] = audio
-        ? { id: line.id, text: line.text, durationSec: audio.durationSec, file: audio.file, heard: words?.words ?? [] }
+        ? { id: line.id, text: line.text, durationSec: audio.durationSec, file: audio.file, heard: words?.words ?? [], soundEnd: words?.soundEnd }
         : { id: line.id, text: line.text, durationSec: estimate(line.text), file: null, heard: [] };
     }),
   );

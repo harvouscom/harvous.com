@@ -1,4 +1,5 @@
 import type { Scene } from "../scene.ts";
+import { voice } from "../voice.ts";
 
 let takeStartedAt = 0;
 
@@ -20,6 +21,7 @@ export const scripture: Scene = {
     await page.getByRole("button", { name: /^New note/ }).waitFor({ timeout: 20000 });
   },
   run: async ({ page, act, picks }) => {
+    const vo = voice(act);
     await act.pause(700);
     await act.click(page.getByRole("button", { name: /^New note/ }), { settle: 1200 });
     act.mark("new-note");
@@ -28,25 +30,26 @@ export const scripture: Scene = {
     await act.pause(400);
     const body = page.locator(".tiptap.ProseMirror");
     await act.click(body, { settle: 300 });
+    // The window rises on the line being written: the voice starts most of
+    // the way through it ("When I write, Harvous knows Scripture.").
+    const line = picks.typedLine;
+    const cut = line.lastIndexOf(" ", Math.floor(line.length * 0.6));
+    await act.type(line.slice(0, cut + 1));
+    vo.start("scripture");
     act.mark("typing");
-    await act.type(picks.typedLine);
+    await act.type(line.slice(cut + 1), { wpm: 60 });
+    // "I type a reference, and it becomes the verse": timed so the pill forms on "becomes".
+    const wpm = 60;
+    await act.waitUntil(vo.when("scripture", "becomes", -0.15) - act.typingMs(`${picks.typedReference} `, { wpm }));
     act.mark("reference");
-    await act.type(picks.typedReference);
-    await act.type(" ");
-    await act.pause(900);
+    await act.type(picks.typedReference, { wpm });
+    await act.type(" ", { wpm });
     const pill = body.locator(".scripture-pill").last();
     await pill.waitFor({ timeout: 8000 });
     act.mark("pill");
     await act.anchor("pill", pill);
-    await act.pause(1500);
-    // A pill opens its passage card on tap once the caret has left it.
-    await act.press("Escape");
-    await act.click(pill, { settle: 1600 });
-    const card = page.getByLabel("Scripture reference");
-    if (!(await card.isVisible().catch(() => false))) await act.click(pill, { settle: 1600 });
-    act.mark("pill-open");
-    await act.anchor("passage-card", page.locator(".study-dock-card").filter({ has: card }).first());
-    await act.pause(2400);
+    await act.waitUntil(vo.end("scripture", 0.6));
+    act.mark("done");
     await act.rest();
   },
   cleanup: async ({ page, picks }) => {

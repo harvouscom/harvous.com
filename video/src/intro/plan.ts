@@ -31,15 +31,20 @@ export const TEMPO_BPM = 64;
 export const BEAT_SEC = 60 / TEMPO_BPM;
 
 /**
- * Voice clips are cut a breath after their last spoken word, with a short
- * fade. Earlier takes sometimes ran on into the next line's first words.
+ * Voice clips are cut a breath after their last word has died away (measured
+ * from the audio, `soundEnd`), with a soft fade that finishes after it.
+ * Scribe ends a word before its sound does, so cutting by its timing alone
+ * clipped word endings; a cut is still needed because earlier takes sometimes
+ * ran on into the next line's first words.
  */
 export const VOICE_TAIL = 0.18;
-export const VOICE_FADE = 0.08;
+export const VOICE_FADE = 0.12;
 
-export const playSeconds = (line: Pick<VoLine, "durationSec" | "heard">) => {
+export const playSeconds = (line: Pick<VoLine, "durationSec" | "heard" | "soundEnd">) => {
   const last = line.heard[line.heard.length - 1];
-  return last ? Math.min(line.durationSec, last.end + VOICE_TAIL) : line.durationSec;
+  if (!last) return line.durationSec;
+  const end = line.soundEnd !== undefined ? Math.max(line.soundEnd + 0.1, last.end + 0.05) : last.end + VOICE_TAIL;
+  return Math.min(line.durationSec, end);
 };
 
 type Arrival = { enter: Enter | "none"; overlap: number; windowAt: number; takeLead: number; voiceAt: number };
@@ -86,6 +91,8 @@ export type PlacedBeat = {
   windowAt: number;
   /** Beat seconds where the take starts playing. */
   takeLead: number;
+  /** Beat seconds from the take starting to the first line starting. */
+  voiceLead: number;
 };
 
 /** Milliseconds into the take where a mark was logged. */
@@ -108,9 +115,13 @@ export const clickMs = (events: TakeEvents, n: number) => {
   return clicks[n]?.t ?? null;
 };
 
-/** Seconds into the take where the beat's playback starts. */
-export const takeStartSec = (events: TakeEvents, from?: { mark: string; lead?: number }) =>
-  from ? Math.max(0, markMs(events, from.mark) / 1000 - (from.lead ?? 0)) : 0;
+/**
+ * Seconds into the take where the beat's playback starts. A `voice` start
+ * leads by `voiceLead` (beat seconds from the take starting to the first
+ * line starting), so the first line lands on the mark.
+ */
+export const takeStartSec = (events: TakeEvents, from?: { mark: string; lead?: number; voice?: boolean }, voiceLead = 0) =>
+  from ? Math.max(0, markMs(events, from.mark) / 1000 - (from.voice ? voiceLead : (from.lead ?? 0))) : 0;
 
 /**
  * How a beat plays its take: from a start point, at a rate, with `pace`
@@ -127,8 +138,9 @@ export type TakeClock = {
   toPlay: (take: number) => number;
 };
 
-export const takeClock = (events: TakeEvents, beat: Pick<Beat, "from" | "rate" | "pace">): TakeClock => {
-  const start = takeStartSec(events, beat.from);
+export const takeClock = (events: TakeEvents, beat: Pick<Beat, "from" | "rate" | "pace">, voiceLead = 0): TakeClock => {
+  // A voice-paced take plays at its own speed from its start (rate and pace would undo the pacing).
+  const start = takeStartSec(events, beat.from, voiceLead * (beat.rate ?? 1));
   let firstRate = beat.rate ?? 1;
   const points: { at: number; hold: number; rate?: number }[] = [];
   for (const p of beat.pace ?? []) {
@@ -178,8 +190,10 @@ export const placeBeats = (beats: Beat[], data: IntroData) => {
     const nextArrival = next ? arrival(next, false) : null;
 
     const take = beat.take ? data.takes[beat.take] : undefined;
-    const clock = take ? takeClock(take.events, beat) : null;
-    let at = a.voiceAt + (beat.voDelay ?? 0.15);
+    const firstLine = a.voiceAt + (beat.voDelay ?? 0.15);
+    const voiceLead = firstLine - a.takeLead;
+    const clock = take ? takeClock(take.events, beat, voiceLead) : null;
+    let at = firstLine;
     const lines = beat.vo.map((cue, i) => {
       const id = typeof cue === "string" ? cue : cue.id;
       const line = data.vo[id];
@@ -233,6 +247,7 @@ export const placeBeats = (beats: Beat[], data: IntroData) => {
       phoneAt,
       windowAt: a.windowAt,
       takeLead: a.takeLead,
+      voiceLead,
     });
   });
   const last = placed[placed.length - 1];

@@ -20,16 +20,26 @@ export type Picks = {
   studyNote: string;
   /** Threads scene: a thread with several notes in it, by its title. */
   threadTitle: string | null;
+  /** Dock scene: a dotted dictionary word in the passage to tap (null: the first one in view). */
+  dictionaryWord: string | null;
+  /** Organize scene: the topic folder opened at the end, by name. */
+  folderName: string;
 };
 
 export const PICKS: Picks = {
-  // Exodus is where Derek has studied most; 34:1-7 carries his "What is God like?" note.
-  readerChapter: { book: "exodus", chapter: 34 },
-  readerVerse: 6,
+  // Exodus is where Derek has studied most. Chapter 33 carries two of his
+  // notes ("Presence over promise", "When worship goes wrong"); verse 14 is
+  // "My Presence will go with you".
+  readerChapter: { book: "exodus", chapter: 33 },
+  readerVerse: 14,
   typedTitle: "Remain",
   typedReference: "John 15:5",
   typedLine: "Remain is the word that keeps coming back to me. ",
-  // "What is God like?" (Exodus 34:1-7): pills, a long body, a dozen tags.
-  studyNote: "1794159746694",
+  // "Presence over promise" (Exodus 33:1-3, sermon notes): seven clean pills,
+  // a long body, and another note on the same passage. ("What is God like?"
+  // was used before, but its Exodus 34 pill is in the old chapter-only format.)
+  studyNote: "1793554701858",
   threadTitle: "Holy Spirit",
+  dictionaryWord: "Moses",
+  folderName: "Exodus",
 };

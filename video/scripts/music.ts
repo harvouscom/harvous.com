@@ -14,25 +14,42 @@
  * footage/intro/music/bed.mp3 and bed.plan.json (what was asked for).
  * Re-run after the timing changes enough to move a chapter.
  */
+import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { TEMPO_BPM, placeBeats } from "../src/intro/plan";
+import { placeBeats } from "../src/intro/plan";
 import { BEATS } from "../src/intro/timeline";
 import { loadIntroDataFromDisk } from "./intro-disk-data";
 
 const ROOT = path.resolve(__dirname, "..");
 const OUT = path.join(ROOT, "footage", "intro", "music");
 const file = path.join(OUT, "bed.mp3");
+/** The take as generated, before the clean-up filter (kept for comparison). */
+const raw = path.join(OUT, "bed.raw.mp3");
 const redo = process.argv.includes("--redo");
 
+// Beatless and organic: an earlier take asked for "shimmering textures" and a
+// felt pulse, which came back as grainy, scratchy sparkle up top and a
+// mechanical sway. The sections still match the chapters (plan.ts snaps their
+// starts to TEMPO_BPM); the music just doesn't tick along.
 const GLOBAL = [
-  "atmospheric ambient soundscape, like a calm focus app",
-  "slowly evolving warm analog pads and soft drones",
-  "airy shimmering textures, distant gentle swells",
-  `${TEMPO_BPM} BPM pulse felt rather than heard, major key, peaceful and hopeful`,
-  "steady, spacious, sits quietly underneath a spoken voice",
+  "warm, organic ambient soundscape, like a calm focus app",
+  "soft warm pads and a low, gentle drone that breathe and swell slowly, like slow breathing",
+  "smooth and rounded, mellow and dark-toned, everything soft-edged",
+  "beatless and free-flowing, major key, peaceful and hopeful",
+  "unhurried and human, sits quietly underneath a spoken voice",
 ];
-const NEVER = ["piano", "strings", "orchestra", "classical", "drums", "percussion", "beat", "vocals", "melody", "guitar", "sudden changes"];
+const NEVER = [
+  "piano", "strings", "orchestra", "classical", "drums", "percussion", "beat", "pulse", "rhythm", "arpeggio",
+  "vocals", "melody", "guitar", "bells", "chimes", "shimmer", "sparkle", "glitch", "granular", "crackle", "noise",
+  "static", "vinyl", "bitcrush", "robotic", "sci-fi", "bright highs", "sudden changes",
+];
+/**
+ * After generation: a gentle low-pass. The bed's music lives below ~1.5 kHz;
+ * anything the model leaves up top is artifact (it measured as 30-45 dB
+ * flicker over near-silence), so it's rolled off rather than heard.
+ */
+const CLEAN = "highpass=f=35,lowpass=f=3200:poles=2,lowpass=f=4500";
 
 /** What each chapter's section does. Changes happen at the section boundary, on the chapter cut. */
 const MOOD: Record<string, string[]> = {
@@ -77,7 +94,8 @@ const MOOD: Record<string, string[]> = {
     body: JSON.stringify({ composition_plan: plan, model_id: "music_v1" }),
   });
   if (!res.ok) throw new Error(`ElevenLabs Music ${res.status} ${await res.text()}`);
-  writeFileSync(file, Buffer.from(await res.arrayBuffer()));
+  writeFileSync(raw, Buffer.from(await res.arrayBuffer()));
+  execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-i", raw, "-af", CLEAN, "-c:a", "libmp3lame", "-b:a", "192k", file]);
   console.log(`  made  bed.mp3 (${totalSec.toFixed(1)}s, ${sections.length} sections) → footage/intro/music/bed.mp3`);
 })().catch((err) => {
   console.error(err instanceof Error ? err.message : err);
