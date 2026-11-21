@@ -260,8 +260,9 @@ const isInline = variant === "inline";
     max-height: min(85dvh, 720px);
     border-radius: clamp(12px, 2vw, var(--radius-card));
     overflow: hidden;
-    border: 1px solid var(--color-rule);
-    background: var(--hero-video-chrome);
+    /* No border, and a light ground the colour of the video's own sky: a dark
+       ground showed as a black hairline around the rounded corners. */
+    background: #f3f7fb;
     box-shadow: var(--shadow-float);
   }
 
@@ -302,12 +303,12 @@ const isInline = variant === "inline";
     width: 100%;
     max-width: 100%;
     vertical-align: middle;
-    background: #000;
+    background: transparent;
   }
 
   .hero-video-lightbox__panel :global(.plyr) {
     --plyr-color-main: #006eff;
-    --plyr-video-background: #000;
+    --plyr-video-background: transparent;
     width: 100%;
     max-height: min(85dvh, 720px);
   }
