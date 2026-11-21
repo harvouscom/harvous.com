@@ -13,6 +13,7 @@
  * Run after `npm run narrate -- intro`.
  */
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { placeBeats } from "../src/intro/plan";
@@ -38,17 +39,48 @@ const made = new Map(narration.scenes.map((s) => [s.id, s.hash]));
 type Word = { text: string; start: number; end: number };
 
 /**
+ * Where the last word has actually died away, in seconds: the first 150 ms
+ * after Scribe's end for it that stays under -45 dBFS. Scribe ends a word
+ * early (before its final consonant and decay fade), so trimming by its
+ * timing alone clipped the ends of words.
+ */
+const soundEndOf = (file: string, lastWordEnd: number) => {
+  const pcm = execFileSync("ffmpeg", ["-v", "error", "-i", path.join(ROOT, "footage", file), "-ac", "1", "-ar", "16000", "-f", "s16le", "-"], {
+    maxBuffer: 64 * 1024 * 1024,
+  });
+  const samples = new Int16Array(pcm.buffer, pcm.byteOffset, Math.floor(pcm.byteLength / 2));
+  const hop = 160; // 10 ms
+  const db: number[] = [];
+  for (let i = 0; i + hop <= samples.length; i += hop) {
+    let sum = 0;
+    for (let k = i; k < i + hop; k++) sum += (samples[k] / 32768) ** 2;
+    db.push(10 * Math.log10(sum / hop + 1e-12));
+  }
+  for (let i = Math.floor(lastWordEnd * 100); i < db.length - 15; i++) {
+    if (db.slice(i, i + 15).every((d) => d < -45)) return i / 100;
+  }
+  return db.length / 100;
+};
+
+/**
  * Scribe word timings for one line, cached next to the audio and keyed by the
  * audio itself (plus the line's manifest hash), so re-running only transcribes
- * lines that were re-voiced, including a new take of the same words.
+ * lines that were re-voiced, including a new take of the same words. The
+ * cache also keeps where the line's sound ends (`soundEnd`).
  */
 const transcribe = async (id: string, file: string, lineHash: string): Promise<Word[]> => {
   const audio = readFileSync(path.join(ROOT, "footage", file));
   const hash = `${lineHash}-${createHash("sha1").update(audio).digest("hex").slice(0, 12)}`;
   const cacheFile = path.join(ROOT, "footage", "narration", "intro", `${id}.words.json`);
   if (existsSync(cacheFile)) {
-    const cached = JSON.parse(readFileSync(cacheFile, "utf8")) as { hash: string; words: Word[] };
-    if (cached.hash === hash) return cached.words;
+    const cached = JSON.parse(readFileSync(cacheFile, "utf8")) as { hash: string; words: Word[]; soundEnd?: number };
+    if (cached.hash === hash) {
+      if (cached.soundEnd === undefined && cached.words.length) {
+        cached.soundEnd = soundEndOf(file, cached.words[cached.words.length - 1].end);
+        writeFileSync(cacheFile, `${JSON.stringify(cached)}\n`);
+      }
+      return cached.words;
+    }
   }
   const form = new FormData();
   form.append("model_id", "scribe_v1");
@@ -61,7 +93,8 @@ const transcribe = async (id: string, file: string, lineHash: string): Promise<W
   if (!res.ok) throw new Error(`Scribe ${res.status} ${await res.text()}`);
   const json = (await res.json()) as { words: (Word & { type: string })[] };
   const words = json.words.filter((w) => w.type === "word").map(({ text, start, end }) => ({ text, start, end }));
-  writeFileSync(cacheFile, `${JSON.stringify({ hash, words })}\n`);
+  const soundEnd = words.length ? soundEndOf(file, words[words.length - 1].end) : undefined;
+  writeFileSync(cacheFile, `${JSON.stringify({ hash, words, soundEnd })}\n`);
   return words;
 };
 

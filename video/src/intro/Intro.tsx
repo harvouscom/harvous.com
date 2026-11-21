@@ -162,7 +162,7 @@ const AppBeat: React.FC<{ p: PlacedBeat; props: IntroProps; data: IntroData }> =
   if (!take) return <Missing what={`take "${beat.take}"`} />;
 
   const lead = p.takeLead;
-  const clock = takeClock(take.events, beat);
+  const clock = takeClock(take.events, beat, p.voiceLead);
   const takeSecAt = (tt: number) => clock.toTake(Math.max(0, tt - lead));
   const takeMs = (tt: number) => takeSecAt(tt) * 1000;
   const toBeat = (sec: number) => sec + lead;
@@ -507,7 +507,7 @@ const FeatureBento: React.FC<{ p: PlacedBeat }> = ({ p }) => {
   const { t } = useClock();
   const bento = p.beat.bento;
   if (!bento) return null;
-  const { slots, features, order } = bento;
+  const { slots, features } = bento;
 
   // Where each card sits: rows of four columns, wide cards spanning two.
   const colW = (BENTO.width - BENTO.gap * (BENTO.cols - 1)) / BENTO.cols;
@@ -528,15 +528,14 @@ const FeatureBento: React.FC<{ p: PlacedBeat }> = ({ p }) => {
   // When each card arrives, and when each later feature takes its card.
   const arrive = (i: number) => 0.3 + i * 0.09;
   const first = slots.length;
-  const swaps = features.length - first;
-  const swapFrom = 3.8;
-  const swapTo = p.durationSec - 3.4;
-  const step = swaps > 1 ? (swapTo - swapFrom) / (swaps - 1) : 0;
+  const later = features.slice(first);
+  // The cards settle before the last words, so "I'd love to hear from you" sits over a still bento.
+  const times = bentoTimes(later, p, { from: 2.6, to: p.durationSec - 5.4 });
   const history: BentoItem[][] = slots.map((_, i) => (features[i] ? [{ feature: features[i], at: arrive(i) + 0.15, n: i }] : []));
-  for (let k = 0; k < swaps; k++) {
-    const slot = order[k % order.length] ?? k % slots.length;
-    history[slot].push({ feature: features[first + k], at: swapFrom + k * step, n: first + k });
-  }
+  later.forEach((feature, k) => {
+    const slot = feature.slot ?? k % slots.length;
+    history[slot].push({ feature, at: times[k], n: first + k });
+  });
   const out = progress(t, p.durationSec - 1.6, p.durationSec, EASE.exit);
 
   return (
@@ -584,6 +583,45 @@ const FeatureBento: React.FC<{ p: PlacedBeat }> = ({ p }) => {
       })}
     </AbsoluteFill>
   );
+};
+
+/**
+ * When each later feature arrives: just as Derek says it, if the close names
+ * it (`say`), and otherwise spread evenly between those moments, from `from`
+ * to `to`. Always in order, at least a beat apart.
+ */
+const bentoTimes = (later: BentoFeature[], p: PlacedBeat, { from, to }: { from: number; to: number }) => {
+  const norm = (w: string) => w.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const heard = p.lines.flatMap((l) => l.heard.map((w) => ({ word: norm(w.text), at: l.startSec + w.start })));
+  let after = 0;
+  const fixed: (number | null)[] = later.map((f) => {
+    if (!f.say) return null;
+    const key = norm(f.say);
+    const i = heard.findIndex((h, k) => k >= after && h.word.startsWith(key));
+    if (i < 0) return null;
+    after = i + 1;
+    // The card starts to change a breath before the word, so it lands with it.
+    return heard[i].at - 0.35;
+  });
+  const times = [...fixed];
+  for (let k = 0; k < times.length; ) {
+    if (times[k] !== null) {
+      k++;
+      continue;
+    }
+    let j = k;
+    while (j < times.length && times[j] === null) j++;
+    const n = j - k;
+    const left = k > 0 ? (times[k - 1] as number) : from;
+    for (let m = 0; m < n; m++) {
+      // Between two named ones, evenly; after the last, the final one lands at `to`.
+      times[k + m] = j < times.length ? left + ((times[j] as number) - left) * ((m + 1) / (n + 1)) : left + (to - left) * ((m + 1) / n);
+    }
+    k = j;
+  }
+  const out = times as number[];
+  for (let k = 1; k < out.length; k++) out[k] = Math.max(out[k], out[k - 1] + 0.5);
+  return out;
 };
 
 /** How a feature comes and goes on a card: rising in out of a soft blur, lifting away into one. */
@@ -663,7 +701,7 @@ const BentoWords: React.FC<{ item: BentoItem; t: number; wide: boolean; tone: Be
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: wide ? 22 : 19, fontWeight: 600, color: tn.ink, ...label }}>
         <span style={{ opacity: 0.8 }}>{item.feature.label}</span>
-        {item.feature.plus ? (
+        {item.feature.tag ? (
           <span
             style={{
               fontSize: wide ? 15 : 13.5,
@@ -675,7 +713,7 @@ const BentoWords: React.FC<{ item: BentoItem; t: number; wide: boolean; tone: Be
               boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${tn.ink} 10%, transparent)`,
             }}
           >
-            Plus
+            {item.feature.tag}
           </span>
         ) : null}
       </div>

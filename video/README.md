@@ -147,7 +147,13 @@ exists, the composition times each line at 2.3 words a second.
   twenty-five, two". The captions keep the `text`.
 - `narrate` sends only the previous line as context. Sending the next one too
   made the clone start saying it at the end of a clip; the composition also
-  cuts every clip a breath after its last heard word (plan.ts `playSeconds`).
+  cuts every clip a breath after its last word has died away (plan.ts
+  `playSeconds`, from `soundEnd`, which the captions step measures from the
+  audio: Scribe ends a word before its sound does).
+- Derek's pick is the clone at stability 0.35 / style 0.15 (narrate.mjs
+  `DEFAULTS`). It invents the odd "uh", so expect a few takes per line. A line
+  that keeps coming out rushed can carry its own `"speed"` (0.7–1.2) in
+  narration/intro.json; aim for about 2.6–3.0 words a second.
 - The clone sometimes adds an "um" or repeats a word. The captions step
   writes what Scribe heard to `footage/narration/intro/<id>.words.json`, so
   check those (`npm run intro:stumbles`), and re-voice a line with
@@ -207,10 +213,15 @@ exists, the composition times each line at 2.3 words a second.
     - `mode: "stage"` (the default) pushes the whole stage in, chrome and all.
   - Takes play on the beat's clock (`TakeVideo` places every frame), so the
     footage, cursor, magnifiers and camera never drift apart.
-  - `pace` on a beat holds the footage at a mark while the voice catches up,
-    or changes its speed from there (the walk into a note goes by at 2×).
-    Pick a hold point where the cursor is at rest. A `vo` entry can be
-    `{ id, at }` to start a line when the take reaches a mark.
+  - Scenes can be shot paced to the voice (`capture/voice.ts`): the rig reads
+    each line's word timings and lands every click on its word, so the footage
+    plays at its own speed under the narration. Voice the lines first, then
+    shoot; the beat starts with `from: { mark: "vo", voice: true }`, and a
+    second line started mid-scene is placed with `{ id, at: { mark } }`.
+    Threads and the dock are shot this way.
+  - `pace` on a beat can still hold the footage at a mark or change its speed,
+    for a take that wasn't shot to the voice. It reads as a freeze or a
+    fast-forward, so prefer re-shooting paced to the voice.
 - The close is a bento like the homepage's (`bento` on the last beat): six
   cards in the site's tones (sky, cream, lilac, mint, peach, pink), each with a
   stage in its tone's mesh, over a neutral `stone` ground so the cards carry

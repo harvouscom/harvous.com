@@ -93,6 +93,19 @@ export const createAct = (
 
     pause: (ms: number) => sleep(ms),
 
+    /** Take time so far, in playback milliseconds. */
+    now: () => now(),
+
+    /**
+     * Wait until `at` ms of take time, however long the actions before it
+     * took. Scenes paced to the narration use it to land a click on the word
+     * it belongs with (capture/voice.ts).
+     */
+    waitUntil: async (at: number) => {
+      const left = at - now();
+      if (left > 0) await sleep(left);
+    },
+
     /** Name this moment, for the timeline to sync to. */
     mark: (name: string) => log({ kind: "mark", name }),
 
@@ -130,6 +143,10 @@ export const createAct = (
       await sleep(settle);
       return box;
     },
+
+    /** About how long `type` takes for this text (playback ms), to start it in time for a word. */
+    typingMs: (text: string, { wpm = 52 }: { wpm?: number } = {}) =>
+      [...text].reduce((ms, ch) => ms + 60000 / (wpm * 5) + (ch === " " ? 70 : 0) + (/[.,:;!?]/.test(ch) ? 180 : 0), 0),
 
     /** Type like a person: uneven gaps, a beat after spaces and punctuation. */
     type: async (text: string, { wpm = 52 }: { wpm?: number } = {}) => {

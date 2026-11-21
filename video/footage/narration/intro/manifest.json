@@ -12,26 +12,26 @@
     {
       "id": "open-scattered",
       "file": "narration/intro/open-scattered.mp3",
-      "durationSec": 1.486077,
-      "hash": "ca8cdfa4e089331e"
+      "durationSec": 2.182676,
+      "hash": "503082eb5e46317b"
     },
     {
       "id": "why-made",
       "file": "narration/intro/why-made.mp3",
-      "durationSec": 5.01551,
-      "hash": "e7c4c4a82667deba"
+      "durationSec": 4.551111,
+      "hash": "e5716bb997ce3a5f"
     },
     {
       "id": "home",
       "file": "narration/intro/home.mp3",
-      "durationSec": 8.637823,
-      "hash": "6e8eae9bc25a0cb9"
+      "durationSec": 9.752381,
+      "hash": "0989aa6b5144bfff"
     },
     {
       "id": "scripture",
       "file": "narration/intro/scripture.mp3",
-      "durationSec": 6.408707,
-      "hash": "e724f7f5a937478b"
+      "durationSec": 7.291066,
+      "hash": "228f9c293d9e9a8b"
     },
     {
       "id": "dock",
@@ -60,26 +60,26 @@
     {
       "id": "threads-walk",
       "file": "narration/intro/threads-walk.mp3",
-      "durationSec": 4.133152,
-      "hash": "b01dab58cd51b04e"
+      "durationSec": 5.665669,
+      "hash": "78bc2fcfe1b0f666"
     },
     {
       "id": "review",
       "file": "narration/intro/review.mp3",
-      "durationSec": 7.848345,
-      "hash": "fcbef76d4dd60d21"
+      "durationSec": 8.916463,
+      "hash": "8289a3fdf1af6902"
     },
     {
-      "id": "close-name",
-      "file": "narration/intro/close-name.mp3",
-      "durationSec": 11.749297,
-      "hash": "b7cbfe92331a3f96"
+      "id": "close-more",
+      "file": "narration/intro/close-more.mp3",
+      "durationSec": 14.860771,
+      "hash": "da7e2fb7c99a337f"
     },
     {
-      "id": "close-weekly",
-      "file": "narration/intro/close-weekly.mp3",
-      "durationSec": 9.055782,
-      "hash": "a4ea2d6391b738ce"
+      "id": "close-end",
+      "file": "narration/intro/close-end.mp3",
+      "durationSec": 11.099138,
+      "hash": "2577adc269a1e8d5"
     }
   ]
 }

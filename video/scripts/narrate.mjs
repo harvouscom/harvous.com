@@ -71,16 +71,20 @@ const previous = existsSync(manifestPath)
   : { scenes: [] };
 const previousById = new Map(previous.scenes.map((s) => [s.id, s]));
 
-const hashOf = (text) =>
+// A line can set its own `speed` (ElevenLabs voice_settings.speed, 0.7–1.2)
+// when a take keeps coming out rushed; everything else stays the voice's.
+const settingsFor = (scene) => (scene.speed ? { ...voiceSettings, speed: scene.speed } : voiceSettings);
+
+const hashOf = (text, settings) =>
   createHash("sha256")
-    .update(JSON.stringify({ text, voiceId, modelId, voiceSettings }))
+    .update(JSON.stringify({ text, voiceId, modelId, voiceSettings: settings }))
     .digest("hex")
     .slice(0, 16);
 
 const plan = script.scenes.map((scene, i) => {
   // `say` is how a line is spoken when that differs from how it reads
   // ("Proverbs twenty-five two" for "Proverbs 25:2"); captions keep `text`.
-  const hash = hashOf(scene.say ?? scene.text);
+  const hash = hashOf(scene.say ?? scene.text, settingsFor(scene));
   const file = `narration/${name}/${scene.id}.mp3`;
   const prior = previousById.get(scene.id);
   const fresh =
@@ -126,7 +130,7 @@ for (const { scene, i, hash, file, prior, fresh } of plan) {
       body: JSON.stringify({
         text: scene.say ?? scene.text,
         model_id: modelId,
-        voice_settings: voiceSettings,
+        voice_settings: settingsFor(scene),
         // Only the line before, for intonation. Sending the next line as well
         // made the model start saying it at the end of this clip.
         previous_text: script.scenes[i - 1]?.say ?? script.scenes[i - 1]?.text,

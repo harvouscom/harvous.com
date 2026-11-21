@@ -6,19 +6,23 @@
     },
     {
       "id": "open-scattered",
-      "text": "And it was all scattered."
+      "text": "And it was all scattered.",
+      "speed": 0.88
     },
     {
       "id": "why-made",
-      "text": "So I made one. Harvous is the app I've been wanting."
+      "text": "So I made my own Bible notes app. Harvous is the one I've been wanting.",
+      "speed": 0.8
     },
     {
       "id": "home",
-      "text": "Every day starts here. There's a passage waiting, and whatever I was in the middle of, so I can pick right back up. On my laptop, or on my phone."
+      "text": "Every day starts here. There's a passage waiting, and whatever I was in the middle of, so I can pick right back up. On my laptop, or on my phone.",
+      "speed": 0.88
     },
     {
       "id": "scripture",
-      "text": "When I write, Harvous knows Scripture. I type a reference, and it becomes the verse, right there in my note."
+      "text": "When I write, Harvous knows Scripture. I type a reference, and it becomes the verse, right there in my note.",
+      "speed": 0.88
     },
     {
       "id": "dock",
@@ -38,20 +42,22 @@
     },
     {
       "id": "threads-walk",
-      "text": "And each note links to the others, so I can walk the whole line of thinking."
+      "text": "And each note links to the others, so I can walk the whole line of thinking.",
+      "speed": 0.88
     },
     {
       "id": "review",
-      "text": "And the part I care about most. Harvous brings my study back, so it actually sticks. Not just what I read, but what I wrote about it."
+      "text": "And the part I care about most. Harvous brings my study back, so it actually sticks. Not just what I read, but what I wrote about it.",
+      "speed": 0.88
     },
     {
-      "id": "close-name",
-      "text": "It's named after Proverbs 25:2. Studying the Bible is searching. Harvous is the place where the search settles into something you can come back to.",
-      "say": "It's named after Proverbs twenty-five, two. Studying the Bible is searching. Harvous is the place where the search settles into something you can come back to."
+      "id": "close-more",
+      "text": "That's how I study, most days. And there's more. Templates to start a study. Translations side by side. A shared space for your group. A family plan, with notebooks for your kids. And features for churches are coming soon."
     },
     {
-      "id": "close-weekly",
-      "text": "I build it on my own, a little every week. If that sounds like what you've been looking for, I'd love for you to try it. And if it isn't there yet, write me, and tell me why."
+      "id": "close-end",
+      "text": "Right now, it's just me working on Harvous. God willing, there'll be a small team one day. Until then, if you have any questions or feedback, please reach out. I'd love to hear from you.",
+      "speed": 0.92
     }
   ]
 }

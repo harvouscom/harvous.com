@@ -25,8 +25,9 @@ export const loadIntroDataFromDisk = (): IntroData & { estimated: string[] } => 
   const estimated: string[] = [];
   for (const line of script?.scenes ?? []) {
     const audio = made?.scenes.find((s) => s.id === line.id);
-    const heard = json<{ words: IntroData["vo"][string]["heard"] }>(path.join(FOOTAGE, "narration", "intro", `${line.id}.words.json`))?.words ?? [];
-    if (audio) vo[line.id] = { id: line.id, text: line.text, durationSec: audio.durationSec, file: audio.file, heard };
+    const words = json<{ words: IntroData["vo"][string]["heard"]; soundEnd?: number }>(path.join(FOOTAGE, "narration", "intro", `${line.id}.words.json`));
+    const heard = words?.words ?? [];
+    if (audio) vo[line.id] = { id: line.id, text: line.text, durationSec: audio.durationSec, file: audio.file, heard, soundEnd: words?.soundEnd };
     else {
       estimated.push(line.id);
       vo[line.id] = { id: line.id, text: line.text, durationSec: line.text.split(/\s+/).length / 2.3 + 0.4, file: null, heard: [] };
