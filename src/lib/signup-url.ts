@@ -5,7 +5,7 @@
  * this site whose whole point is what happens *after* the click, and so the one that cannot be
  * checked by looking at this page alone. Unset (every real build) it is production.
  */
-// `?.` because plain-Node scripts (generate-og-cards.mjs) import data files that import this,
+// `?.` because plain-Node scripts may import data files that import this,
 // and outside Astro `import.meta.env` is undefined.
 const APP_ORIGIN = import.meta.env?.PUBLIC_APP_ORIGIN ?? "https://app.harvous.com";
 
